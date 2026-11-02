@@ -26,7 +26,7 @@ ssh -L 8080:127.0.0.1:8080 usuario@seu-servidor
 
 Depois acesse `http://localhost:8080` no navegador. O modo local não cria DNS, túnel Cloudflare ou publicação de site. A configuração pública é uma etapa separada e explícita do [guia de instalação](docs/operations/installation.md).
 
-Se a release indicada ainda não estiver disponível, não substitua por um pacote não verificado. Use o caminho de desenvolvimento documentado ou aguarde a publicação dos artefatos assinados.
+Essa release foi instalada a partir dos downloads públicos, sem autenticação GitHub, em um segundo Ubuntu limpo. Consulte o [registro de verificação](docs/verification.md) para os resultados e os limites do ensaio.
 
 ## O que já funciona
 

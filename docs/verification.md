@@ -13,11 +13,13 @@ Registro de 2 de novembro de 2026 para a versão `0.1.0-alpha.1`. Todos os dados
 | Dependências JavaScript de produção | Auditoria sem vulnerabilidades conhecidas no momento da execução. |
 | Engine fiscal | XML, assinatura sintética, schemas e composição exercitados offline. Quatro verificações opcionais de snapshots privados não foram executadas. |
 | Instalação Ubuntu | Distribuição 24.04 limpa, isolada no WSL2, com systemd e Docker Engine próprios. Dependências, banco, administrador, interface local, atualizador e primeiro backup concluídos. |
+| Instalação da release pública | Segundo Ubuntu 24.04 limpo: download anônimo dos artefatos, assinatura, imagem, migrações, administrador, interface, atualizador e primeiro backup aprovados. Seleção automática da porta 8081 preservou a porta 8080 ocupada. |
+| Verificação após instalar a release | Login, engine instalado com envio bloqueado, estado do atualizador, consulta pública de versão, escrita MCP com credencial restrita, bloqueio administrativo e revogação aprovados. |
 | Recuperação | Dump da instalação restaurado em banco separado, conferindo empresa e administrador; banco de teste removido ao concluir. |
 | Retomada | Novo acionamento do instalador preserva a instalação concluída. |
 
 O cliente de integração testado executou compra, confirmação física, parcelas, venda, consulta de estoque/movimentos, fornecedores, histórico de preço e confirmação dos eventos usando somente as ferramentas expostas. Isso comprova o contrato do FAGOO; a configuração do container do agente e a qualidade de suas análises exigem avaliação própria.
 
-O teste visual do atualizador verificou o contrato e acompanhamento do estado, sem aplicar uma atualização real pela interface. Os testes do serviço validam a aplicação de pacotes com executores isolados. A primeira release não dispõe de uma versão estável sucessora para um ensaio público de atualização entre versões.
+O teste visual do atualizador verificou o contrato e acompanhamento do estado, sem aplicar uma atualização real pela interface. A consulta real de versão na instalação assinada respondeu corretamente que não há versão estável sucessora. Os testes do serviço validam a aplicação de pacotes com executores isolados. A primeira release não dispõe de uma versão estável sucessora para um ensaio público de atualização entre versões.
 
 Nenhum recurso Cloudflare foi publicado, nenhum certificado de cliente foi carregado e nenhuma chamada de emissão foi enviada à SEFAZ. O engine mantém os gates de homologação descritos em [engine fiscal](fiscal/engine.md). Consulte também os [limites da implementação](status.md) antes de usar dados operacionais.
