@@ -1,0 +1,24 @@
+{
+  "profile": "fagoo-receipt-pl010f-v1.04",
+  "entrypoints": {
+    "request": "consReciNFe_v4.00.xsd",
+    "response": "retConsReciNFe_v4.00.xsd"
+  },
+  "dependency_profile": "pl010f-v1.04",
+  "dependency_manifest_sha256": "6099e1ce8a90a079609f986ab0b9783744d2fbb10151fab0b5e7a3549c82d9a0",
+  "files": [
+    {
+      "name": "consReciNFe_v4.00.xsd",
+      "bytes": 460,
+      "sha256": "d4a775eda0de0a304a8deb1ffba99986cb32c2fb0baceb7f81a7124d5cb447e7",
+      "provenance": "fagoo-local-entrypoint"
+    },
+    {
+      "name": "retConsReciNFe_v4.00.xsd",
+      "bytes": 466,
+      "sha256": "a66acff0b38c51bd86fa168a5227cbba5663e9d24eee9204269fcffbea64e2a3",
+      "provenance": "fagoo-local-entrypoint"
+    }
+  ],
+  "policy": "Local entrypoints over unchanged official types. Structural validation and single-candidate context only; no TLS, receipt ownership or authority."
+}

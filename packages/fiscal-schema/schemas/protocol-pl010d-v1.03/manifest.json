@@ -1,0 +1,41 @@
+{
+  "id": "protocol-pl010d-v1.03",
+  "publisher": "Portal Nacional da NF-e",
+  "published_on": "2026-07-10",
+  "retrieved_on": "2026-10-16",
+  "source_url": "https://www.nfe.fazenda.gov.br/portal/exibirArquivo.aspx?conteudo=%2BpBOYTXBtbk%3D",
+  "listing_url": "https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=BMPFMBoln3w=",
+  "archive_sha256": "45ceefe4dfbbfec93958283b650a2f1e1734784f4770d070b9907754de081d9b",
+  "entrypoints": {
+    "request": "consSitNFe_v4.00.xsd",
+    "response": "retConsSitNFe_v4.00.xsd"
+  },
+  "files": [
+    {
+      "name": "consSitNFe_v4.00.xsd",
+      "bytes": 577,
+      "sha256": "44d816a725553a0c53508be919629c9235b42c5d41c358a05be8fdf61945f5c1"
+    },
+    {
+      "name": "leiauteConsSitNFe_v4.00.xsd",
+      "bytes": 20523,
+      "sha256": "646e3a6bd26720b12a1322d5d25181504d82175c3650e14a1120dfb65895b618"
+    },
+    {
+      "name": "retConsSitNFe_v4.00.xsd",
+      "bytes": 611,
+      "sha256": "8b7188d6fe9e879ca057bfb68600746c7491d2e092e3dc5121a6cd5aa79272d5"
+    },
+    {
+      "name": "tiposBasico_v4.00.xsd",
+      "bytes": 22532,
+      "sha256": "772619c85723e598840667ca66e7298a250442df47eeb94b397d2a333ce62047"
+    },
+    {
+      "name": "xmldsig-core-schema_v1.01.xsd",
+      "bytes": 3747,
+      "sha256": "f56744a5f51c03f027de13f39f869307091781a9ef1d91b1ebe14719ce28e1ac"
+    }
+  ],
+  "policy": "Offline protocol query and response validation only; independent official profile, not mixed with PL010f invoice dependencies. TLS, XML signatures, revocation and SEFAZ origin are not attested."
+}

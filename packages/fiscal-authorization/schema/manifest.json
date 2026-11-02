@@ -1,0 +1,31 @@
+{
+  "profile": "fagoo-authorization-pl010f-v1.04",
+  "entrypoints": {
+    "request": "enviNFe_v4.00.xsd",
+    "response": "retEnviNFe_v4.00.xsd",
+    "processed": "procNFe_v4.00.xsd"
+  },
+  "dependency_profile": "pl010f-v1.04",
+  "dependency_manifest_sha256": "6099e1ce8a90a079609f986ab0b9783744d2fbb10151fab0b5e7a3549c82d9a0",
+  "files": [
+    {
+      "name": "enviNFe_v4.00.xsd",
+      "bytes": 452,
+      "sha256": "25123fdf19ed850ef9bd7513a6b2d99a23bd9d8ef67f38bd8f722a47f42f4e59",
+      "provenance": "fagoo-local-entrypoint"
+    },
+    {
+      "name": "retEnviNFe_v4.00.xsd",
+      "bytes": 458,
+      "sha256": "42d91b44e72a1c8f3dc942aaff7512588d48c9e5511f42c5dd0845698ee74d8d",
+      "provenance": "fagoo-local-entrypoint"
+    },
+    {
+      "name": "procNFe_v4.00.xsd",
+      "bytes": 452,
+      "sha256": "ec2a926778618f66b62fbd2e2930b0e5c84c2c76c7f67627006de116c356b89f",
+      "provenance": "fagoo-local-entrypoint"
+    }
+  ],
+  "policy": "Local entrypoints over unmodified pinned official types. Offline structural validation; no rule applicability, binding or origin assertion."
+}

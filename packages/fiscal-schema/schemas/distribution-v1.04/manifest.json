@@ -1,0 +1,38 @@
+{
+  "id": "PL_NFeDistDFe_104",
+  "publisher": "Portal Nacional da NF-e",
+  "published_on": "2026-07-03",
+  "retrieved_on": "2026-10-16",
+  "source_url": "https://www.nfe.fazenda.gov.br/portal/exibirArquivo.aspx?conteudo=IzuP2y0G6hk%3D",
+  "listing_url": "https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=BMPFMBoln3w%3D",
+  "archive_sha256": "9bd6d478dd04770016783a914111f3e2cc794c6a2f2b62ac7243fb101c138740",
+  "nt_url": "https://www.nfe.fazenda.gov.br/portal/exibirArquivo.aspx?conteudo=uWO2d%2FgTuWg%3D",
+  "nt_sha256": "156dcb170e205c076a6da86aedf56a04afcec3aef8e373dd7fbf7ccb068da029",
+  "files": [
+    {
+      "name": "distDFeInt_v1.01.xsd",
+      "bytes": 4030,
+      "sha256": "2d95df1430b0f0e2b04c6f29cf6bb69cdb5a392ac52102987653902b9a34ff7a"
+    },
+    {
+      "name": "resEvento_v1.01.xsd",
+      "bytes": 4493,
+      "sha256": "77bd5c05e336fa2854f8ab71316e07fe30759c5efedf493bb684a77c26af9d55"
+    },
+    {
+      "name": "resNFe_v1.01.xsd",
+      "bytes": 4927,
+      "sha256": "6ca072e27d72d3a74065d3414af669f7ad525f8883a22af89d22da96095856fa"
+    },
+    {
+      "name": "retDistDFeInt_v1.01.xsd",
+      "bytes": 4399,
+      "sha256": "059c4183e190282851337e80725c6ac4e996736a85077246d8711b3b31406236"
+    },
+    {
+      "name": "tiposDistDFe_v1.01.xsd",
+      "bytes": 8257,
+      "sha256": "0bc215b9bda6422e37c2c28b80590b4c5ba3041f0db85ca17ebba61edadd7547"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "fagoo",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "workspaces": [
+    "apps/web",
+    "apps/site"
+  ],
+  "scripts": {
+    "start": "node apps/api/src/server.mjs",
+    "dev:api": "node --watch apps/api/src/server.mjs",
+    "migrate": "node apps/api/src/migrate.mjs",
+    "bootstrap": "node apps/api/src/bootstrap.mjs",
+    "jobs": "node apps/api/src/jobs.mjs",
+    "test": "node scripts/test.mjs",
+    "build": "npm run build --workspace apps/web && npm run build --workspace apps/site",
+    "check": "node scripts/check.mjs",
+    "release:prepare": "node scripts/release.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.1161.0",
+    "@better-auth/oauth-provider": "1.7.15",
+    "@xmldom/xmldom": "0.9.12",
+    "asn1js": "3.0.10",
+    "better-auth": "1.7.15",
+    "pg": "8.23.1",
+    "pkijs": "3.4.1",
+    "xml-crypto": "6.4.0"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.14"
+  }
+}

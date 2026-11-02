@@ -1,0 +1,26 @@
+[Unit]
+Description=FAGOO verified release updater
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=fagoo-update
+UMask=0027
+Environment=FAGOO_HOME=/opt/fagoo
+ExecStart=/usr/bin/python3 /opt/fagoo/updater/updater.py serve
+Restart=on-failure
+RestartSec=5
+RuntimeDirectory=fagoo
+RuntimeDirectoryMode=0750
+RuntimeDirectoryPreserve=yes
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/fagoo /run/fagoo /var/run/docker.sock
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,15 @@
+node_modules
+**/node_modules
+.git
+.env
+.env.*
+release-artifacts
+backups
+**/__pycache__
+**/*.pyc
+test-results
+playwright-report
+.wrangler
+**/.wrangler
+*.pem
+!infra/release-root.pem

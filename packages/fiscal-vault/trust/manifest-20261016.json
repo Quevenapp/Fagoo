@@ -1,0 +1,115 @@
+{
+  "id": "iti-icp-brasil-roots-20261016",
+  "retrieved_at": "2026-10-16T11:07:27.000Z",
+  "source_index": "https://www.gov.br/iti/pt-br/assuntos/repositorio/repositorio-ac-raiz",
+  "source_index_updated": "2026-10-05",
+  "https_source_validation": true,
+  "excluded_revoked_versions": [
+    3,
+    8,
+    9
+  ],
+  "excluded_expired_versions": [
+    0,
+    1,
+    2
+  ],
+  "anchors": [
+    {
+      "id": "icp-brasil-v4",
+      "file": "icp-brasil-v4.pem",
+      "sha256": "f0c15afd258fb674e7a96e1a50ff873149364b9ec70d4d93c7a9f1eb6060d020",
+      "source_url": "https://acraiz.icpbrasil.gov.br/credenciadas/RAIZ/ICP-Brasilv4.crt",
+      "source_file_sha256": "857ff3bf31628979e479c5bc0bdf3e706bcc7bafb7ddf0c1134fc21f1cfab141",
+      "purpose": "general",
+      "runtime_supported": true,
+      "unsupported_reason": null,
+      "not_before": "2015-04-23T18:38:58.000Z",
+      "not_after": "2035-04-23T23:59:58.000Z"
+    },
+    {
+      "id": "icp-brasil-v5",
+      "file": "icp-brasil-v5.pem",
+      "sha256": "caa53fc6091c6951887c976e378f6ef89aa6377c55d97b6475422b71ed7e9b17",
+      "source_url": "https://acraiz.icpbrasil.gov.br/credenciadas/RAIZ/ICP-Brasilv5.crt",
+      "source_file_sha256": "5bd85f219695dabe6cf3d4bd713d9bd8e41b2323194022acf1acd658daef148a",
+      "purpose": "general",
+      "runtime_supported": true,
+      "unsupported_reason": null,
+      "not_before": "2016-03-02T13:01:38.000Z",
+      "not_after": "2029-03-02T23:59:38.000Z"
+    },
+    {
+      "id": "icp-brasil-v6",
+      "file": "icp-brasil-v6.pem",
+      "sha256": "3bdb9b509352f1d3d71c2bf64d9a38a4e6cebda27809d77f7ac476cbde6e314a",
+      "source_url": "https://acraiz.icpbrasil.gov.br/credenciadas/RAIZ/ICP-Brasilv6.crt",
+      "source_file_sha256": "a91e45782e58755dffc6621cb05c2342db74398ffc6e930b0b3a23325a3bfdfd",
+      "purpose": "general",
+      "runtime_supported": true,
+      "unsupported_reason": null,
+      "not_before": "2018-12-28T13:32:03.000Z",
+      "not_after": "2038-12-28T12:00:03.000Z"
+    },
+    {
+      "id": "icp-brasil-v7",
+      "file": "icp-brasil-v7.pem",
+      "sha256": "5657e70580eb678983f3ed7dfce091d84cae6549389a47fccda8d0e4dc2cf576",
+      "source_url": "https://acraiz.icpbrasil.gov.br/credenciadas/RAIZ/ICP-Brasilv7.crt",
+      "source_file_sha256": "4fe1d8599fc00f0b61b12391c98d97af36bcada115bd894f8755e01e212bc4be",
+      "purpose": "general",
+      "runtime_supported": false,
+      "unsupported_reason": "SIGNATURE_ALGORITHM_1_3_6_1_4_1_44588_2_1_UNSUPPORTED",
+      "not_before": "2018-12-28T13:47:35.000Z",
+      "not_after": "2038-12-28T12:00:35.000Z"
+    },
+    {
+      "id": "icp-brasil-v10",
+      "file": "icp-brasil-v10.pem",
+      "sha256": "6e0bff069a26994c15de2c4888cc54af84882e5495b7fbf66be9ccffec7489f6",
+      "source_url": "https://acraiz.icpbrasil.gov.br/credenciadas/RAIZ/ICP-Brasilv10.crt",
+      "source_file_sha256": "3b3ef39649ba13e10a99bc042cfc112723d8e0503326174f15ab89941a0f33e0",
+      "purpose": "ssl",
+      "runtime_supported": true,
+      "unsupported_reason": null,
+      "not_before": "2019-07-01T19:15:59.000Z",
+      "not_after": "2032-07-01T12:00:59.000Z"
+    },
+    {
+      "id": "icp-brasil-v11",
+      "file": "icp-brasil-v11.pem",
+      "sha256": "1406710058180fa4081aab3f246f1702429c552a11fa3143b84c88cb3ab8e5e7",
+      "source_url": "https://acraiz.icpbrasil.gov.br/credenciadas/RAIZ/ICP-Brasilv11.crt",
+      "source_file_sha256": "1437394beb7eb04180a94c480319f432dc27ca9d6ebc036b73f10e2a17a7d7d8",
+      "purpose": "code-signing",
+      "runtime_supported": true,
+      "unsupported_reason": null,
+      "not_before": "2019-07-01T19:26:18.000Z",
+      "not_after": "2032-07-01T12:00:18.000Z"
+    },
+    {
+      "id": "icp-brasil-v12",
+      "file": "icp-brasil-v12.pem",
+      "sha256": "d8478e37ce19c690cf657381e68fe600e4e1a042536830f06847e03e554c4b01",
+      "source_url": "https://acraiz.icpbrasil.gov.br/credenciadas/RAIZ/ICP-Brasilv12.crt",
+      "source_file_sha256": "ce6c66c73e41b12881ea8a9b8cb7efef9a482ea012c3cd3b843667e37a7a145c",
+      "purpose": "general",
+      "runtime_supported": true,
+      "unsupported_reason": null,
+      "not_before": "2024-10-22T14:41:24.000Z",
+      "not_after": "2037-10-22T12:00:24.000Z"
+    },
+    {
+      "id": "icp-brasil-v13",
+      "file": "icp-brasil-v13.pem",
+      "sha256": "2b07d0bc02c4a6e0478ed22d0d99e8f97e1827b269097696a7feb6aad30c3ac8",
+      "source_url": "https://acraiz.icpbrasil.gov.br/credenciadas/RAIZ/ICP-Brasilv13.crt",
+      "source_file_sha256": "da54711b5816a2487903c62de28402dca2eea21ccc4e977f1d2645486d84d30c",
+      "purpose": "general",
+      "runtime_supported": true,
+      "unsupported_reason": null,
+      "not_before": "2025-02-14T13:59:25.000Z",
+      "not_after": "2045-02-14T13:59:25.000Z"
+    }
+  ]
+}

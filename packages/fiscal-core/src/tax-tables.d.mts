@@ -1,0 +1,11 @@
+export type Table = readonly (readonly [string, string])[];
+export const ICMS_CST: Table; export const ICMS_CSOSN: Table; export const TAXATION: Table; export const ORIGIN: Table; export const BC_MODE: Table; export const ST_BC_MODE: Table;
+export const DESON_REASON: Table; export const ST_DESON_REASON: Table; export const REDUCTION_REASON: Table; export const DIFAL_TYPE: Table; export const INTERSTATE_RATE: Table;
+export const IPI_CST: Table; export const PIS_CST: Table; export const SPED_TYPE: Table; export const SCALE: Table; export const YES_NO: Table; export const CRT: Table; export const PURPOSE: Table;
+export const PRESENCE: Table; export const PERSON_TYPE: Table; export const IE_INDICATOR: Table; export const REFERENCE_TYPE: Table; export const TRANSPORT_MODE: Table; export const FREIGHT_BY: Table;
+export const SPECIES: Table; export const PAYMENT_METHOD: Table; export const CARD_INTEGRATION: Table; export const CARD_BRAND: Table; export const IMPORT_ROUTE: Table; export const IMPORT_FORM: Table; export const II_SITUATION: Table;
+export const DISCOUNT_TYPE: Table; export const APPROX_TAX_TYPE: Table; export const DIFAL_MODE: Table; export const DIFAL_STATE_MODE: Table;
+export const DEFAULT_LABELS: Readonly<Record<string, string>>;
+export const INFO_VARIABLES: Readonly<{ impostos: readonly string[]; outras: readonly string[] }>;
+export const WEAPON_TYPE: Table; export const VEHICLE_OPERATION: Table; export const VEHICLE_SPECIES: Table; export const VIN_CONDITION: Table; export const VEHICLE_CONDITION: Table; export const VEHICLE_RESTRICTION: Table;
+export function labelOf(table: Table, code: string): string;

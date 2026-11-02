@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#15392f" />
+    <meta
+      name="description"
+      content="Conheça o FAGOO: ERP de código aberto, instalado no seu servidor, com API para agentes externos e gestão de compras, vendas, estoque e financeiro."
+    />
+    <meta
+      property="og:title"
+      content="FAGOO — Gestão que pertence à sua empresa"
+    />
+    <meta
+      property="og:description"
+      content="Seu ERP. Seu servidor. Uma base aberta para organizar sua operação."
+    />
+    <title>FAGOO — Gestão que pertence à sua empresa</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="#inicio" aria-label="FAGOO início"
+          ><span class="mark">f</span>fagoo<span class="dot">.</span></a
+        >
+        <nav aria-label="Principal">
+          <a href="#operacao">O produto</a><a href="#agentes">Agentes & API</a
+          ><a href="#instalacao">Instalação</a>
+        </nav>
+        <a
+          class="button small outline"
+          href="https://github.com/Quevenapp/Fagoo"
+          target="_blank"
+          rel="noreferrer"
+          >Ver no GitHub <span aria-hidden="true">↗</span></a
+        >
+      </div>
+    </header>
+    <main id="conteudo">
+      <section class="hero container" id="inicio">
+        <div class="hero-copy">
+          <span class="eyebrow"
+            ><span class="live-dot"></span>Código aberto. Servidor
+            próprio.</span
+          >
+          <h1>Gestão que<br />pertence à<br /><em>sua empresa.</em></h1>
+          <p>
+            Compras, vendas, estoque e financeiro sobre uma base que você
+            controla. Conecte seus agentes de IA e organize a operação pelo
+            FAGOO.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#instalacao"
+              >Conhecer a instalação <span aria-hidden="true">→</span></a
+            ><a
+              class="text-link"
+              href="https://github.com/Quevenapp/Fagoo"
+              target="_blank"
+              rel="noreferrer"
+              >Explorar o projeto ↗</a
+            >
+          </div>
+          <div class="hero-proof">
+            <span>AGPL-3.0</span><i></i><span>PostgreSQL</span><i></i
+            ><span>API versionada</span>
+          </div>
+        </div>
+        <div
+          class="hero-visual"
+          aria-label="Ilustração dos módulos conectados do FAGOO"
+        >
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="product-window">
+            <div class="window-top">
+              <span><i></i><i></i><i></i></span><span>FAGOO · seu servidor</span
+              ><svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path d="M5 10h14v11H5zM8 10V6a4 4 0 0 1 8 0v4" />
+              </svg>
+            </div>
+            <div class="window-body">
+              <div class="visual-brand">f<span>.</span></div>
+              <span class="visual-eyebrow">UMA BASE PARA SUA EMPRESA</span>
+              <h2>Da compra à<br />próxima venda.</h2>
+              <div class="module-list">
+                <div>
+                  <span class="module-icon">01</span
+                  ><span
+                    ><strong>Produtos & estoque</strong
+                    ><small>Quantidades, reservas e reposição</small></span
+                  ><b>↗</b>
+                </div>
+                <div>
+                  <span class="module-icon">02</span
+                  ><span
+                    ><strong>Compras & vendas</strong
+                    ><small>Pedidos e recebimentos conectados</small></span
+                  ><b>↗</b>
+                </div>
+                <div>
+                  <span class="module-icon">03</span
+                  ><span
+                    ><strong>Financeiro</strong
+                    ><small>Obrigações com origem rastreável</small></span
+                  ><b>↗</b>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="agent-chip">
+            <span class="chip-icon">✳</span>
+            <div>
+              <strong>Agentes externos</strong
+              ><small>Dados e ações pela API</small>
+            </div>
+            <span class="chip-line"></span>
+          </div>
+          <span class="visual-caption"
+            >Ilustração da organização do produto</span
+          >
+        </div>
+      </section>
+      <div class="principles-band">
+        <div class="container">
+          <span>O servidor é seu.</span
+          ><span>Os dados ficam sob seu controle.</span
+          ><span>O código pode ser inspecionado.</span>
+        </div>
+      </div>
+      <section class="section container" id="operacao">
+        <div class="section-intro">
+          <div>
+            <span class="eyebrow">Operação conectada</span>
+            <h2>Cada etapa com<br />o seu lugar.</h2>
+          </div>
+          <p>
+            Uma informação cadastrada acompanha os próximos passos. O
+            recebimento conversa com o estoque, e o pedido mantém o vínculo com
+            o financeiro.
+          </p>
+        </div>
+        <div class="operation-grid">
+          <article>
+            <span class="step">01 / ORGANIZAR</span>
+            <div class="line-icon">
+              <svg
+                viewBox="0 0 48 48"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+              >
+                <path
+                  d="m7 15 17-8 17 8v20l-17 8-17-8V15Zm0 0 17 8 17-8M24 23v20M15 11l17 8"
+                />
+              </svg>
+            </div>
+            <h3>Uma base consistente.</h3>
+            <p>
+              Cadastre produtos, clientes e fornecedores. Defina preços,
+              unidades, depósitos e parâmetros de estoque.
+            </p>
+            <ul>
+              <li>Catálogo e contatos</li>
+              <li>Saldos e ajustes justificados</li>
+              <li>Mínimo e máximo por produto</li>
+            </ul>
+          </article>
+          <article>
+            <span class="step">02 / MOVIMENTAR</span>
+            <div class="line-icon">
+              <svg
+                viewBox="0 0 48 48"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+              >
+                <path
+                  d="M7 12h24v24H7zM31 20h8l6 9v7H31M13 36a5 5 0 1 0 0 10 5 5 0 0 0 0-10m24 0a5 5 0 1 0 0 10 5 5 0 0 0 0-10M14 7h11"
+                />
+              </svg>
+            </div>
+            <h3>Pedidos com continuidade.</h3>
+            <p>
+              Registre compras e vendas, acompanhe situações e faça a
+              conferência das quantidades que chegaram.
+            </p>
+            <ul>
+              <li>Pedidos com histórico</li>
+              <li>Recebimentos parciais</li>
+              <li>Conversão de embalagens</li>
+            </ul>
+          </article>
+          <article>
+            <span class="step">03 / ACOMPANHAR</span>
+            <div class="line-icon">
+              <svg
+                viewBox="0 0 48 48"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+              >
+                <path
+                  d="M8 9h32v32H8zM8 9V4h26v5M30 19h14v12H30zM35 25h3M14 17h9m-9 6h6"
+                />
+              </svg>
+            </div>
+            <h3>Decisões com contexto.</h3>
+            <p>
+              Consulte obrigações, movimentos e dados comerciais. Ofereça ao
+              agente o histórico necessário para analisar sua operação.
+            </p>
+            <ul>
+              <li>Lançamentos vinculados aos pedidos</li>
+              <li>Consultas e agregações por API</li>
+              <li>Eventos e auditoria de operações</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+      <section class="agent-section" id="agentes">
+        <div class="container agent-layout">
+          <div>
+            <span class="eyebrow">Preparado para agentes externos</span>
+            <h2>
+              A conversa acontece<br />no seu canal.<br /><em
+                >A operação fica registrada.</em
+              >
+            </h2>
+            <p>
+              O Hermes interpreta o pedido, consulta dados e chama as
+              ferramentas autorizadas. O FAGOO verifica as permissões e registra
+              os efeitos de cada ação.
+            </p>
+            <a
+              class="text-link light"
+              href="https://github.com/Quevenapp/Fagoo/tree/main/docs/api"
+              target="_blank"
+              rel="noreferrer"
+              >Consultar a documentação da API ↗</a
+            >
+          </div>
+          <div class="agent-flow">
+            <div>
+              <span class="flow-number">1</span>
+              <section>
+                <small>ATENDIMENTO</small>
+                <h3>WhatsApp ou Telegram</h3>
+                <p>Seu atendimento continua no Hermes.</p>
+              </section>
+            </div>
+            <span class="flow-connector"></span>
+            <div>
+              <span class="flow-number">2</span>
+              <section>
+                <small>ANÁLISE E EXECUÇÃO</small>
+                <h3>Bot equipe</h3>
+                <p>Ferramentas, cálculos e credenciais específicas.</p>
+              </section>
+            </div>
+            <span class="flow-connector"></span>
+            <div class="highlight">
+              <span class="flow-number">3</span>
+              <section>
+                <small>REGISTRO DA OPERAÇÃO</small>
+                <h3>API FAGOO</h3>
+                <p>Dados consistentes e permissões verificadas.</p>
+              </section>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section container" id="instalacao">
+        <div class="section-intro">
+          <div>
+            <span class="eyebrow">Infraestrutura própria</span>
+            <h2>Comece com<br />um servidor seu.</h2>
+          </div>
+          <p>
+            O projeto inclui instalação para Ubuntu, configuração dos serviços e
+            atualização pelo painel. O acesso às versões públicas não exige
+            token de download.
+          </p>
+        </div>
+        <div class="install-grid">
+          <div class="requirements">
+            <span class="eyebrow">Configuração inicial de referência</span>
+            <h3>Ubuntu Server<br />24.04 LTS</h3>
+            <dl>
+              <div>
+                <dt>Processador</dt>
+                <dd>1 vCPU</dd>
+              </div>
+              <div>
+                <dt>Memória</dt>
+                <dd>4 GB RAM</dd>
+              </div>
+              <div>
+                <dt>Armazenamento</dt>
+                <dd>50 GB NVMe</dd>
+              </div>
+              <div>
+                <dt>Dados</dt>
+                <dd>PostgreSQL 17</dd>
+              </div>
+              <div>
+                <dt>Serviços de borda</dt>
+                <dd>Conta Cloudflare própria</dd>
+              </div>
+            </dl>
+            <small
+              >A capacidade depende do volume, das integrações e do uso. Valide
+              sua carga antes de colocar a instalação em produção.</small
+            >
+          </div>
+          <div class="install-steps">
+            <article>
+              <b>01</b>
+              <div>
+                <h3>Prepare o ambiente</h3>
+                <p>
+                  Separe o endereço do servidor, a VPS e sua conta Cloudflare. O
+                  guia informa os requisitos e as autorizações necessárias.
+                </p>
+              </div>
+            </article>
+            <article>
+              <b>02</b>
+              <div>
+                <h3>Execute o instalador</h3>
+                <p>
+                  Instale a versão escolhida e configure sua empresa. Os
+                  serviços existentes do Hermes devem ser preservados.
+                </p>
+              </div>
+            </article>
+            <article>
+              <b>03</b>
+              <div>
+                <h3>Atualize pelo FAGOO</h3>
+                <p>
+                  O administrador acompanha as versões e solicita a atualização.
+                  O servidor verifica o pacote e as condições de recuperação.
+                </p>
+              </div>
+            </article>
+            <a
+              class="button primary"
+              href="https://github.com/Quevenapp/Fagoo/blob/main/docs/operations/installation.md"
+              target="_blank"
+              rel="noreferrer"
+              >Abrir o guia de instalação <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </div>
+        <div class="release-note">
+          <strong>Versão inicial para avaliação e instalação piloto.</strong>
+          <p>
+            Use dados de teste. Consulte as releases, os testes documentados e
+            as funcionalidades habilitadas. Serviços fiscais, perfis bancários e
+            coleta de documentos dependem de implementação, configuração e
+            homologação específicas. Os aplicativos Android e iOS ainda não são
+            distribuídos. A conexão do agente precisa ser configurada e testada
+            no ambiente do cliente.
+          </p>
+        </div>
+      </section>
+      <section class="closing container">
+        <span class="eyebrow">Código aberto, evolução compartilhada</span>
+        <h2>Conheça a base.<br />Construa a sua operação.</h2>
+        <p>
+          Acompanhe o desenvolvimento, consulte a documentação e inspecione o
+          código do FAGOO.
+        </p>
+        <div>
+          <a
+            class="button primary"
+            href="https://github.com/Quevenapp/Fagoo"
+            target="_blank"
+            rel="noreferrer"
+            >Explorar no GitHub ↗</a
+          ><a
+            class="button outline"
+            href="https://github.com/Quevenapp/Fagoo/releases"
+            target="_blank"
+            rel="noreferrer"
+            >Consultar versões</a
+          >
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <a class="brand" href="#inicio"
+          ><span class="mark">f</span>fagoo<span class="dot">.</span></a
+        >
+        <p>Seu ERP. Seu servidor.</p>
+        <div>
+          <a
+            href="https://github.com/Quevenapp/Fagoo/blob/main/LICENSE"
+            target="_blank"
+            rel="noreferrer"
+            >AGPL-3.0</a
+          ><a
+            href="https://github.com/Quevenapp/Fagoo/issues"
+            target="_blank"
+            rel="noreferrer"
+            >Questões e contribuições ↗</a
+          >
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
