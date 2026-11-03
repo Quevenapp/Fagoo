@@ -167,7 +167,7 @@ test('inline price edit (green pencil) keeps the command through an unknown resu
 // The product form reads the complete product (and the taxonomies, answered empty) before showing the fields.
 const editorServer = ({ checks = [], saves = [], current = null } = {}) => {
   const calls = [];
-  return { calls, writes: () => calls.filter(call => !call.path.includes('/taxonomias/') && call.path !== '/v1/cadastros/campos-customizados'), controller: { async catalog(path, options = {}) {
+  return { calls, writes: () => calls.filter(call => !call.path.includes('/taxonomias/') && call.path !== '/v1/cadastros/campos-customizados'), controller: { getSnapshot:()=>({phase:'ready',membership:{user_id:actor,role:'admin',capabilities:{originIntegration:false,originHistory:false}}}), async catalog(path, options = {}) {
     calls.push({ path, method: options.method, body: options.body && structuredClone(options.body) });
     const taxonomy = /^\/v1\/cadastros\/taxonomias\/([a-z-]+)$/.exec(path);
     if (taxonomy) return { kind: { 'categorias-produtos': 'categories', 'grupos-produtos': 'product_groups', 'grupos-tags': 'tag_groups', tags: 'tags' }[taxonomy[1]], items: [], data_mode: 'erp_native' };

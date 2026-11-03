@@ -9,3 +9,5 @@ export function mountErp(root:Root){
  const router=createBrowserRouter([{path:'*',element:<UnsavedChangesProvider><DemoStoreProvider><App/></DemoStoreProvider></UnsavedChangesProvider>}]);
  root.render(<StrictMode><RouterProvider router={router}/></StrictMode>);
 }
+
+import './fagoo-system.css';

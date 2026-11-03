@@ -83,24 +83,13 @@ function HomeView({controller,access}:{controller:HomeController;access:CompanyA
     <p className="home-card-note">Todo o histórico registrado no FAGOO.</p>
   </article>;
   const financeLink=(kind:'receivable'|'payable')=>period?`/financeiro-empresa?${new URLSearchParams({area:kind,from:period.from,to:period.to})}`:`/financeiro-empresa?area=${kind}`;
-  return <div className={`home-page has-side${panel?'':' side-collapsed'}`}>
-    <aside className="home-side" aria-label="Atalhos da empresa">
-      <button type="button" className="home-side-toggle" aria-expanded={panel} aria-controls={sideId} aria-label={panel?'Recolher painel lateral':'Expandir painel lateral'} title={panel?'Recolher painel lateral':'Expandir painel lateral'} onClick={togglePanel}><Icon name="bars" size={15}/></button>
-      <div className="home-side-body" id={sideId} hidden={!panel}>
-        <HomeProfileCard controller={controller as Parameters<typeof HomeProfileCard>[0]["controller"]}/>
-        <HomeFavorites controller={controller} access={access}/>
-        <nav aria-label="Outras consultas"><ul className="home-favorites home-favorites-brufap">
-          {originHistoryAvailable(access)&&<li><Link to="/dados-origin"><Icon name="bookmark" size={12}/>Consultar histórico do Origin</Link></li>}
-          {role&&['admin','financeiro','consulta'].includes(role)&&<li><Link to="/cobranca-empresa"><Icon name="bookmark" size={12}/>Cobrança bancária</Link></li>}
-          {role==='admin'&&<li><Link to="/importar-cadastros"><Icon name="bookmark" size={12}/>Importar cadastros</Link></li>}
-        </ul></nav>
-      </div>
-    </aside>
+  return <div className="home-page fagoo-overview">
+    <header className="fagoo-overview-header"><div><p className="fagoo-eyebrow">PAINEL DA EMPRESA</p><h1>Seu negócio, em perspectiva.</h1><p>Uma visão dos resultados e do que precisa da sua atenção.</p></div><span className="fagoo-overview-date"><Icon name="calendar-days" size={17}/>{financeDate(today)}</span></header>
     <div className="home-main">
-      <ReleaseNotesPanel/>
+
       <p className="home-alert"><Icon name="circle-info" size={16}/><span>{nativeIndicatorCoverageText(summary) ?? 'Este resumo considera os registros da sua empresa no FAGOO. Os indicadores serão preenchidos conforme os cadastros e movimentações forem registrados.'}</span></p>
       <HomeExpiring controller={controller as Parameters<typeof HomeExpiring>[0]['controller']} role={role}/>
-      <div className="home-tabs"><h1 className="home-tab is-active"><Icon name="house" size={13}/>Visão geral</h1></div>
+
       <section className="home-daily" aria-labelledby="home-daily-title">
         <header className="home-daily-head"><h2 id="home-daily-title">Resumo diário</h2>
           {summary&&<span className="home-updated">Atualizado {updated(summary.as_of,summary.business_date)} · São Paulo</span>}
@@ -114,7 +103,13 @@ function HomeView({controller,access}:{controller:HomeController;access:CompanyA
         </div>
         {(periodError||route.error)&&<p className="real-alert" role="alert">{periodError||route.error}</p>}
         {error&&<p className="real-alert" role="alert">{error}</p>}{loading&&<p className="real-result-status" role="status">Carregando resumo da empresa…</p>}
-        {period&&<><div className="home-cards">
+        {period&&<><div className="fagoo-metrics" aria-label="Indicadores do período">
+          <article className="fagoo-metric fagoo-metric-sales"><span><Icon name="chart-line" size={20}/>Vendas no período</span><strong>{money(homeSalesLines(period.sales)[0]?.total_cents??'0')}</strong><small>{count(homeSalesLines(period.sales)[0]?.count??0)} pedido(s), sem os cancelados</small></article>
+          {period.receivable&&<article className="fagoo-metric"><span><Icon name="arrow-down" size={20}/>A receber no período</span><strong>{money(period.receivable.open_cents)}</strong><small>Saldo em aberto dos títulos por vencimento</small></article>}
+          {period.payable&&<article className="fagoo-metric"><span><Icon name="arrow-up" size={20}/>A pagar no período</span><strong>{money(period.payable.open_cents)}</strong><small>Saldo em aberto dos títulos por vencimento</small></article>}
+        </div>
+        <HomeChartCards controller={controller as Parameters<typeof HomeChartCards>[0]['controller']} role={role} period={period} hidden={hidden} asOf={summary!.as_of} resumo={<HomeChart period={period} hidden={hidden} asOf={summary!.as_of}/>}/>
+        <details className="fagoo-home-details"><summary>Detalhamento do período<Icon name="chevron-down" size={15}/></summary><div className="home-cards">
           <article className="home-card"><header><h3><Link className="home-card-title" to="/documentos-empresa?tipo=sales_orders">Pedidos de venda<Icon name="right" size={11}/></Link></h3></header>
             <ul className="home-dots home-sales">{homeSalesLines(period.sales).map(line=><li key={line.id} title={line.detail}><span className={`home-dot home-dot-${line.dot}`} aria-hidden="true"/><strong>{count(line.count)}</strong><span>{line.label}</span><em>{money(line.total_cents)}</em></li>)}</ul>
             <p className="home-card-note">Pedidos pela data do pedido no período.</p>
@@ -130,8 +125,7 @@ function HomeView({controller,access}:{controller:HomeController;access:CompanyA
           </article>}
           {/* Leva H (PRF-252): real NF-es synced from Origin or received from SEFAZ since the last view, never drafts or homologation. */}
           {role&&['admin','consulta','fiscal'].includes(role)&&<HomeNewInvoices controller={controller as unknown as Partial<PlatformPort>}/>}
-        </div>
-        <HomeChartCards controller={controller as Parameters<typeof HomeChartCards>[0]['controller']} role={role} period={period} hidden={hidden} asOf={summary!.as_of} resumo={<HomeChart period={period} hidden={hidden} asOf={summary!.as_of}/>}/></>}
+        </div></details></>}
       </section>
       {summary?.finance&&<section className="home-section" aria-labelledby="home-due-title"><h2 id="home-due-title">Contas em aberto por vencimento</h2><div className="home-cards">
         {financeTitles.map(row=>{const total=row.buckets.reduce((sum,bucket)=>sum+BigInt(bucket.balance_cents),0n).toString(),titles=row.buckets.reduce((sum,bucket)=>sum+bucket.count,0);return <article className="home-card" key={row.kind}>
@@ -149,6 +143,24 @@ function HomeView({controller,access}:{controller:HomeController;access:CompanyA
       {summary&&<section className="home-section" aria-labelledby="home-documents-title"><h2 id="home-documents-title">Documentos por situação</h2><div className="home-cards">{documents.map(documentCard)}</div></section>}
       {summary?.stock&&<section className="home-section" aria-labelledby="home-stock-title"><h2 id="home-stock-title">Estoque</h2><article className="home-card"><header><Link className="home-card-title" to="/estoque-empresa">Lançamentos de estoque<Icon name="right" size={11}/></Link></header><div className="home-stock-grid"><div><strong>{count(summary.stock.products)}</strong><span>Produtos com posição controlada</span></div><div><strong>{count(summary.stock.positive_positions)}</strong><span>Posições com saldo positivo</span></div><div><strong>{count(summary.stock.zero_positions)}</strong><span>Posições com saldo zero</span></div>{summary.stock.positions-summary.stock.positive_positions-summary.stock.zero_positions>0&&<div className="home-stock-negative"><strong>{count(summary.stock.positions-summary.stock.positive_positions-summary.stock.zero_positions)}</strong><span>Posições com saldo negativo</span></div>}</div><p className="home-card-note">Cada posição corresponde a um produto em um depósito. Produtos sem posição registrada não entram nessa contagem.</p></article></section>}
       {summary&&<section className="home-section" aria-labelledby="home-catalog-title"><h2 id="home-catalog-title">Cadastros</h2><div className="home-catalog-grid">{summary.catalog.map(row=><Link className="home-card home-catalog-card" key={row.entity} to={`/cadastros-reais?cadastro=${row.entity}`}><h3 className="home-card-title">{HOME_CATALOG_LABELS[row.entity]}<Icon name="right" size={11}/></h3><strong>{count(row.active)}</strong><span>ativo(s) · {count(row.archived)} arquivado(s)</span></Link>)}</div></section>}
+      <ReleaseNotesPanel/>
     </div>
+    <aside className="home-side fagoo-overview-side" aria-label="Atalhos da empresa">
+      <section className="fagoo-priorities" aria-labelledby="fagoo-priority-title"><p className="fagoo-eyebrow">ACOMPANHAMENTO</p><h2 id="fagoo-priority-title">Precisa de atenção</h2>
+        {summary?.finance&&financeTitles.map(row=>{const due=row.buckets.filter(bucket=>bucket.bucket==='overdue'||bucket.bucket==='today');const quantity=due.reduce((sum,bucket)=>sum+bucket.count,0);return <Link key={row.kind} to={`/financeiro-empresa?area=${row.kind}`}><span className="fagoo-priority-icon"><Icon name={row.kind==='payable'?'arrow-up':'arrow-down'} size={18}/></span><span><strong>{row.kind==='payable'?'Pagamentos':'Recebimentos'}</strong><small>{count(quantity)} título(s) vencido(s) ou para hoje</small></span><Icon name="chevron-right" size={13}/></Link>;})}
+        {summary?.stock&&<Link to="/estoque-empresa"><span className="fagoo-priority-icon"><Icon name="box" size={18}/></span><span><strong>Posições sem saldo</strong><small>{count(summary.stock.zero_positions)} posição(ões) com saldo zero</small></span><Icon name="chevron-right" size={13}/></Link>}
+        {summary&&!summary.finance&&!summary.stock&&<p className="real-help">Acompanhe seus documentos no resumo ao lado.</p>}
+      </section>
+      <button type="button" className="home-side-toggle" aria-expanded={panel} aria-controls={sideId} aria-label={panel?'Recolher painel lateral':'Expandir painel lateral'} title={panel?'Recolher painel lateral':'Expandir painel lateral'} onClick={togglePanel}><Icon name="bars" size={15}/></button>
+      <div className="home-side-body" id={sideId} hidden={!panel}>
+        <HomeProfileCard controller={controller as Parameters<typeof HomeProfileCard>[0]["controller"]}/>
+        <HomeFavorites controller={controller} access={access}/>
+        <nav aria-label="Outras consultas"><ul className="home-favorites home-favorites-brufap">
+          {originHistoryAvailable(access)&&<li><Link to="/dados-origin"><Icon name="bookmark" size={12}/>Consultar histórico do Origin</Link></li>}
+          {role&&['admin','financeiro','consulta'].includes(role)&&<li><Link to="/cobranca-empresa"><Icon name="bookmark" size={12}/>Cobrança bancária</Link></li>}
+          {role==='admin'&&<li><Link to="/importar-cadastros"><Icon name="bookmark" size={12}/>Importar cadastros</Link></li>}
+        </ul></nav>
+      </div>
+    </aside>
   </div>;
 }

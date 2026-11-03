@@ -8,9 +8,7 @@ export type PreferenceGroup = { id: string; label: string; icon: string; notice?
 
 const normalize = (value: string) => value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
-// Origin "Preferências": breadcrumb, search band, categories on the left and grouped "›" items on the right.
-// With categoryHref the selected category comes from the address (/preferencias/<categoria>), so back/forward and
-// Ctrl+clique work as in Origin; without it (demonstração) the selection is local.
+// Configuration hub: category cards and grouped destinations, retaining address-driven selection.
 export default function PreferencesPage({ categories, homeTo, initialCategory, categoryHref }: { categories: readonly PreferenceGroup[]; homeTo: string; initialCategory?: string; categoryHref?: (id: string) => string }) {
   const [local, setLocal] = useState(initialCategory && categories.some(category => category.id === initialCategory) ? initialCategory : categories[0]?.id);
   const selected = categoryHref ? (initialCategory && categories.some(category => category.id === initialCategory) ? initialCategory : categories[0]?.id) : local;
@@ -23,18 +21,18 @@ export default function PreferencesPage({ categories, homeTo, initialCategory, c
   const current = categories.find(category => category.id === selected);
   const categoryButton = (category: PreferenceGroup) => {
     const active = category.id === selected && !term;
-    const content = <><span className="preferences-icon"><Icon name={category.icon} size={12} /></span>{category.label}</>;
+    const count = sectionsOf(category).reduce((total, section) => total + section.entries.length, 0);
+    const content = <><span className="preferences-icon"><Icon name={category.icon} size={21} /></span><span><strong>{category.label}</strong><small>{count} {count === 1 ? 'opção' : 'opções'}</small></span><Icon name="chevron-right" size={14}/></>;
     return categoryHref
       ? <Link key={category.id} to={categoryHref(category.id)} className={active ? 'active' : ''} aria-current={active ? 'true' : undefined} onClick={() => setQuery('')}>{content}</Link>
       : <button type="button" key={category.id} className={active ? 'active' : ''} aria-current={active ? 'true' : undefined} onClick={() => { setQuery(''); setLocal(category.id); }}>{content}</button>;
   };
-  return <main className="preferences-page" id="main-content">
-    <nav className="preferences-breadcrumb" aria-label="Localização"><Link to={homeTo}>Home</Link><Icon name="chevron-right" size={10} /><h1>Preferências</h1></nav>
-    <div className="preferences-band"><h2>Escolha uma das opções abaixo</h2><label className="preferences-search"><span className="sr-only">Pesquisar preferências</span><input type="search" placeholder="Pesquise aqui..." value={query} onChange={event => setQuery(event.target.value)} /><Icon name="magnifying-glass" size={13} /></label></div>
-    <p className="preferences-trail"><Icon name="arrow-left" size={12} />{categoryHref ? <Link to="/preferencias">Preferências</Link> : 'Preferências'}{current && !term ? ` / ${current.label}` : ''}</p>
+  return <main className="preferences-page fagoo-settings-hub" id="main-content">
+    <header className="fagoo-settings-heading"><div><p className="fagoo-eyebrow">DO SEU JEITO</p><h1>Preferências</h1><p>Organize as regras e os recursos da sua operação.</p></div><Link className="secondary-button" to={homeTo}><Icon name="house" size={16}/>Visão geral</Link></header>
+    <div className="fagoo-settings-search"><label htmlFor="fagoo-preference-search">Encontre uma configuração</label><span><Icon name="magnifying-glass" size={20}/><input id="fagoo-preference-search" type="search" aria-label="Pesquisar preferências" placeholder="Busque por assunto, por exemplo: estoque ou pagamento" value={query} onChange={event => setQuery(event.target.value)} /></span></div>
     <div className="preferences-layout">
       <nav className="preferences-categories" aria-label="Categorias de preferências">{categories.map(categoryButton)}</nav>
-      <section className="preferences-content" aria-live="polite">{visible.length === 0 ? <p className="muted">Nenhuma opção encontrada.</p> : visible.map(({ category, sections }) => <div key={category.id}>{term && <h3 className="preferences-category-title">{category.label}</h3>}{sections.map(section => <div className="preferences-section" key={section.title}><h3>{section.title}</h3><ul>{section.entries.map(entry => <li key={entry.label}>{entry.to ? <Link to={entry.to}><Icon name="chevron-right" size={9} />{entry.label}</Link> : <span className="preferences-disabled" title={entry.disabledReason ?? 'Ainda não disponível no FAGOO'} aria-disabled="true"><Icon name="chevron-right" size={9} />{entry.label}</span>}{entry.description && <small>{entry.description}</small>}{!entry.to && entry.disabledReason && <small>{entry.disabledReason}</small>}</li>)}</ul></div>)}
+      <section className="preferences-content" aria-live="polite"><div className="fagoo-settings-selection"><p className="fagoo-eyebrow">{term ? 'RESULTADOS DA BUSCA' : 'CATEGORIA SELECIONADA'}</p><h2>{term ? `Resultados para “${query.trim()}”` : current?.label}</h2></div>{visible.length === 0 ? <p className="muted">Nenhuma opção encontrada.</p> : visible.map(({ category, sections }) => <div className="fagoo-settings-groups" key={category.id}>{term && <h3 className="preferences-category-title">{category.label}</h3>}{sections.map(section => <div className="preferences-section" key={section.title}><h3>{section.title}</h3><ul>{section.entries.map(entry => <li key={entry.label}>{entry.to ? <Link to={entry.to}><span>{entry.label}</span><Icon name="arrow-right" size={15} /></Link> : <span className="preferences-disabled" title={entry.disabledReason ?? 'Ainda não disponível no FAGOO'} aria-disabled="true">{entry.label}</span>}{entry.description && <small>{entry.description}</small>}{!entry.to && entry.disabledReason && <small>{entry.disabledReason}</small>}</li>)}</ul></div>)}
         {!term && category.notice && <aside className="preferences-notice"><strong>{category.notice.title}</strong><p>{category.notice.text}</p></aside>}</div>)}</section>
     </div>
   </main>;

@@ -171,23 +171,25 @@ function ContactForm({ controller, record, writable, onClose, onSaved }: Catalog
     <datalist id="contact-countries">{countries.items.length ? countries.items.map(item => <option key={`${item.code}-${item.label}`} value={item.label}>{item.detail}</option>)
       : typeof (controller as Partial<PlatformPort>).platform === 'function' ? null : COUNTRY_SUGGESTIONS.map(country => <option key={country} value={country} />)}</datalist>
     <form id="catalog-editor-form" onSubmit={submit} aria-busy={saver.busy}>
+      <div className="fagoo-contact-workspace">
+        <aside className="fagoo-contact-outline"><p className="fagoo-eyebrow">ORGANIZAR CONTATO</p><nav aria-label="Seções do contato">{[['identity','Dados cadastrais'],['address','Endereço'],['people','Contato'],['extra','Dados adicionais'],['finance','Financeiro'],['notes','Observações'],['files','Anexos']].map(([id,label],index)=><a key={id} href={'#contact-section-'+id} onClick={event=>{event.preventDefault();const section=document.getElementById('contact-section-'+id);section?.scrollIntoView({block:'start'});section?.focus({preventScroll:true});}}><span>{String(index+1).padStart(2,'0')}</span>{label}<Icon name="chevron-right" size={13}/></a>)}</nav></aside>
       {/* Only a save in progress disables the whole form: a read-only or excluded contact still switches the address tabs,
         opens Dados adicionais / Anexos and the client history; each field below is disabled by `locked` itself. */}
       <fieldset disabled={saver.busy || saver.uncertain} className="real-editor-fields contact-form">
         <legend className="real-sr-only">Dados do cadastro</legend>
-        <section className="contact-section"><div className="contact-section-title"><h3 className="catalog-group-title">Dados cadastrais</h3>{changed && <span className="contact-changed">Alterado em {changed}{record?.updated_by_name ? `, por ${record.updated_by_name}` : ''}</span>}</div>
+        <section className="contact-section" id="contact-section-identity" tabIndex={-1}><div className="contact-section-title"><h3 className="catalog-group-title">Dados cadastrais</h3>{changed && <span className="contact-changed">Alterado em {changed}{record?.updated_by_name ? `, por ${record.updated_by_name}` : ''}</span>}</div>
           <div className="contact-grid">
             {field(SECTION_FIELDS.cadastrais[0], record ? <ContactSalesHistory controller={controller} contactId={record.id} /> : undefined)}
             {SECTION_FIELDS.cadastrais.slice(1, 9).map(spec => field(spec))}
             {person === 'J' && <div className="form-field contact-check"><label><input type="checkbox" id="contact-ie_exempt" checked={values.ie_exempt === 'true'} disabled={locked} onChange={event => change('ie_exempt', event.target.checked ? 'true' : '')} />IE Isento</label></div>}
             {SECTION_FIELDS.cadastrais.slice(9).map(spec => field(spec))}
           </div></section>
-        <section className="contact-section"><h3 className="catalog-group-title">Endereço</h3>
+        <section className="contact-section" id="contact-section-address" tabIndex={-1}><h3 className="catalog-group-title">Endereço</h3>
           <div className="contact-tabs" role="tablist"><button type="button" role="tab" aria-selected={addressTab === 'geral'} onClick={() => setAddressTab('geral')}>Geral</button><button type="button" role="tab" aria-selected={addressTab === 'cobranca'} onClick={() => setAddressTab('cobranca')}>Cobrança</button></div>
           <div className="contact-grid" role="tabpanel">{(addressTab === 'geral' ? SECTION_FIELDS.endereco : SECTION_FIELDS.cobranca).map(spec => field(spec))}
             {/* Leva H (SQL 373): use the general address, e-mail de cobrança and the address the financeiro uses; saved on its own. */}
             {addressTab === 'cobranca' && record && <ContactBilling controller={controller} contactId={record.id} writable={Boolean(writable) && !locked} />}</div></section>
-        <section className="contact-section"><h3 className="catalog-group-title">Contato</h3>
+        <section className="contact-section" id="contact-section-people" tabIndex={-1}><h3 className="catalog-group-title">Contato</h3>
           <div className="contact-grid">{field(SECTION_FIELDS.contato[0])}
             <div className="form-field real-field-wide contact-persons"><label htmlFor="contact-person-search">Pessoas de contato</label>
               <div className="contact-person-chips">{persons.map(item => <span key={item.id} className="contact-chip">{item.name}{item.situation === 'E' ? ' (excluído)' : ''}{!locked && <button type="button" aria-label={`Remover pessoa de contato ${item.name}`} onClick={() => setPersons(previous => previous.filter(p => p.id !== item.id))}><Icon name="xmark" size={10} /></button>}</span>)}</div>
@@ -195,7 +197,7 @@ function ContactForm({ controller, record, writable, onClose, onSaved }: Catalog
                 <button type="button" className="secondary-button" onClick={() => setDrawer(true)}><Icon name="plus" size={10} />Adicionar novo</button></div>}
               {personOptions.length > 0 && <ul className="contact-picker-options" role="listbox" aria-label="Pessoas de contato">{personOptions.map(option => <li key={option.id} role="option" aria-selected={false}><button type="button" onClick={() => { setPersons(previous => [...previous, option]); setPersonQuery(''); setPersonOptions([]); }}>{option.name}{option.code ? ` (${option.code})` : ''}</button></li>)}</ul>}</div>
             {SECTION_FIELDS.contato.slice(1).map(spec => field(spec))}</div></section>
-        <section className="contact-section"><button type="button" className="contact-collapse" aria-expanded={extraOpen} onClick={() => setExtraOpen(!extraOpen)}><Icon name={extraOpen ? 'chevron-down' : 'chevron-right'} size={11} /><h3 className="catalog-group-title">Dados adicionais</h3></button>
+        <section className="contact-section" id="contact-section-extra" tabIndex={-1}><button type="button" className="contact-collapse" aria-expanded={extraOpen} onClick={() => setExtraOpen(!extraOpen)}><Icon name={extraOpen ? 'chevron-down' : 'chevron-right'} size={11} /><h3 className="catalog-group-title">Dados adicionais</h3></button>
           {extraOpen && <div className="contact-grid">
             {SECTION_FIELDS.adicionais.filter(spec => spec.key !== 'suframa').map(spec => field(spec))}
             <ContactTypeTags controller={controller} id="contact-types" types={typesList} selected={types} onChange={next => { setTypes(next); saver.setWarnings(null); }} onCreated={type => setContactTypes(current => current ? { ...current, items: [...current.items, type] } : current)}
@@ -213,7 +215,7 @@ function ContactForm({ controller, record, writable, onClose, onSaved }: Catalog
             {/* 202610200170 (documentos lane): Foto in the private attachment storage. */}
             <ContactPhoto controller={controller} contactId={record?.id ?? null} writable={writable && !excluded} />
           </div>}</section>
-        <section className="contact-section"><h3 className="catalog-group-title">Financeiro</h3>
+        <section className="contact-section" id="contact-section-finance" tabIndex={-1}><h3 className="catalog-group-title">Financeiro</h3>
           <div className="contact-grid">
             <fieldset className="contact-credit real-field-wide"><legend>Limite de crédito{isRequired('credit_limit_mode') ? ' *' : ''}</legend>
               <label className="contact-switch"><input type="checkbox" role="switch" id="contact-credit_unlimited" checked={values.credit_limit_mode === 'unlimited'} disabled={locked} onChange={event => change('credit_limit_mode', event.target.checked ? 'unlimited' : 'value')} />Ilimitado</label>
@@ -226,13 +228,13 @@ function ContactForm({ controller, record, writable, onClose, onSaved }: Catalog
               {categories.error ? <input id="contact-finance_category_id" value={record?.finance_category_name ?? 'Sem categoria'} readOnly disabled title="Seu perfil não consulta as categorias financeiras." />
                 : <CategoryTreePicker id="contact-finance_category_id" items={categoryList} value={values.finance_category_id ?? ''} currentName={record?.finance_category_name} disabled={locked} onChange={next => change('finance_category_id', next)} />}</div>
           </div></section>
-        <section className="contact-section"><h3 className="catalog-group-title">Observações</h3><div className="contact-grid">{field(SECTION_FIELDS.observacoes[0])}</div></section>
+        <section className="contact-section" id="contact-section-notes" tabIndex={-1}><h3 className="catalog-group-title">Observações</h3><div className="contact-grid">{field(SECTION_FIELDS.observacoes[0])}</div></section>
         {/* Leva H (350): os campos do Origin, a origem, a sincronização e o complemento Transportador do FAGOO. */}
         {record && <OriginMirrorPanel showOrigin={originHistoryAvailable(controller.getSnapshot().membership)} controller={controller} entity="contacts" id={record.id} writable={writable && !excluded} />}
-        <section className="contact-section"><button type="button" className="contact-collapse" aria-expanded={attachmentsOpen} onClick={() => setAttachmentsOpen(!attachmentsOpen)}><Icon name={attachmentsOpen ? 'chevron-down' : 'chevron-right'} size={11} /><h3 className="catalog-group-title">Anexos</h3></button>
+        <section className="contact-section" id="contact-section-files" tabIndex={-1}><button type="button" className="contact-collapse" aria-expanded={attachmentsOpen} onClick={() => setAttachmentsOpen(!attachmentsOpen)}><Icon name={attachmentsOpen ? 'chevron-down' : 'chevron-right'} size={11} /><h3 className="catalog-group-title">Anexos</h3></button>
           {attachmentsOpen && (record ? <ContactFiles controller={controller} contactId={record.id} writable={writable && !excluded} />
             : <p className="real-help">Salve o cadastro para anexar arquivos.</p>)}</section>
-      </fieldset>
+      </fieldset></div>
     </form>
     {drawer && <ContactQuickDrawer controller={controller} types={typesList} canCreateTypes={Boolean(contactTypes?.can_create)} required={required} onTypeCreated={type => setContactTypes(current => current ? { ...current, items: [...current.items, type] } : current)}
       onClose={() => setDrawer(false)} onCreated={created => { setDrawer(false); setPersons(previous => [...previous, { id: created.id, name: created.name, code: typeof created.code === 'string' ? created.code : null, situation: created.situation }]); }} />}

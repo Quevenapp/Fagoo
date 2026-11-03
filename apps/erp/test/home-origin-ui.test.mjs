@@ -54,7 +54,7 @@ test('Resumo diário opens on Hoje and shows the Origin cards with exact cents f
   const text=view.text();
   for(const label of ['Resumo diário','Pedidos de venda','Total de vendas','Novos','Em andamento','Cancelados','Contas a receber','Taxas','Líquido','Contas a pagar','Valor total a pagar','Notas Fiscais','Novas NF-es','Período: 19/10/2026'])assert.match(text,new RegExp(label),label);
   for(const value of ['R$ 12,50','R$ 100,00','R$ 1,50','R$ 98,50','R$ 75,50'])assert.ok(text.includes(value),value);
-  assert.match(text,/3Novas NF-es/);assert.match(text,/2 sincronizadas do Origin/);assert.doesNotMatch(text,/R$ 1.001,01/,'FAGOO drafts are not the new NF-es');
+  assert.match(text,/3Novas NF-es/);assert.match(text,/2 do histórico importado/);assert.doesNotMatch(text,/R$ 1.001,01/,'FAGOO drafts are not the new NF-es');
   assert.equal(view.button('Hoje').props['aria-pressed'],true);assert.equal(view.button('30D').props['aria-pressed'],false);
   const receivable=view.nodes().find(node=>node.type==='test-router-link'&&/Contas a receber/.test(JSON.stringify(node.props.children))&&String(node.props.to).includes('from='));
   assert.equal(receivable.props.to,'/financeiro-empresa?area=receivable&from=2026-10-19&to=2026-10-19');

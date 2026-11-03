@@ -214,7 +214,7 @@ function ProductForm(props: CatalogEditorProps & { taxonomies: Taxonomies; origi
   const tabs = withStructure(values.format);
   useEffect(() => { if (values.format !== 'E' && tab === STRUCTURE_TAB) setTab('characteristics'); }, [values.format, tab]);
   const selectTab = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
-    const next = event.key === 'ArrowRight' ? (index + 1) % tabs.length : event.key === 'ArrowLeft' ? (index + tabs.length - 1) % tabs.length : event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : null;
+    const next = (event.key === 'ArrowRight' || event.key === 'ArrowDown') ? (index + 1) % tabs.length : (event.key === 'ArrowLeft' || event.key === 'ArrowUp') ? (index + tabs.length - 1) % tabs.length : event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : null;
     if (next === null) return; event.preventDefault(); setTab(tabs[next].key); document.getElementById(`product-tab-${tabs[next].key}`)?.focus();
   };
   const changeLists = (change: (current: ProductLists) => ProductLists) => { setLists(change); editor.setWarnings(null); };
@@ -372,8 +372,7 @@ function ProductForm(props: CatalogEditorProps & { taxonomies: Taxonomies; origi
       {basicFields(locked)}
     </div>
     {formatNotice}
-    {writable && !locked && <ProductValidationPanel values={values} sequential={Boolean(props.sequential && !record)} onEdit={key => document.getElementById(`catalog-${key}`)?.focus()} />}
-    <div className="product-tabs" role="tablist" aria-label="Detalhes do produto">{tabs.map((item, index) => <button key={item.key} type="button" role="tab" id={`product-tab-${item.key}`} aria-selected={tab === item.key} aria-controls={`product-panel-${item.key}`} tabIndex={tab === item.key ? 0 : -1} onClick={() => setTab(item.key)} onKeyDown={event => selectTab(event, index)}>{item.label}</button>)}</div>
+    <div className="fagoo-product-workspace"><aside className="fagoo-product-outline"><p className="fagoo-eyebrow">ORGANIZAR PRODUTO</p><div className="product-tabs" role="tablist" aria-orientation="vertical" aria-label="Detalhes do produto">{tabs.map((item, index) => <button key={item.key} type="button" role="tab" id={`product-tab-${item.key}`} aria-selected={tab === item.key} aria-controls={`product-panel-${item.key}`} tabIndex={tab === item.key ? 0 : -1} onClick={() => setTab(item.key)} onKeyDown={event => selectTab(event, index)}>{item.label}</button>)}</div>{writable && !locked && <ProductValidationPanel values={values} sequential={Boolean(props.sequential && !record)} onEdit={key => document.getElementById(`catalog-${key}`)?.focus()} />}</aside><div className="fagoo-product-panels">
     <section id="product-panel-characteristics" role="tabpanel" aria-labelledby="product-tab-characteristics" hidden={tab !== 'characteristics'} className="product-tab-panel">{characteristics(locked, true)}</section>
     <section id="product-panel-images" role="tabpanel" aria-labelledby="product-tab-images" hidden={tab !== 'images'} className="product-tab-panel">{images(locked)}</section>
     <section id="product-panel-stock" role="tabpanel" aria-labelledby="product-tab-stock" hidden={tab !== 'stock'} className="product-tab-panel">{stock(locked)}</section>
@@ -381,7 +380,7 @@ function ProductForm(props: CatalogEditorProps & { taxonomies: Taxonomies; origi
       {values.format === 'E' && <ProductStructurePanel controller={controller} state={composition} productId={record?.id ?? null} locked={locked} invalid={editor.invalidField === 'composition'} />}
     </section>
     <section id="product-panel-suppliers" role="tabpanel" aria-labelledby="product-tab-suppliers" hidden={tab !== 'suppliers'} className="product-tab-panel">{suppliers(locked)}</section>
-    <section id="product-panel-tax" role="tabpanel" aria-labelledby="product-tab-tax" hidden={tab !== 'tax'} className="product-tab-panel">{tax(locked)}</section>
+    <section id="product-panel-tax" role="tabpanel" aria-labelledby="product-tab-tax" hidden={tab !== 'tax'} className="product-tab-panel">{tax(locked)}</section></div></div>
     {drawers}
   </div>;
   // ---- Wizard ----
