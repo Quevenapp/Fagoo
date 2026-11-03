@@ -25,7 +25,7 @@ O instalador executa `npm ci` nas quatro árvores necessárias: raiz, `workers/e
 
 Obtenha o Account ID e o Zone ID no painel Cloudflare. O token para esta publicação precisa acessar somente a conta e a zona escolhidas, com `Workers Scripts — Edit`, `Workers Routes — Edit`, `Zone — Read` e `DNS — Read` (ou `DNS — Edit` quando o mesmo token também configurar DNS). Ele será solicitado sem eco pelo comando e não será salvo. Não coloque token em argumentos, no Git, no frontend ou em gravações de tela.
 
-O Cloudflare mostra o valor completo uma única vez. Pause a gravação antes de gerar ou revelar o segredo e salve-o no seu gerenciador de senhas, junto da identificação da conta, domínio e validade, antes de clicar em **Done**. O helper não guarda uma cópia para a próxima publicação. Se perder um token ainda válido, use **Profile → API Tokens → Actions → View summary** para conferir o escopo e a validade; volte com **Back**, escolha **Actions → Roll** e pause a gravação antes de confirmar. **Roll invalida o valor antigo e mantém as permissões, os recursos e a expiração**. Se expirou, crie um novo token com as permissões e os escopos acima. Veja o [passo a passo para perda ou expiração](installation.md#se-perder-o-token-ou-ele-expirar). Esse token é diferente da credencial do Cloudflare Tunnel.
+O Cloudflare mostra o valor completo uma única vez. Pause a gravação antes de gerar ou revelar o segredo e salve-o no seu gerenciador de senhas, junto da identificação da conta, domínio e validade, antes de clicar em **Veja todos os tokens de API** (ou **Done**, em outras versões do painel). O helper não guarda uma cópia para a próxima publicação. Se perder um token ainda válido, use **Profile → API Tokens → Actions → View summary** para conferir o escopo e a validade; volte com **Back**, escolha **Actions → Roll** e pause a gravação antes de confirmar. **Roll invalida o valor antigo e mantém as permissões, os recursos e a expiração**. Se expirou, crie um novo token com as permissões e os escopos acima. Veja o [passo a passo para perda ou expiração](installation.md#se-perder-o-token-ou-ele-expirar). Esse token é diferente da credencial do Cloudflare Tunnel.
 
 ## Ensaio sem publicação
 
@@ -61,7 +61,9 @@ O primeiro Worker publicado é o da API. O frontend só é publicado após o com
 
 ## Verificação e limites
 
-Confirme no painel os dois domínios personalizados. Pelo navegador, teste carregamento da interface, login com o administrador da instalação, consulta de permissões e cadastros vazios. Uma chamada não autenticada a `/v1/me` deve ser recusada, não retornar registros. O teste de login precisa usar os serviços reais da VPS.
+Confirme os dois domínios personalizados em **Computação → Workers e Pages → nome do Worker → Domínios**. O Worker `fagoo-web-<sufixo>` deve mostrar a origem web; `fagoo-api-<sufixo>`, a origem da API. A publicação já cria essas associações e os registros DNS gerenciados. Em **Domínios → sua zona → DNS → Registros**, a interface pode mostrá-los como tipo **Worker**; o hostname de serviços aparece como **Túnel**. Veja o [passo a passo de conferência](installation.md#conferir-os-subdomínios-web-e-api-no-painel).
+
+Pelo navegador, teste carregamento da interface, login com o administrador da instalação, consulta de permissões e cadastros vazios. Uma chamada não autenticada a `/v1/me` deve ser recusada com `401`, não retornar registros. O teste de login precisa usar os serviços reais da VPS e o domínio já ativo no Cloudflare.
 
 ### Diagnóstico de login e CORS
 

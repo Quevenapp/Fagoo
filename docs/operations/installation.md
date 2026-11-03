@@ -10,6 +10,22 @@ Esse núcleo já foi exercitado em Docker com banco vazio, autenticação real, 
 
 A sequência também foi exercitada em uma VPS Ubuntu 24.04 recém-instalada: núcleo, túnel, publicação web/API, login do administrador e consultas sem dados comerciais. Os ajustes encontrados nessa instalação foram incorporados ao manual e aos helpers. Esse resultado valida a implantação técnica vazia, sem substituir a validação operacional dos módulos utilizados.
 
+## Antes de começar: domínio e subdomínios
+
+Adicione o domínio à conta Cloudflare da instalação. Em **Domínios → seu domínio → Visão geral**, copie os dois servidores de nomes atribuídos pela Cloudflare e configure-os no registrador do domínio. Use os valores da sua zona: eles podem ser diferentes dos de outra instalação. Se o registrador informar transição ou propagação, aguarde o prazo indicado. A conclusão no registrador não significa que todos os resolvedores DNS já receberam a alteração.
+
+No Cloudflare, aguarde o domínio ficar ativo. A tela pode apresentar **Seu domínio agora está protegido pela Cloudflare**. Se ainda aparecer **Aguardando que seu registrador propague seus novos servidores de nomes**, confira os dois valores no registrador e use **Verificar nameservers agora**, quando disponível. A preparação local pode avançar durante a propagação, mas o aceite de login exige DNS e HTTPS públicos funcionando.
+
+Escolha três endereços diferentes, todos de primeiro nível do domínio:
+
+| Exemplo | Para que serve | Como o DNS é criado |
+| --- | --- | --- |
+| `fagoo.example.com` | Interface que o usuário abre no navegador | Domínio personalizado do Worker web, criado pela publicação da etapa 7 |
+| `fagoo-api.example.com` | API de negócio e integrações | Domínio personalizado do Worker da API, criado pela publicação da etapa 7 |
+| `fagoo-services.example.com` | Autenticação, dados e arquivos na VPS | Rota de aplicativo publicado do túnel, criada na etapa 5 |
+
+O domínio principal pode ficar reservado para o site institucional. Não é necessário criar um endereço público para o PostgreSQL. O envio de e-mails depende de configuração SMTP própria; não é habilitado pela criação desses três endereços.
+
 ## 1. Preparar o código no Ubuntu
 
 Use Ubuntu 24.04, acesso administrativo, uma conta Cloudflare com a zona do domínio e uma revisão pública que contenha estes scripts. Confira os requisitos do Docker e o espaço livre para imagens, banco, arquivos e backups. Prepare uma pasta persistente e obtenha o código público:
@@ -86,7 +102,7 @@ O helper de publicação da etapa 7 gera a configuração pública do build a pa
 
 ## 5. Conectar o túnel e publicar o hostname de serviços
 
-No painel Cloudflare, abra **Networking → Tunnels → Create Tunnel**, informe um nome para esta instalação e crie o túnel. Anote seu UUID. Na tela de instalação do conector Linux, use o botão para copiar o comando de instalação; ele contém uma credencial e não deve ser colado diretamente na linha de comandos durante a gravação.
+Na página da **conta** Cloudflare, abra **Rede → Túneis → Criar túnel** (**Networking → Tunnels → Create Tunnel**, em inglês), informe um nome para esta instalação e crie o túnel. Esse menu da conta é diferente do item Rede dentro de uma zona de domínio. Anote seu UUID no campo **ID do túnel**. Na tela de instalação do conector Linux, use o botão para copiar o comando de **Install as service**; ele contém uma credencial e não deve ser colado diretamente na linha de comandos durante a gravação.
 
 No console da VPS, substitua `TUNNEL_UUID` pelo identificador do painel e execute:
 
@@ -98,18 +114,18 @@ Quando surgir o prompt oculto, cole o comando completo copiado do painel ou some
 
 O token fica em `/etc/fagoo/cloudflared/token`, com permissão `0600`, e o serviço `fagoo-cloudflared.service` passa apenas o caminho desse arquivo ao conector. Nenhum token entra na linha de comandos, na unit ou nos logs. O helper não sobrescreve configuração existente; se uma tentativa falhar, preserve os arquivos e confira o estado antes de recuperar.
 
-Depois que o conector aparecer como **Healthy**, clique em **Continue**. Na interface observada, esse botão retorna à lista de túneis; a rota é criada em uma etapa separada:
+Depois que o conector aparecer como **Túnel conectado com êxito**, **Íntegro** ou **Healthy**, clique em **Continuar / Continue**. Na interface observada, esse botão retorna à lista de túneis; a rota é criada em uma etapa separada:
 
 1. Abra o túnel pelo nome na lista.
-2. Entre em **Routes → Add route → Published application**.
-3. Preencha o formulário abaixo e salve a rota.
+2. Entre em **Rotas → Adicionar rota → Aplicativo publicado** (**Routes → Add route → Published application**).
+3. Preencha o formulário abaixo. Confira o **Hostname completo** e clique em **Adicionar rota**.
 
 | Campo | Exemplo para esta etapa |
 | --- | --- |
-| Subdomain | `fagoo-services` |
-| Domain | `example.com`, a zona do seu domínio |
-| Path | Deixe vazio, para encaminhar todos os caminhos |
-| Service URL | `http://localhost:8081`, incluindo `http://` |
+| Subdomínio / Subdomain | `fagoo-services`, somente o prefixo, sem `https://` |
+| Domínio / Domain | `example.com`, a zona do seu domínio |
+| Caminho / Path | Deixe vazio, para encaminhar todos os caminhos |
+| URL do serviço / Service URL | `http://localhost:8081`, incluindo `http://` |
 
 O formulário atual recebe o protocolo no próprio **Service URL**; não há um seletor separado de tipo HTTP. A combinação de **Subdomain** e **Domain** deve formar exatamente o hostname de `FAGOO_BACKEND_ORIGIN` escolhido na instalação. Ao salvar, o painel cria o registro DNS automaticamente; não crie um segundo registro manual para o mesmo hostname. O helper atual verifica o gateway local na porta padrão `8081`. Valide:
 
@@ -121,24 +137,33 @@ curl --fail --silent --output /dev/null --write-out '%{http_code}\n' https://fag
 
 Substitua o domínio de exemplo pelo hostname real. Espere `active` e respostas `200`. A verificação pública confirma DNS, certificado HTTPS e encaminhamento até a VPS. Nenhuma porta do PostgreSQL precisa ser aberta. O token do túnel é diferente do token de publicação criado na próxima etapa.
 
+A confirmação **Rota adicionada com sucesso** mostra um CNAME apontando para `<UUID-do-túnel>.cfargotunnel.com`. Na zona do domínio, abra **DNS → Registros**: a interface atual pode exibir esse registro como tipo **Túnel**, com o nome do túnel na coluna Conteúdo, status **Com proxy** e TTL **Auto**. No túnel, a aba **Rotas** deve mostrar o hostname e `http://localhost:8081`. Se a rota já existir com esses valores, apenas confira; não salve uma segunda rota para o mesmo endereço.
+
 ## 6. Preparar a conta Cloudflare para publicar web e API
 
-Obtenha o **Account ID** da conta e o **Zone ID** da zona no painel. Esses identificadores não são senhas e serão argumentos do helper. Para criar o token de publicação:
+Obtenha o **ID da conta / Account ID** e o **ID da Zona / Zone ID** no painel:
 
-1. Abra **Profile → API Tokens → Create Token**.
-2. Em **Custom token**, clique em **Get started** e dê um nome ao token, por exemplo `FAGOO publicação`.
-3. Em **Permissions**, adicione estas quatro linhas:
+1. Entre em **Domínios → seu domínio → Visão geral**.
+2. Role a página até o quadro **API**, na coluna direita.
+3. Use o ícone de cópia ao lado de **ID da Zona** e guarde esse valor identificado.
+4. Repita para **ID da conta**, sem trocar os dois valores. Cada um tem 32 caracteres hexadecimais.
+
+Esses identificadores não são senhas e serão argumentos do helper. Para criar o token de publicação:
+
+1. Clique no ícone do usuário, no canto superior direito, e abra **Perfil → Tokens de API → Criar token** (**Profile → API Tokens → Create Token**).
+2. Em **Token personalizado / Custom token**, clique em **Iniciar / Get started** e dê um nome ao token, por exemplo `FAGOO publicação`.
+3. Em **Permissões / Permissions**, adicione estas quatro linhas:
 
 | Escopo | Permissão | Acesso |
 | --- | --- | --- |
-| Account | Workers Scripts | Edit |
-| Zone | Workers Routes | Edit |
-| Zone | Zone | Read |
-| Zone | DNS | Read |
+| Conta / Account | Scripts do Workers / Workers Scripts | Editar / Edit |
+| Zona / Zone | Rotas de Workers / Workers Routes | Editar / Edit |
+| Zona / Zone | Zona / Zone | Lido / Read |
+| Zona / Zone | DNS | Lido / Read |
 
 4. Em **Account Resources**, restrinja o token à conta específica da instalação. Em **Zone Resources**, selecione **Specific zone** e o domínio dessa instalação.
 5. Defina uma validade; **30 dias** é uma sugestão para concluir a instalação. Clique em **Continue to summary** e confira as quatro permissões, os dois escopos e a validade. **Pause a gravação antes de clicar em Create Token**, pois a próxima tela mostra o segredo.
-6. Clique em **Create Token**. O valor completo é mostrado **uma única vez**: copie e salve-o no seu gerenciador de senhas, com um nome como `FAGOO publicação`, a conta, o domínio e a data de expiração. Faça isso antes de clicar em **Done** e retomar a gravação. Use esse valor no prompt oculto da etapa 7, sem enviá-lo em mensagens ou capturas de tela.
+6. Clique em **Criar token / Create Token**. O valor completo é mostrado **uma única vez**: copie e salve-o no seu gerenciador de senhas, com um nome como `FAGOO publicação`, a conta, o domínio e a data de expiração. Faça isso antes de clicar em **Veja todos os tokens de API** (ou **Done**, em outras versões do painel) e retomar a gravação. Use esse valor no prompt oculto da etapa 7, sem enviá-lo em mensagens ou capturas de tela.
 
 O token de publicação será solicitado em um prompt oculto e **não será salvo pelo helper**. Não há comando adicional para guardá-lo no servidor: a cópia para futuras publicações fica no gerenciador de senhas do usuário. Não use o token do túnel nesse prompt. Os passos detalhados e os requisitos de publicação estão em [Publicação da interface e da API](application-deployment.md).
 
@@ -186,11 +211,22 @@ Os serviços usam `SUPABASE_DEPLOYMENT=self-hosted`, a origem HTTPS local e as c
 
 O runtime fiscal, os certificados e as credenciais bancárias são configurados conforme os módulos usados. O helper publica web e API, mas não publica o gateway/executor/Container fiscal nem habilita SMTP. Tarefas agendadas e integrações permanecem desabilitadas até configuração explícita.
 
+### Conferir os subdomínios web e API no painel
+
+Após `API_DEPLOY: OK` e `WEB_DEPLOY: OK`, os dois domínios já devem ter sido associados automaticamente. Para conferir:
+
+1. Volte à página da **conta** e abra **Computação → Workers e Pages**.
+2. Abra o Worker `fagoo-web-<sufixo>` e entre na aba **Domínios**. Confira o endereço web, por exemplo `fagoo.example.com`, com tipo **Produção**.
+3. Volte à lista, abra `fagoo-api-<sufixo>` e entre em **Domínios**. Confira `fagoo-api.example.com`.
+4. Na zona do domínio, abra **DNS → Registros**. Os dois nomes devem aparecer como **Worker**, apontando para seus respectivos aplicativos. Os registros gerenciados podem aparecer como AAAA ao abrir seus detalhes; não substitua o conteúdo por um IP da VPS.
+
+O botão **Adicionar domínio** fica nessa aba de cada Worker. O fluxo manual atual é **Adicionar domínio → escolher a zona → digitar somente o subdomínio → Habilitar para: Produção → Adicionar domínio**. Ele serve para uma associação manual deliberada de um endereço ainda não vinculado. Na instalação padrão, o helper já fez essa etapa: não a repita nem acrescente outro hostname sem alinhar a configuração das origens do FAGOO. **Adicionar rota** é uma opção diferente; para esses endereços, use domínios personalizados.
+
 ## Critérios de aceite da instalação vazia
 
 A implantação técnica de uma base nova está validada quando os cinco serviços estão saudáveis, o histórico do schema corresponde à revisão instalada, a origem pública de serviços responde por HTTPS, a interface permite o login do administrador e os cadastros comerciais estão vazios. Uma chamada a `/v1/me` sem sessão deve retornar `401`. Não considere a instalação validada apenas porque `/healthz` respondeu.
 
-Abra o hostname web e entre com o administrador criado na etapa 3. Confira produtos, contatos, pedidos, estoque e financeiro pelos menus da sessão autenticada. Não use as telas explicitamente identificadas como demonstração para conferir o banco instalado. A integração externa deve permanecer desabilitada em uma instalação nova que não a configurou.
+Abra o hostname web e entre com o administrador criado na etapa 3. Confira produtos, contatos, pedidos, estoque e financeiro pelos menus da sessão autenticada. Use a sessão conectada aos serviços da instalação para conferir os registros reais do banco. A integração externa deve permanecer desabilitada em uma instalação nova que não a configurou.
 
 O cadastro da empresa pode ser realizado posteriormente, pela interface. Esta validação confirma a instalação vazia e o acesso ao sistema; a ativação operacional inclui configurar a empresa, os serviços de e-mail e os módulos utilizados, além de validar backup e recuperação.
 
