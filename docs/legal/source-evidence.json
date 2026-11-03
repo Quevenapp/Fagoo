@@ -1,0 +1,2996 @@
+{
+  "format": 1,
+  "method": "Marker scan of tracked source and staged/new distributable files. A marker is a review lead, not a provenance finding. No claim of exhaustive human review.",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "1e518db543130c63bc11a9f9b32775100845f9813a55ab6387f32eb1522b8aff",
+      "markers": {
+        "copyright": 0,
+        "license": 1,
+        "generated": 0,
+        "reference": 0
+      }
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "sha256": "c1435ae744a43b7d167e57c4a1fd6080eb33a4db5e96546e19bb7b96dd56971b",
+      "markers": {
+        "copyright": 0,
+        "license": 4,
+        "generated": 0,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/components/CnabOperationalV2.tsx",
+      "sha256": "24c2974c57d6698d261f32d6d43b94e08b004373fffe6057ebf540b35b7d40af",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/components/CompanySettings.tsx",
+      "sha256": "3dcde831ea4622485b8fc988c8a3bb2dd390091b34aa38bcd0427b3935fd1d4b",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/ContactEditor.tsx",
+      "sha256": "e6df5eb5598fbadbc742b4f2fbe1f80b16279c0246637292f581e5daa1f1ce00",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/ContactList.tsx",
+      "sha256": "d94729fa1afed182d1220ef0ac9992b75571bf9b4931738b33532a6e5ed2c799",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/DocumentBatchPrint.tsx",
+      "sha256": "8ca8ed6e734570cb85ba2b94335a85f976d84f645858c4fd162d7e8162d91d29",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 2
+      }
+    },
+    {
+      "path": "apps/erp/src/components/DocumentEditorNotices.tsx",
+      "sha256": "110fda90df269f72f215bd66e9f379db2f3d4d8e2e0bba404648da4a116c0c91",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/components/DocumentMirrorView.tsx",
+      "sha256": "0c98a99237b3c40a924404d13bc6bddbf59334a928f77fdc13a2987ac73c511a",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 3
+      }
+    },
+    {
+      "path": "apps/erp/src/components/DocumentPrintPreview.tsx",
+      "sha256": "1b7303b47bba7e2bec02fecef2daf2545799ec9cf7126988ec7d7b8cec646d48",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/components/FinanceCategoryTreeSelect.tsx",
+      "sha256": "7987d296ff39de9c9848ca0609127676fbe1871ed88db85277cc8a920e1e0f87",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/components/FinanceGroupedBilling.tsx",
+      "sha256": "246ba6ee4e4a6db6815b0b654f2b343dda334fdaaa2d2ab89a22d624c7294f7a",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 16,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/components/FinanceRemittances.tsx",
+      "sha256": "af29710b9c2d2b161f65a71620b58e9c88589316ffb622c4e87fe6692c084f05",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/components/FinanceReturns.tsx",
+      "sha256": "88353a85792c17e67aa371a25e58b04265471caa1fc8ba572ee71e4b247a7f7c",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 4,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/components/FinanceStatement.tsx",
+      "sha256": "ef5e50ac52f28ac7606d780973aa164aa0c0acde78a73ae3acdcd37f2e4dfac3",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/FinanceTitleDrawer.tsx",
+      "sha256": "d6512335cb5ad42ab22ab8b9f7ce64c92e465d45b7b2e003939fdcf1cbaf4261",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/components/FiscalEventDialogs.tsx",
+      "sha256": "f2a7751ad9cc9fd48acd22194e12b1e987e6b5bff79540e85df318ae3434a0fc",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/OriginPurchaseReadiness.tsx",
+      "sha256": "eecc7240a383e8374e783a0f45c892c0f09c766889fa1b11fb9549269de3b3a8",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/OriginSalesReadiness.tsx",
+      "sha256": "33a0f58aa29b400578961fa05f92d01591218f31f68924853cbc33d7cbd16a56",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/PriceLists.tsx",
+      "sha256": "7cf2f674dd1a1e1ed40d6e547f6390035d62dcec2b253930f1374f135ad6d23d",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/ProductComposition.tsx",
+      "sha256": "aa44470bfcb7db356b2cf09168f536de77d9cb5e17d2897db5f3f5b7517536c1",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/ProductEditor.tsx",
+      "sha256": "0f5936d8dfefc67c483c462947a899dff9e4f4b4c7a7eb5d7d9af4352a6c3d28",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/ProductList.tsx",
+      "sha256": "8dfcfa85147d29c539ec6b5ae61bcd29e6a9bef67a8a89670941f5ea0167a22a",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/ProductTaxonomy.tsx",
+      "sha256": "086f752769f4130cfc33c2e3ff1a87db7142cd0df7deb5482b3e0bce1b0b243f",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/RealCnab.tsx",
+      "sha256": "4c0ce8dbadfd5c3daeb9c21ed523f16757604eb7a72cb3fea92467dd7d59fd74",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/components/RealCnabOperational.tsx",
+      "sha256": "98ff13e4fb30f9e6337e7774418cedae77ea5ef619ac0f7d52ae11356f2c343f",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 5,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/components/RealCnabOperationalReturns.tsx",
+      "sha256": "81cd0f98b2638c2680cab9f9340d60a9eb151060d94928a2f4c5719a7800260e",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/components/RealCnabReview.tsx",
+      "sha256": "e16765af1a2099684317e8b37ad6688db13c3d559292b29407a0fdebd3f85da3",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/RealDocuments.tsx",
+      "sha256": "7222fd4618edfd963af3f134d1fd5fbe4b3ed04c124140ded1cc771342599da5",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/RealFinance.tsx",
+      "sha256": "9fec16c594c213f3d1d27968dbf803e0f7311725a0d9450dce16acf104ccb18e",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/components/RealPdv.tsx",
+      "sha256": "2ac9fe277bc5a8cf28836cbc6434cab01f88c7b8a5889b86e116ed59732217b8",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/RealReports.tsx",
+      "sha256": "29b2cdcc1702b3c010dce0b2ca515b7f6c9c718faddb9985f86070082feaf3b6",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/contact-errors.ts",
+      "sha256": "1a38c2cd353961254656e5c9a3420b5271602a88ae0daab02c9d167f242469da",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/demo-pdv.css",
+      "sha256": "2619c9ec613c0126ba1ef3fd09732f01e8aa929e9f347d3e7b18153432ddba93",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/fa-icons.ts",
+      "sha256": "e4302dbdefbd92663a982a15bd84493991b97aa97f81c474603feee5f6f4c763",
+      "markers": {
+        "copyright": 1,
+        "license": 2,
+        "generated": 1,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/origin-home.css",
+      "sha256": "8f7d95ad12e43c2cea28975cf51dac9deb37288c7b831e901dcc6c2e2dca3b2e",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/origin-list.css",
+      "sha256": "cabcfdb999a026027808d365392f32315788d6649cb9b52db16657acfdabc474",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 2
+      }
+    },
+    {
+      "path": "apps/erp/src/components/product-registry.css",
+      "sha256": "c4cf80b7317c7818c996c9e4184fcd72402e344caf2ddda912d387631910062f",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/real-home.css",
+      "sha256": "38851e341db4ab98b8fcebffa8a224ffe53aa1a51abc0dbde40577b3309dc337",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/receipt-checkin.css",
+      "sha256": "b797b6cb640e0bffdb9da963c16682ff2adaa2f92ad01d8ffd8777a95a3fc839",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/reports-catalog.css",
+      "sha256": "a13b490cc1bef97f9401dfc881c659adc4275b0c298f44ef8b8a016b413197d2",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/stock-reports.css",
+      "sha256": "fddafcdad902d49a75c7ddf192dc20eb865a984a93bd01ce485fbb8f8ec7f6c3",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/components/stock.css",
+      "sha256": "231005f5b264dca72f309c18e8f8ccf75fdb9b3ba16101c12367ca6347aca825",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 2
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/catalog-model.ts",
+      "sha256": "cb31a3427329780e60c8e8539f3f33530d7da002a606e9a95c5824b18ac827c2",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/cnab-operational-model.ts",
+      "sha256": "c7d1e69fe26d1ea1db7172bbbfb9934e57d582b65bfb6455cb148a693751d069",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 5,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/cnab-returns-model.ts",
+      "sha256": "26d4dd3520cd8beb4e644f956dd3e9e317251b7672e23586c12cdf61a1059c89",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 6,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/cnab-review-model.ts",
+      "sha256": "cfa33b8d0ded7e14c8599febd758a9a58529c8d05a8ff7c13cc954f7056b4e50",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/contact-form-model.ts",
+      "sha256": "11d16fbb8b611f1e5e171420d9d9230562773f7182862b2bce29553ccdee709d",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/contact-list-model.ts",
+      "sha256": "92d86fbbc878a17ac1cdcc724f866069920aaf8d5274f3e36da3beb230b557da",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/document-finance-model.ts",
+      "sha256": "355c91597bee35613de414420a81b1c11b506a00b45c82e7ef77c183f01d724e",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/document-list-model.ts",
+      "sha256": "d260fbed87d831aa1644c4c2e2d5fa117af1857718c9b87e7d4cbdfde310848d",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/document-mirror-model.ts",
+      "sha256": "c2bd97cc4fa2d51730ba1b0eb486325bf5704388431cfd9a26998b86c096ca42",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/document-payment-model.ts",
+      "sha256": "d12f875a3eb9b20d06f1a92216561d94ad2af948b5425deee60e5b5b6b0f9b05",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/document-reports-model.ts",
+      "sha256": "9af6d5369380dddeec7b9d9bd149711da0a07a602d2d84a731352f3b4c30f40e",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/finance-cnab-lists-model.ts",
+      "sha256": "5c267b400381adab299e95ddef62e9ccaac24abdad98d8f235b6735cc3c9f6b1",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/finance-recurrence-model.ts",
+      "sha256": "5214ba88b8724d3a1c8fed55de9adbc876cfbdb67169bf51303ee9f088ed60b0",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 8,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/finance-title-drawer.ts",
+      "sha256": "d0762f5ca52cd41dc4dbc677463224c46ee3f0225f1e3808e08028c2b34893b7",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/finance-title-list.ts",
+      "sha256": "1080faf700d4839dd4e148e69319d7c8f99e4eba20438006846c10d395fdc17e",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/financial-cutover-model.ts",
+      "sha256": "4f6fe6f44242eaa819354a9eca04fb0ee7bd32aa79df525fe8918db710d06e5f",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/financial-import-model.ts",
+      "sha256": "da0a38170b083def3cfb5deddeeae204183e37d852189864e1355bbdb8222cbd",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/fiscal-completion-model.ts",
+      "sha256": "2fcf464111cb0fa8b4eaa55831a3599134891f665bbe7c7c702b622b59af5861",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/fiscal-invoice-list-model.ts",
+      "sha256": "9aafb13ffa75fb6dac885fcf3dc8261793639d81f376e0e077588df4e58b61e8",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/fiscal-native-xml.ts",
+      "sha256": "c174718b1be904b18d474f16a7fc2cab699b5aec7e08b414b9af0e2688dbd1fa",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/fiscal-signed-model.ts",
+      "sha256": "7e0d0fd50bb33f49bfbfdc2d71c53e9a5e005f34c8b8f1c2e2d2f040becd6c1c",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/fiscal-unsigned-model.ts",
+      "sha256": "f06b0964d06527dd402aa34d1a77f0a591d49a112b5ce92809f6b2e05cc58f97",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 9,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/home-request.ts",
+      "sha256": "6b4b1d67d15029c5d313303ee38d0e1c853670e825a472e7b35261766a73fdf4",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/invoice-order-titles.ts",
+      "sha256": "594eebc6abde7b82e172813e0b1a474ba742a1fea0881c54c4815dc99e944672",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/origin-freshness-model.ts",
+      "sha256": "0896f3b30c09f410705fe36ae7105598f1979277f86b4ec39f4855e71a87dadc",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/origin-menu.ts",
+      "sha256": "77f1ed1c058c662945a69cc4d8614889dbf96751cc22c407cae4ed45534ca28d",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 2
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/payment-method-model.ts",
+      "sha256": "c26655240d0fc2e617d6331aaf364eea237b97a41c75113eac1cecccd3e17693",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/pdv-model.ts",
+      "sha256": "6ff060c5e16d73c7ae77fdd33b71e5e0ffd4eb77c61096d44297b7a286625108",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 2
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/product-form-model.ts",
+      "sha256": "b32a22c9fed099f445f9e99d1e70e69ca93d5e0fa1b7f63e85b47a50afb2bd68",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/product-model.ts",
+      "sha256": "69e719eca582dd6d22b317db04bbadacad0cbc05a0847572b8c8853981369f88",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/real-cnab-model.ts",
+      "sha256": "9fe2ac1aca6f20e8add852d70b49fd5d1976614fef9af9ed05c7885cc09fbb87",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 4,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/real-documents-model.ts",
+      "sha256": "d7d0c63b0dd71488e868672392b5340d43f450cfc9c8dbfb38263f469a5bfda2",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/real-finance-model.ts",
+      "sha256": "922e0f1928749d55641e274f3da24ac589af28787130754dde4ef309aebd02e9",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/receipt-checkin-model.ts",
+      "sha256": "f1bd4829ae303a35470667811412f322b348a15ded415424aa592d63466f3f9f",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/seller-model.ts",
+      "sha256": "2626c4937ac7cc45d4ef040ad806a6b467f509ff2c93d26e6b9873d47a560e43",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/spreadsheet-export.ts",
+      "sha256": "07725fec86ec9aa7a35d78574f892ffd9f1ba8ee60e7b85cbd0840ff8c63545a",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/stock-composition-model.ts",
+      "sha256": "2ebdeb49481258751f401ad4c582c81a7c9d4bd683ed248f8b1c4b34d7f7fb65",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/stock-count-model.ts",
+      "sha256": "8f53228327d45999eb08078b5a1694b018c6499cce4084aad136fc4fab1646ba",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/stock-dashboards-model.ts",
+      "sha256": "6a58bfaab55acc3c499a37f689906f1f0da1f8c238fd4f72c39de6be363e4348",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/stock-launch-model.ts",
+      "sha256": "c770954b76183007ee9d52acb00fe28d49b86857df13f092079c99ed7123e5ee",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/stock-lots-model.ts",
+      "sha256": "d0b90863166573615dc34b4f620883fb7be614189d554ba9c0be7e48bb231dba",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/stock-model.ts",
+      "sha256": "8a09d3c6819ecf9678805ec571158807c92e6d6ad27a209450f549d59354f400",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/stock-reports-model.ts",
+      "sha256": "6c567bc8b7388fcd8bc5a632c9847fe08f2b479b453b3f1e759a151012bc88f4",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/stock-supply-model.ts",
+      "sha256": "a1847f349717b4efe6202dcfe9dbe72ffefefbb9dbffa04531c324b1309aa251",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/stock-warehouses-model.ts",
+      "sha256": "1bec9eed59bf78fc42030709385c061f376ca8fc5bde081a6364fa858f08818d",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/lib/xls-reader.ts",
+      "sha256": "22f7175222e4bec0707ec3d2b3b0734f35332b4b59668920596395f75beca74b",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/src/qa/cnab-operational-v2-fixture.ts",
+      "sha256": "8e81c1d8d1e0e6ce3ec43ab31f83b8dfb20498e27c35be6a2732f36124d13d61",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/cnab-operational-ui.test.mjs",
+      "sha256": "6eb963b666c8c98c1704a772768c087638735bd695b993f40e0f4f1f974bcdb1",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/cnab-operational-v2-qa.test.mjs",
+      "sha256": "5c27d5830e8c04575013728fbc3ba5b2be91fb1ad769b76b51d6d35baf9c0a3e",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/cnab-returns-ui.test.mjs",
+      "sha256": "344c60ddcb76b36ac29a042b064781f16fc12f010af049650277b809ad8f2f37",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/cnab-review-model.test.mjs",
+      "sha256": "bfed18ec117e6e116f7793021b64cd7fc4e12217623ac7862ad1ea8e419a3142",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/cnab-write-recovery.test.mjs",
+      "sha256": "bc561518fb1645aeb2a637835d81f3c11b05d714ca9cdfeefee81fc040806fda",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/contacts-ui.test.mjs",
+      "sha256": "416c3e3fdebba3f7df5a334b35dbea1081fdf89fb13f72a2d44d01bd8429c3f4",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 2
+      }
+    },
+    {
+      "path": "apps/erp/test/document-installment-planner.test.mjs",
+      "sha256": "019333f82aff340220a4e612771d51af3c11ee267ad1c097e4d9bff6f57653bb",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/document-mirror-ui.test.mjs",
+      "sha256": "f1c0fbc2a11db6d5573f6383e50939f9cec4ae1663c2433ab99fcb996533f00d",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 7
+      }
+    },
+    {
+      "path": "apps/erp/test/document-sales-links-ui.test.mjs",
+      "sha256": "fac883346c15a393e70f09bc03b6b1306f94362eb347bafe3bfd0cbc536cc24c",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/document-service-conversion.test.mjs",
+      "sha256": "5402984c1d564ff0c99169a44ebaece3342b6be2855c99dd0903b5b6a1ef25af",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/finance-cnab-lists-ui.test.mjs",
+      "sha256": "629b6e0b093feb2a987f64758cb47e33bae70a16cae0512c18e18c7351fbf3fa",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/finance-parity-e-ui.test.mjs",
+      "sha256": "967bc952df44e9cf4e1cc4858b86224d0bc0a8d630fcca9d390e69dbe8ea85b9",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/finance-recurrence-ui.test.mjs",
+      "sha256": "5d04a2430e0a7be45ef5bde485170f80487977d552d2ac45687e85911790e3ae",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/finance-title-drawer-model.test.mjs",
+      "sha256": "b0758a0e74e31b26f3cc4f0cd44ba989bc2ab325f3ee6311ddb75b6d34d4fc14",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/finance-title-drawer-ui.test.mjs",
+      "sha256": "9668244602303da337f973baca4ef003292f34efe60f560ba9da9b46165ba13d",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/finance-title-list-ui.test.mjs",
+      "sha256": "2dc936ddb85ad301c8ae90e0a22ec3b0c8603f25d81ab92e1c571bf092aa58a4",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/financeiro-h-model.test.mjs",
+      "sha256": "db2ec7ddaec1e4f26c42b66ce91f0c1b564f11fdf3beaedb8d3b639cbdf2b902",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/fiscal-cnab-review-recovery.test.mjs",
+      "sha256": "1f7b64be78aafaeca596e3a9c1ecc66f24eee1b78e5b028530f3ac944f87d5b6",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/fiscal-invoices-wave-c-ui.test.mjs",
+      "sha256": "b2eca3dba5e1d871314de64160467f80be5dc24dcf08a3033e77d1015adce58e",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/fiscal-natures-ui.test.mjs",
+      "sha256": "3d9da56f25b643e1e898cfd267de29516754cc199ddbd8afbe1994557721f126",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/test/fiscal-unsigned-parent.test.mjs",
+      "sha256": "c5bb76e5b2cc9b5da22c39c5f600e3032c9c48e03b3a5f7ce96fd3bf903e4ef7",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/fiscal-unsigned-ui.test.mjs",
+      "sha256": "ae000f8908f552257e610603db0ab268c041a5ae6235b339f28bfa46e57bcad5",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/helpers/cnab-operational-v2-fixtures.mjs",
+      "sha256": "5140d18b66c6c94f11573c00f87020301f4674b67e8c04ef20a4494942f5a705",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/helpers/fiscal-unsigned-fixtures.mjs",
+      "sha256": "80437e5b6fb3fb2415682aef6f8ad98a09aa944c8cbf1e9cba517d7bcf909514",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/helpers/itau-legacy-readiness-fixtures.mjs",
+      "sha256": "7b98d0c1015561cd2a01e87e4913fd6c5e35670cda8160a0b685e4f41c4c9ec6",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/helpers/itau-net-credit-fixtures.mjs",
+      "sha256": "47f0057279a04b5e62c3fd534b7923eb3d07732e4d9640cc8e8eb42cdf9a06a0",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/misto-f-datamatrix.test.mjs",
+      "sha256": "11781bc1819a30e36da4aa0f61dcfc7ce18d37b30bebced659c6658dad9a9644",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/origin-sync-freshness-ui.test.mjs",
+      "sha256": "b45a64e7e45cc623d15f9fb35530248b1130eff9884b8ae96a5b7a9893261e40",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/test/preferences-d-ui.test.mjs",
+      "sha256": "672cb27bb4c5110587a1c66d2fd3ed3360ce9893b2918eb7a4344501b8919180",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/product-registry-ui.test.mjs",
+      "sha256": "6e952dce4be00387e623d1e3ce0cf0c7d0386efa6469ff89a4ead1e1600003cd",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/test/produtos-c-tags-ui.test.mjs",
+      "sha256": "f86bfa52ece3013b4c4b00e0417ef627f6fc620b7f9e91723aa564efeb98f00a",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "apps/erp/test/reports-labels-ui.test.mjs",
+      "sha256": "280ed2fd234af5c4afbd3f88043431b443e0476ec8c26dd6d4478263f90886f7",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/stock-effect-guards-ui.test.mjs",
+      "sha256": "f6265d6c98fa0a4eac2dda999c2a0405e0666181e384d2d19c9c585040af1bcd",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "apps/erp/test/stock-ledger-ui.test.mjs",
+      "sha256": "0d078f672e2af25aa3bd324a7f425b15f5e1a4de1634841e19b505fc8dc71440",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/boleto-core/src/index.mjs",
+      "sha256": "399fc49b4dfa4ed7116fd571e72746b04969721c13f44df30aef78e7969e537a",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/boleto-core/test/core.test.mjs",
+      "sha256": "7866f2039ab45c63410828b8b72ed8749acb976ef09b12f0962997c582848e8c",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/boleto-preview/src/index.mjs",
+      "sha256": "ff1c1f5accea8944c458015043d09fcbacef280392deffdbf90684dc9220aa06",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/boleto-preview/test/operational-fixture.mjs",
+      "sha256": "e50ec2867f600c8ef9da4e49780abd08f641483a8b70b0779aad06c81f7cf479",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/README.md",
+      "sha256": "88b0805415ac9b03a4e74ac0f6e921394672d283d458fe7de676d23ec7fbd5db",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/src/itau-legacy-remittance.mjs",
+      "sha256": "99224a06a8f41506a40f2e1666f135d30ab2ebef1743cb488c7e2660eae32ce2",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 5,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/src/itau-observed.mjs",
+      "sha256": "d367f82cc3fd1a65d5364ad0747b1fbc8d8a4f230c560090c195d397e9653772",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 6,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/src/operational-return.mjs",
+      "sha256": "35d46bffad98a7c945fd32d9df127d9ae57a944a083d7c421e40058d5ff94526",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/src/operational-v2.mjs",
+      "sha256": "7dab7e990dbc038a36f9c0fef55f9abb6dd5e7ca4b83fe839afa096ef84f2ec1",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 6,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/src/remittance-serializer.mjs",
+      "sha256": "981c834551999f5524062d0190d403171705c3de4c9c3d6e140763d3e118890b",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 9,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/src/remittance.mjs",
+      "sha256": "71beb937caa5ca5a80ad00623d530aa31d2ef9e5d8c96168fc7891632c44580b",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/src/return.mjs",
+      "sha256": "085c914602df837a1b43d77dce585f32df63eb4547a11d480fed8b1941ffc6a1",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/test/fixtures.mjs",
+      "sha256": "bd6fce7e2410449316bedeb11d7e78170a6ece7f07beea903785df6ba9afbd4d",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/test/itau-legacy-remittance.test.mjs",
+      "sha256": "2a28d9bd71e580eaccac6037272ef1c83be4aaa1866c563cde0bd362168a86cd",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/test/itau-observed.test.mjs",
+      "sha256": "b2ae8f677d612f9decf24f86459a2564a6513e48181cd2cdcfb87f678ae999ff",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/test/itau-terms.test.mjs",
+      "sha256": "59a333897d79b8435fca1f29bae648ba63d65e449c8f143d24a533806327bd24",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/test/operational-return.test.mjs",
+      "sha256": "ac194bbe250b7f3a82cf6a9a06d42cf14095e7fd004610e1fa64d081ae8828be",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/test/operational-v2.test.mjs",
+      "sha256": "53f47b83de00b566f0bc88ccc65986639a96bd1b7ef25c66c44220fe3500bcf8",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/test/operational.test.mjs",
+      "sha256": "bb40e853f2c50f206ac4fe90a8d91d0e70f647eb74c683816a48343bb4e9ec11",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/test/remittance.test.mjs",
+      "sha256": "8bbb607a04e074d3ec2ef976e3ec71485907a5b3e5cbda87b4da46ec287a3688",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/cnab-core/test/return.test.mjs",
+      "sha256": "05c1a29a61861e3a28ea01c15b2575f73010678b3f063f12fcbb8da193ed3328",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/erp-domain/src/document-mirror.mjs",
+      "sha256": "e4da793bc50fbca8376a40fd077bd2e54608789204f67a92f0464e66c3ea9384",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "packages/erp-domain/src/fiscal-invoice-dto.mjs",
+      "sha256": "aaf896e9038c36b357d364dc2c22f7c79e4bc1797ea004167128645d526328a5",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 2
+      }
+    },
+    {
+      "path": "packages/erp-domain/src/preferences/pages/cadastros-lotes.mjs",
+      "sha256": "2652d21d43659e3d4e2d3d8b352cf36ef77ede69b916af62c13cfe5d2a97cd7b",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/erp-domain/src/preferences/pages/notas-nfe.mjs",
+      "sha256": "1a3bc0bcf975527706829c99023ba88b28730ce80141b57a24ae9f666028666e",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "packages/erp-domain/src/preferences/pages/suprimentos-compras.mjs",
+      "sha256": "bce44d3064f5721575bb57ccfd1119d5df32f5fb99c76d88a81a21f03414204e",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/erp-domain/src/preferences/pages/suprimentos-estoque.mjs",
+      "sha256": "d2ce9bce539fdf6fe362e9b56e122f3becba6d2d09b4a482b4e9d6b0e3c85b73",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/erp-domain/src/reports-labels.mjs",
+      "sha256": "d1229e49c477dcd85fbe08aca6e4a3c513f1d93aaa7feecb899a0b9a763ca7ba",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/erp-domain/test/unit-price.test.mjs",
+      "sha256": "fe110cb9c43337f80eba18687df4435683ffe8ca14cdd8442a34ee2947031dfe",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-authorization/README.md",
+      "sha256": "7a35cd291594261d17d9092dd6a17c5e8b77c8bd918e5a11309932b9932922dc",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "packages/fiscal-authorization/test/dispatch-mtls.test.mjs",
+      "sha256": "6116fe2b0a98f6f68e5f68342634121bea7c6755ced075581dfc248261abc166",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-authorization/test/gtin-dispatch-v2-mtls.test.mjs",
+      "sha256": "99608ccb81ddf8aafd04a4eba0c890ce20d0be9158eee7a4746361efc2e2e090",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-authorization/test/receipt-query-source-fixture.mjs",
+      "sha256": "d0aa3178dea70bc31f55a9ac8ea3304fce758420fa229153a8fadd154cf81f0e",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-authorization/test/selected-dispatch-mtls.test.mjs",
+      "sha256": "8e1f9706e316f8ab3f649e45c6697f9861a593548c5fe2c2f4610b9298777c3c",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-authorization/test/service-fixtures.mjs",
+      "sha256": "e952d3be671e7eb6fc978197a0667ca1c552803303257edb013542e1cadfca0a",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-authorization/test/service-sql-fixture.mjs",
+      "sha256": "83f9f51ef043cc0ebaaf00e181fe0673f66d4579f820f0db187338d5870ecf01",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-authorization/test/subset-review-sql.test.mjs",
+      "sha256": "e33bfc10f0390b3443ef3623e8d4072a7632ea226c7713acb9bdbe8eb64fcc2e",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-core/README.md",
+      "sha256": "d8ebcf929bf450ff85cfbb40c4b2d517e8c9116f211cbb7d0c733605cb1b7d3c",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "packages/fiscal-core/src/business-completion.mjs",
+      "sha256": "7a07a9c7121d672184da7571cba999a317b16c788093df6baf1710a4838f8b4a",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-core/src/business-document.mjs",
+      "sha256": "3876d4bc459af74884376551c27a04115cc0cd61d40a129973d6cbf339e48653",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-core/src/tax-preparation.mjs",
+      "sha256": "a94dd00eac892e41088ae93a573aee34a72c8b73aeb58c366db75a800d75e952",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-core/test/allocation.test.mjs",
+      "sha256": "fe7ebf0a33f1ddfdaea77e83c5879eec9a1be4c487961eddb1860f6d046201b1",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-core/test/business-content.test.mjs",
+      "sha256": "5b20603f3f155521404cea71b729ed08d953510e18bdeccfac1823a89399c942",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-dfe-transport/test/loopback-mtls.test.mjs",
+      "sha256": "0dc73a356d5e8e668cca20ce131cbe0ed80f054a819918db7b11e03c74f25bdc",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-reconciliation/test/custody-integration.test.mjs",
+      "sha256": "fb2c4b9020e70498586e6d9a3018e08b37a51ddc1ef9e0acc1ea29ea95b280a3",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-runtime/test/image-price-smoke.mjs",
+      "sha256": "bc1296214e3199ef46c0b731e1bb81092114eaf61c576adfd59defb3b0b66001",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-sefaz-wsdl/test/service-sql.test.mjs",
+      "sha256": "7e785efa9dcf2174c1c6be81e764997629462a78f2fd74b885632fb43b7bac68",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-sefaz-wsdl/test/service.test.mjs",
+      "sha256": "4fe40403e426cc1678c181a9e0577947e06aad47c4dcf58ec0a069cf513639b1",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-unsigned-orchestrator/src/unsigned.mjs",
+      "sha256": "ced38d0026a22072d3b04e5a365df8ea23d423c72990fbd9621bbc1fd903ba24",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 6,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-unsigned-orchestrator/test/review.test.mjs",
+      "sha256": "c87591308fd58b1001f0b99145e0a73aeda4a42cbc75450f1d1f92d87012e8a5",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-unsigned-orchestrator/test/unsigned.test.mjs",
+      "sha256": "aea36dac3a8f57dc11e5eab219fd9e998e7be571d2bcaf071dca022c17e8b6a6",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 6,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-unsigned-runtime/README.md",
+      "sha256": "15f4ea9fcffcab426cda2d254922cba068800876bc99cfba3b627dfbccbc3475",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-unsigned-runtime/src/dto.mjs",
+      "sha256": "1a67b4df3cc329627323f16972327edd0cd763ee82e3eb6ca79267778b779712",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 10,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-unsigned-runtime/test/dispatcher.test.mjs",
+      "sha256": "864ba58ab1012d5c9d9ebb8c8644ceb6ba2be79d42991aae24635d262d6fa8d4",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-unsigned-runtime/test/dto.test.mjs",
+      "sha256": "b22033d401bd5fb406fa51b1d0e0ff6a3a4bacabff53c1b40914f1d811e0d0ca",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 4,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-unsigned-runtime/test/executor-workerd.test.mjs",
+      "sha256": "c7b4ab6bbe8642de8806910a14933f89191f35c6a6954aa05fafc9ace5bc68c5",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 11,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-unsigned-runtime/test/gateway-workerd.test.mjs",
+      "sha256": "78f2b308a2bef090e430fc8689c8cc3dc467ca143fcabacdbc893c5d9f97e010",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-unsigned-runtime/test/gateway.test.mjs",
+      "sha256": "7577d65d37f4d625a0bc47d8f147e7c9ee325dadbf2dd6cd65a3347feb07e338",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 6,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-unsigned-runtime/test/handler.test.mjs",
+      "sha256": "7bc835ee58aa6a0060ff1c31a73670d2de3f6ba465b5779a3386d2c5f59fbe75",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-xml/src/business-serializer.mjs",
+      "sha256": "0bc1251000d34ed821e3ac3bc47239056a6d38d103269e487fde723515c81973",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-xml/src/nfe-schema-pl010f.mjs",
+      "sha256": "2e73aaebca6dcd083e25c646e8d3c18e5027cb36bae4cc818d3c92b3965b7fd2",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-xml/src/schema-check.mjs",
+      "sha256": "f79e9f6efae8abfd2ad54cd9c11c6f9e55916898dbed68942f08775f1933d257",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-xml/test/bound-business.test.mjs",
+      "sha256": "ed389cd43993deedf6dcd642ae542d81b746f755343d1f8156622b5af7490faf",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "packages/fiscal-xml/test/business-builder.test.mjs",
+      "sha256": "1108c1bdeadd5ccf94066fe7749fd943431621c29cee31ccbd2865f016b8f847",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/fiscal/compile-nfe-schema.mjs",
+      "sha256": "228cc08d4b8ba1286d77afc0b8beab6543a1b998c6b1b15b1c54c51dba585f01",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/home/generate-shortcut-catalog.mjs",
+      "sha256": "2085c25f2dbd59cc40988279c4bd06db4b7ff3be5463bce43b4eee8417a3f564",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 7,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/icons/generate-fa-icons.mjs",
+      "sha256": "223a17604de064cf524a507e9926a7ccf65c4e247248b224298deb36aec499bc",
+      "markers": {
+        "copyright": 1,
+        "license": 2,
+        "generated": 1,
+        "reference": 1
+      }
+    },
+    {
+      "path": "tools/migration/check_cnab_operational_v2_postgres.mjs",
+      "sha256": "b561379f38276fbeee7ca167a330fa7b297325eeb35d9428ca56e7b6c612ec63",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/check_nfce_emission_window_postgres.mjs",
+      "sha256": "f47aa9ac8d03f50f0619eeb8ac12eb1f8608be6b94f6222213820a79323958eb",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/check_stored_response_revalidation_postgres.mjs",
+      "sha256": "56f97c3629c92de4354dfd0af5aa415af04e7035ccdc7b6e23dc57f5812b95a8",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/helpers/fiscal55-window-fixture.mjs",
+      "sha256": "63c827eda68212329de757b4398028960fddb294d591342a8e40e529dbf04ca2",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/helpers/purchase-receipts-apply-contract.mjs",
+      "sha256": "6937807ca11064b55f932776dd9c8eff4ff0a1274af33c62b438fd6e72516148",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/helpers/receipt-query-apply-contract.mjs",
+      "sha256": "b58fc199e6a96e9eaa719d4948d9991a71d188da424e0821c2758f94ce48f8f4",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_financial_import_authorization_apply.mjs",
+      "sha256": "ca34ac13436104c6f19137d2238ce06694b94020b5f2e84b84aabb1f97b32fe1",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_fiscal_authorization_apply.mjs",
+      "sha256": "fb88effda11ce4f2f653c4ac8217c852d3644ea5e9bbebc1356b6c0f78782980",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_fiscal_closure_lookup_apply.mjs",
+      "sha256": "3c02509fde2b1d7d480e21738098e01c91bddd6f757a7ea92535170c02e23c8d",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_fiscal_draft_status_apply.mjs",
+      "sha256": "2c8318a203c38c43c0d06d4be710987a236f9ed66812c8f458b688857a302040",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_fiscal_expired_closure_apply.mjs",
+      "sha256": "8a56c6874041dbe75444c302c954d8e86812c1137678d63536d1e53c617a7364",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_fiscal_gtin_profile_apply.mjs",
+      "sha256": "037fc4fe3506449a4517ffe86ab79462e4e2d42a5cb4d36de63a5b20cdb45448",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_fiscal_homologation_55_baseline.mjs",
+      "sha256": "81ca569ff1b2f43bec2ba6b8bf366cbf1a89736dc799cb008f52f8c422943e68",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_fiscal_homologation_55_window.mjs",
+      "sha256": "b19e03491d1eb124c0482a52fe18b892094da101be46b8574ac2c25f0f88a724",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_fiscal_numbering_seed.mjs",
+      "sha256": "f56379e6694126e1ba74b98665bbe081f55aed21f51779ca574c372192f21575",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_fiscal_stored_response_revalidation_apply.mjs",
+      "sha256": "e9e8561cf430fab5d060e89e906504dc625212b702ead96812562d876c7c3325",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_itau_legacy_readiness_apply.mjs",
+      "sha256": "265f8c95fe6b56cf74550d5b24c472ab8623078aa1802d97f647036748b7ab65",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_nfce_emission_window_apply.mjs",
+      "sha256": "fac3774f49aa33b91d667006909da24fe081777f42ed1fe6c893fa4d9915b555",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_purchase_price_capture_apply.mjs",
+      "sha256": "8536d0092615cc3ebeafe8694e40c97da83c461cbbe7808db3367c89ffe7375b",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_purchase_readiness_apply.mjs",
+      "sha256": "de5baf32062bc19ccc95104e0781650092e993badd677eb0bce26f56e49487a0",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_purchase_receipts_apply.mjs",
+      "sha256": "b1525f429ec6b4abe07f3abc03aaaaa05c42dbefa5cedde98dd29bb79f50cd36",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_receipt_query_apply.mjs",
+      "sha256": "ed78f3fe38b274b9cf8c33e1488ae1a98e89ee7425ebf38474a8535d580ae9f7",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_reviewed_authorization_apply.mjs",
+      "sha256": "355e35ad94efad7fe75e9d62ec2ff208d42aa52245746277a9b202ce02621bb3",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 21,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_reviewed_preflight_apply.mjs",
+      "sha256": "9c574ab33980073bdeab592939e5443978996e91549450dd44a8bdfc128ba84a",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_sales_history_apply.mjs",
+      "sha256": "7817e42cd36f3eb952daed9b6024d77eb56cc36b06ff92c09b960adab90f821f",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 4,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_sales_history_campaign.mjs",
+      "sha256": "843b737c22ae781dae9b94885ad32a7de9eee9b26255c46a4f141278e56b9200",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_sales_price_capture_apply.mjs",
+      "sha256": "864990cba765088c12755aa2d45a167cd67d5391145d1abd2dc0de0b16ecd201",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_sales_price_refresh_apply.mjs",
+      "sha256": "0c951a6db3cdac8d3c2a50bea858e4aad70aeb06b1cd16f872098e550903ef7e",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 4,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_sales_readiness_apply.mjs",
+      "sha256": "edbf1d859c1d394f89d2a407a3b6d74ff6659044937fe42a658dc2d992b7d215",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_stock_observations_apply.mjs",
+      "sha256": "a37906b9ec0e1b819c89b251fa6062130c790441d8e5c1edb2be224e0fe3331a",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/prepare_warehouse_import_apply.mjs",
+      "sha256": "25ba2f16e5c5f75ed82526764a7db03b1d7b8c523bf12ee00ef3271c2e49fef2",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 4,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/test_document_finance_sql.mjs",
+      "sha256": "1129452cdf10e1b0751a51ac19f76b65c0cbe3f63db6f084781ebf6cca383fe2",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/test_financial_import_authorization_apply.mjs",
+      "sha256": "be0ecbfdf248a777c5b567fe0b79ddcba423172ab2623912986f619ac75ffc9e",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/test_fiscal_homologation_55_baseline.mjs",
+      "sha256": "da8108ec55781b192e402a72ba9082b89c426b019c97d617d60bf24de6daeed8",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/test_fiscal_homologation_55_window.mjs",
+      "sha256": "fb08d59c385805d470ce6aaba4824c4bedc79883aa49ca57e26d37bf4a783cfb",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 4,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/test_home_summary_favorites_sql.mjs",
+      "sha256": "e4bbf9b96250b7196c575314ca0dcb5175ef30b1d240878bf362293cd012ec4c",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/test_sales_history_campaign.mjs",
+      "sha256": "467d277a342c07c962c18c47afc4546b66c389c6f42a64f416c5310384b92f3b",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/migration/test_unsigned_xml_jobs_sql.mjs",
+      "sha256": "bcf4a129c3597340b1e1e5d569ff070a55ed6d57eef0d4b7d8a3886981c32d47",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/preferences/generate-definitions.mjs",
+      "sha256": "7066b33764e3227fd8aa7cfa26037b23a99bcd26ce9b05f992114a0db7fa3f34",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 8,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/qa/audit-distribution.mjs",
+      "sha256": "6685f7713934a7a10cdae04aa464bacf497f8883731b7731b0c59e45c8581af5",
+      "markers": {
+        "copyright": 2,
+        "license": 15,
+        "generated": 4,
+        "reference": 5
+      }
+    },
+    {
+      "path": "tools/qa/cnab-fixtures.mjs",
+      "sha256": "1009f535f1bbdc143ef1a6ff01ca865da207f3ea5b15d56371a13ec9b6265617",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/qa/seed-itau-net-credit.mjs",
+      "sha256": "a55ca44f2fcc52f9f4691c998e2e84e4d359ca335a346e35c6a236cb6f57ddf8",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/qa/seed-operational-returns.mjs",
+      "sha256": "967cedf03b6361292ff301957c5f20ebad10c567f1c957925c21ac98799b8b4e",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "tools/reference/build-reference-migration.mjs",
+      "sha256": "8128d538056bd4e593af50f0a265b67f25172ddf60524dae59761590afb2f106",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/src/boleto-preview.mjs",
+      "sha256": "270fb85708004434faa6d5ebf121b9e317427d128a8455132b301d19acd10258",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 7,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/src/cnab-operational-v2.mjs",
+      "sha256": "c8a3c76542ccb5d4220fdc833939aec00d1640be8fa60ca67bc7125ed3a0240d",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 25,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/src/cnab-operational.mjs",
+      "sha256": "9f67653abd4a5a3e262ac40685218b70c9da1ab1dbf452d7d62fbfafb4782099",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 24,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/src/cnab-returns.mjs",
+      "sha256": "f096133961dc6af10abb89ce76299822e3307a1544957269e94e5ff670ac4e1f",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 8,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/src/cnab-review.mjs",
+      "sha256": "a6bb3876ecfb8f44b17fbfd0977b7b2e591cbdf6bb12f347e3f8b1119740f322",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 4,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/src/cnab.mjs",
+      "sha256": "05fceb0aec76d751e637078931c623026a183881d3da6115eb76401a2e57acc7",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 24,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/src/contacts.mjs",
+      "sha256": "1b0d47bc47e5de92a794089ad9d405a2f56f585d415056463c8b646a79133240",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "workers/erp-api/src/document-extras.mjs",
+      "sha256": "a7b2758e3bb1eaeb7ffcccf912ede6c60f1df19cf2e126bcbf348a9525b74a24",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/src/documents.mjs",
+      "sha256": "a64d78892db33f21203ec4a2c97d08f822405243e31a12c009235675d392f338",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 2
+      }
+    },
+    {
+      "path": "workers/erp-api/src/finance-cnab-lists.mjs",
+      "sha256": "8f4d20730191dd839b68c6c32f8d73113be16ef4da7aaf912e06b3b7a0603f69",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 8,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/src/finance-recurrence.mjs",
+      "sha256": "3127953f002ea07712477efc40ce2377229140acd9174c32c5caad290ac4f38f",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 4,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/src/finance.mjs",
+      "sha256": "c2a0b6bde59a13e5523c8e98701547aff17f875280c0cee75dc92e06c084bc53",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 4,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/src/home.mjs",
+      "sha256": "67513607c6884ccf498d670bafc424117a43855ac075ddb415351cbcdaebf06a",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/src/origin-two-way.mjs",
+      "sha256": "b99713e7f677ab057f41c825a23198a3ad3ffe202ca41d6a777fca2b3bad5340",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "workers/erp-api/src/pos.mjs",
+      "sha256": "23852a47026e5fae4e8a30e4c68d0ae16e6b5beb5df9e1c1f70975988865c862",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "workers/erp-api/src/product-registry.mjs",
+      "sha256": "e246607f979def20313e063d5a8f0bc04baaf0902440e5a2c4c3c78df836de4c",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "workers/erp-api/src/stock-compositions.mjs",
+      "sha256": "32c1f3b51126df9da7c561f2e4988167301906fd52a87fb1f14bae7fdeed20eb",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "workers/erp-api/src/stock-invoices.mjs",
+      "sha256": "fd76a356b7d785c5230b4d99377469215af43a85c308fc90a530363ac9db0327",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "workers/erp-api/src/stock-supply.mjs",
+      "sha256": "8232493195c5e07649cb816fabe82c1d2cddea8c9fed2826848c9807b14f7618",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "workers/erp-api/src/stock.mjs",
+      "sha256": "a1b31e9a7361184fedc7dcd382dec87488c559b37be8b6765c521f9d31a30b93",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "workers/erp-api/test/boleto-operational-v2.test.mjs",
+      "sha256": "46bead6eed0d39f99b8f815962a7885bf5857373f78e3826ebabff74d23765ba",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/boleto-preview.test.mjs",
+      "sha256": "e35096716f2ac3929ff5285f3801494994e6b48674f5783c759656c4860e3fd6",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/business-builder.test.mjs",
+      "sha256": "c240624555ac89505996bbdf72ca7e1508bdda9cd29146aaa6da60eb1b113a39",
+      "markers": {
+        "copyright": 0,
+        "license": 1,
+        "generated": 0,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/business-dashboards-sql.test.mjs",
+      "sha256": "a4b87a68581343a259125b1a24767bf2fa441f45bf60e48be311c6e60b048a73",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 4,
+        "reference": 1
+      }
+    },
+    {
+      "path": "workers/erp-api/test/cnab-app.test.mjs",
+      "sha256": "f43f8f54f5dc4f56b9538f2417576ec49ee0804c89ff4ee606921aeec7d5571d",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 6,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/cnab-operational-access.test.mjs",
+      "sha256": "d7203fb9de601b9287c68456b45436446e85594940ab2c3557e637119391aa58",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/cnab-operational-v2-access.test.mjs",
+      "sha256": "fd5870f76c3fe2b1a1f8984fd3708be6c725782ba587057bf6133c4d0cb0fe57",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/cnab-operational-v2-interop.test.mjs",
+      "sha256": "6cdff82c49941c32edf5bc26e3d73f7cbf11e31284436c9a0786ee9548c9d0b0",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/cnab-operational-v2-sql.test.mjs",
+      "sha256": "ecbd9b5651f4e1dd1d7e8e6451f472b0741bec9b9b90845f9812772747993254",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 10,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/cnab-operational-v2.test.mjs",
+      "sha256": "f8917f0868b4962a6d014cb186652221c57add4f4f69a600b3efc4dd2a9bf857",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 4,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/cnab-operational.test.mjs",
+      "sha256": "9de79a71bfb3bca5701939599b4c79e76a0bd4bfa7cbb36c369e04670c0babcc",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 7,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/cnab-returns.test.mjs",
+      "sha256": "e74fd9d0afe2b983f60e65d9ca91a5ab641987465b423947071e43c4e15fbff4",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 5,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/cnab-review-app.test.mjs",
+      "sha256": "7ce3732231791b7ce2a89e6d8dbc685758cf53ec65c3a64d2c8fe06306ce9054",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 4,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/document-mirror-guards-sql.test.mjs",
+      "sha256": "6fba05b079b77209c05466bbfc5354da99e512ec345c5b8fc4cc5da1552be5c5",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 4
+      }
+    },
+    {
+      "path": "workers/erp-api/test/document-mirror-sql.test.mjs",
+      "sha256": "df2d4c3ff677f827314ae3c93b2e0de979765c7bc8e3f722d7fce104dbb94578",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 2
+      }
+    },
+    {
+      "path": "workers/erp-api/test/document-rules-sellers-sql.test.mjs",
+      "sha256": "2364f2cc450957af0af97e490669033e0f5440cee728ac145c04884a55060c71",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/finance-cnab-lists-sql.test.mjs",
+      "sha256": "bcaa8618d748eb421326ab01810dd25e229e4f9144b63d2bdcf81e5a2a12b62c",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 6,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/finance-grouped-billing-sql.test.mjs",
+      "sha256": "88ffaaa0b783a018b67b16771316703671542dabca9bbf071cdf15029d66f5cf",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/finance-invoice-postings-sql.test.mjs",
+      "sha256": "47a9ad5bef0664858bc4cbaaa456e2a62c00153fd411a3adc849918cd6099780",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 5,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/finance-parity-c-sql.test.mjs",
+      "sha256": "e6aa461023893a34762dcec624e9f7a7e108e814b47866705fe87e5726b282f0",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/finance-parity-e-sql.test.mjs",
+      "sha256": "1f66423819d6afa4371139983bd662440c1bd31330db818a3003099fda3b8927",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/finance-recurrence-import-sql.test.mjs",
+      "sha256": "b967a72b4a7c5a555ed8464c14c755f5f58c5b3b3bef7faa7d77f7d1c804e5cb",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/finance-title-drawer-route.test.mjs",
+      "sha256": "0b4e0633261fae01a2eca92d8e855643ae4fed1d2f66f4a74c3c4507dfbdec4f",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/finance-title-drawer-sql.test.mjs",
+      "sha256": "e225b9170a921de9ce84f8b0c3d5cac5bc237c926a6779bf10eb7c87622e3b1f",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/finance-title-page-v2-sql.test.mjs",
+      "sha256": "4743d9d5f876d3417b208ab34fdc42c99b45bb9dae2eb00ea75d8c03688f6af1",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/financeiro-h-posting-policy-sql.test.mjs",
+      "sha256": "f5dc38e2a9f93aea6446899ee80c7e7e4c4262b8a49f99e83cc85e6f95a8029d",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/fiscal-invoice-order-sql.test.mjs",
+      "sha256": "3161b8d23ca51aeb63e8ca850d055b610fbadb26bdf1b540ac54826443167e1f",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/fiscal-tax-access.test.mjs",
+      "sha256": "07f5c9a421a2401ee0e5155ce07a9c6f2cbd0fe55b9fec2d8ad922542d4fa7a5",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/fiscal-tax-preparation.test.mjs",
+      "sha256": "7b0eed483fe8dc58ecf71dcaa6675a38ab7bc9982182be2d8402f7b91825c890",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/helpers/boleto-preview-fixture.mjs",
+      "sha256": "37b2817cdc59f69ea6ad3cfeb950d1d76cd3f0d68a963b51aacd170161a3d22f",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 25,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/helpers/cnab-operational-v2-fixture.mjs",
+      "sha256": "4c0ca95ca2b055fa58e5527e2717c24835072543ba779218253df5a10d8dcd78",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 8,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/helpers/fiscal-xml-signer.mjs",
+      "sha256": "789642742c6eb9c493dd99d399f77b56f4284792d1246be36768b8b3205e5cb4",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/helpers/itau-net-credit-fixture.mjs",
+      "sha256": "4d3dc5b9169f109996ac6daf1fd3a0867c6840a76c5ecb0dcfdce9abf6cfab43",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/home-company-c-sql.test.mjs",
+      "sha256": "8ed1a91fdf79310fa88d5f16631b17ae743cd1f3db6a0a49c1ac75f7e14501de",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/home-shortcut-catalog-sql.test.mjs",
+      "sha256": "a24789b0dcaf25c83401e2dfca1caa33717a063f6423209bb40804b7236f2470",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 12,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/misto-f-preferences-sql.test.mjs",
+      "sha256": "1ac11d270656fefe18c05b74bf7593f91e156b0734a9dffeeccdb82c23951091",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/notifications-c-sql.test.mjs",
+      "sha256": "0fa8183708797fc1faa8495f85e9eafe304c3f63568b91ac31d133e4f3033342",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/pos-sql.test.mjs",
+      "sha256": "cf53b369d03fdee6600a4befd7aea56833757feb88188b0f7f52bd6f6669722f",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 1,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/preferences-c-sql.test.mjs",
+      "sha256": "93d787abf29d1b6895094463b593cc547fc484ce581f2ea1111eb7a59b422607",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/preferences-sql.test.mjs",
+      "sha256": "2d0d76717eea368f3f3d20de3a13304e99937bf6907fca286387b08aa63cd0c3",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 3,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/product-list-origin-stock-http.test.mjs",
+      "sha256": "88bb02e07d05eaf26f341f1c4f05eedd678dd3d2d64214c7b377aea0f19413a8",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 5
+      }
+    },
+    {
+      "path": "workers/erp-api/test/produtos-c-tags-sql.test.mjs",
+      "sha256": "88bda1f7ac28d230711c98982e64a797da17190a5d432747d5e403cb3399c0ed",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 0,
+        "reference": 1
+      }
+    },
+    {
+      "path": "workers/erp-api/test/produtos-d-registry-sql.test.mjs",
+      "sha256": "ca85c0140348596aef464cd4bb113e51352ab3468e3c4f3f06b2c779a5aa3a16",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    },
+    {
+      "path": "workers/erp-api/test/system-profile-sql.test.mjs",
+      "sha256": "7c666872b0253f7e60e0698f0e08ca9e29f46e7795ea66fc8d41af39c38bf128",
+      "markers": {
+        "copyright": 0,
+        "license": 0,
+        "generated": 2,
+        "reference": 0
+      }
+    }
+  ]
+}

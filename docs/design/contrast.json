@@ -1,0 +1,54 @@
+{
+  "method": "WCAG relative luminance for selected semantic token pairs. Not a full accessibility audit.",
+  "pairs": [
+    {
+      "name": "Texto claro",
+      "text": "#393546",
+      "background": "#ffffff",
+      "ratio": 11.85,
+      "normalTextAA": true
+    },
+    {
+      "name": "Secundário claro",
+      "text": "#6a6378",
+      "background": "#f5f4f8",
+      "ratio": 5.23,
+      "normalTextAA": true
+    },
+    {
+      "name": "Botão claro",
+      "text": "#ffffff",
+      "background": "#6941c6",
+      "ratio": 6.62,
+      "normalTextAA": true
+    },
+    {
+      "name": "Texto escuro",
+      "text": "#e5dff0",
+      "background": "#211e2b",
+      "ratio": 12.56,
+      "normalTextAA": true
+    },
+    {
+      "name": "Secundário escuro",
+      "text": "#b7aec7",
+      "background": "#211e2b",
+      "ratio": 7.7,
+      "normalTextAA": true
+    },
+    {
+      "name": "Botão escuro",
+      "text": "#211238",
+      "background": "#b89af7",
+      "ratio": 7.45,
+      "normalTextAA": true
+    },
+    {
+      "name": "Menu",
+      "text": "#d4cbdf",
+      "background": "#252131",
+      "ratio": 10,
+      "normalTextAA": true
+    }
+  ]
+}

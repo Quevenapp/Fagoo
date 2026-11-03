@@ -1,0 +1,209 @@
+{
+  "format": 1,
+  "assets": [
+    {
+      "path": "apps/erp/public/fagoo-mark.svg",
+      "bytes": 357,
+      "sha256": "abdf61ab8b2d47ef7ef499e4554f85c384c1aee80dc3d2988f6d3425b4d51f86",
+      "group": "image-or-document"
+    },
+    {
+      "path": "apps/erp/src/fonts/inter-latin-400-normal.woff2",
+      "bytes": 23692,
+      "sha256": "dd05e326cf8eac3b55acecf29c842ed73e6e6dd06491cf47f7e8800680ab3e33",
+      "group": "font"
+    },
+    {
+      "path": "apps/erp/src/fonts/inter-latin-600-normal.woff2",
+      "bytes": 24304,
+      "sha256": "62553d159189834af73c9a6264704be5b2bee9a08da66a14768d8e5c6ffd2cdb",
+      "group": "font"
+    },
+    {
+      "path": "apps/erp/src/fonts/inter-latin-700-normal.woff2",
+      "bytes": 24352,
+      "sha256": "aac638f7503cebb084ec494cf00f75f7d8260d50c2f4e7820bccabba09626a3a",
+      "group": "font"
+    },
+    {
+      "path": "apps/erp/src/fonts/manrope-latin-wght-normal.woff2",
+      "bytes": 24836,
+      "sha256": "a30ddcd349703aff7464c34bef3fffdff405ee50c113440d7c8693c02d210972",
+      "group": "font"
+    },
+    {
+      "path": "apps/erp/src/fonts/source-sans-3-latin-wght-normal.woff2",
+      "bytes": 28872,
+      "sha256": "19143dca075972bc84e3fd9eab7416dd40cc565dccb2435a044bdfabe060c7d5",
+      "group": "font"
+    },
+    {
+      "path": "packages/fiscal-authorization/receipt-schema/consReciNFe_v4.00.xsd",
+      "bytes": 461,
+      "sha256": "8103c95f6fd318d6740d276f50bcb3b6395a407e9a21f2df27db1dcfe9914f6e",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-authorization/receipt-schema/retConsReciNFe_v4.00.xsd",
+      "bytes": 467,
+      "sha256": "47c451ced7286ee444088312d5d5142c01fa278de37e12a6acf26693a48711e4",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-authorization/schema/enviNFe_v4.00.xsd",
+      "bytes": 453,
+      "sha256": "ec61e07fd12f9691271125379e5c1f06020552d1067c46d24cd3350ef11d778e",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-authorization/schema/procNFe_v4.00.xsd",
+      "bytes": 453,
+      "sha256": "394286a44b97fc741293b8b088cd27eaa1715f2779ae01f9eb046ee7892ef5ae",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-authorization/schema/retEnviNFe_v4.00.xsd",
+      "bytes": 459,
+      "sha256": "dd273bbbeddff829392d02f104b310268f065cbe3c66c7b5f17168eed191f181",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-schema/schemas/distribution-v1.04/distDFeInt_v1.01.xsd",
+      "bytes": 4030,
+      "sha256": "2d95df1430b0f0e2b04c6f29cf6bb69cdb5a392ac52102987653902b9a34ff7a",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-schema/schemas/distribution-v1.04/resEvento_v1.01.xsd",
+      "bytes": 4493,
+      "sha256": "77bd5c05e336fa2854f8ab71316e07fe30759c5efedf493bb684a77c26af9d55",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-schema/schemas/distribution-v1.04/resNFe_v1.01.xsd",
+      "bytes": 4927,
+      "sha256": "6ca072e27d72d3a74065d3414af669f7ad525f8883a22af89d22da96095856fa",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-schema/schemas/distribution-v1.04/retDistDFeInt_v1.01.xsd",
+      "bytes": 4399,
+      "sha256": "059c4183e190282851337e80725c6ac4e996736a85077246d8711b3b31406236",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-schema/schemas/distribution-v1.04/tiposDistDFe_v1.01.xsd",
+      "bytes": 8257,
+      "sha256": "0bc215b9bda6422e37c2c28b80590b4c5ba3041f0db85ca17ebba61edadd7547",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-schema/schemas/pl010f-v1.04/DFeTiposBasicos_v1.00.xsd",
+      "bytes": 72672,
+      "sha256": "173577a4e3a9dc1d0deced85b89b955b6064bb5a4ae5a96f6727d2da8a694d09",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-schema/schemas/pl010f-v1.04/leiauteNFe_v4.00.xsd",
+      "bytes": 352538,
+      "sha256": "2bace939973916d54184ff3e2740041a932de5d79772f3363504504160f22542",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-schema/schemas/pl010f-v1.04/nfe_v4.00.xsd",
+      "bytes": 716,
+      "sha256": "adce3646c13ceb54922ec3142fc1dc45bd4fb839ac35ad583e86c733c07d27df",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-schema/schemas/pl010f-v1.04/tiposBasico_v4.00.xsd",
+      "bytes": 22532,
+      "sha256": "772619c85723e598840667ca66e7298a250442df47eeb94b397d2a333ce62047",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-schema/schemas/pl010f-v1.04/xmldsig-core-schema_v1.01.xsd",
+      "bytes": 3747,
+      "sha256": "f56744a5f51c03f027de13f39f869307091781a9ef1d91b1ebe14719ce28e1ac",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-schema/schemas/protocol-pl010d-v1.03/consSitNFe_v4.00.xsd",
+      "bytes": 577,
+      "sha256": "44d816a725553a0c53508be919629c9235b42c5d41c358a05be8fdf61945f5c1",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-schema/schemas/protocol-pl010d-v1.03/leiauteConsSitNFe_v4.00.xsd",
+      "bytes": 20523,
+      "sha256": "646e3a6bd26720b12a1322d5d25181504d82175c3650e14a1120dfb65895b618",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-schema/schemas/protocol-pl010d-v1.03/retConsSitNFe_v4.00.xsd",
+      "bytes": 611,
+      "sha256": "8b7188d6fe9e879ca057bfb68600746c7491d2e092e3dc5121a6cd5aa79272d5",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-schema/schemas/protocol-pl010d-v1.03/tiposBasico_v4.00.xsd",
+      "bytes": 22532,
+      "sha256": "772619c85723e598840667ca66e7298a250442df47eeb94b397d2a333ce62047",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-schema/schemas/protocol-pl010d-v1.03/xmldsig-core-schema_v1.01.xsd",
+      "bytes": 3747,
+      "sha256": "f56744a5f51c03f027de13f39f869307091781a9ef1d91b1ebe14719ce28e1ac",
+      "group": "fiscal-schema"
+    },
+    {
+      "path": "packages/fiscal-vault/trust/icp-brasil-v10.pem",
+      "bytes": 2374,
+      "sha256": "3b3ef39649ba13e10a99bc042cfc112723d8e0503326174f15ab89941a0f33e0",
+      "group": "public-trust-anchor"
+    },
+    {
+      "path": "packages/fiscal-vault/trust/icp-brasil-v11.pem",
+      "bytes": 2374,
+      "sha256": "1437394beb7eb04180a94c480319f432dc27ca9d6ebc036b73f10e2a17a7d7d8",
+      "group": "public-trust-anchor"
+    },
+    {
+      "path": "packages/fiscal-vault/trust/icp-brasil-v12.pem",
+      "bytes": 2374,
+      "sha256": "ce6c66c73e41b12881ea8a9b8cb7efef9a482ea012c3cd3b843667e37a7a145c",
+      "group": "public-trust-anchor"
+    },
+    {
+      "path": "packages/fiscal-vault/trust/icp-brasil-v13.pem",
+      "bytes": 1883,
+      "sha256": "da54711b5816a2487903c62de28402dca2eea21ccc4e977f1d2645486d84d30c",
+      "group": "public-trust-anchor"
+    },
+    {
+      "path": "packages/fiscal-vault/trust/icp-brasil-v4.pem",
+      "bytes": 1870,
+      "sha256": "857ff3bf31628979e479c5bc0bdf3e706bcc7bafb7ddf0c1134fc21f1cfab141",
+      "group": "public-trust-anchor"
+    },
+    {
+      "path": "packages/fiscal-vault/trust/icp-brasil-v5.pem",
+      "bytes": 2358,
+      "sha256": "5bd85f219695dabe6cf3d4bd713d9bd8e41b2323194022acf1acd658daef148a",
+      "group": "public-trust-anchor"
+    },
+    {
+      "path": "packages/fiscal-vault/trust/icp-brasil-v6.pem",
+      "bytes": 1155,
+      "sha256": "a91e45782e58755dffc6621cb05c2342db74398ffc6e930b0b3a23325a3bfdfd",
+      "group": "public-trust-anchor"
+    },
+    {
+      "path": "packages/fiscal-vault/trust/icp-brasil-v7.pem",
+      "bytes": 1220,
+      "sha256": "4fe1d8599fc00f0b61b12391c98d97af36bcada115bd894f8755e01e212bc4be",
+      "group": "public-trust-anchor"
+    }
+  ]
+}
