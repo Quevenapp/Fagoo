@@ -27,12 +27,12 @@ test('Dados do Origin: read only fields, and the Transportador complement repeat
     if (path.startsWith('/v1/espelho-origin/transportadores/')) { if (failNext) { failNext = false; throw new AccessError(503); } complement = options.body.carrier; return { scope: 'contact_carrier_complement' }; }
     return mirror({ local_complements: complement ? ['carrier_complement'] : [] });
   } };
-  const view = await mountComponent('OriginMirrorPanel.tsx', { controller, entity: 'contacts', id: contact, writable: true });
+  const view = await mountComponent('OriginMirrorPanel.tsx', { controller, entity: 'contacts', id: contact, writable: true, showOrigin: true });
   try {
     await view.flush();
     assert.doesNotMatch(view.text(), /Transportes Sintéticos/, 'collapsed until opened');
     await view.click('Dados do Origin'); await view.flush();
-    assert.match(view.text(), /Origem: Origin, id 501/); assert.match(view.text(), /nf@sintetico\.test/); assert.match(view.text(), /altere-os no Origin/);
+    assert.match(view.text(), /Origem: Origin, id 501/); assert.match(view.text(), /nf@sintetico\.test/); assert.match(view.text(), /Dados preservados da origem do cadastro/);
     const box = () => view.nodes().find(n => n.type === 'input' && n.props.type === 'checkbox');
     box().props.onChange(); await new Promise(resolve => setTimeout(resolve, 20)); await view.flush();
     assert.match(view.text(), /Conferir resultado/);
@@ -45,10 +45,10 @@ test('Dados do Origin: read only fields, and the Transportador complement repeat
 
 test('a cadastro without Origin link says so; the product panel never offers the complement', async () => {
   const controller = { async originMirror() { return { ...mirror({ entity: 'products', id: product, linked: false, source_id: null, state: null, synced_at: null, fields: {} }) }; } };
-  const view = await mountComponent('OriginMirrorPanel.tsx', { controller, entity: 'products', id: product, writable: true });
+  const view = await mountComponent('OriginMirrorPanel.tsx', { controller, entity: 'products', id: product, writable: true, showOrigin: true });
   try {
     await view.click('Dados do Origin'); await view.flush();
-    assert.match(view.text(), /sem vínculo com o Origin/); assert.doesNotMatch(view.text(), /Transportador/);
+    assert.match(view.text(), /Cadastro registrado no FAGOO/); assert.doesNotMatch(view.text(), /Transportador/);
   } finally { view.unmount?.(); }
 });
 
@@ -88,5 +88,24 @@ test('Exclusões do Origin: listed for review and applied with the expected vers
     await view.click('Mover para Excluídos'); await new Promise(resolve => setTimeout(resolve, 20)); await view.flush();
     const sent = calls.find(call => call.method === 'POST');
     assert.equal(sent.path, `/v1/espelho-origin/exclusoes/${product}`); assert.deepEqual([sent.body.expected_version, sent.body.action], [4, 'delete']);
+  } finally { view.unmount?.(); }
+});
+
+
+test('a fresh native contact preserves the Transportador complement without connector text', async () => {
+  const calls = []; let carrier = false;
+  const controller = { async originMirror(path, options = {}) {
+    calls.push({ path, method: options.method ?? 'GET', body: options.body });
+    if (options.method === 'POST') { carrier = options.body.carrier; return { scope: 'contact_carrier_complement' }; }
+    return mirror({ linked: false, source_id: null, state: null, synced_at: null, fields: {}, local_complements: carrier ? ['carrier_complement'] : [] });
+  } };
+  const view = await mountComponent('OriginMirrorPanel.tsx', { controller, entity: 'contacts', id: contact, writable: true });
+  try {
+    await view.click('Dados complementares'); await view.flush();
+    assert.match(view.text(), /Transportador/); assert.doesNotMatch(view.text(), /Origin/);
+    const box = () => view.nodes().find(n => n.type === 'input' && n.props.type === 'checkbox');
+    box().props.onChange(); await new Promise(resolve => setTimeout(resolve, 20)); await view.flush();
+    assert.equal(box().props.checked, true); assert.match(view.text(), /marcado como transportador/);
+    assert.equal(calls.filter(call => call.method === 'POST').length, 1);
   } finally { view.unmount?.(); }
 });

@@ -41,6 +41,21 @@ class DeploymentTests(unittest.TestCase):
         changed = {**self.values, 'FAGOO_WEB_ORIGIN': 'https://another.example.test'}
         self.assertNotEqual(self.api['name'], DEPLOY.configurations(changed, self.account, self.zone)[0]['name'])
 
+    def test_history_is_explicit_and_preserved_by_deploy_without_enabling_synchronization(self):
+        self.assertEqual(self.api['vars']['ORIGIN_HISTORY_ENABLED'], 'false')
+        with self.path.open('a') as config:
+            config.write('ORIGIN_HISTORY_ENABLED=true\nORIGIN_ENABLED=true\nORIGIN_TWO_WAY_ENABLED=true\n')
+        values = DEPLOY.configuration(self.path)
+        for _ in range(2):
+            api, _web = DEPLOY.configurations(values, self.account, self.zone)
+            self.assertEqual(api['vars']['ORIGIN_HISTORY_ENABLED'], 'true')
+            self.assertEqual(api['vars']['ORIGIN_ENABLED'], 'false')
+            self.assertEqual(api['vars']['ORIGIN_TWO_WAY_ENABLED'], 'false')
+        self.assertNotIn('ORIGIN_HISTORY_ENABLED', DEPLOY.public_environment(values))
+        for invalid in ('TRUE', '1', '', True):
+            with self.subTest(invalid=invalid), self.assertRaisesRegex(ValueError, 'ORIGIN_HISTORY_CONFIGURATION_INVALID'):
+                DEPLOY.configurations({**values, 'ORIGIN_HISTORY_ENABLED': invalid}, self.account, self.zone)
+
     def test_swapped_public_and_privileged_keys_are_rejected(self):
         text = self.path.read_text()
         self.path.write_text(text.replace('ANON_KEY=' + self.values['ANON_KEY'], 'ANON_KEY=' + self.values['SERVICE_ROLE_KEY']))

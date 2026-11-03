@@ -359,7 +359,7 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
             const rpc=createServiceRpc({baseUrl:settings.baseUrl,key:settings.key,fetchImpl});
             ctx.waitUntil(runOriginTwoWay({rpc,env,budgetMs:25000}).catch(()=>null));
           }
-          return respond(200,result);
+          return respond(200,{...result,enabled:result.enabled&&env.ORIGIN_ENABLED==='true'&&env.ORIGIN_TWO_WAY_ENABLED==='true'});
         }catch(error){if(error instanceof OriginSyncRouteError)throw new ApiError(error.status,error.code);throw error;}
       }
       // Leva H (310): Preferências › Segurança, self-contained dispatch with the same origin, preflight and session checks.
@@ -973,7 +973,9 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
             body: JSON.stringify({ app_metadata: { brufap_access_gate: true } }) }, 'authAdmin'); } catch { /* The gate below still decides this request; the next /me writes the flag again. */ }
           await accessGate(user, settings, token, true);
         }
-        return respond(200, { user_id: user.id, role: result.role, resources: result.resources, data_mode: 'staging_readonly' });
+        return respond(200, { user_id: user.id, role: result.role, resources: result.resources, data_mode: 'staging_readonly',
+          capabilities: { originIntegration: env.ORIGIN_ENABLED === 'true' && env.ORIGIN_TWO_WAY_ENABLED === 'true',
+            originHistory: env.ORIGIN_ENABLED === 'true' || env.ORIGIN_HISTORY_ENABLED === 'true' } });
       }
       return respond(200, safeList(result, match[1], query));
     } catch (error) {

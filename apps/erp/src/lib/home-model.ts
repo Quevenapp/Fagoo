@@ -175,8 +175,8 @@ export function homeShortcutOptions(available:readonly string[],access?:CompanyA
   return options;
 }
 export function homeSessionAccess(state:unknown):(CompanyAccess&{user_id:string})|null{
-  const s=state as {phase?:string;membership?:{user_id?:unknown;role?:unknown;resources?:unknown}}|null;
+  const s=state as {phase?:string;membership?:{user_id?:unknown;role?:unknown;resources?:unknown;capabilities?:{originIntegration?:boolean;originHistory?:boolean}}}|null;
   const member=s?.membership;
   if(s?.phase!=='ready'||!member||typeof member.user_id!=='string'||typeof member.role!=='string'||!ROLES.includes(member.role)||!Array.isArray(member.resources))return null;
-  return {user_id:member.user_id,role:member.role,resources:member.resources.filter((value):value is string=>typeof value==='string')};
+  return {user_id:member.user_id,role:member.role,resources:member.resources.filter((value):value is string=>typeof value==='string'),...(member.capabilities?{capabilities:{originIntegration:member.capabilities.originIntegration===true,originHistory:member.capabilities.originHistory===true}}:{})};
 }

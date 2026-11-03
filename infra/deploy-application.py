@@ -83,6 +83,9 @@ def read_token():
 def configurations(values, account_id, zone_id):
     if not re.fullmatch('[a-f0-9]{32}', account_id) or not re.fullmatch('[a-f0-9]{32}', zone_id):
         raise ValueError('CLOUDFLARE_IDENTIFIERS_INVALID')
+    history_enabled = values.get('ORIGIN_HISTORY_ENABLED', 'false')
+    if history_enabled not in ('true', 'false'):
+        raise ValueError('ORIGIN_HISTORY_CONFIGURATION_INVALID')
     suffix = hashlib.sha256(values['FAGOO_WEB_ORIGIN'].encode()).hexdigest()[:12]
     common = {'account_id': account_id, 'compatibility_date': '2026-10-15',
               'workers_dev': False, 'preview_urls': False, 'observability': {'enabled': False}}
@@ -93,7 +96,8 @@ def configurations(values, account_id, zone_id):
                        'custom_domain': True, 'zone_id': zone_id}],
            'vars': {'BACKUP_IMPORT_ENABLED': 'false', 'SUPABASE_DEPLOYMENT': 'self-hosted',
                     'SUPABASE_URL': values['FAGOO_BACKEND_ORIGIN'], 'ALLOWED_ORIGINS': values['FAGOO_WEB_ORIGIN'],
-                    'ERP_SCHEDULED_TASKS_ENABLED': 'false', 'ORIGIN_ENABLED': 'false', 'ORIGIN_TWO_WAY_ENABLED': 'false'}}
+                    'ERP_SCHEDULED_TASKS_ENABLED': 'false', 'ORIGIN_ENABLED': 'false', 'ORIGIN_TWO_WAY_ENABLED': 'false',
+                    'ORIGIN_HISTORY_ENABLED': history_enabled}}
     web = {**common, 'name': 'fagoo-web-' + suffix,
            'routes': [{'pattern': urllib.parse.urlsplit(values['FAGOO_WEB_ORIGIN']).hostname,
                        'custom_domain': True, 'zone_id': zone_id}],

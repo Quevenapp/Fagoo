@@ -66,7 +66,7 @@ test('229 /v1/me: outside the access windows the session is refused with its own
   const h=createHandler({fetchImpl:async url=>Response.json(url.endsWith('/auth/v1/user')?{id:ACTOR}:me(window))});
   const r=await h(new Request('https://api.synthetic.test/v1/me',{headers}),env);assert.equal(r.status,status,String(window));
   if(status===403)assert.match(await r.text(),/ERP_ACCESS_OUTSIDE_SCHEDULE/);
-  if(status===200)assert.deepEqual(Object.keys(await r.json()).sort(),['data_mode','resources','role','user_id']);
+  if(status===200)assert.deepEqual(Object.keys(await r.json()).sort(),['capabilities','data_mode','resources','role','user_id']);
  }
 });
 

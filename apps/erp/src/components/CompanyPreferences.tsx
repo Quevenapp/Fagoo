@@ -35,7 +35,7 @@ import type {NativeRequestOptions} from '../lib/real-access';
 export default function CompanyPreferences({controller,state}:{controller:PreferencesController&UsersController&SystemLogController&BusinessController&{catalog?:(path:string,options?:NativeRequestOptions)=>Promise<unknown>};state:AccessState}){
  const {pathname}=useLocation();
  if(pathname==='/meu-negocio')return <BusinessDashboards key={state.membership!.user_id} controller={controller}/>;
- const categories=resolvePreferences({role:state.membership!.role,resources:state.membership!.resources}),route=parsePreferencesPath(pathname);
+ const categories=resolvePreferences({role:state.membership!.role,resources:state.membership!.resources,capabilities:state.membership!.capabilities}),route=parsePreferencesPath(pathname);
  if(route.kind==='hub'&&(!route.category||categories.some(c=>c.id===route.category)))return <PreferencesPage key={state.membership!.user_id} homeTo="/acesso" categories={categories} initialCategory={route.category} categoryHref={id=>`/preferencias/${id}`}/>;
  if(route.kind==='page'){const category=COMPANY_PREFERENCES.find(c=>c.id===route.page.category);
   // A page outside the hub (Meu Negócio > Ajustes, migration 150) returns to its own screen.

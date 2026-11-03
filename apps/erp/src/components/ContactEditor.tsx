@@ -1,3 +1,4 @@
+import { originHistoryAvailable } from '../lib/integration-capabilities';
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { useReferenceOptions } from '../hooks/useReferenceOptions';
 import type { PlatformPort } from '../lib/platform-model';
@@ -160,7 +161,7 @@ function ContactForm({ controller, record, writable, onClose, onSaved }: Catalog
         {writable && !excluded && <button className="primary-button" disabled={locked} type="submit" form="catalog-editor-form">{saver.busy ? 'Salvando…' : 'Salvar'}</button>}</div>
       {writable && !excluded && <p className="catalog-required"><span>(*)</span> Campos obrigatórios</p>}</header>
     {excluded && <p className="real-alert" role="status">Cadastro excluído. Para editar, restaure-o na listagem com “Restaurar selecionados”.</p>}
-    {record?.source && <p className="real-help">Cadastro originado do Origin. As alterações desta tela pertencem ao FAGOO; o Origin continua sendo o sistema principal.</p>}
+    {record?.source && <p className="real-help">Cadastro importado. As alterações desta tela são registradas no FAGOO.</p>}
     {saver.error && <p className="real-alert" role="alert" id="contact-error">{saver.error}</p>}
     {saver.warnings && <div className="catalog-warnings" role="alert" aria-labelledby="contact-warnings-title"><h3 id="contact-warnings-title">Confira antes de salvar</h3><ul>{saver.warnings.items.map(item => <li key={item.code}>{warningMessage(item)}</li>)}</ul>
       {!saver.warnings.items.some(item => item.blocked) && <p>Existem cadastros antigos com duplicidade. Salve somente se tiver certeza; a confirmação fica registrada na auditoria do cadastro.</p>}
@@ -227,7 +228,7 @@ function ContactForm({ controller, record, writable, onClose, onSaved }: Catalog
           </div></section>
         <section className="contact-section"><h3 className="catalog-group-title">Observações</h3><div className="contact-grid">{field(SECTION_FIELDS.observacoes[0])}</div></section>
         {/* Leva H (350): os campos do Origin, a origem, a sincronização e o complemento Transportador do FAGOO. */}
-        {record && <OriginMirrorPanel controller={controller} entity="contacts" id={record.id} writable={writable && !excluded} />}
+        {record && <OriginMirrorPanel showOrigin={originHistoryAvailable(controller.getSnapshot().membership)} controller={controller} entity="contacts" id={record.id} writable={writable && !excluded} />}
         <section className="contact-section"><button type="button" className="contact-collapse" aria-expanded={attachmentsOpen} onClick={() => setAttachmentsOpen(!attachmentsOpen)}><Icon name={attachmentsOpen ? 'chevron-down' : 'chevron-right'} size={11} /><h3 className="catalog-group-title">Anexos</h3></button>
           {attachmentsOpen && (record ? <ContactFiles controller={controller} contactId={record.id} writable={writable && !excluded} />
             : <p className="real-help">Salve o cadastro para anexar arquivos.</p>)}</section>

@@ -67,7 +67,7 @@ test('export keeps the native Estoque of the Origin sheet and adds its own Origi
 function server(page) {
   const calls = [];
   const controller = {
-    getSnapshot: () => ({ phase: 'ready', membership: { user_id: actor, role: 'consulta' } }),
+    getSnapshot: () => ({ phase: 'ready', membership: { user_id: actor, role: 'consulta', capabilities: { originHistory: true } } }),
     async catalog(path, options = {}) {
       calls.push({ path, method: options.method });
       if (path === '/v1/cadastros') return { data_mode: 'erp_native', read: ['products'], write: [] };

@@ -24,6 +24,50 @@ test('authenticated ERP API preserves actor derivation and RPC paths on self-hos
   assert.ok(calls.every(({ options }) => options.redirect === 'manual'));
 });
 
+test('session capabilities come only from explicit server flags, never RPC or request claims', async () => {
+  const handler = createHandler({ fetchImpl: async url => Response.json(url.endsWith('/auth/v1/user')
+    ? { id: user, user_metadata: { originIntegration: true } }
+    : { user_id: user, role: 'admin', resources: ENTITIES, data_mode: 'staging_readonly', capabilities: { originIntegration: true } }) });
+  for (const [flags, originIntegration, originHistory] of [[{}, false, false], [{ ORIGIN_ENABLED: 'true' }, false, true], [{ ORIGIN_TWO_WAY_ENABLED: 'true' }, false, false],
+    [{ ORIGIN_ENABLED: 'false', ORIGIN_TWO_WAY_ENABLED: 'true' }, false, false],
+    [{ ORIGIN_ENABLED: 'true', ORIGIN_TWO_WAY_ENABLED: 'true' }, true, true],
+    [{ ORIGIN_HISTORY_ENABLED: 'true' }, false, true]]) {
+    const response = await handler(request(), { ...env, ...flags });
+    assert.equal(response.status, 200);
+    assert.deepEqual((await response.json()).capabilities, { originIntegration, originHistory });
+  }
+});
+
+test('synchronization status requires both runtime flags and SQL enablement; disabled requests never run', async () => {
+  let databaseEnabled = true;
+  const calls = [];
+  const handler = createHandler({ fetchImpl: async url => {
+    calls.push(url);
+    if (url.endsWith('/auth/v1/user')) return Response.json({ id: user });
+    assert.ok(url.endsWith('/rpc/erp_sync_status'), url);
+    return Response.json({ scope: 'origin_sync', enabled: databaseEnabled, actor_configured: false,
+      push: { pending: 2, failed: 0, last_sent_at: null }, pull: { pending: 0, failed: 0, last_applied_at: null },
+      issues: 0, recent_issues: [], run: null });
+  } });
+  const syncRequest = method => new Request('https://api.customer.example/v1/sincronizacao-origin',
+    { method, headers: { Authorization: 'Bearer synthetic-user' } });
+  for (const flags of [{}, { ORIGIN_ENABLED: 'true' }, { ORIGIN_TWO_WAY_ENABLED: 'true' },
+    { ORIGIN_ENABLED: 'false', ORIGIN_TWO_WAY_ENABLED: 'true' }]) {
+    const got = await handler(syncRequest('GET'), { ...env, ...flags });
+    assert.equal(got.status, 200);
+    const status = await got.json();
+    assert.equal(status.enabled, false);
+    assert.equal(status.push.pending, 2, 'historical queue counts remain truthful');
+    const before = calls.length;
+    assert.equal((await handler(syncRequest('POST'), { ...env, ...flags })).status, 503);
+    assert.equal(calls.length, before);
+  }
+  const enabled = { ...env, ORIGIN_ENABLED: 'true', ORIGIN_TWO_WAY_ENABLED: 'true' };
+  assert.equal((await (await handler(syncRequest('GET'), enabled)).json()).enabled, true);
+  databaseEnabled = false;
+  assert.equal((await (await handler(syncRequest('GET'), enabled)).json()).enabled, false);
+});
+
 test('backend self-hosting requires opt-in and rejects malformed origins before any network access', async () => {
   const handler = createHandler({ fetchImpl: forbidden });
   assert.equal((await handler(request(), { ...env, SUPABASE_DEPLOYMENT: undefined })).status, 503);

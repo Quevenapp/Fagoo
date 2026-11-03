@@ -75,7 +75,7 @@ test('310 /v1/me writes the missing flag of a member the gate must see, then che
   if(url.includes('/admin/users/'))return Response.json({id:ACTOR});if(url.endsWith('/erp_access_me'))return Response.json(me);
   return Response.json({scope:'access_gate',data_mode:'erp_native',user_id:ACTOR,open:true,until:null,mfa_required:false,mfa_ok:true});}});
  const r=await h(new Request('https://api.synthetic.test/v1/me',{headers:headers()}),env);assert.equal(r.status,200);
- assert.deepEqual(Object.keys(await r.json()).sort(),['data_mode','resources','role','user_id']);
+ assert.deepEqual(Object.keys(await r.json()).sort(),['capabilities','data_mode','resources','role','user_id']);
  assert.deepEqual(calls.map(c=>c.url),['/auth/v1/user','/rest/v1/rpc/erp_access_me',`/auth/v1/admin/users/${ACTOR}`,'/rest/v1/rpc/erp_access_gate_v2']);
  for(const bad of['sim',1]){const b=createHandler({fetchImpl:async url=>Response.json(url.endsWith('/auth/v1/user')?{id:ACTOR}:{...me,gate_required:bad})});
   assert.equal((await b(new Request('https://api.synthetic.test/v1/me',{headers:headers()}),env)).status,502);}

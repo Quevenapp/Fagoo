@@ -1,3 +1,4 @@
+import { originIntegrationEnabled } from '../lib/integration-capabilities';
 import { useEffect, useRef, useState, type ComponentType, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { AccessError } from '../lib/real-access';
@@ -253,10 +254,10 @@ export function ContactCatalog({ list, Editor }: { list: CatalogList; Editor: Co
         {writable && <button type="button" className="action-button" disabled={!selectedItems.length || excluded} title={selectedItems.length ? undefined : 'Selecione os cadastros na listagem'} onClick={() => startBatch({ kind: 'situation', target: selectedItems.every(item => item.situation === 'A') ? 'I' : 'A', choosable: true, items: asBatch(selectedItems), locked: false })}><Icon name="adjust" size={14} />Mudar situação de contatos selecionados</button>}
         <div className="contact-more"><h3>Mais ações</h3><h4>Imprimir</h4>
           <button type="button" className="text-button" disabled title="A impressão de contatos agrupados ainda não foi definida no FAGOO.">Contatos agrupados</button>
-          <button type="button" className="text-button" disabled={selectedItems.length > 0} title={selectedItems.length ? 'Disponível sem seleção, como no Origin.' : undefined} onClick={() => setPrinting({ kind: 'birthdays', state: listState, columns })}>Aniversariantes</button></div>
+          <button type="button" className="text-button" disabled={selectedItems.length > 0} title={selectedItems.length ? 'Disponível sem seleção.' : undefined} onClick={() => setPrinting({ kind: 'birthdays', state: listState, columns })}>Aniversariantes</button></div>
         <div className="native-list-summary"><h3>Informações</h3><dl className="native-list-stat"><dt>Quantidade de contatos</dt><dd>{page ? page.total : '—'}</dd></dl>{selectedItems.length > 0 && <dl className="native-list-stat"><dt>Selecionados</dt><dd>{selectedItems.length}</dd></dl>}</div>
         <div className="contact-tools"><h3>Ferramentas do FAGOO</h3><Link to="/tipos-contatos-empresa">Tipos de contatos</Link><Link to="/vendedores-empresa">Vendedores</Link>{writable && <Link to="/importar-contatos">Importar contatos</Link>}</div>
-        <p className="real-help">Alterações feitas aqui são salvas no FAGOO e enviadas ao Origin pela sincronização; o que mudar no Origin também chega aqui.</p>
+        <p className="real-help">{originIntegrationEnabled(controller.getSnapshot().membership) ? 'Alterações feitas aqui são salvas no FAGOO e enviadas ao Origin pela sincronização; o que mudar no Origin também chega aqui.' : 'Os cadastros e as alterações desta tela são salvos no FAGOO.'}</p>
       </>}>
         <div className="native-list-type"><label htmlFor="catalog-entity">Cadastro</label><select id="catalog-entity" value="contacts" disabled={!permissions?.read.length} onChange={event => list.changeEntity(event.target.value as 'contacts')}>{permissions?.read.map(value => <option key={value} value={value}>{LIST_TITLE[value]}</option>)}</select></div>
         <div className="native-list-toolbar"><div className="form-field"><label htmlFor="catalog-search">Pesquisar cadastros</label><input id="catalog-search" type="search" maxLength={120} value={queryDraft} onChange={event => setQueryDraft(event.target.value)} placeholder="Pesquisar por nome, fantasia, e-mail, CPF ou CNPJ" /></div><button type="submit" className="secondary-button" title="Pesquisar" aria-label="Pesquisar" disabled={loading || !permissions?.read.length}><Icon name="magnifying-glass" size={14} /></button>

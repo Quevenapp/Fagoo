@@ -49,6 +49,20 @@ class ConfigurationTests(unittest.TestCase):
 
 
 class SchemaTests(unittest.TestCase):
+    def test_standalone_defaults_are_opt_in_after_schema_and_never_part_of_updates(self):
+        directory = ROOT / 'supabase/migrations'
+        normal = program(directory)
+        check = program(directory, check_only=True)
+        fresh = program(directory, initialize_standalone=True)
+        marker = 'standalone-sync-disabled-v1'
+        self.assertNotIn(marker, normal)
+        self.assertNotIn(marker, check)
+        self.assertGreater(fresh.index(marker), fresh.rindex('insert into fagoo_system.schema_migration(version,sha256)'))
+        self.assertIn('infra/migrate.py --initialize-standalone', (ROOT / 'scripts/install-runtime.sh').read_text())
+        self.assertNotIn('--initialize-standalone', (ROOT / 'scripts/update-runtime.sh').read_text())
+        with self.assertRaises(ValueError):
+            program(directory, check_only=True, initialize_standalone=True)
+
     def test_every_original_migration_can_join_an_atomic_ledger_transaction(self):
         paths = sorted((ROOT / 'supabase/migrations').glob('*.sql'))
         self.assertEqual(len(paths), 311)

@@ -1,3 +1,4 @@
+import { originHistoryAvailable, isOriginIntegrationRoute } from './integration-capabilities.ts';
 // Navigation that mirrors the Origin top menu (captured on 19/10/2026, docs/references/origin-interface.md).
 // Labels, grouping, column titles and order follow Origin exactly. Items that Brufap will never offer
 // (marketplaces, loja virtual, logística, CT-e, NFS-e, DAS MEI, GNRE, Origin Conta, multiempresa and ordens de
@@ -216,10 +217,11 @@ export const COMPANY_PREFERENCES: readonly PreferenceCategory[] = [
   ] },
 ];
 
-export interface CompanyAccess { role?: string; resources?: readonly string[] }
+export interface CompanyAccess { role?: string; resources?: readonly string[]; capabilities?: { originIntegration?: boolean; originHistory?: boolean } }
 
 export function realTargetAllowed(target: RealTarget | undefined, access: CompanyAccess): target is RealTarget {
   if (!target || !access.role) return false;
+  if (isOriginIntegrationRoute(target.to) && !originHistoryAvailable(access)) return false;
   if (target.resource && !(access.resources || []).includes(target.resource)) return false;
   return !target.roles || target.roles.includes(access.role as CompanyRole);
 }
@@ -247,7 +249,7 @@ export type LinkedPreferenceEntry = PreferenceEntry & { to: string };
 // enabled ones (search links and breadcrumbs), "sections" keeps Origin's groups with the disabled items in place.
 export function resolvePreferences(access: CompanyAccess): ResolvedPreferenceCategory[] {
   if (!access.role) return [];
-  const mine = (entry: PreferenceEntry) => !entry.roles || entry.roles.includes(access.role as CompanyRole);
+  const mine = (entry: PreferenceEntry) => (!entry.to || !isOriginIntegrationRoute(entry.to) || originHistoryAvailable(access)) && (!entry.roles || entry.roles.includes(access.role as CompanyRole));
   return COMPANY_PREFERENCES.map(category => {
     const sections = category.sections.map(section => ({ title: section.title, entries: section.entries.filter(mine) })).filter(section => section.entries.length > 0);
     return { id: category.id, label: category.label, icon: category.icon, ...(category.notice ? { notice: category.notice } : {}), sections, entries: sections.flatMap(section => section.entries.filter((entry): entry is LinkedPreferenceEntry => Boolean(entry.to))) };

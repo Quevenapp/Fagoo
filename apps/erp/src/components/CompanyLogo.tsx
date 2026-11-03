@@ -102,7 +102,7 @@ export default function CompanyLogo({ controller }: { controller: Controller }) 
       <label className="secondary-button" htmlFor="company-logo-file"><Icon name="image" size={12} />{logo ? 'Trocar logo' : 'Enviar logo'}</label>
       <input ref={input} id="company-logo-file" className="sr-only" type="file" accept=".png,.jpg,.jpeg" disabled={locked} onChange={event => void choose(event.target.files?.[0] ?? null)} />
       {logo && <button type="button" className="text-button" disabled={locked} onClick={() => { const current = { id: logo.id, command: crypto.randomUUID() }; setRemoval(current); void remove(current); }}>Remover logo</button>}
-      <button type="button" className="text-button" disabled title="A criação automática de logo do Origin não existe no FAGOO; envie a imagem do logo da empresa.">Gerar nova logo</button>
+      <button type="button" className="text-button" disabled title="Envie a imagem do logo da empresa.">Gerar nova logo</button>
     </div>}
     {upload && !stale && <p className="real-notice">O envio do logo precisa ser confirmado. O arquivo e a operação ficam preservados.
       <button type="button" className="text-button" disabled={Boolean(busy)} onClick={() => void send(upload)}>Conferir resultado</button>

@@ -67,9 +67,9 @@ test('location matching compares path and every query value of the target', () =
 
 test('preferences expose FAGOO-only pages by role, keeping every previous navigation entry reachable', () => {
   assert.deepEqual(resolvePreferences({}), []);
-  const admin = resolvePreferences({ role: 'admin' }).flatMap(category => category.entries.map(entry => entry.to));
+  const admin = resolvePreferences({ role: 'admin', capabilities: { originHistory: true } }).flatMap(category => category.entries.map(entry => entry.to));
   for (const to of ['/empresa-configuracoes', '/dados-origin', '/certificado-a1', '/conexao-sefaz', '/numeracao-fiscal', '/importar-cadastros', '/importar-orcamentos', '/conferir-compras-origin', '/conferir-vendas-origin', '/preparacao-virada', '/integracao-origin', '/historico-vendas-origin', '/emissor-fiscal?modelo=55', '/emissor-fiscal?modelo=65', '/xmls-sincronizados', '/cobranca-empresa', '/retornos-operacionais', '/relatorio-vencimentos', '/cobrancas-legadas-itau']) assert.ok(admin.includes(to), to);
-  const sales = resolvePreferences({ role: 'vendas' });
+  const sales = resolvePreferences({ role: 'vendas', capabilities: { originHistory: true } });
   // Origin categories in Origin order; a role sees a category only when it reads at least one of its pages or tools.
   assert.deepEqual(sales.map(category => category.id), ['empresa', 'sistema', 'cadastros', 'suprimentos', 'vendas', 'servicos', 'integracoes']);
   assert.equal(sales.some(category => category.entries.some(entry => ['/preferencias/notas-fiscais/nfe', '/preferencias/financas/contas-receber', '/estoque-abertura'].includes(entry.to))), false);

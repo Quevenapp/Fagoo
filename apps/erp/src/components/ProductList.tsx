@@ -1,3 +1,4 @@
+import { originHistoryAvailable } from '../lib/integration-capabilities';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
@@ -281,7 +282,7 @@ export function productListView(list: CatalogList, product: ProductListState): C
   const { writable, changeList, productFilters, productFilterDraft, setProductFilterDraft, selectedItems } = list;
   const { priceEdit, setPriceEdit, stockVisible, warehouses, savePrice, discardPrice, taxonomies, prefs } = product;
   // undefined: an API before 202610220008 (native only, as before); null: this profile does not read stock.
-  const originPage = list.page?.entity === 'products' ? list.page.origin_stock : undefined;
+  const originPage = originHistoryAvailable(list.controller.getSnapshot().membership) && list.page?.entity === 'products' ? list.page.origin_stock : undefined;
   const draft = (patch: Partial<ProductFilters>) => setProductFilterDraft(previous => ({ ...previous, ...patch }));
   const productFilter = (key: keyof ProductFilters) => () => changeList(() => { const clear = clearedProductFilter(key); list.setProductFilters(previous => ({ ...previous, ...clear })); setProductFilterDraft(previous => ({ ...previous, ...clear })); });
   const warehouseName = (id: string) => warehouses.find(item => item.id === id)?.name ?? 'depósito selecionado';
@@ -372,7 +373,7 @@ export function productListView(list: CatalogList, product: ProductListState): C
         {product.componentSearch.state === 'busy' && <small role="status">Pesquisando…</small>}{product.componentSearch.state === 'error' && <small className="is-error">Não foi possível pesquisar os produtos.</small>}
         {!productFilterDraft.component_id && product.componentSearch.query.trim() && product.componentSearch.state === 'idle' && !componentOptions.length && <small>Nenhum produto simples ativo encontrado.</small>}
         {!productFilterDraft.component_id && componentOptions.length > 0 && <ul className="product-options" role="listbox" aria-label="Componentes encontrados">{componentOptions.map(option => <li key={option.id}><button type="button" role="option" aria-selected={false} onClick={() => { draft({ component_id: option.id, component_name: option.name }); product.setComponentSearch({ query: option.name, options: [], state: 'idle' }); }}>{option.name}{option.code ? ` (${option.code})` : ''}</button></li>)}</ul>}
-        <small className="real-help">Uma composição espelhada do Origin só entra neste filtro depois que a estrutura dela é informada no FAGOO.</small></div>}
+        <small className="real-help">Uma composição importada só entra neste filtro depois que a estrutura dela é informada no FAGOO.</small></div>}
       <div className="form-field"><label htmlFor="catalog-brand-filter">Marca</label><input id="catalog-brand-filter" value={productFilterDraft.brand} maxLength={100} onChange={event => draft({ brand: event.target.value })} /></div>
       <div className="form-field"><label htmlFor="catalog-supplier-filter">Fornecedor</label><input id="catalog-supplier-filter" value={productFilterDraft.supplier_id ? productFilterDraft.supplier_name : product.supplierSearch.query} maxLength={120} autoComplete="off" placeholder="Digite o nome do fornecedor"
         onChange={event => { draft({ supplier_id: '', supplier_name: '' }); product.setSupplierSearch({ query: event.target.value, options: [] }); }} />
@@ -404,7 +405,7 @@ export function productListView(list: CatalogList, product: ProductListState): C
     <details className="catalog-more" open><summary>Mais ações</summary>
       <h4>Planilhas</h4>
       <Link className="action-button" to={`/exportacao-produtos?${new URLSearchParams({ ...exportFilters, ...(list.sort === 'created_desc' ? {} : { sort: list.sort }) })}`}><Icon name="file-export" size={14} />Exportar dados para planilha</Link>
-      {customApi && <small className="real-help">A exportação não usa o filtro Campos customizados, como no Origin.</small>}
+      {customApi && <small className="real-help">A exportação não usa o filtro Campos customizados.</small>}
       {/* Estoque lane (222): structures of the compositions (always, as in Origin). */}
       <Link className="action-button" to="/exportacao-produtos?tipo=estrutura"><Icon name="file-export" size={14} />Exportar dados de estrutura para planilha</Link>
       {writable && !deletedView && <><h4>Edição</h4>

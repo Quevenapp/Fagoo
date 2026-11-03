@@ -1,3 +1,4 @@
+import { originHistoryAvailable } from '../lib/integration-capabilities';
 import { nativeIndicatorCoverageText } from '../lib/document-reports-model';
 import {useEffect,useId,useMemo,useState,useSyncExternalStore} from 'react';
 import {Link,useLocation,useNavigate} from 'react-router-dom';
@@ -89,7 +90,7 @@ function HomeView({controller,access}:{controller:HomeController;access:CompanyA
         <HomeProfileCard controller={controller as Parameters<typeof HomeProfileCard>[0]["controller"]}/>
         <HomeFavorites controller={controller} access={access}/>
         <nav aria-label="Outras consultas"><ul className="home-favorites home-favorites-brufap">
-          <li><Link to="/dados-origin"><Icon name="bookmark" size={12}/>Consultar histórico do Origin</Link></li>
+          {originHistoryAvailable(access)&&<li><Link to="/dados-origin"><Icon name="bookmark" size={12}/>Consultar histórico do Origin</Link></li>}
           {role&&['admin','financeiro','consulta'].includes(role)&&<li><Link to="/cobranca-empresa"><Icon name="bookmark" size={12}/>Cobrança bancária</Link></li>}
           {role==='admin'&&<li><Link to="/importar-cadastros"><Icon name="bookmark" size={12}/>Importar cadastros</Link></li>}
         </ul></nav>
@@ -97,7 +98,7 @@ function HomeView({controller,access}:{controller:HomeController;access:CompanyA
     </aside>
     <div className="home-main">
       <ReleaseNotesPanel/>
-      <p className="home-alert"><Icon name="circle-info" size={16}/><span>{nativeIndicatorCoverageText(summary) ?? 'Este resumo considera os registros feitos no FAGOO. O histórico sincronizado do Origin é consultado separadamente até a conferência da migração.'}</span></p>
+      <p className="home-alert"><Icon name="circle-info" size={16}/><span>{nativeIndicatorCoverageText(summary) ?? 'Este resumo considera os registros da sua empresa no FAGOO. Os indicadores serão preenchidos conforme os cadastros e movimentações forem registrados.'}</span></p>
       <HomeExpiring controller={controller as Parameters<typeof HomeExpiring>[0]['controller']} role={role}/>
       <div className="home-tabs"><h1 className="home-tab is-active"><Icon name="house" size={13}/>Visão geral</h1></div>
       <section className="home-daily" aria-labelledby="home-daily-title">

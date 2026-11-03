@@ -1,3 +1,4 @@
+import { originIntegrationEnabled } from '../lib/integration-capabilities';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { OriginProductDeletions } from './OriginCatalogSync';
 import { useEffect, useRef, useState, type ComponentType, type FormEvent, type ReactNode } from 'react';
@@ -237,7 +238,7 @@ export function catalogListView(list: CatalogList, view: CatalogEntityView, Edit
     <header className="real-heading catalog-heading"><div className="catalog-title"><h1>{LIST_TITLE[entity]}</h1>{view.heading}</div><div className="catalog-heading-actions">{permissions && !writable && <span className="real-mode">Somente consulta</span>}{writable && !editing && <button type="button" className="primary-button" title="Incluir um novo cadastro" onClick={list.create}><Icon name="plus" size={12}/>{view.labels.add}</button>}</div></header>
     {view.intro}
     {/* Leva H (352): produtos excluídos ou restaurados no Origin, revisados pelo administrador. */}
-    {entity === 'products' && permissions && <OriginProductDeletions controller={controller} onChanged={() => list.setReload(value => value + 1)} />}
+    {entity === 'products' && permissions && originIntegrationEnabled(controller.getSnapshot().membership) && <OriginProductDeletions controller={controller} onChanged={() => list.setReload(value => value + 1)} />}
     {notice && <p className="real-success" role="status">{notice}</p>}
     {error && <p className="real-alert" role="alert">{error}<button type="button" className="text-button" onClick={() => { if (permissions) list.setReload(value => value + 1); else controller.retry(); }}>Tentar novamente</button></p>}
     {detailError && <p className="real-alert" role="alert">{detailError}<button type="button" className="text-button" onClick={list.closeEditor}>Voltar à listagem</button></p>}
@@ -255,7 +256,7 @@ export function catalogListView(list: CatalogList, view: CatalogEntityView, Edit
         {writable && view.situationAction !== false && <button type="button" className="action-button" disabled={!selectedItems.length} title={selectedItems.length ? undefined : 'Selecione os cadastros na listagem'} onClick={() => list.openSituation(selectedItems, !selectedItems.every(item => item.active), true)}><Icon name="adjust" size={14}/>{view.labels.situation}</button>}
         {view.actions}
         <div className="native-list-summary"><h3>Informações</h3><dl className="native-list-stat"><dt>{view.labels.count}</dt><dd>{page ? page.total : '—'}</dd></dl>{selectedItems.length > 0 && <dl className="native-list-stat"><dt>Selecionados</dt><dd>{selectedItems.length}</dd></dl>}</div>
-        <p className="real-help">Alterações feitas aqui são salvas no FAGOO e enviadas ao Origin pela sincronização; o que mudar no Origin também chega aqui.</p>
+        <p className="real-help">{originIntegrationEnabled(controller.getSnapshot().membership) ? 'Alterações feitas aqui são salvas no FAGOO e enviadas ao Origin pela sincronização; o que mudar no Origin também chega aqui.' : 'Os cadastros e as alterações desta tela são salvos no FAGOO.'}</p>
       </>}>
         <div className="native-list-type"><label htmlFor="catalog-entity">Cadastro</label><select id="catalog-entity" value={entity} disabled={!permissions?.read.length} onChange={event => list.changeEntity(event.target.value as CatalogEntity)}>{permissions?.read.map(value => <option key={value} value={value}>{LIST_TITLE[value]}</option>)}</select></div>
         <div className="native-list-toolbar"><div className="form-field"><label htmlFor="catalog-search">{view.labels.search}</label><input id="catalog-search" type="search" maxLength={120} value={list.draft} onChange={event => list.setDraft(event.target.value)} placeholder={view.labels.searchHint} /></div><button type="submit" className="secondary-button" title="Pesquisar" aria-label="Pesquisar" disabled={loading || !permissions?.read.length}><Icon name="magnifying-glass" size={14}/></button>

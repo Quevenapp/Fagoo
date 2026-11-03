@@ -4,6 +4,12 @@
 export interface ReleaseNote { version: string; date: string; title: string; items: readonly string[] }
 
 export const RELEASE_NOTES: readonly ReleaseNote[] = [
+  { version: '2026.11.03', date: '2026-11-03', title: 'FAGOO com instalação própria e início sem dados', items: [
+    'Instalação própria com administrador, autenticação, banco e arquivos da empresa.',
+    'Cadastros, vendas, compras, estoque e financeiro disponíveis na interface original.',
+    'Visão geral preparada para uma empresa nova, com indicadores preenchidos pelos seus registros.',
+    'Ferramentas de integrações opcionais aparecem quando habilitadas para a instalação.',
+  ] },
   { version: '2026.10.22', date: '2026-10-22', title: 'Sincronização de mão dupla com o Origin; estoque, notas e documentos comerciais do Origin', items: [
     'Botão Sincronizar na barra superior: o que é criado, alterado ou excluído no FAGOO vai para o Origin, e o que muda no Origin chega ao FAGOO. Em conflito, vale a alteração mais recente.',
     'Contatos, produtos, propostas, pedidos de venda e de compra, contas a receber e a pagar (com baixas) e lançamentos de estoque vão e voltam. Ordens de serviço chegam do Origin, mas a API do Origin não permite gravá-las.',

@@ -8,6 +8,8 @@ A versão `0.2.0-dev.0` contém um instalador do **núcleo local**: PostgreSQL 1
 
 Esse núcleo já foi exercitado em Docker com banco vazio, autenticação real, RPC, arquivos e atualização. Os scripts de provisionamento são destinados ao Ubuntu 24.04. A instalação é dividida em fases: núcleo local, administrador, ferramentas de publicação, túnel HTTPS e publicação da interface/API. Este manual apresenta a sequência dos helpers disponíveis; a conclusão depende das verificações finais pela origem pública. SMTP, runtime fiscal, integrações e atualização pelo painel têm configurações e limites próprios.
 
+A sequência também foi exercitada em uma VPS Ubuntu 24.04 recém-instalada: núcleo, túnel, publicação web/API, login do administrador e consultas sem dados comerciais. Os ajustes encontrados nessa instalação foram incorporados ao manual e aos helpers. Esse resultado valida a implantação técnica vazia, sem substituir a validação operacional dos módulos utilizados.
+
 ## 1. Preparar o código no Ubuntu
 
 Use Ubuntu 24.04, acesso administrativo, uma conta Cloudflare com a zona do domínio e uma revisão pública que contenha estes scripts. Confira os requisitos do Docker e o espaço livre para imagens, banco, arquivos e backups. Prepare uma pasta persistente e obtenha o código público:
@@ -172,10 +174,16 @@ Os serviços usam `SUPABASE_DEPLOYMENT=self-hosted`, a origem HTTPS local e as c
 
 O runtime fiscal, os certificados e as credenciais bancárias são configurados conforme os módulos usados. O helper publica web e API, mas não publica o gateway/executor/Container fiscal nem habilita SMTP. Tarefas agendadas e integrações permanecem desabilitadas até configuração explícita.
 
-## Critérios de aceite da instalação completa
+## Critérios de aceite da instalação vazia
 
-Abra o hostname web no navegador, entre com o administrador criado na etapa 3, confirme as permissões e os cadastros vazios e cadastre a empresa pela interface. Uma chamada à API `/v1/me` sem sessão deve ser recusada. Não considere a instalação concluída apenas porque `/healthz` respondeu.
+A implantação técnica de uma base nova está validada quando os cinco serviços estão saudáveis, o histórico do schema corresponde à revisão instalada, a origem pública de serviços responde por HTTPS, a interface permite o login do administrador e os cadastros comerciais estão vazios. Uma chamada a `/v1/me` sem sessão deve retornar `401`. Não considere a instalação validada apenas porque `/healthz` respondeu.
+
+Abra o hostname web e entre com o administrador criado na etapa 3. Confira produtos, contatos, pedidos, estoque e financeiro pelos menus da sessão autenticada. Não use as telas explicitamente identificadas como demonstração para conferir o banco instalado. A integração externa deve permanecer desabilitada em uma instalação nova que não a configurou.
+
+O cadastro da empresa pode ser realizado posteriormente, pela interface. Esta validação confirma a instalação vazia e o acesso ao sistema; a ativação operacional inclui configurar a empresa, os serviços de e-mail e os módulos utilizados, além de validar backup e recuperação.
 
 Antes do uso operacional, valide também MFA, recuperação de acesso, envio e leitura de arquivos, operações da API, módulos fiscais/bancários habilitados, backup, restauração e atualização. O ensaio local do núcleo não valida carga de produção nem dimensionamento da VPS junto de agentes e outros containers.
+
+O backup feito antes de atualizar o núcleo não substitui uma rotina periódica com cópia protegida fora da VPS. Preserve também a configuração de publicação e a credencial do túnel em `/etc/fagoo/cloudflared/token`, que não integra o backup do núcleo. Nesta revisão, a atualização disponível é por linha de comandos: o botão de atualização do painel e a atualização coordenada da interface/API ainda dependem da implementação descrita em [Atualizações](updates.md).
 
 Os dados e segredos ficam separados dos artefatos de aplicação. Todas as instalações usam o mesmo [contrato de atualização](updates.md), preservando empresa, usuários, configuração e volumes persistentes.

@@ -7,15 +7,15 @@ import './origin-mirror.css';
 type Controller = Pick<AccessController, 'originMirror'>;
 const cancelled = (error: unknown) => error instanceof DOMException && error.name === 'AbortError';
 const failureText = (error: unknown) => error instanceof AccessError
-  ? error.status === 403 ? 'Seu perfil não permite esta operação.' : error.status === 404 ? 'Cadastro não encontrado.' : error.status === 409 ? 'O cadastro mudou. Atualize e tente de novo.' : 'Não foi possível carregar os dados do Origin.'
-  : 'Não foi possível carregar os dados do Origin.';
+  ? error.status === 403 ? 'Seu perfil não permite esta operação.' : error.status === 404 ? 'Cadastro não encontrado.' : error.status === 409 ? 'O cadastro mudou. Atualize e tente de novo.' : 'Não foi possível carregar os dados complementares.'
+  : 'Não foi possível carregar os dados complementares.';
 
 /**
  * Leva H (350): "Dados do Origin" of a contact or product (seção recolhível, somente leitura). During coexistence the Origin is the
  * master of these fields; what the Brufap keeps on its own (complementos) is listed apart. For a contact, "Transportador
  * (complemento do Brufap)" marks the contact for the Transportador search without changing the mirrored cadastro.
  */
-export default function OriginMirrorPanel({ controller, entity, id, writable }: { controller: Controller; entity: MirrorEntity; id: string; writable: boolean }) {
+export default function OriginMirrorPanel({ controller, entity, id, writable, showOrigin=false }: { controller: Controller; entity: MirrorEntity; id: string; writable: boolean; showOrigin?: boolean }) {
   const [open, setOpen] = useState(false), [mirror, setMirror] = useState<OriginMirror | null>(null), [error, setError] = useState(''), [busy, setBusy] = useState(false);
   const [carrier, setCarrier] = useState<{ value: boolean; command: string } | null>(null), [notice, setNotice] = useState('');
   const mounted = useRef(true);
@@ -48,16 +48,16 @@ export default function OriginMirrorPanel({ controller, entity, id, writable }: 
   const rows = mirror ? mirrorRows(mirror) : [];
   return <section className="contact-section origin-mirror-panel">
     <button type="button" className="contact-collapse" aria-expanded={open} onClick={() => setOpen(!open)}>
-      <Icon name={open ? 'chevron-down' : 'chevron-right'} size={11} /><h3 className="catalog-group-title">Dados do Origin</h3></button>
+      <Icon name={open ? 'chevron-down' : 'chevron-right'} size={11} /><h3 className="catalog-group-title">{showOrigin?'Dados do Origin':entity==='contacts'?'Dados complementares':'Dados importados'}</h3></button>
     {open && <div className="origin-mirror-body">
       {error && <p className="real-alert" role="alert">{error}</p>}
-      {!mirror && !error && <p role="status">Carregando dados do Origin…</p>}
-      {mirror && !mirror.linked && <p className="real-help">Cadastro criado no FAGOO, sem vínculo com o Origin.</p>}
-      {mirror?.linked && <>
+      {!mirror && !error && <p role="status">Carregando dados complementares…</p>}
+      {mirror && !mirror.linked && <p className="real-help">Cadastro registrado no FAGOO.</p>}
+      {showOrigin && mirror?.linked && <>
         <p className="real-help">Origem: Origin, id {mirror.source_id} · {MIRROR_STATE_TEXT[mirror.state ?? ''] ?? mirror.state} · Sincronizado em {dateTimeText(mirror.synced_at)}
           {mirror.source_seen_at ? ` · Última leitura do Origin em ${dateTimeText(mirror.source_seen_at)}` : ''}</p>
         {mirror.pending && <p className="real-alert" role="status">Há uma alteração mais recente no Origin aguardando a importação revisada.</p>}
-        <p className="real-help">Durante a convivência o Origin é o sistema principal destes campos; altere-os no Origin.</p>
+        <p className="real-help">Dados preservados da origem do cadastro. As operações no FAGOO seguem as permissões deste registro.</p>
         <dl className="origin-mirror-fields">{rows.map(row => <div key={row.key}><dt>{row.label}</dt><dd>{row.value}</dd></div>)}</dl>
       </>}
       {mirror && mirror.local_complements.length > 0 && <p className="real-help">Complementos exclusivos do FAGOO preenchidos: {mirror.local_complements.length}.</p>}

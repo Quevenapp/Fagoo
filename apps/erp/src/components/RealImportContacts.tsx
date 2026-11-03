@@ -107,7 +107,7 @@ export default function RealImportContacts({ controller }: { controller: AccessC
         <p>Use uma planilha .XLSX, .XLS ou .CSV com as colunas da tabela modelo (as mesmas de “Exportar para a planilha” da listagem). Procure o arquivo, valide, confira os registros e importe.</p>
         <p><button type="button" className="text-button" onClick={() => downloadFile('modelo-contatos.xlsx', modelXlsx() as BlobPart, XLSX_TYPE)}>Baixar planilha modelo (.XLSX)</button> · <button type="button" className="text-button" onClick={() => downloadFile('modelo-contatos.csv', modelCsv(), CSV_TYPE)}>(.CSV)</button></p>
         <p className="real-help">Vendedor, Categoria e Natureza de Operação são exportados para consulta e não são importados: vincule-os depois pela listagem ou pelo formulário.</p>
-        <p className="real-help">Na convivência com o Origin, os contatos importados aqui existem só no FAGOO; o Origin continua sendo o sistema principal.</p>
+        <p className="real-help">Os contatos importados são cadastrados no FAGOO conforme a prévia conferida.</p>
         <p className="real-help">Ajuda: <Link to="/cadastros-reais?cadastro=contacts">Clientes e fornecedores</Link> mostra os contatos importados.</p></aside>
     </div>
     {error && <p className="real-alert" role="alert">{error}</p>}

@@ -44,6 +44,6 @@ fi
 docker compose --project-name fagoo --env-file private/install/.env -f infra/compose.yaml config --quiet
 docker compose --project-name fagoo --env-file private/install/.env -f infra/compose.yaml up -d --wait --wait-timeout 300
 python3 infra/bootstrap-owner.py
-python3 infra/migrate.py
+python3 infra/migrate.py --initialize-standalone
 printf '%s\n' 'Local runtime and schema are ready on loopback. Configure public HTTPS, the ERP Workers, frontend and SMTP before using it as a client installation.'
 printf '%s\n' 'Create the initial administrator with: python3 infra/create-admin.py --email YOUR_EMAIL --name YOUR_NAME'

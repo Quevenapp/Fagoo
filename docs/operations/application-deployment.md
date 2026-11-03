@@ -89,3 +89,9 @@ O teste de regressão `infra/test_gateway_cors.py` usa um runtime local descart�
 Este comando publica o ERP web e a API. A configuração de SMTP, MFA, certificados, runtime fiscal, integrações e credenciais bancárias segue os próprios fluxos do sistema. O runtime fiscal tem gateway, executor e Container próprios e não é publicado por este helper. Sem essa configuração, não declare a emissão fiscal habilitada.
 
 Agendamentos, conectores externos e importação administrativa de backup permanecem desabilitados por padrão. O helper não muda os dados do banco, não substitui o [atualizador do núcleo](updates.md) e não implementa o botão de atualização do painel. Atualizações do aplicativo devem usar a mesma revisão pública compatível com o núcleo.
+
+### Consulta de histórico existente
+
+Uma instalação nova mantém `ORIGIN_HISTORY_ENABLED=false`. Para exibir consultas do conector quando a instalação já possui esse histórico, o administrador pode definir `ORIGIN_HISTORY_ENABLED=true` em `private/install/.env` e republicar com o mesmo helper. O valor é preservado nas publicações seguintes; aceita somente `true` ou `false` e não entra no build público. Mantenha essa escolha no arquivo privado: uma alteração feita somente no painel Cloudflare será substituída pela configuração gerada na próxima publicação.
+
+A API informa essa disponibilidade em `/v1/me`, no campo `capabilities.originHistory`. Ela é independente de `capabilities.originIntegration`, que exige ambos os flags `ORIGIN_ENABLED` e `ORIGIN_TWO_WAY_ENABLED`. O helper mantém esses dois flags de sincronização desligados, mesmo quando a consulta do histórico é habilitada. Esta opção não importa registros, não ativa envio/recebimento e não altera filas, dados ou permissões no banco.

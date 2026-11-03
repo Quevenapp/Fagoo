@@ -28,7 +28,7 @@ export default function HomeNewInvoices({ controller }: { controller: Partial<Pl
     {error && <p className="real-alert" role="alert">{error}</p>}
     {value ? <>
       <ul className="home-dots home-sales"><li><span className="home-dot home-dot-success" aria-hidden="true" /><strong>{value.total}</strong><span>{value.total === 1 ? 'Nova NF-e' : 'Novas NF-es'}</span></li></ul>
-      <p className="home-card-note">{plural(value.synced, 'sincronizada do Origin', 'sincronizadas do Origin')} (autorizadas ou com DANFE) e {plural(value.received, 'recebida da SEFAZ', 'recebidas da SEFAZ')} desde {value.seen_before ? `a sua última visualização (${moment(value.since)})` : 'os últimos 7 dias'}. Rascunhos e homologação não entram.</p>
+      <p className="home-card-note">{value.synced > 0 && <>{plural(value.synced, 'do histórico importado', 'do histórico importado')} (autorizadas ou com DANFE) e </>}{plural(value.received, 'recebida da SEFAZ', 'recebidas da SEFAZ')} desde {value.seen_before ? `a sua última visualização (${moment(value.since)})` : 'os últimos 7 dias'}. Rascunhos e homologação não entram.</p>
       {value.total > 0 && <p><button type="button" className="text-button" onClick={() => void seen()} disabled={busy}>Marcar como vistas</button></p>}
     </> : !error && <p className="real-result-status" role="status">Contando novas NF-es…</p>}
   </article>;

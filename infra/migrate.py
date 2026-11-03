@@ -29,7 +29,9 @@ def migration(path):
     return name, hashlib.sha256(source.encode()).hexdigest(), body
 
 
-def program(directory, check_only=False):
+def program(directory, check_only=False, initialize_standalone=False):
+    if check_only and initialize_standalone:
+        raise ValueError('STANDALONE_INITIALIZATION_IS_NOT_A_PREFLIGHT')
     files = [migration(path) for path in sorted(Path(directory).glob('*.sql'))]
     if not files:
         raise ValueError('MIGRATIONS_MISSING')
@@ -40,6 +42,8 @@ def program(directory, check_only=False):
         lines[2:6] = ["do $fagoo$ begin if to_regclass('fagoo_system.schema_migration') is null then raise exception 'FAGOO_SCHEMA_LEDGER_REQUIRED'; end if; end $fagoo$;"]
     for name, sha, body in ([] if check_only else files):
         lines.extend(['begin;', f"select not exists(select 1 from fagoo_system.schema_migration where version='{name}') as fagoo_apply \\gset", r'\if :fagoo_apply', body, f"insert into fagoo_system.schema_migration(version,sha256) values('{name}','{sha}');", r'\endif', 'commit;'])
+    if initialize_standalone:
+        lines.append((ROOT / 'infra/database/standalone-defaults.sql').read_text(encoding='utf-8'))
     lines.extend(["notify pgrst, 'reload schema';", "select pg_advisory_unlock(1964102101, 1);", "select count(*) as fagoo_applied_schema_versions from fagoo_system.schema_migration;"])
     return '\n'.join(lines) + '\n'
 
@@ -50,9 +54,10 @@ if __name__ == '__main__':
     parser.add_argument('--project-name', default='fagoo')
     parser.add_argument('--sql-only', action='store_true')
     parser.add_argument('--check-only', action='store_true')
+    parser.add_argument('--initialize-standalone', action='store_true', help='Apply one-time defaults only to a fresh installation before creating its administrator.')
     args = parser.parse_args()
     try:
-        sql = program(ROOT / 'supabase/migrations', check_only=args.check_only)
+        sql = program(ROOT / 'supabase/migrations', check_only=args.check_only, initialize_standalone=args.initialize_standalone)
         if args.sql_only:
             sys.stdout.reconfigure(encoding='utf-8', newline='\n')
             sys.stdout.write(sql)
