@@ -1,0 +1,8 @@
+.fiscal-signed-candidate{margin-top:1rem;padding:1rem;border:1px solid var(--border,#d6dee7);border-radius:8px;background:var(--surface,#fff);min-width:0}
+.fiscal-signed-candidate>header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
+.fiscal-signed-candidate h3,.fiscal-signed-candidate h4{margin:.1rem 0 .5rem}.fiscal-signed-candidate p{margin:.4rem 0 .75rem}
+.signed-certificate,.signed-result,.signed-history,.signed-recovery{margin-top:.9rem;padding:.8rem;border:1px solid var(--border,#d6dee7);border-radius:6px;min-width:0}
+.signed-check{display:flex;align-items:flex-start;gap:.6rem;margin:1rem 0;max-width:80ch}.signed-check input{margin-top:.2rem;flex:none}
+.signed-technical{margin-top:1rem}.signed-technical summary{cursor:pointer}.signed-hash{overflow-wrap:anywhere;font-family:monospace;font-size:.82rem}
+.fiscal-signed-candidate .table-scroll{max-width:100%;overflow-x:auto}.fiscal-signed-candidate .data-table{min-width:520px}.fiscal-signed-candidate .button-group{flex-wrap:wrap}
+@media(max-width:600px){.fiscal-signed-candidate{padding:.7rem}.fiscal-signed-candidate>header .secondary-button{width:100%}.fiscal-signed-candidate .button-group>button{flex:1 1 180px}.signed-certificate,.signed-result,.signed-history,.signed-recovery{padding:.65rem}}

@@ -3,7 +3,7 @@ import {createHash,randomInt} from 'node:crypto';
 import {resolveBusinessContent,BusinessDocumentError,BUSINESS_BUILDER} from '../../fiscal-core/src/business-document.mjs';
 import {bindResolvedBusinessContent,buildBoundBusinessXml} from '../../fiscal-xml/src/bound-business.mjs';
 
-const BUCKET='fagoo-fiscal-artifacts',MAX=480000;
+const BUCKET='brufap-fiscal-artifacts',MAX=480000;
 const UUID=/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/,SHA=/^[a-f0-9]{64}$/;
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v)&&[Object.prototype,null].includes(Object.getPrototypeOf(v));
 const exact=(v,keys)=>object(v)&&Object.keys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k));
@@ -51,7 +51,7 @@ function result(v,input,extra={}){
 }
 function contentBasis(raw,input){
  noTrust(raw);need(raw.private_executor_only===true&&raw.persisted===false&&digest(raw.basis_hash)
-  &&raw.basis_fingerprint_profile==='fagoo-business-content-basis-v1'&&typeof raw.basis_fingerprint_text==='string');
+  &&raw.basis_fingerprint_profile==='brufap-business-content-basis-v1'&&typeof raw.basis_fingerprint_text==='string');
  const content=resolveBusinessContent(raw.inputs);
  need(content.binding.draft_id===input.draftId&&content.binding.completion_version===input.completionVersion
   &&content.basis_fingerprint_text===raw.basis_fingerprint_text&&hash(content.basis_fingerprint_text)===raw.basis_hash

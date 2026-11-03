@@ -126,7 +126,7 @@ test('snapshot verification rejects unknown bytes or model substitution; hashes 
   assert.throws(() => verifyReviewedProtocolWsdl({ model: '55', wsdlBytes: Buffer.alloc(512001) }), /SOAP_BINDING_BYTES_INVALID/);
 });
 
-test('opt-in local snapshots match both pinned contracts without network, credentials or repository copies', { skip: process.env.FAGOO_TEST_LOCAL_PROTOCOL_WSDL !== '1' }, async () => {
+test('opt-in local snapshots match both pinned contracts without network, credentials or repository copies', { skip: process.env.BRUFAP_TEST_LOCAL_PROTOCOL_WSDL !== '1' }, async () => {
   for (const model of ['55', '65']) {
     const bytes = await readFile(new URL(`../../../private/fiscal/wsdl/model-${model}-protocol.xml`, import.meta.url));
     try {

@@ -35,7 +35,7 @@ export function serializeBusinessDocument(r) {
   const ide=tag('cUF','35')+tag('cNF',i.cNF)+tag('natOp',o.nature)+tag('mod',i.model)+tag('serie',i.series)+tag('nNF',i.number)
     +tag('dhEmi',i.issuedAt)+tag('tpNF',o.tpNF)+tag('idDest',o.idDest)+tag('cMunFG',e.address.municipality_code)+tag('tpImp',i.model==='65'?'4':'1')
     +tag('tpEmis','1')+tag('cDV',r.access_key.at(-1))+tag('tpAmb','2')+tag('finNFe',o.finNFe)+tag('indFinal',o.indFinal)+tag('indPres',o.indPres)
-    +tag('procEmi','0')+tag('verProc','FAGOO-BUILDER-1');
+    +tag('procEmi','0')+tag('verProc','BRUFAP-BUILDER-1');
   const emitter=tag('CNPJ',e.cnpj)+tag('xNome',e.name)+optional('xFant',e.trade_name)+address(e.address,'enderEmit')+tag('IE',e.ie)+tag('CRT','1');
   const dest=tag(d.document_type,d.document)+tag('xNome',d.name)+address(d.address,'enderDest')+tag('indIEDest',d.indIEDest)+optional('IE',d.ie);
   const payment=r.payments.items.map(p=>'<detPag>'+tag('indPag',p.timing)+tag('tPag',p.type)+tag('vPag',p.amount)+'</detPag>').join('')

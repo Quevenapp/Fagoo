@@ -3,7 +3,7 @@ import {createHash} from 'node:crypto';
 import {ruleProfileByHash,matchesRuleProfile} from './rule-profile-registry.mjs';
 export const MAX_SUBSET_RECORD_BYTES=131072;
 export const SUBSET_REVIEW_FLAGS=Object.freeze({data_mode:'fiscal_subset_review',environment:'2',coverage:'listed_rules_only_not_full_tax_validation',tax_rules_validated:false,sefaz_authorized:false,can_emit:false,can_transmit:false,operational_binding_enabled:false,financial_mutation_performed:false,stock_mutation_performed:false});
-export const SUBSET_SCHEMA=Object.freeze({schema_profile:'pl010f-v1.04',manifest_hash:'6099e1ce8a90a079609f986ab0b9783744d2fbb10151fab0b5e7a3549c82d9a0',validator_version:'fiscal-schema-runner-v1',validator_hash:'7c546683d6ca94d124b60a32ca9f6bf8f731533455af634326a10ae078ea5cec'});
+export const SUBSET_SCHEMA=Object.freeze({schema_profile:'pl010f-v1.04',manifest_hash:'6099e1ce8a90a079609f986ab0b9783744d2fbb10151fab0b5e7a3549c82d9a0',validator_version:'fiscal-schema-runner-v1',validator_hash:'1da9dba6f75bca015fd7bd114a9fa030e57bb11d46a8f4b248cc3214dcbc53c6'});
 export class SubsetReviewError extends Error{constructor(code){super(code);this.name='SubsetReviewError';this.code=code;}}
 export const need=(v,code='SUBSET_REVIEW_INVALID')=>{if(!v)throw new SubsetReviewError(code);};
 export const id=v=>typeof v==='string'&&/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(v);

@@ -109,7 +109,7 @@ test('payment comparison preserves exact cents and distinguishes NFe scope from 
  has(evaluate(fixture({edit:x=>x.replace('<vPag>12.50','<vPag>12.501')}).candidate),'invalidCombinations','PAYMENT_VALUES_INVALID');
 });
 test('26 October is an explicit local conservative boundary, not a tax deadline or blanket RTC demand',async()=>{
- const f=fixture(),ev=await capture(f.candidate),r=evaluate(f.candidate,ev,new Date('2026-10-26T03:00:00Z'));has(r,'unsupportedScope','PROFILE_REVIEW_DATE_OUTSIDE_WINDOW');assert.equal(r.temporalPolicy.officialTaxDeadline,false);assert.equal(r.unsupportedScope.find(x=>x.code==='PROFILE_REVIEW_DATE_OUTSIDE_WINDOW').kind,'fagoo_temporal_policy');
+ const f=fixture(),ev=await capture(f.candidate),r=evaluate(f.candidate,ev,new Date('2026-10-26T03:00:00Z'));has(r,'unsupportedScope','PROFILE_REVIEW_DATE_OUTSIDE_WINDOW');assert.equal(r.temporalPolicy.officialTaxDeadline,false);assert.equal(r.unsupportedScope.find(x=>x.code==='PROFILE_REVIEW_DATE_OUTSIDE_WINDOW').kind,'brufap_temporal_policy');
  assert.ok(!JSON.stringify(r).includes('RTC_REQUIRED'));assert.ok(!JSON.stringify(r).includes('CSRT_REQUIRED'));disabled(r);assert.equal(SP_CRT1_RULE_MANIFEST_HASH,hash(JSON.stringify(SP_CRT1_RULE_MANIFEST)));
 });
 test('250 items remain bounded and reviewed per exact position/hash without accepting reordered evidence',async()=>{
@@ -144,7 +144,7 @@ test('abort/deadline prevent new read and discard late result without replay or 
 });
 test('emission date is checked against the reviewed policy window and evaluation clock',()=>{
  for(const date of ['2026-10-15T09:00:00-03:00','2026-10-17T09:00:00-03:00','2026-10-26T09:00:00-03:00']){
-  const f=fixture({edit:x=>x.replace('2026-10-16T09:00:00-03:00',date)}),r=evaluate(f.candidate);has(r,'unsupportedScope','EMISSION_DATE_OUTSIDE_REVIEW_WINDOW');assert.equal(r.unsupportedScope.find(x=>x.code==='EMISSION_DATE_OUTSIDE_REVIEW_WINDOW').kind,'fagoo_temporal_policy');
+  const f=fixture({edit:x=>x.replace('2026-10-16T09:00:00-03:00',date)}),r=evaluate(f.candidate);has(r,'unsupportedScope','EMISSION_DATE_OUTSIDE_REVIEW_WINDOW');assert.equal(r.unsupportedScope.find(x=>x.code==='EMISSION_DATE_OUTSIDE_REVIEW_WINDOW').kind,'brufap_temporal_policy');
  }
 });
 test('report attestation never executes a forged candidate getter',()=>{

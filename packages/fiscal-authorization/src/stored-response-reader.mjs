@@ -9,7 +9,7 @@ import {SP_AUTHORIZATION_SERVER_TRUST,SP_AUTHORIZATION_ROOT_HASH} from '../../fi
 import {AuthorizationServiceError,data,need,id,hash,freeze,scope,readBody,cancel} from './service-common.mjs';
 import {resultEvidence,same,stamp,SQLSTATES} from './service-dto.mjs';
 export {STORED_RESPONSE_MANIFEST,STORED_RESPONSE_MANIFEST_HASH} from './stored-response-manifest.mjs';
-const BUCKET='fagoo-fiscal-artifacts';
+const BUCKET='brufap-fiscal-artifacts';
 const failure=code=>new AuthorizationServiceError('AUTHORIZATION_STORED_RESPONSE_'+code);
 const requireThat=(v,code)=>{if(!v)throw failure(code);};
 const snapshot=v=>freeze({receipt:v.receipt,recovery:v.recovery,artifact:v.artifact,rule_review:v.rule_review,observation:v.observation});

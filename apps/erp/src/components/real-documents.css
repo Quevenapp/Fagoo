@@ -1,0 +1,60 @@
+.document-section{margin:24px 0;padding:18px;border:1px solid var(--border,#dce3df);border-radius:10px;min-width:0}.document-section legend{font-weight:650;padding:0 8px}.document-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.document-wide{grid-column:1/-1}.document-picker{display:grid;gap:6px;align-content:start}.document-picker label{font-size:13px;font-weight:600}.document-picker small{font-size:12px;color:var(--muted,#607268)}.document-picker input,.document-picker select,.document-items input,.document-installment input{width:100%;border:1px solid var(--border,#dce3df);border-radius:6px;background:var(--surface,#fff);color:inherit;padding:9px}.document-check{display:flex;align-items:center;gap:8px}.document-check input{width:auto}.document-add-item{display:flex;align-items:end;gap:16px;margin-bottom:16px}.document-add-item .document-picker{flex:1;max-width:480px}.document-items{min-width:960px}.document-items td:first-child{width:28px;white-space:nowrap}.document-items thead th:nth-child(2){width:40%}.document-items td:nth-child(2){min-width:260px}.document-items td:nth-child(3){min-width:75px}.document-items td:nth-child(4),.document-items td:nth-child(5){min-width:110px}.document-items td:nth-child(6){min-width:95px}.document-items td input+input{margin-top:5px}.document-items small{font-size:11px;color:var(--muted,#607268)}.document-line-actions{display:flex;gap:5px;flex-wrap:wrap}.document-line-actions button{border:1px solid var(--border,#dce3df);border-radius:5px;background:var(--surface,#fff);color:inherit;padding:6px;cursor:pointer}.document-totals-fields{margin-top:20px;grid-template-columns:repeat(4,minmax(0,1fr))}.document-total-summary{display:flex;justify-content:flex-end;gap:24px;flex-wrap:wrap;padding:18px;background:var(--surface-soft,#f0f6f2);border-radius:8px}.document-total-summary strong{font-size:19px}.document-installment{display:grid;grid-template-columns:auto 1fr 1fr 1fr auto;gap:12px;align-items:end;margin:12px 0}.document-installment label{display:grid;gap:5px;font-size:12px}.document-status-filter{max-width:280px;margin:16px 0}.document-section:disabled{opacity:.85}.document-section h3{margin-top:0}@media(max-width:900px){.document-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.document-installment{grid-template-columns:1fr 1fr}.document-installment>span{grid-column:1/-1}}@media(max-width:600px){.document-grid,.document-totals-fields{grid-template-columns:1fr}.document-add-item{align-items:stretch;flex-direction:column}.document-total-summary{justify-content:flex-start}.document-section{padding:12px}.document-installment{grid-template-columns:1fr}.document-wide{grid-column:auto}}
+.document-filters{display:grid;grid-template-columns:minmax(260px,2fr) minmax(160px,1fr) minmax(145px,1fr) minmax(145px,1fr);gap:14px;margin:20px 0;padding:18px;background:var(--surface-soft,#f5f8f6);border:1px solid var(--border,#dce3df);border-radius:9px}.document-filter-actions{grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap}.document-filter-help{grid-column:1/-1;margin:0}@media(max-width:900px){.document-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.document-filter-search{grid-column:1/-1}}@media(max-width:600px){.document-filters{grid-template-columns:1fr;padding:12px}.document-filter-search{grid-column:auto}}
+
+.document-reference-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:16px 0}.document-reference{min-width:0;border:1px solid var(--border,#dce3df);border-radius:8px;padding:12px;margin:0}.document-reference legend{font-size:13px}.document-reference-fields{display:grid;grid-template-columns:minmax(130px,1fr) minmax(140px,2fr);gap:12px}.document-reference .text-button{margin-top:8px}.document-item-detail{display:grid;gap:5px;margin-top:10px;font-size:12px}.document-item-detail textarea,.document-installment textarea{width:100%;box-sizing:border-box;border:1px solid var(--border,#dce3df);border-radius:6px;padding:9px;background:var(--surface,#fff);color:inherit;resize:vertical}.document-installment{padding:14px;border:1px solid var(--border,#dce3df);border-radius:8px}.document-installment>button{justify-self:start}.document-section small{color:var(--muted,#607268);font-size:12px}.document-reference input{min-width:0}@media(max-width:700px){.document-reference-grid,.document-reference-fields{grid-template-columns:1fr}}
+
+/* Origin list chrome for the documents screen: green "+ Incluir ..." in the heading, reload icon, clickable rows, indicator letters. */
+.real-heading .documents-primary{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 22px;border-radius:8px;font-size:12px;font-weight:700;white-space:nowrap}
+.native-list-toolbar.documents-toolbar>.form-field{flex:1 1 240px;max-width:390px}.native-list-toolbar.documents-toolbar .origin-period{flex:0 0 auto}
+.documents-list-controls{display:flex;align-items:center;gap:8px;min-width:0}.documents-list-controls .real-result-status{flex:1;min-width:0}
+.documents-list-controls .origin-refresh{cursor:pointer;border-radius:4px}.documents-list-controls .origin-refresh:disabled{opacity:.45;cursor:default}
+.documents-table tbody tr.documents-row{cursor:pointer}.documents-table tbody tr.documents-row .text-button{font-weight:600}
+.real-editor-heading .document-indicators{display:inline-flex;align-items:center;gap:4px;margin-left:8px;vertical-align:middle}.real-editor-heading p .status-badge{margin-right:2px}
+@media print{.real-heading .documents-primary,.documents-list-controls .origin-refresh{display:none}}
+/* Vendas wave 2: Origin header buttons, details, totals and payment condition. */
+.document-editor-buttons{display:grid;justify-items:end;gap:4px}
+.document-editor-buttons>div{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.document-editor-buttons small{font-size:11px;color:var(--muted,#607268)}
+.document-details{margin-top:10px;display:grid;gap:6px}
+.document-details h3{margin:0;font-size:13px}
+.document-details p{margin:0;font-size:12px;color:var(--muted,#607268)}
+.document-proposal-number{max-width:260px}
+.document-proposal-number small{font-size:11px}
+.document-items .document-item-position{width:28px;color:var(--muted,#607268);text-align:center}
+.document-items input[readonly]{background:var(--surface-alt,#f0f3f7)}
+.document-items .document-price-below{color:#d9480f;border-color:#f08c00;font-weight:700}
+.document-detail-toggle{font-size:11px;padding:0}
+.document-add-line{font-weight:700}
+.document-totals-title{margin:16px 0 4px;font-size:13px}
+dl.document-total-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin:12px 0}
+dl.document-total-summary>div{display:grid;gap:2px;padding:8px;border:1px solid var(--border,#d7dfe5);border-radius:var(--radius,8px)}
+dl.document-total-summary dt{font-size:11px;color:var(--muted,#607268)}
+dl.document-total-summary dd{margin:0;font-variant-numeric:tabular-nums;font-weight:600}
+dl.document-total-summary .document-grand-total dd{font-size:15px;color:var(--accent-strong,#1d6b46)}
+.document-condition{display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap}
+.document-condition input{max-width:220px}
+.document-contact-check{margin:8px 0}
+.document-item-detail.is-collapsed{display:none}
+.document-numbering .document-grid{max-width:420px}
+.document-pendencies{margin:8px 0;padding:8px 12px;border:1px solid #f0b46c;border-radius:4px;background:#fff6eb;color:#7a4b00}
+.document-pendencies ul{margin:4px 0 0 18px;padding:0}
+.origin-indicators .is-pending{color:#d79b00}
+/* 202610200268: Peças and Serviços executados of the OS (two grids, each with its total). */
+.document-service-items{margin:0 0 18px}.document-service-items h3{margin:4px 0 8px;font-size:1rem}
+.document-service-total{display:flex;justify-content:flex-end;gap:8px;margin:6px 0 0}.document-service-items input[type=checkbox]{width:auto}
+/* 202610200269: the chevron of the Salvar of the proposta (Salvar nova versão, Imprimir, Clonar, Usar este como modelo). */
+.document-save-split{position:relative;display:inline-flex;gap:1px}.document-save-more{padding-inline:8px}
+.document-save-menu{position:absolute;right:0;top:100%;z-index:20;display:flex;flex-direction:column;min-width:210px;background:var(--surface,#fff);border:1px solid var(--border,#dce3df);border-radius:8px;box-shadow:0 6px 18px rgb(0 0 0 / 12%);padding:4px}
+.document-save-menu button{text-align:left;padding:8px 10px;background:none;border:0;border-radius:6px;color:inherit;cursor:pointer}.document-save-menu button:hover:not(:disabled){background:var(--surface-alt,#f0f3f7)}.document-save-menu button:disabled{opacity:.55;cursor:not-allowed}
+/* 202610200270: Condições comerciais of the proposta (Nenhum | Parcela | Texto). */
+.document-conditions-tabs{display:flex;gap:2px;margin:0 0 12px;border-bottom:1px solid var(--border,#dce3df)}.document-conditions-tabs button{padding:6px 14px;border:1px solid transparent;border-bottom:0;border-radius:6px 6px 0 0;background:none;color:inherit;cursor:pointer;font:inherit}
+.document-conditions-tabs button.is-active{border-color:var(--border,#dce3df);background:var(--surface,#fff);font-weight:650;margin-bottom:-1px}
+/* Identificação: label right above its control; the contact helpers (Editar contato, Busca avançada, histórico) under the Cliente field. */
+.document-grid{align-items:start}
+.document-contact-field{display:grid;gap:6px;align-content:start;min-width:0}
+.document-contact-helpers{display:flex;flex-wrap:wrap;gap:4px 12px}
+.document-contact-helpers:empty{display:none}
+/* Wide screens: Identificação in 4 columns, the Cliente over 2 with search and selection side by side and its helpers on the tools row. */
+@media(min-width:1200px){.real-editor .document-section>.document-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.real-editor .document-section>.document-grid>.document-contact-field{grid-column:span 2}.document-contact-field{position:relative}.document-contact-field .document-picker{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.document-contact-field .document-picker-label,.document-contact-field .contact-picker-tools{grid-column:1/-1}.document-contact-field .document-contact-helpers{position:absolute;right:0;bottom:4px}}
+/* Origem e duplicação: one compact line instead of a full section. */
+.document-section.document-origin-strip{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:12px 0;padding:10px 18px}.document-origin-strip p{margin:0}

@@ -348,7 +348,7 @@ const issueTypeForCheck = input => ['S', 'X'].includes(input.issue_type) ? { ...
 export const PREFERENCE_FLAGS = Object.freeze(['show_totals', 'sum_weight', 'compute_volume', 'ipi_first_installment', 'st_first_installment', 'tracking_in_info', 'purchase_order_in_info',
   'simples_credit_message', 'optional_installments', 'fuel_group', 'weapon_group', 'vehicle_group', 'retention_group', 'autxml_carrier', 'block_edit_stock', 'block_edit_finance']);
 const PREFERENCE_KEYS = [...PREFERENCE_FLAGS, 'freight_by', 'species', 'volume_quantity', 'markup', 'autxml_people'].sort();
-/** Default-safe values when a screen has no preferences yet (External defaults of the pages). */
+/** Default-safe values when a screen has no preferences yet (Origin defaults of the pages). */
 export const DEFAULT_INVOICE_PREFERENCES = Object.freeze({ ...Object.fromEntries(PREFERENCE_FLAGS.map(k => [k, k === 'show_totals'])), freight_by: '9', species: 'volumes', volume_quantity: 0, markup: '0', autxml_people: Object.freeze([]) });
 /** Validates the "preferences" block of GET /v1/notas-fiscais/contexto. */
 export function invoicePreferences(value) {
@@ -361,12 +361,12 @@ export function invoicePreferences(value) {
   return { ...Object.fromEntries(PREFERENCE_FLAGS.map(k => [k, value[k]])), freight_by: value.freight_by, species: value.species, volume_quantity: value.volume_quantity, markup: value.markup, autxml_people: people };
 }
 
-// ---- List and External detail ----
+// ---- List and Origin detail ----
 const LIST_ORDERS = ['date_desc', 'date_asc', 'number_desc', 'number_asc'];
 const nullableText = (value, max) => value === null || (typeof value === 'string' && value.length <= max && !/[\u0000-\u001f\u007f]/.test(value));
 export function listRow(value, origin) {
-  if (!plain(value) || value.origin !== origin || !(origin === 'fagoo' ? UUID.test(value.id ?? '') : /^\d{1,40}$/.test(value.id ?? ''))
-    || !(origin === 'fagoo' ? version(value.version) : value.version === null) || !(value.number === null || (Number.isInteger(value.number) && value.number > 0))
+  if (!plain(value) || value.origin !== origin || !(origin === 'brufap' ? UUID.test(value.id ?? '') : /^\d{1,40}$/.test(value.id ?? ''))
+    || !(origin === 'brufap' ? version(value.version) : value.version === null) || !(value.number === null || (Number.isInteger(value.number) && value.number > 0))
     || !(value.series === null || (Number.isInteger(value.series) && value.series >= 0)) || !dateOrNull(value.issue_date) || !dateOrNull(value.entry_date)
     || !nullableText(value.name, 200) || !(value.document === null || /^\d{1,30}$/.test(value.document)) || !(value.state === null || [...UFS, 'EX'].includes(value.state))
     || !nullableText(value.nature, 60) || !(value.status === null || STATUS_CODES.includes(value.status)) || !nullableText(value.status_raw, 20) || !MONEY.test(value.total ?? '')
@@ -374,9 +374,9 @@ export function listRow(value, origin) {
     || !(value.access_key === null || /^\d{44}$/.test(value.access_key)) || !(value.xml_id === null || UUID.test(value.xml_id)) || typeof value.protocol_present !== 'boolean'
     || (value.xml_id === null ? value.xml_hash !== null || value.xml_size !== null : !/^[0-9a-f]{64}$/.test(value.xml_hash ?? '') || !Number.isInteger(value.xml_size) || value.xml_size < 1 || value.xml_size > 8388608)
     || !Number.isInteger(value.event_count) || value.event_count < 0 || !Array.isArray(value.orders) || value.orders.length > 100
-    || (origin === 'fagoo' && (value.environment !== (['T', 'S', 'X'].includes(value.issue_type) ? null : '2') || value.xml_id !== null))) fail('FISCAL_RESPONSE_INVALID');
-  // Espelho lane (wave H, 202610210358, NFE-027): a External note answers the External pedidos de venda that declare it (notaFiscal.id), by their External id.
-  const orders = value.orders.map(o => { if (!plain(o) || !(origin === 'external' ? /^[1-9]\d{0,39}$/.test(o.id ?? '') && o.kind === 'sales_orders' : UUID.test(o.id ?? '') && ['sales_orders', 'purchase_orders', 'service_orders'].includes(o.kind))
+    || (origin === 'brufap' && (value.environment !== (['T', 'S', 'X'].includes(value.issue_type) ? null : '2') || value.xml_id !== null))) fail('FISCAL_RESPONSE_INVALID');
+  // Espelho lane (wave H, 202610210358, NFE-027): a Origin note answers the Origin pedidos de venda that declare it (notaFiscal.id), by their Origin id.
+  const orders = value.orders.map(o => { if (!plain(o) || !(origin === 'origin' ? /^[1-9]\d{0,39}$/.test(o.id ?? '') && o.kind === 'sales_orders' : UUID.test(o.id ?? '') && ['sales_orders', 'purchase_orders', 'service_orders'].includes(o.kind))
     || !/^\d{1,10}$/.test(o.number ?? '') || !dateOrNull(o.date) || !nullableText(o.contact_name, 200)) fail('FISCAL_RESPONSE_INVALID'); return { id: o.id, kind: o.kind, number: o.number, date: o.date, contact_name: o.contact_name }; });
   if (new Set(orders.map(o => o.id)).size !== orders.length) fail('FISCAL_RESPONSE_INVALID');
   return { origin, id: value.id, version: value.version, number: value.number, series: value.series, issue_date: value.issue_date, entry_date: value.entry_date, name: value.name,
@@ -387,12 +387,12 @@ export function listRow(value, origin) {
 }
 function observedAttributes(value, origin) {
   if (!Object.hasOwn(value, 'observed_at')) return {};
-  if (!(value.observed_at === null || timestamp(value.observed_at)) || (origin === 'fagoo' && value.observed_at !== null)) fail('FISCAL_RESPONSE_INVALID');
+  if (!(value.observed_at === null || timestamp(value.observed_at)) || (origin === 'brufap' && value.observed_at !== null)) fail('FISCAL_RESPONSE_INVALID');
   return { observed_at: value.observed_at };
 }
 function mirrorCoverage(value, origin) {
   if (!Object.hasOwn(value, 'coverage')) return {};
-  if (origin === 'fagoo') {
+  if (origin === 'brufap') {
     if (value.coverage !== null) fail('FISCAL_RESPONSE_INVALID');
     return { coverage: null };
   }
@@ -414,7 +414,7 @@ function mirrorCoverage(value, origin) {
  */
 function sourceAttributes(value, origin) {
   const fiscal = value.status === 7 ? 6 : value.status, danfe = value.status === 7;
-  const sourceOrigin = origin === 'external' ? 'external' : ['S', 'X'].includes(value.issue_type) ? 'xml_import' : value.issue_type === 'T' ? 'third_party' : 'fagoo_native';
+  const sourceOrigin = origin === 'origin' ? 'origin' : ['S', 'X'].includes(value.issue_type) ? 'xml_import' : value.issue_type === 'T' ? 'third_party' : 'brufap_native';
   const keys = ['fiscal_status', 'danfe_emitted', 'source_origin', 'source_environment'], present = keys.filter(k => Object.hasOwn(value, k));
   if (!present.length) return { fiscal_status: fiscal, danfe_emitted: danfe, source_origin: sourceOrigin, source_environment: sourceOrigin === 'xml_import' || sourceOrigin === 'third_party' ? null : value.environment };
   if (present.length !== keys.length || value.fiscal_status !== fiscal || value.danfe_emitted !== danfe || value.source_origin !== sourceOrigin
@@ -426,23 +426,23 @@ export function listPage(value, args) {
   if (!plain(value) || value.origin !== args.origin || value.model !== args.model || value.direction !== args.direction || value.page !== args.page || value.limit !== args.limit
     || value.order !== args.order || !LIST_ORDERS.includes(value.order) || !Array.isArray(value.items) || value.items.length > args.limit || typeof value.has_more !== 'boolean'
     || !Number.isInteger(value.total_count) || value.total_count < 0 || !MONEY.test(value.total_amount ?? '') || !Number.isInteger(value.amount_unknown) || value.amount_unknown < 0
-    || value.amount_unknown > value.total_count || typeof value.fagoo_visible !== 'boolean' || typeof value.show_totals !== 'boolean' || value.data_mode !== (args.origin === 'external' ? 'external_mirror_readonly' : 'erp_native_homologation')
+    || value.amount_unknown > value.total_count || typeof value.brufap_visible !== 'boolean' || typeof value.show_totals !== 'boolean' || value.data_mode !== (args.origin === 'origin' ? 'origin_mirror_readonly' : 'erp_native_homologation')
     || value.has_more !== (value.total_count > args.page * args.limit) || (value.total_count === 0 && value.items.length)
     || value.items.length !== Math.max(0, Math.min(args.limit, value.total_count - (args.page - 1) * args.limit))) fail('FISCAL_RESPONSE_INVALID');
   const items = value.items.map(row => listRow(row, args.origin));
   if (new Set(items.map(row => row.id)).size !== items.length) fail('FISCAL_RESPONSE_INVALID');
   return { items, origin: value.origin, model: value.model, direction: value.direction, page: value.page, limit: value.limit, order: value.order, has_more: value.has_more,
-    total_count: value.total_count, total_amount: value.total_amount, amount_unknown: value.amount_unknown, fagoo_visible: value.fagoo_visible, show_totals: value.show_totals, data_mode: value.data_mode,
+    total_count: value.total_count, total_amount: value.total_amount, amount_unknown: value.amount_unknown, brufap_visible: value.brufap_visible, show_totals: value.show_totals, data_mode: value.data_mode,
     ...mirrorCoverage(value, args.origin) };
 }
 const decimalText = (value, digits) => value === null || (typeof value === 'string' && new RegExp(`^[0-9]{1,${digits}}(\\.[0-9]{1,10})?$`).test(value));
-export function externalDetail(value) {
-  if (!plain(value) || value.origin !== 'external' || !['nfe', 'nfce'].includes(value.entity) || !/^\d{1,40}$/.test(value.source_id ?? '') || value.model !== (value.entity === 'nfe' ? '55' : '65')
+export function originDetail(value) {
+  if (!plain(value) || value.origin !== 'origin' || !['nfe', 'nfce'].includes(value.entity) || !/^\d{1,40}$/.test(value.source_id ?? '') || value.model !== (value.entity === 'nfe' ? '55' : '65')
     || !(value.direction === null || ['0', '1'].includes(value.direction)) || !(value.number === null || Number.isInteger(value.number)) || !(value.series === null || Number.isInteger(value.series))
     || !dateOrNull(value.issue_date) || !dateOrNull(value.operation_date) || !(value.status === null || STATUS_CODES.includes(value.status)) || !nullableText(value.status_raw, 20)
     || !(value.access_key === null || /^\d{44}$/.test(value.access_key)) || !MONEY.test(value.total ?? '') || typeof value.total_known !== 'boolean' || !(value.freight === null || MONEY.test(value.freight))
     || !plain(value.contact) || !Array.isArray(value.items) || value.items.length > 990 || !Array.isArray(value.installments) || value.installments.length > 120 || !plain(value.transport)
-    || !nullableText(value.additional_info, 5000) || !Array.isArray(value.events) || value.events.length > 100 || !timestamp(value.observed_at) || value.data_mode !== 'external_mirror_readonly' || value.writable !== false) fail('FISCAL_RESPONSE_INVALID');
+    || !nullableText(value.additional_info, 5000) || !Array.isArray(value.events) || value.events.length > 100 || !timestamp(value.observed_at) || value.data_mode !== 'origin_mirror_readonly' || value.writable !== false) fail('FISCAL_RESPONSE_INVALID');
   const contactKeys = { name: 200, document: 30, ie: 30, email: 254, phone: 40, street: 200, number: 30, complement: 200, district: 100, postal_code: 20, city: 100, state: 2, country: 60 };
   if (!equal(Object.keys(value.contact).sort(), Object.keys(contactKeys).sort()) || Object.entries(contactKeys).some(([k, max]) => !nullableText(value.contact[k], max))) fail('FISCAL_RESPONSE_INVALID');
   const items = value.items.map(i => { if (!plain(i) || !nullableText(i.code, 60) || !nullableText(i.description, 200) || !nullableText(i.unit, 10) || !decimalText(i.quantity, 12) || !decimalText(i.unit_price, 13) || !(i.total === null || MONEY.test(i.total)) || !nullableText(i.cfop, 4) || !nullableText(i.ncm, 10) || !nullableText(i.gtin, 14)) fail('FISCAL_RESPONSE_INVALID'); return { code: i.code, description: i.description, unit: i.unit, quantity: i.quantity, unit_price: i.unit_price, total: i.total, cfop: i.cfop, ncm: i.ncm, gtin: i.gtin }; });
@@ -451,7 +451,7 @@ export function externalDetail(value) {
   const events = value.events.map(e => { if (!plain(e) || !UUID.test(e.id ?? '') || !(e.type === null || /^\d{6}$/.test(e.type)) || !(e.sequence === null || /^\d{1,3}$/.test(e.sequence)) || !file(e)) fail('FISCAL_RESPONSE_INVALID'); return { id: e.id, type: e.type, sequence: e.sequence, hash: e.hash, size: e.size }; });
   if (!nullableText(value.transport.freight_by, 2) || !nullableText(value.transport.carrier, 200) || Object.keys(value.transport).length !== 2) fail('FISCAL_RESPONSE_INVALID');
   if (!(value.xml === null || (plain(value.xml) && UUID.test(value.xml.id ?? '') && file(value.xml) && ['1', null].includes(value.xml.environment ?? null) && (value.xml.protocol === null || /^\d{1,20}$/.test(value.xml.protocol))))) fail('FISCAL_RESPONSE_INVALID');
-  return { origin: 'external', entity: value.entity, source_id: value.source_id, model: value.model, direction: value.direction, number: value.number, series: value.series, issue_date: value.issue_date,
+  return { origin: 'origin', entity: value.entity, source_id: value.source_id, model: value.model, direction: value.direction, number: value.number, series: value.series, issue_date: value.issue_date,
     operation_date: value.operation_date, status: value.status, status_raw: value.status_raw, access_key: value.access_key, total: value.total, total_known: value.total_known, freight: value.freight,
     contact: { ...value.contact }, items, installments, transport: { ...value.transport }, additional_info: value.additional_info, xml: value.xml && { ...value.xml }, events, observed_at: value.observed_at, data_mode: value.data_mode, writable: false };
 }

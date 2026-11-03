@@ -1,0 +1,13 @@
+export const financialFilters={entity:'receivables',status:'open_partial',q:'',from:'',to:''};
+export const financialFlags={data_mode:'financial_cutover_readonly',persisted:false,import_enabled:false,operational_effects:false,reconciled:false,cutoff_at:null,coverage_certified:false,as_of:'2026-10-16T15:00:00Z'};
+export const financialMoney=(value='123.45')=>({state:'available',value,cents:BigInt(value.replace('.','')).toString()});
+export function financialRow(id='0001',entity='receivables'){
+ return{entity,source_id:id,source_version:'9223372036854775807',source_hash:'a'.repeat(64),observed_at:'2026-10-16T14:50:00Z',changed_at:'2026-10-15T10:30:00Z',status:{code:'1',label:'Aberto',scope:'open'},document_number:`DEMO-${id}`,description:'Título sintético para conferência',issued_on:'2026-10-10',due_on:'2026-10-31',original_due_on:null,competence_on:null,amount:financialMoney(),balance:financialMoney(),contact:{source_id:'00099',match:'matched',record_id:'11111111-1111-4111-8111-111111111111',record_version:'2',name:'Contato exclusivamente sintético',origin_state:'synced',human_edited:false,pending_review:false,source_changed_since_apply:false},issues:[]};
+}
+export function financialPage(items=[financialRow()],filters=financialFilters,next=null){
+ const amount=items.filter(r=>r.amount.state==='available'),balance=items.filter(r=>r.balance.state==='available');
+ return{...financialFlags,entity:filters.entity,status:filters.status,limit:25,from:filters.from||null,to:filters.to||null,q:filters.q||null,items,has_more:next!==null,next_cursor:next,page_totals:{amount_cents:amount.reduce((sum,r)=>sum+BigInt(r.amount.cents),0n).toString(),balance_cents:balance.reduce((sum,r)=>sum+BigInt(r.balance.cents),0n).toString(),amount_available_count:amount.length,balance_available_count:balance.length,amount_unavailable_count:items.length-amount.length,balance_unavailable_count:items.length-balance.length,scope:'current_page_only'}};
+}
+export function financialDetail(id='0001',entity='receivables'){
+ return{...financialFlags,record:{...financialRow(id,entity),banking:{bank_number:'000123',carrier_id:'001',payment_method_id:'005',category_id:null,accounting_id:null,bordero_ids:['0019'],bank_mapping:'not_established'},installments:{kind:'2',total:'12',index:null,group_id:null,linkage:'not_established'},origin:{id:'9000',type:'venda',number:'SYNTHETIC-1'},refresh:{state:'stored',last_attempt_at:'2026-10-16T14:49:00Z',last_success_at:'2026-10-16T14:50:00Z',last_finished_at:'2026-10-16T14:50:00Z',next_attempt_at:'2026-10-16T15:50:00Z',error_code:null,http_status:null,current_source_matches_result:true}}};
+}

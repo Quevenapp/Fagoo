@@ -1,22 +1,27 @@
-# Estado da implementação
+# Estado da reconstrução
 
-Esta primeira versão é destinada a avaliação e instalação piloto com dados de teste. O repositório e os pacotes são independentes de qualquer instalação comercial existente.
+O FAGOO desta linha deriva da aplicação completa do Brufap no commit `97be7a7eab5c132e540748757120a55897f1e971`. O template original permanece. A linha do piloto fica identificada pelo histórico e pela versão `v0.1.0-alpha.1`; o número `0.2.0-dev.0` identifica desenvolvimento, sem anunciar release instalável.
 
-| Área | Situação |
-|---|---|
-| Banco e API | PostgreSQL próprio, migrações verificadas, permissões por empresa e operações transacionais implementadas. |
-| Compras, vendas, estoque e financeiro | Fluxos de pedido, confirmação, recebimento parcial, entrega, parcelas e estornos implementados; ainda não representam todos os recursos de um ERP completo. |
-| Interface | Fluxos reais sobre a API, administração de usuários e integrações, configuração fiscal e atualização. |
-| Agentes | REST/OpenAPI e MCP implementados. O container específico do cliente precisa ser configurado e testado com suas ferramentas habilitadas. |
-| Documentos recebidos | Importação de XML, validações estruturais, correspondência de produtos e armazenamento privado; assinatura, situação fiscal atual e tributação não são atestadas pelo parser. |
-| Engine fiscal | Engine de homologação incorporado: XML 55/65, assinatura local, XSD, regras e composição de autorização. Envio permanece desativado; o diário operacional PostgreSQL e a integração de execução precisam ser concluídos. Veja [engine fiscal](fiscal/engine.md). |
-| Emissão e distribuição automática | Dependem da integração operacional do serviço fiscal, certificado, ambiente e homologação. Não estão habilitadas nesta versão. |
-| Tributação e NCM | Dados e pendências disponíveis. Não há motor homologado que cubra todos os regimes e operações. |
-| Bancos | Perfis só podem ser liberados operacionalmente após homologação. Cadastro de obrigação financeira não é pagamento bancário. |
-| Android/iOS | Descoberta, OAuth e PKCE preparados. Aplicativos nativos ainda não são distribuídos. |
-| Backup | Dump completo e envio opcional para armazenamento externo. Arquivamento contínuo de WAL/PITR não está implementado; a meta de RPO de 15 minutos não está atendida. |
-| Capacidade | Recursos dos containers limitados; a capacidade na VPS de 1 vCPU/4 GB com Hermes em uso precisa de medição no ambiente do cliente. |
+## Recuperado e adaptado
 
-As verificações automatizadas incluem regras decimais, isolamento de empresa, permissões, repetição e concorrência de comandos, recebimento parcial, preços, estornos, paginação completa, importação de XML, assinatura de releases e autenticação. Também há ensaio com PostgreSQL 17 e navegação real na interface usando dados fictícios.
+- Código original da interface, módulos comerciais, cadastros, estoque, PDV, financeiro, CNAB, fiscal e permissões.
+- Histórico das 311 migrações, com funções e guardas mantidas. Os hashes de guardas afetados pela normalização de nomes foram recalculados somente após comparação com os corpos da fonte.
+- Configuração explícita de backend próprio nos adaptadores e no frontend, preservando o modo hospedado e seus contratos de Auth/Storage/PostgREST.
+- Configurações de exemplo sem destinos de cliente; agendamentos e integrações de efeitos desabilitados até configuração explícita.
+- Inventário somente leitura e comparação offline para preparar a migração do Supabase.
+- Rastreabilidade por arquivo e registro das alterações da referência em `tools/reference`.
 
-O instalador foi exercitado em uma distribuição Ubuntu 24.04 limpa e isolada, com systemd e Docker Engine próprios, no WSL2. O ensaio criou banco, administrador, interface local, serviço de atualização e backup; restaurou o dump em outro banco de teste e verificou a preservação da instalação ao executar o bootstrap novamente. Isso não mede capacidade na VPS nem substitui a restauração no ambiente do cliente, a emissão autorizada pelo serviço fiscal ou a homologação com bancos. Os serviços Cloudflare devem ser configurados somente pelo assistente explicitamente acionado durante a instalação do cliente.
+## Ainda necessário para a próxima instalação
+
+1. Montar e validar o stack compatível em Ubuntu: PostgreSQL, PostgREST, Auth, Storage e HTTPS. Confirmar migrações/bootstrap para instalação virgem e restauração para cliente existente.
+2. Integrar o instalador à aplicação original e validar empresa inicial, administrador, e-mail, certificados, armazenamento, backup/restauração e logs.
+3. Adaptar o provisionamento Cloudflare e a atualização pelo painel ao novo conjunto de serviços. Distribuição pública sem token GitHub continua sendo requisito; assinatura dos artefatos e compatibilidade do banco precisam ser verificadas antes da atualização.
+4. Ensaiar a restauração de uma cópia autorizada do Supabase, incluindo Auth, objetos de Storage e material criptográfico privado, com reconciliação de saldos, documentos e movimentos.
+5. Acrescentar os contratos de integração para Hermes/Vinki e descoberta de servidor para Android/iOS sobre as regras originais do ERP. A IA externa interpreta e propõe; permissões, validações, idempotência e registros contábeis/de estoque permanecem no ERP.
+6. Validar capacidade e operação com o container Hermes na VPS de 1 vCPU/4 GB antes de definir esse tamanho como configuração de produção.
+
+O novo template visual é uma etapa posterior. Nenhuma destas pendências autoriza remover módulos ou reduzir o modelo do ERP para acomodar o piloto anterior.
+
+## Limite das evidências
+
+Compilação, testes sintéticos e comparação estrutural não demonstram que dados de um cliente foram migrados. Nenhum banco de produção foi conectado, restaurado ou alterado durante a recomposição. A publicação de uma branch de código não atualiza a instalação existente nem libera emissão fiscal/bancária em produção.

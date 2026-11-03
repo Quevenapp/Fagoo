@@ -1,0 +1,27 @@
+import {record as commercial,input as commercialInput} from './document-commercial-fixtures.mjs';
+export const ACTOR='a0000000-0000-4000-8000-000000000070',ORDER='b0000000-0000-4000-8000-000000000070',PRODUCT='c0000000-0000-4000-8000-000000000070',WAREHOUSE='d0000000-0000-4000-8000-000000000070',RESERVATION='e0000000-0000-4000-8000-000000000070',ITEM='f0000000-0000-4000-8000-000000000070';
+export const FLAGS={data_mode:'erp_native',scope:'stock_reservations'},BASE='/v1/reservas-estoque',H='a'.repeat(64);
+export function document(){return{...commercial('sales_orders',{...commercialInput(),warehouse_id:WAREHOUSE,items:[{id:ITEM,product_id:PRODUCT,description:'Produto sintético',unit:'UN',quantity:'2.000000',unit_price:'12.50'}],installments:[]}),id:ORDER,status:'verified'};}
+export function summary(d=document()){return{id:ORDER,kind:'sales_orders',number:d.number,version:d.version,status:d.status,date:d.date,warehouse_id:WAREHOUSE,eligible:['verified','in_progress','partially_fulfilled','fulfilled'].includes(d.status),active_posting_id:d.effect_flags.stock_active?ITEM:null};}
+export function position(action='reserve'){return{product_id:PRODUCT,product_name:'Produto sintético',warehouse_id:WAREHOUSE,unit:'UN',quantity:'2.000000',sources:[{id:ITEM,position:1,quantity:'2.000000'}],catalog_version:1,physical_version:1,reservation_hash:H,physical_before:'10.000000',reserved_before:action==='reserve'?'0.000000':'2.000000',available_before:action==='reserve'?'10.000000':'8.000000',physical_after:action==='consume'?'8.000000':'10.000000',reserved_after:action==='reserve'?'2.000000':'0.000000',available_after:action==='release'?'10.000000':'8.000000'};}
+export const ignored=()=>({id:'10000000-0000-4000-8000-000000000070',position:2,product_id:null,description:'Serviço livre sintético',quantity:'1.000000',unit:'UN',catalog_version:null,reason:'unlinked_item'});
+export function reservation(state='active'){return{id:RESERVATION,document_id:ORDER,source_document_version:1,version:state==='active'?1:2,state,created_at:'2026-10-16T15:00:00Z',occurred_on:'2026-10-16',reason:'Reserva sintética',warehouse_id:WAREHOUSE,closed_at:state==='active'?null:'2026-10-16T16:00:00Z',close_reason:state==='active'?null:'Fechamento sintético',movement_id:state==='consumed'?PRODUCT:null,posting_id:state==='consumed'?ITEM:null,positions:[position()],ignored:[]};}
+export function stockFixture({role='admin',active=false,ignore=false,AccessError=Error,before=()=>{},after=()=>{}}={}){
+ const s={doc:document(),role,actor:ACTOR,phase:'ready',calls:[],commands:new Map(),reservation:active?reservation():null,changed:[],busy:false,draft:false,active:null};
+ if(active)s.doc.version=2;
+ const current=()=>({document:summary(s.doc),active_reservation:s.reservation?.state==='active'?structuredClone(s.reservation):null});
+ const page=()=>{const r=s.reservation,items=r?[{...r,positions_count:r.positions.length,ignored_count:r.ignored.length}]:[];for(const row of items){delete row.positions;delete row.ignored;}return{...FLAGS,current:current(),items,limit:25,has_more:false,next_cursor:null};};
+ s.controller={getSnapshot:()=>({phase:s.phase,membership:{user_id:s.actor,role:s.role}}),async stockReservations(path,o={}){
+  const call={path,...o};s.calls.push(call);const early=await before(call,s);if(early!==undefined)return structuredClone(early);let result;
+  if(path.includes('/comandos/')){result=s.commands.get(path.split('/').at(-1));if(!result)throw new AccessError(404);result={...result,current:current(),replayed:true};}
+  else if(path.includes('/disponibilidade'))result={data_mode:'erp_native',scope:'stock_availability',position:{product_id:PRODUCT,warehouse_id:WAREHOUSE,unit:null,state:'no_movements',physical_version:0,physical_quantity:null,reserved_quantity:'0.000000',available_quantity:null,reservation_hash:H}};
+  else if(o.method==='POST'&&path.endsWith('preview')){const action=path.endsWith('/release-preview')?'release':path.endsWith('/consume-preview')?'consume':'reserve';result={...FLAGS,preview:{action,document:summary(s.doc),reservation_id:action==='reserve'?null:RESERVATION,reservation_version:action==='reserve'?null:1,occurred_on:o.body.occurred_on,reason:o.body.reason,positions:[position(action)],ignored:ignore?[ignored()]:[],preview_hash:H}};}
+  else if(o.method==='POST'){
+   result=s.commands.get(o.body.command_id);if(!result){const action=path.split('/').at(-1);s.doc.version++;s.reservation=reservation(({reserve:'active',release:'released',consume:'consumed'})[action]);s.reservation.reason=action==='reserve'?o.body.reason:s.reservation.reason;s.reservation.ignored=ignore?[ignored()]:[];if(action==='consume')s.doc.effect_flags.stock_active=true;result={...FLAGS,receipt:{command_id:o.body.command_id,action,document_id:ORDER,document_version:s.doc.version,reservation:structuredClone(s.reservation)},current:current(),replayed:false};s.commands.set(o.body.command_id,result);}
+  }else result=page();
+  const replacement=await after(call,s,result);return structuredClone(replacement===undefined?result:replacement);
+ }};
+ s.props={controller:s.controller,record:structuredClone(s.doc),blocked:false,onChanged:async version=>s.changed.push(version),onActive:value=>s.active=value,onBusy:value=>s.busy=value,onDraft:value=>s.draft=value};return s;
+}
+export const mutations=s=>s.calls.filter(c=>c.method==='POST'&&!c.path.endsWith('preview'));
+export const queries=s=>s.calls.filter(c=>c.path.includes('/comandos/'));

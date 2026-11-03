@@ -1,0 +1,23 @@
+/* Estoque > Check-in de Recebimentos no padrão do Origin: coluna Notas, itens da nota e painel direito de ações. */
+.checkin-layout{display:grid;grid-template-columns:260px minmax(0,1fr) 220px;gap:14px;align-items:start}
+.checkin-notes,.checkin-actions{position:sticky;top:calc(var(--topbar-height) + 8px);display:grid;gap:8px;padding:10px 12px;border-radius:var(--radius);background:var(--surface)}
+.checkin-notes h2{display:flex;align-items:center;gap:6px;margin:0;color:var(--heading);font-size:14px}
+.checkin-note-search{display:flex;gap:6px}.checkin-note-search input{min-width:0;flex:1}
+.checkin-note-list{display:grid;gap:6px;margin:0;padding:0;list-style:none;max-height:60vh;overflow:auto}
+.checkin-note-card{display:grid;gap:3px;width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);text-align:left}
+.checkin-note-card.is-selected{border-color:var(--accent);box-shadow:inset 3px 0 var(--accent)}
+.checkin-note-card small{color:var(--muted);overflow-wrap:anywhere}
+.checkin-main{display:grid;gap:12px;min-width:0;padding:12px;border-radius:var(--radius);background:var(--surface)}
+.checkin-note-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0}
+.checkin-note-facts dt{color:var(--muted);font-size:11px}.checkin-note-facts dd{display:grid;margin:0;color:var(--heading);font-weight:700;overflow-wrap:anywhere}
+.checkin-note-facts dd small{color:var(--muted);font-weight:400}
+.checkin-item-search{display:flex;flex-wrap:wrap;align-items:end;gap:8px}.checkin-item-search label{display:grid;gap:4px;flex:1;min-width:220px}
+.checkin-table td{vertical-align:middle}.checkin-table td small{display:block}
+.checkin-row.is-complete td{background:color-mix(in srgb,var(--success, #3c8d2f) 8%,transparent)}
+.checkin-row.is-issue td{background:color-mix(in srgb,var(--warning, #c58a00) 10%,transparent)}
+.checkin-stepper{display:inline-flex;align-items:center;gap:4px}.checkin-stepper input{width:90px;text-align:right}
+.checkin-state{display:inline-flex;color:var(--muted)}.checkin-state.is-complete{color:var(--success, #3c8d2f)}.checkin-state.is-issue{color:var(--warning, #c58a00)}.checkin-state.is-in_progress{color:var(--accent)}
+.checkin-actions .action-button{display:flex;align-items:center;gap:10px;width:100%;min-height:40px;padding:6px 4px;border:0;border-bottom:1px solid var(--border);border-radius:0;color:var(--heading);background:transparent;font-size:12px;text-align:left}
+.checkin-progress{display:grid;gap:6px;margin:0;font-size:12px;color:var(--heading)}.checkin-progress progress{width:100%}
+@media(max-width:1200px){.checkin-layout{grid-template-columns:220px minmax(0,1fr)}.checkin-actions{position:static;grid-column:1/-1;order:-1}}
+@media(max-width:800px){.checkin-layout{grid-template-columns:minmax(0,1fr)}.checkin-notes{position:static}.checkin-note-facts{grid-template-columns:repeat(2,minmax(0,1fr))}}

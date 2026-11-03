@@ -1,0 +1,11 @@
+export const ACTOR='10000000-0000-4000-8000-000000000001',COMMAND='10000000-0000-4000-8000-000000000002',WAREHOUSE='10000000-0000-4000-8000-000000000003';
+export const flags=(read=true)=>({profile:'origin-warehouse-import-v1',read_only:read,stock_effects:false,financial_effects:false,can_import_balance:false,observed_at:'2026-10-17T10:00:00Z'});
+export const source=(id='14887671588',active=true)=>({source_id:id,source_hash:'a'.repeat(64),source_version:'1',last_seen_at:'2026-10-17T09:50:00Z',name:'Geral sintético',status:active?1:0,is_default:true,exclude_balance:false,valid:true,issues:[]});
+export const previewInput=(s=source())=>({expected_source_hash:s.source_hash,expected_source_version:s.source_version});
+export const input=(p=preview())=>({...previewInput(p.source),command_id:COMMAND,preview_hash:p.preview_hash,confirmed:true});
+export const record=(s=source())=>({id:WAREHOUSE,entity:'warehouses',version:1,name:s.name,code:null,description:null,active:s.status===1,human_edited:false});
+export const binding=(s=source())=>({source:s,record:record(s),imported_at:'2026-10-17T09:59:00Z'});
+export const page=()=>({...flags(),items:[{source_id:'14887671588',source:source(),binding:null}],limit:25,has_more:false,next_cursor:null});
+export const preview=(s=source())=>({...flags(),source_id:s.source_id,source:s,existing:null,current:null,can_create:true,planned:{name:s.name,code:null,description:null,active:s.status===1},preview_hash:'b'.repeat(64)});
+export const result=(read=false,s=source())=>({...flags(read),receipt:{command_id:COMMAND,outcome:'created',source_id:s.source_id,binding:binding(s),completed_at:'2026-10-17T10:00:00Z'},current:{source:s,source_state:'same',record:record(s),record_state:'same'},replayed:false});
+export const deferred=()=>{let resolve,reject;const promise=new Promise((a,b)=>{resolve=a;reject=b;});return{promise,resolve,reject};};

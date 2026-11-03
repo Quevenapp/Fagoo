@@ -1,0 +1,5 @@
+.finance-movement-history fieldset { margin: 1rem 0; padding: .8rem 1rem; border: 1px solid var(--border, #dbe2ea); border-radius: .5rem; }
+.finance-movement-history legend { font-weight: 600; padding: 0 .3rem; }
+.finance-movement-filters { display: flex; flex-wrap: wrap; align-items: end; gap: .75rem; }
+.finance-movement-filters .form-field { flex: 1 1 10rem; max-width: 16rem; }
+.finance-movement-history .data-table { min-width: 36rem; }

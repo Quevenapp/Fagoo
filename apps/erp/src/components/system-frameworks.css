@@ -1,0 +1,34 @@
+/* Sistema > Gerenciador de transições (migration 148). Theme tokens only. */
+.real-situations{display:grid;gap:12px;min-width:0}
+.frameworks-tabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid var(--border)}
+.frameworks-tabs [role=tab]{padding:7px 12px;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--heading);cursor:pointer}
+.frameworks-tabs [role=tab].active{border-bottom-color:var(--accent);color:var(--accent-strong);font-weight:700}
+.frameworks-tabs [role=tab]:disabled{color:var(--muted);cursor:not-allowed}
+.situations-toolbar,.situations-row-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.situations-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.situations-list>li{border:1px solid var(--border);border-radius:6px;background:var(--surface)}
+.situations-list>li.is-open{border-color:var(--border-strong)}
+.situation-origin{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 10px}
+.situation-toggle{display:inline-flex;align-items:center;gap:8px;border:0;background:transparent;color:var(--heading);font-weight:600;cursor:pointer;padding:2px 0;text-align:left}
+.situation-origin .icon-button{opacity:.75}.situation-origin:hover .icon-button,.situation-origin .icon-button:focus-visible{opacity:1}
+.situation-based,.situation-default{color:var(--muted);font-size:12px}
+.situation-badge{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border:1px solid var(--border);border-radius:999px;background:var(--surface-alt);color:var(--heading);font-size:12px;font-weight:600}
+.situation-badge.is-inactive{opacity:.6}
+.situation-dot{width:10px;height:10px;border-radius:50%;flex:none;border:1px solid rgba(0,0,0,.15)}
+.situation-transitions{display:grid;gap:8px;padding:0 10px 10px;min-width:0;overflow-x:auto}
+.situations-table td:first-child,.situations-table th:first-child{width:32px}
+.situation-status{display:inline-flex;align-items:center;gap:4px;color:var(--muted);font-size:12px}
+.situation-status.is-active{color:var(--accent-strong);font-weight:600}
+.situations-fields{display:grid;gap:10px;border:0;margin:0;padding:0;min-width:0}
+.situations-fields .form-field>span{display:block;margin-top:4px}
+.transition-actions{display:grid;gap:6px;border:1px solid var(--border);border-radius:6px;padding:8px 10px;margin:0}
+.transition-actions legend{font-weight:600;color:var(--heading);padding:0 4px}
+.situation-graph{width:100%;max-width:420px;height:auto;margin:0 auto;display:block;color:var(--muted)}
+.situation-graph line{stroke:currentColor;stroke-width:1.5}
+.situation-graph g.is-active{color:var(--accent-strong)}
+.situation-graph g.is-inactive{color:var(--border-strong)}
+.situation-graph g.is-inactive circle{opacity:.45}
+.situation-graph text{fill:var(--heading);font-size:11px}
+.situation-graph .situation-graph-origin{font-weight:700;font-size:12px}
+.situation-graph-check{fill:none;stroke:#ffffff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:680px){.situation-origin{padding:8px}.situations-toolbar .primary-button,.situations-row-tools .secondary-button{flex:1 1 100%}}

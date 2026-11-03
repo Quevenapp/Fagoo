@@ -1,0 +1,5 @@
+.fiscal-danfe-preview{margin-top:1rem;padding:1rem;border:1px solid var(--border,#d6dee7);border-radius:6px;min-width:0;background:var(--surface,#fff)}
+.fiscal-danfe-preview h4{margin:0 0 .5rem}.fiscal-danfe-preview p{margin:.5rem 0 .75rem}
+.fiscal-danfe-preview .button-group{display:flex;gap:.5rem;flex-wrap:wrap}
+.fiscal-danfe-preview iframe{display:block;width:100%;height:min(76vh,960px);min-height:380px;margin-top:.8rem;border:1px solid var(--border,#d6dee7);background:#e8ecf0}
+@media(max-width:600px){.fiscal-danfe-preview{padding:.65rem}.fiscal-danfe-preview .button-group button{flex:1 1 180px}}

@@ -1,0 +1,11 @@
+import type {RevalidationInput,RevalidationBinding,RevalidationContext,RevalidationResult} from '../../fiscal-authorization/src/revalidation-public-dto.mjs';
+export const MAX_REVALIDATION_REQUEST_BYTES:16384,MAX_REVALIDATION_RESPONSE_BYTES:262144;
+export type RevalidationAction='revalidationContext'|'revalidationRun'|'revalidationCommand';
+export type RevalidationRoute=Readonly<{action:RevalidationAction;path:string;method:'GET'|'POST';revalidation:true;authorizationCommandId?:string;expectedAttemptId?:string;commandId?:string;limit:0|16384;responseLimit:262144}>;
+export type RevalidationPayload=RevalidationInput|Readonly<Record<string,never>>;
+export function revalidationRoute(path:string,method:string,prefix:string):RevalidationRoute|null;
+export function parseRevalidationPayload(bytes:Uint8Array,selected:RevalidationRoute):RevalidationPayload;
+export function revalidationBinding(selected:RevalidationRoute,payload:RevalidationPayload):RevalidationBinding;
+export function isRevalidationMutation(action:unknown):boolean;
+export function revalidationMutationPath(path:string,method:string):boolean;
+export function projectRevalidationResult(value:unknown,binding:RevalidationBinding):RevalidationContext|RevalidationResult;

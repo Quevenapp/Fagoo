@@ -1,5 +1,5 @@
 /**
- * "Cálculo automático" of the External invoice form: picks the operation-nature rule for each tax and computes the
+ * "Cálculo automático" of the Origin invoice form: picks the operation-nature rule for each tax and computes the
  * item tax groups with exact decimal arithmetic (BigInt, half-up rounding to cents). Covered:
  * - ICMS própria (CST and CSOSN) with base reduction, deferral, Simples credit and FCP; base by Modalidade BC
  *   (valor da operação, pauta and preço tabelado use quantity × the pauta value); ICMS desonerado (valor da operação
@@ -224,7 +224,7 @@ const brMoney = cents => { const text = money(cents), [whole, fraction] = text.s
 const brRate = value => { const v = rateOf(value); const whole = v / 10000n, fraction = String(v % 10000n).padStart(4, '0').replace(/0+$/, ''); return fraction ? `${whole},${fraction}` : String(whole); };
 const brDate = value => value ? value.split('-').reverse().join('/') : '';
 const sum = (items, group, field) => items.reduce((total, item) => total + (item[group]?.[field] ? centsOf(item[group][field]) : 0n), 0n);
-/** Values of the External information variables Fagoo can compute; the rest are empty, like External without that data. */
+/** Values of the Origin information variables Brufap can compute; the rest are empty, like Origin without that data. */
 export function infoVariables(invoice, orders = [], extra = {}) {
   const items = invoice.items, credit = sum(items, 'icms', 'credit_value'), creditRate = items.find(i => i.icms?.credit_rate)?.icms.credit_rate;
   const ref = invoice.references?.[0], di = invoice.import_declaration;

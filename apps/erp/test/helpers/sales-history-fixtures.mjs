@@ -1,0 +1,9 @@
+import {historyQaDetail,historyQaPage,historyQaId,historyQaObserved} from '../../src/qa/sales-history-fixture.ts';
+export {historyQaDetail as detail,historyQaPage as page,historyQaId as id,historyQaObserved as observed};
+export const BASE='/v1/historico-vendas-origin',ACTOR='83000000-0000-4000-8000-000000000900',OTHER='83000000-0000-4000-8000-000000000901';
+export const deferred=()=>{let resolve,reject;const promise=new Promise((a,b)=>{resolve=a;reject=b;});return{promise,resolve,reject};};
+export function fixture({numbers=[1,2],role='admin',phase='ready',before=()=>{},after=(_,raw)=>raw}={}){
+ let state={phase,membership:{user_id:ACTOR,role,resources:[],data_mode:'staging_readonly'},records:null,listPending:false,loginPending:false,message:null,logoutFailed:false};const listeners=new Set(),f={calls:[]};
+ f.setAccess=patch=>{const actor=Object.hasOwn(patch,'actor')?patch.actor:state.membership?.user_id,role=patch.role??state.membership?.role??'admin';state={...state,phase:patch.phase??state.phase,membership:actor?{user_id:actor,role,resources:[],data_mode:'staging_readonly'}:null};for(const notify of listeners)notify();};
+ f.controller={getSnapshot:()=>state,subscribe:notify=>{listeners.add(notify);return()=>listeners.delete(notify);},async salesHistory(path,options){const call={path,...options};f.calls.push(call);const replacement=await before(call,f);if(replacement!==undefined)return replacement;const u=new URL(path,'https://synthetic.invalid');let raw;if(u.pathname===BASE){const q=u.searchParams.get('q')??'',after=u.searchParams.get('after');raw=historyQaPage(numbers.filter(n=>{const s=historyQaDetail(n).snapshot;return s.source.source_id.includes(q)||s.number.value.includes(q);}),25,after);}else{const n=numbers.find(n=>historyQaId(n)===u.pathname.split('/').at(-1));if(!n)throw Error('UNKNOWN_SYNTHETIC_HISTORY');raw=historyQaDetail(n);}return after(call,structuredClone(raw),f);}};return f;
+}

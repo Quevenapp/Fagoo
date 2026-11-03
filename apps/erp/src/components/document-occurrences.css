@@ -1,0 +1,12 @@
+/* Origin "Ocorrências" modal. */
+.document-occurrences{min-width:min(820px,86vw);max-width:100%;display:grid;gap:8px}
+.document-occurrences-label{margin:0;font-weight:700}
+.document-occurrences-table td{vertical-align:top}
+.document-occurrences-table textarea{width:100%;min-width:180px}
+.document-occurrence-new td{background:var(--surface-alt,#f0f3f7)}
+.document-occurrence-text{white-space:pre-wrap;overflow-wrap:anywhere;max-width:320px}
+.documents-occurrence-clock{display:inline-flex;align-items:center;margin-right:4px;padding:1px;border:0;background:none;color:var(--muted,#607268);cursor:pointer}
+@media(max-width:600px){.document-occurrences{min-width:0}}
+.document-occurrence-confirm{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:8px 0;padding:8px;border:1px solid var(--border,#d6dde3);border-radius:4px}
+.document-occurrence-confirm p{margin:0;flex:1 1 220px}
+.document-occurrence-remove{color:var(--danger,#b42318)}

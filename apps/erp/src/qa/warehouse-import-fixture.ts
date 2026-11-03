@@ -1,0 +1,24 @@
+// QA_SYNTHETIC_WAREHOUSE_IMPORT — synthetic local ports, no network.
+import {AccessError,type AccessState,type AccessRole,type NativeRequestOptions} from '../lib/real-access.ts';
+import type {WarehouseSource,WarehouseRecord,WarehousePreview,WarehouseResult,WarehousePage,WarehouseImportInput} from '../lib/origin-warehouse-import-model';
+import {captureWarehouseRequest,WAREHOUSE_IMPORT_BASE as BASE} from '../lib/origin-warehouse-import-request.ts';
+export const WAREHOUSE_QA_ACTOR='86000000-0000-4000-8000-000000000001';
+export const warehouseQaSource=(id='100001',active=true):WarehouseSource=>({source_id:id,source_hash:(id==='100001'?'a':'c').repeat(64),source_version:'1',last_seen_at:'2026-10-17T09:50:00Z',name:active?'Geral demonstrativo':'Depósito inativo demonstrativo',status:active?1:0,is_default:active,exclude_balance:false,valid:true,issues:[]});
+const flags=(read=true)=>({profile:'origin-warehouse-import-v1' as const,read_only:read,stock_effects:false as const,financial_effects:false as const,can_import_balance:false as const,observed_at:'2026-10-17T10:00:00Z'});
+export const warehouseQaRecord=(s=warehouseQaSource()):WarehouseRecord=>({id:`86000000-0000-4000-8000-${s.source_id.padStart(12,'0')}`,entity:'warehouses',version:1,name:s.name!,code:null,description:null,active:s.status===1,human_edited:false});
+export const warehouseQaPreview=(s=warehouseQaSource()):WarehousePreview=>({...flags(),source_id:s.source_id,source:s,existing:null,current:null,can_create:true,planned:{name:s.name!,code:null,description:null,active:s.status===1},preview_hash:'b'.repeat(64)});
+export const warehouseQaResult=(body:WarehouseImportInput,s=warehouseQaSource(),read=true):WarehouseResult=>({...flags(read),receipt:{command_id:body.command_id,outcome:'created',source_id:s.source_id,binding:{source:s,record:warehouseQaRecord(s),imported_at:'2026-10-17T10:00:00Z'},completed_at:'2026-10-17T10:00:00Z'},current:{source:s,source_state:'same',record:warehouseQaRecord(s),record_state:'same'},replayed:false});
+export const warehouseQaPage=():WarehousePage=>({...flags(),items:[warehouseQaSource(),warehouseQaSource('100002',false)].map(source=>({source_id:source.source_id,source,binding:null})),limit:25,has_more:false,next_cursor:null});
+export type WarehouseQaCall={path:string;method?:string;body?:unknown;signal?:AbortSignal};
+export function createWarehouseImportFixture({before,after,lostAck=false}:{before?:(call:WarehouseQaCall)=>unknown|Promise<unknown>;after?:(call:WarehouseQaCall,value:unknown)=>unknown;lostAck?:boolean}={}){
+ let state:AccessState={phase:'ready',membership:{user_id:WAREHOUSE_QA_ACTOR,role:'admin',resources:[],data_mode:'staging_readonly'},records:null,listPending:false,loginPending:false,message:null,logoutFailed:false};
+ const listeners=new Set<()=>void>(),calls:WarehouseQaCall[]=[],receipts=new Map<string,WarehouseResult>();let lose=lostAck;
+ const controller={getSnapshot:()=>state,subscribe:(fn:()=>void)=>{listeners.add(fn);return()=>{listeners.delete(fn);};},async warehouseImport(path:string,options:NativeRequestOptions={}){const captured=captureWarehouseRequest(path,options),call={path,...captured.options};calls.push(call);const replacement=await before?.(call);if(replacement!==undefined)return replacement;const u=new URL(path,'https://synthetic.invalid'),parts=u.pathname.split('/');let value:unknown;
+  if(u.pathname===BASE){const page=warehouseQaPage(),q=u.searchParams.get('q')??'';value={...page,items:page.items.filter(r=>r.source_id.includes(q)||r.source!.name!.includes(q)).map(r=>({...r,binding:[...receipts.values()].find(v=>v.receipt.source_id===r.source_id)?.receipt.binding??null}))};}
+  else if(parts.at(-2)==='commands'){const found=receipts.get(parts.at(-1)!);if(!found)throw new AccessError(404);value={...found,...flags(true),replayed:false};}
+  else{const id=parts.at(-2)!,s=warehouseQaSource(id,id==='100001'),existing=[...receipts.values()].find(v=>v.receipt.source_id===id);if(parts.at(-1)==='preview'){value=existing?{...warehouseQaPreview(s),can_create:false,planned:null,preview_hash:null,existing:existing.receipt.binding,current:existing.current}:warehouseQaPreview(s);}
+   else{const body=captured.options.body as WarehouseImportInput;value=receipts.get(body.command_id)??warehouseQaResult(body,s,false);receipts.set(body.command_id,value as WarehouseResult);if(lose){lose=false;throw new AccessError(503);}}}
+  return after?after(call,structuredClone(value)):structuredClone(value);
+ }};
+ return{controller,calls,receipts,setAccess(patch:{actor?:string|null;role?:AccessRole;phase?:AccessState['phase']}){const actor=Object.hasOwn(patch,'actor')?patch.actor:state.membership?.user_id;state={...state,phase:patch.phase??state.phase,membership:actor?{user_id:actor,role:patch.role??state.membership?.role??'admin',resources:[],data_mode:'staging_readonly'}:null};for(const fn of listeners)fn();}};
+}

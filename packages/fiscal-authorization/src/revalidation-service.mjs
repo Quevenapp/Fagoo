@@ -19,7 +19,7 @@ export function createAuthorizationRevalidationService(configuration){
  const call=async(action,args,s)=>{const captured=captureRevalidationRpc(action,args);const raw=await s.bounded(()=>rpc(action,captured,{signal:s.signal,deadline:s.deadline}));s.check();return projectRevalidationLedger(action,raw,captured);};
  const readProcessed=async(r,s)=>{
   if(r.processed_hash===null)return;let response,bytes;
-  const pending=Promise.resolve().then(()=>{s.check();return read({bucket:'fagoo-fiscal-artifacts',key:keyOf(r),signal:s.signal,deadline:s.deadline});});
+  const pending=Promise.resolve().then(()=>{s.check();return read({bucket:'brufap-fiscal-artifacts',key:keyOf(r),signal:s.signal,deadline:s.deadline});});
   try{try{response=await s.bounded(()=>pending);}catch(e){void pending.then(v=>cancel(v?.body)).catch(()=>{});throw e;}
    required(response!==null,'AUTHORIZATION_REVALIDATION_PROCESSED_MISSING');required(response instanceof Response&&!response.redirected&&response.status===200&&response.headers.get('content-type')==='application/octet-stream','AUTHORIZATION_REVALIDATION_STORAGE_INVALID');bytes=await readBounded(response,512000,s);required(bytes.length===r.processed_size&&hash(bytes)===r.processed_hash,'AUTHORIZATION_REVALIDATION_PROCESSED_MISMATCH');s.check();
   }finally{bytes?.fill(0);cancel(response?.body);}
@@ -61,7 +61,7 @@ export function createAuthorizationRevalidationService(configuration){
    const fresh=await call('context',contextArgs,s);required(fresh.source_hash===before.source_hash&&same(fresh.source,source));if(fresh.existing)return await replay(fresh.existing);
    if(processed){
     const receipt={attempt_id:i.expected_attempt_id,parser_manifest_hash:v.parser_manifest_hash,processed_hash:v.processed_hash,processed_size:v.processed_size},writing=Buffer.from(processed);
-    try{const ack=await s.bounded(()=>putImmutable({bucket:'fagoo-fiscal-artifacts',key:keyOf(receipt),bytes:writing,sha256:v.processed_hash,contentType:'application/octet-stream',upsert:false,ifNoneMatch:'*',signal:s.signal,deadline:s.deadline}));s.check();const a=data(ack,['status','requires_readback']);required([200,201,409].includes(a.status)&&a.requires_readback===true&&hash(writing)===v.processed_hash,'AUTHORIZATION_REVALIDATION_STORAGE_INVALID');}
+    try{const ack=await s.bounded(()=>putImmutable({bucket:'brufap-fiscal-artifacts',key:keyOf(receipt),bytes:writing,sha256:v.processed_hash,contentType:'application/octet-stream',upsert:false,ifNoneMatch:'*',signal:s.signal,deadline:s.deadline}));s.check();const a=data(ack,['status','requires_readback']);required([200,201,409].includes(a.status)&&a.requires_readback===true&&hash(writing)===v.processed_hash,'AUTHORIZATION_REVALIDATION_STORAGE_INVALID');}
     finally{writing.fill(0);}
     await readProcessed(receipt,s);
    }

@@ -1,0 +1,24 @@
+/* Botão Sincronizar da barra superior e painel da sincronização de mão dupla com o Origin. */
+.origin-sync { position: relative; }
+.origin-sync-button {
+  display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 15px;
+  color: var(--nav-text); background: transparent; font-family: var(--font-heading); font-size: 12px; font-weight: 700; white-space: nowrap;
+}
+.origin-sync-button:hover { background: var(--nav-hover); }
+.origin-sync-button.is-running svg { animation: origin-sync-spin 1.2s linear infinite; }
+.origin-sync-button.has-issues { border-color: var(--warning, #b7791f); }
+.origin-sync-badge { min-width: 18px; padding: 0 5px; border-radius: 9px; color: #fff; background: var(--warning, #b7791f); font-size: 10px; line-height: 18px; text-align: center; }
+.origin-sync-panel { width: 340px; }
+.origin-sync-lead, .origin-sync-run { margin: 0 0 10px; font-size: 12px; }
+.origin-sync-lead { color: var(--muted); }
+.origin-sync-error { margin: 0 0 10px; color: var(--danger, #c53030); font-size: 12px; }
+.origin-sync-counts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 10px; font-size: 12px; }
+.origin-sync-counts dt { color: var(--muted); }
+.origin-sync-counts dd { margin: 0; color: var(--heading); font-weight: 700; }
+.origin-sync-issues { margin: 0 0 10px; font-size: 12px; }
+.origin-sync-issues ul { max-height: 180px; margin: 6px 0 0; padding-left: 16px; overflow-y: auto; }
+.origin-sync-issues li { margin-bottom: 4px; }
+.origin-sync-start { display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%; }
+@keyframes origin-sync-spin { to { transform: rotate(360deg); } }
+@media (max-width: 760px) { .origin-sync-button span:not(.origin-sync-badge) { display: none; } .origin-sync-panel { width: min(340px, calc(100vw - 32px)); } }
+@media (prefers-reduced-motion: reduce) { .origin-sync-button.is-running svg { animation: none; } }

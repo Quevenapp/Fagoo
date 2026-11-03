@@ -1,0 +1,17 @@
+import type {PreflightInput} from '../../fiscal-authorization/src/preflight-dto.mjs';
+import type {ClosureInput} from '../../fiscal-authorization/src/closure-dto.mjs';
+import type {DispatchBinding,DispatchRunInput} from './dispatch-public-dto.mjs';
+export const DISPATCH_PROFILE:'authorization-reviewed-dispatch-v1';
+export const MAX_DISPATCH_REQUEST_BYTES:4096,MAX_DISPATCH_RESPONSE_BYTES:262144;
+export type DispatchAction='dispatchStatus'|'dispatchPreflight'|'dispatchRun'|'dispatchRecover'|'dispatchCommand'|'dispatchHistory'|'dispatchCloseExpired'|'dispatchClosureCommand'|'dispatchClosureLookup';
+export type DispatchRoute=Readonly<{action:DispatchAction;path:string;method:'GET'|'POST';dispatch:true;candidateId?:string;commandId?:string;authorizationCommandId?:string;expectedAttemptId?:string;limit:number;responseLimit:262144|16384}>;
+export type DispatchPayload=PreflightInput|DispatchRunInput|ClosureInput|Readonly<{command_id:string}>|Readonly<{limit:number;before:string|null}>|Readonly<Record<string,never>>;
+export function dispatchRoute(path:string,method:string,prefix:string):DispatchRoute|null;
+export function captureDispatchInput(action:'dispatchPreflight',raw:unknown):PreflightInput;
+export function captureDispatchInput(action:'dispatchRun',raw:unknown):DispatchRunInput;
+export function captureDispatchInput(action:'dispatchCloseExpired',raw:unknown):ClosureInput;
+export function captureDispatchInput(action:DispatchAction,raw:unknown):DispatchPayload;
+export function parseDispatchPayload(bytes:Uint8Array,selected:DispatchRoute):DispatchPayload;
+export function dispatchBinding(selected:DispatchRoute,payload:DispatchPayload):DispatchBinding;
+export function isDispatchMutation(action:unknown):boolean;
+export function dispatchMutationPath(path:string,method:string):boolean;

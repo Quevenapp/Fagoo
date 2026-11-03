@@ -1,5 +1,5 @@
 {
-  "profile": "fagoo-receipt-pl010f-v1.04",
+  "profile": "brufap-receipt-pl010f-v1.04",
   "entrypoints": {
     "request": "consReciNFe_v4.00.xsd",
     "response": "retConsReciNFe_v4.00.xsd"
@@ -9,15 +9,15 @@
   "files": [
     {
       "name": "consReciNFe_v4.00.xsd",
-      "bytes": 460,
-      "sha256": "d4a775eda0de0a304a8deb1ffba99986cb32c2fb0baceb7f81a7124d5cb447e7",
-      "provenance": "fagoo-local-entrypoint"
+      "bytes": 461,
+      "sha256": "8103c95f6fd318d6740d276f50bcb3b6395a407e9a21f2df27db1dcfe9914f6e",
+      "provenance": "brufap-local-entrypoint"
     },
     {
       "name": "retConsReciNFe_v4.00.xsd",
-      "bytes": 466,
-      "sha256": "a66acff0b38c51bd86fa168a5227cbba5663e9d24eee9204269fcffbea64e2a3",
-      "provenance": "fagoo-local-entrypoint"
+      "bytes": 467,
+      "sha256": "47c451ced7286ee444088312d5d5142c01fa278de37e12a6acf26693a48711e4",
+      "provenance": "brufap-local-entrypoint"
     }
   ],
   "policy": "Local entrypoints over unchanged official types. Structural validation and single-candidate context only; no TLS, receipt ownership or authority."

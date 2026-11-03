@@ -1,0 +1,6 @@
+/* Lista do histórico fiscal (Notas Fiscais de Saída / NFC-e) no padrão de listagem do Origin. */
+.history-records{min-width:0}.history-backup-help{margin:0}.history-table{min-width:860px}.history-table td{vertical-align:top}.history-table .status-badge{white-space:nowrap}
+.history-key{font-variant-numeric:tabular-nums;font-size:11px;max-width:260px;overflow-wrap:anywhere;white-space:normal!important}.history-protocol{font-variant-numeric:tabular-nums}
+.history-sub{display:block;font-size:11px;line-height:1.5;color:var(--muted)}.history-pagination{justify-content:space-between}.history-pagination .origin-pagination{padding:0}
+.real-records>.real-alert{margin:16px 20px}@media(max-width:600px){.history-key{max-width:220px}}
+.history-heading-actions { display: inline-flex; align-items: center; gap: 12px; }

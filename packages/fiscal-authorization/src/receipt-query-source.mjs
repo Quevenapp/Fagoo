@@ -11,7 +11,7 @@ import {SP_AUTHORIZATION_SERVER_TRUST,SP_AUTHORIZATION_ROOT_HASH} from '../../fi
 import {AuthorizationServiceError,data,need,hash,freeze,scope,readBody,cancel} from './service-common.mjs';
 import {same,stamp,SQLSTATES} from './service-dto.mjs';
 export {RECEIPT_QUERY_SOURCE_MANIFEST,RECEIPT_QUERY_SOURCE_MANIFEST_HASH} from './receipt-query-manifest.mjs';
-const BUCKET='fagoo-fiscal-artifacts',handles=new WeakMap();
+const BUCKET='brufap-fiscal-artifacts',handles=new WeakMap();
 const failure=code=>new AuthorizationServiceError('RECEIPT_QUERY_SOURCE_'+code);
 const requireThat=(v,code)=>{if(!v)throw failure(code);};
 function sidecar(raw,v){

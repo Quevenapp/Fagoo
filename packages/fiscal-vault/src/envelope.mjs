@@ -3,7 +3,7 @@ import { SecureContext } from 'node:tls';
 import { disposeSigner } from '../../fiscal-xml/src/index.mjs';
 import { need, safe, exact, context, clock, inputs, key, keyId, b64, unb64, hash, HASH, MAX_PFX, MAX_ENVELOPE } from './common.mjs';
 
-const FORMAT = 'fagoo-a1-envelope-v1';
+const FORMAT = 'brufap-a1-envelope-v1';
 const ALGORITHM = 'AES-256-GCM';
 const METADATA = ['profile', 'legacy_provider_enabled', 'pfx_mac', 'pfx_mac_iterations', 'fingerprint_sha256', 'holder_cnpj', 'not_before', 'not_after', 'rsa_bits', 'presented_chain', 'validated_at', 'key_matches_certificate', 'presented_chain_links_checked', 'icp_brasil_chain_validated', 'revocation_checked', 'a1_policy_verified', 'client_auth_eku_verified', 'can_transmit'];
 const ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;

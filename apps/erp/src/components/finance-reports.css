@@ -1,0 +1,11 @@
+/* Financeiro > Ver relatórios financeiros (SQL 212). */
+.finance-report-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); overflow-x: auto; margin-top: 18px; }
+.finance-report-tabs button { flex-shrink: 0; border: 0; border-bottom: 3px solid transparent; padding: 12px; background: transparent; color: var(--muted); font-weight: 600; }
+.finance-report-tabs button[aria-current] { color: var(--text); border-color: var(--accent); }
+.finance-report-filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; margin: 16px 0; }
+.finance-report-filters .form-field { min-width: 160px; }
+.finance-report-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 12px 0; }
+.finance-report-summary > div { border: 1px solid var(--border); border-radius: 6px; padding: 10px; background: var(--surface); }
+.finance-report-summary dd { margin: 4px 0 0; font-weight: 600; }
+.finance-report-table { min-width: 560px; }
+.finance-report-table td.numeric, .finance-report-table th.numeric { text-align: right; white-space: nowrap; }

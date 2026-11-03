@@ -1,0 +1,82 @@
+/* Frente de caixa real (tela cheia, padrão Origin): complementos do layout da demonstração (demo-pdv.css). */
+.real-main.real-main-pdv { max-width: none; padding: 0; }
+.real-pdv .pdv-body { grid-template-columns: minmax(0, 1fr) 280px; }
+.real-pdv .pdv-body.is-collapsed { grid-template-columns: minmax(0, 1fr) 46px; }
+.real-pdv .pdv-cash-state { padding: 3px 8px; border-radius: 6px; background: #ffffff1f; font-size: 12px; }
+.real-pdv .pdv-certificate { color: #ffd6d6; }
+.real-pdv .pdv-message { margin: 8px 10px 0; }
+.real-pdv .pdv-ops-menu.is-open { display: grid; }
+.real-pdv .pdv-ops-menu button:disabled { color: var(--subtle); cursor: not-allowed; }
+.real-pdv .pdv-form { border: 0; margin: 0; padding: 0; min-width: 0; }
+.real-pdv .pdv-form[disabled] { opacity: .75; }
+.real-pdv .pdv-favorite-tools, .real-pdv .pdv-client-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.real-pdv .pdv-favorites-panel { padding: 8px; border: 1px solid var(--border); border-radius: var(--radius); }
+.real-pdv .pdv-favorites-panel header { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.real-pdv .pdv-favorites-panel h2 { margin: 0 auto 0 0; font-size: 13px; }
+.real-pdv .pdv-favorites button small { display: block; color: var(--muted); }
+.real-pdv .pdv-discount, .real-pdv .pdv-condition { display: flex; gap: 4px; }
+.real-pdv .pdv-discount input, .real-pdv .pdv-condition input { flex: 1; min-width: 0; }
+.real-pdv .pdv-discount .secondary-button { min-width: 42px; padding: 0 8px; }
+.real-pdv .pdv-client-data, .real-pdv .pdv-close-head { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 14px; margin: 0; }
+.real-pdv .pdv-client-data dt, .pdv-close-head dt { color: var(--muted); font-size: 11px; }
+.real-pdv .pdv-client-data dd, .pdv-close-head dd { margin: 0; color: var(--heading); }
+.real-pdv .pdv-pay-totals { display: grid; gap: 4px; margin: 0; }
+.real-pdv .pdv-pay-totals > div { display: grid; grid-template-columns: minmax(0, 1fr) 160px; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--border); }
+.real-pdv .pdv-pay-totals dt { color: var(--heading); }
+.real-pdv .pdv-pay-totals dd { margin: 0; text-align: right; }
+.real-pdv .pdv-pay-totals input { width: 100%; text-align: right; }
+.real-pdv .pdv-pay-totals .is-total dd { color: var(--accent); font-size: 18px; font-weight: 700; }
+.real-pdv .pdv-installments input, .real-pdv .pdv-installments select { width: 100%; min-width: 60px; }
+.real-pdv .pdv-other h3 { margin: 10px 0 6px; font-size: 13px; }
+.real-pdv .pdv-orders { display: flex; flex-direction: column; gap: 8px; overflow: auto; }
+.real-pdv .pdv-orders h2 { justify-content: space-between; }
+.real-pdv .pdv-orders h3 { margin: 4px 0; color: var(--heading); font-size: 12px; }
+.real-pdv .pdv-orders li > button { display: grid; width: 100%; padding: 6px; border: 1px solid transparent; border-radius: 6px; color: var(--heading); background: var(--surface-alt); text-align: left; font-size: 12px; }
+.real-pdv .pdv-orders li > button.is-selected { border-color: var(--accent); }
+.real-pdv .pdv-order-detail { padding-top: 8px; border-top: 1px solid var(--border); }
+.real-pdv .pdv-order-detail dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 8px; margin: 0 0 6px; }
+.real-pdv .pdv-order-detail dt { color: var(--muted); }
+.real-pdv .pdv-order-detail dd { margin: 0; }
+.real-pdv .pdv-detail-payments { display: grid; gap: 2px; margin: 0 0 8px; padding: 0; list-style: none; }
+.real-pdv .pdv-detail-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.real-pdv .pdv-detail-actions > * { font-size: 12px; }
+.pdv-alert { display: grid; gap: 2px; padding: 8px 10px; border-radius: 6px; color: #0b4a2a; background: #dff3e6; }
+.pdv-shortcut-list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: 12px; }
+.pdv-shortcut-list li { display: flex; justify-content: space-between; gap: 14px; }
+.pdv-close-table input { width: 110px; text-align: right; }
+.pdv-tables ul { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.pdv-pix-amount { font-size: 16px; }
+.pdv-qr { display: grid; justify-items: center; gap: 6px; margin: 8px 0; }
+.pdv-qr figcaption { display: grid; gap: 2px; max-width: 72mm; text-align: center; }
+.pdv-qr code { font-size: 9px; word-break: break-all; }
+/* Imprimir: folha de 80 mm, sozinha na impressão. */
+.pdv-print-dialog { position: fixed; inset: 0; z-index: 80; display: flex; flex-direction: column; background: #0008; }
+.pdv-print-controls { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--surface); }
+.pdv-print-controls h2 { margin: 0 auto 0 0; font-size: 15px; }
+.pdv-print-scroll { flex: 1; overflow: auto; padding: 16px; }
+.pdv-print-sheet { width: 80mm; margin: 0 auto; padding: 4mm; color: #000; background: #fff; font-family: 'Courier New', monospace; line-height: 1.3; }
+.pdv-print-sheet h2 { margin: 6px 0 2px; font-size: 1.15em; text-align: center; }
+.pdv-print-sheet h3 { margin: 6px 0 2px; font-size: 1em; }
+.pdv-print-head { display: grid; text-align: center; }
+.pdv-print-fiscal { margin: 0 0 4px; text-align: center; font-weight: 700; }
+.pdv-print-dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0 6px; margin: 4px 0; }
+.pdv-print-dl dd { margin: 0; text-align: right; }
+.pdv-print-items { width: 100%; border-collapse: collapse; font-size: .95em; }
+.pdv-print-items th, .pdv-print-items td { padding: 2px 0; border-bottom: 1px dashed #000; text-align: left; vertical-align: top; }
+.pdv-print-items td:not(:first-child), .pdv-print-items th:not(:first-child) { text-align: right; }
+.pdv-print-items small { display: block; }
+.pdv-print-totals { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 6px; margin: 6px 0; }
+.pdv-print-totals dd { margin: 0; text-align: right; }
+.pdv-print-grand { font-size: 1.15em; font-weight: 700; }
+.pdv-print-payments { margin: 0; padding: 0; list-style: none; }
+.pdv-print-payments li { display: flex; justify-content: space-between; gap: 6px; }
+.pdv-print-note, .pdv-print-foot { margin: 6px 0 0; text-align: center; font-size: .9em; }
+.pdv-print-sign { margin-top: 16px; }
+@media print {
+  body * { visibility: hidden !important; }
+  .pdv-print-sheet, .pdv-print-sheet * { visibility: visible !important; }
+  .pdv-print-dialog { position: static; background: none; }
+  .pdv-print-sheet { position: absolute; top: 0; left: 0; margin: 0; }
+  @page { size: 80mm auto; margin: 0; }
+}
+@media (max-width: 900px) { .real-pdv .pdv-body, .real-pdv .pdv-body.is-collapsed { grid-template-columns: 1fr; } .real-pdv .pdv-pay-totals > div { grid-template-columns: minmax(0, 1fr) 120px; } }

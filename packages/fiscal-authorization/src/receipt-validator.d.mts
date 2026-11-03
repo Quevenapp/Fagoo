@@ -1,0 +1,6 @@
+import type {ReceiptQuery,ReceiptReadOptions} from './receipt-core.mjs';
+export const RECEIPT_VALIDATOR_PROFILE:Readonly<{profile:'brufap-receipt-pl010f-v1.04';validatorHash:string;manifestHash:string}>;
+export type ReceiptValidatorFlags=Readonly<{signatureVerified:false;tlsOriginVerified:false;sefazAuthorized:false;authorizedInHomologation:false;canQuery:false;canEmit:false;canTransmit:false;retrySubmissionAllowed:false}>;
+export type ReceiptValidationReport=ReceiptValidatorFlags&Readonly<{ok:true;schemaProfile:typeof RECEIPT_VALIDATOR_PROFILE.profile;kind:'request'|'response';xmlDigest:string;model:'55'|'65';environment:'2';xsdValidated:true;contextMatched:true;cStat:string|null;protocolCStat:string|null;referenceDigestMatched:boolean;authorizationDeclared:boolean;validatorHash:string;schemaManifestHash:string}>
+ | ReceiptValidatorFlags&Readonly<{ok:false;code:string;kind:'request'|'response';xmlDigest:string;xsdValidated:false;contextMatched:false}>;
+export function createReceiptValidator(configuration:{pythonPath:string;validatorPath:string;spawnImpl?:(...args:unknown[])=>unknown}):(input:{request:ReceiptQuery;xmlBytes:Uint8Array;kind:'request'|'response'},options?:ReceiptReadOptions)=>Promise<ReceiptValidationReport>;

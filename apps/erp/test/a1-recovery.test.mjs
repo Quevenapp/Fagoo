@@ -1,0 +1,39 @@
+import test from'node:test';import assert from'node:assert/strict';
+import{mountComponent,AccessError}from'./helpers/component-recovery-harness.mjs';
+import{parseConfigure}from'../../../packages/fiscal-runtime/src/protocol.mjs';
+import{company,empty,configured,disabled,envelope,committed,flags}from'./helpers/a1-fixtures.mjs';
+const fail=()=>{throw new AccessError(503);};
+async function select(view,bytes=new Uint8Array([1,2,3,4])){view.input('a1-file').props.onChange({target:{files:[{size:bytes.length,arrayBuffer:async()=>bytes.buffer}]}});await view.flush();await view.change('a1-password','SENHA-SINTETICA-NUNCA-REAL');await view.change('a1-reason','Conferência sintética de custódia');const checkbox=view.nodes().find(n=>n.type==='input'&&n.props.type==='checkbox');checkbox.props.onChange({target:{checked:true}});await view.flush();return bytes;}
+test('lost configure acknowledgement freezes secret bytes and only reads command/current after commitment',async()=>{
+ let commandId,postCount=0,metadataReads=0,currentFails=true,held,requestCopy;const controller={company:async()=>company,async a1(path,o={}){if(o.method==='POST'){postCount++;held=o.body;requestCopy=o.body.slice();commandId=parseConfigure(o.body).command_id;return fail();}if(path.includes('/commands/'))return committed(commandId,disabled);metadataReads++;if(metadataReads>1&&currentFails)return fail();return envelope(metadataReads===1?empty:disabled);}};
+ const view=await mountComponent('CertificateA1.tsx',{controller,canManage:true});try{const bytes=await select(view);await view.submit();assert.equal(postCount,1);assert.ok(bytes.every(n=>n===0));assert.ok(held.some(n=>n!==0));assert.equal(view.input('a1-password').props.value,'');assert.equal(view.input('a1-file').disabled,true);assert.equal(view.guard().busy,true);assert.match(view.text(),/resultado ainda precisa/);assert.doesNotMatch(view.text(),/SENHA-SINTETICA/);
+  await view.click('Consultar resultado');assert.equal(postCount,1);assert.ok(held.every(n=>n===0));assert.match(view.text(),/gravação foi confirmada/);assert.equal(view.nodes().some(n=>n.type==='button'&&n.props.children==='Reenviar a mesma solicitação'),false);assert.doesNotMatch(view.text(),/Estado atual/);
+  currentFails=false;await view.click('Consultar resultado');assert.equal(postCount,1);assert.match(view.text(),/Credencial desativada/);assert.doesNotMatch(view.text(),/Credencial armazenada/);assert.equal(view.guard().busy,false);assert.equal(view.guard().changed,false);assert.equal(parseConfigure(requestCopy).command_id,commandId);requestCopy.fill(0);
+ }finally{view.unmount();}
+});
+test('pending retry keeps the exact command and bytes; discard wipes bytes without pretending rollback',async()=>{
+ const realNow=Date.now;let now=realNow(),commandId,first,posts=0;Date.now=()=>now;const controller={company:async()=>company,async a1(path,o={}){if(o.method==='POST'){posts++;commandId=parseConfigure(o.body).command_id;if(!first)first=o.body.slice();else assert.deepEqual(o.body,first);return fail();}return path.includes('/commands/')?{...envelope(empty),state:'pending',receipt:null,error_code:null}:envelope(empty);}};
+ const view=await mountComponent('CertificateA1.tsx',{controller,canManage:true});try{await select(view);await view.submit();assert.equal(view.button('Reenviar a mesma solicitação').disabled,true);now+=65001;await view.click('Consultar resultado');await view.click('Reenviar a mesma solicitação');assert.equal(posts,2);assert.equal(parseConfigure(first).command_id,commandId);
+  await view.click('Descartar segredo local');await view.click('Confirmar descarte local');assert.match(view.text(),/dados secretos locais foram descartados/);assert.equal(view.nodes().some(n=>n.type==='button'&&n.props.children==='Reenviar a mesma solicitação'),false);assert.equal(view.guard().busy,true);assert.equal(view.input('a1-file').disabled,true);await view.click('Consultar resultado');assert.equal(posts,2);
+ }finally{view.unmount();first?.fill(0);Date.now=realNow;}
+});
+test('disable uses current CAS and a lost response cannot produce a new command or display historical state',async()=>{
+ let commandId,posts=0,reads=0,sent;const controller={company:async()=>company,async a1(path,o={}){if(o.method==='POST'){posts++;sent=o.body;commandId=o.body.command_id;return fail();}if(path.includes('/commands/'))return committed(commandId,disabled,'disable');return envelope(++reads===1?configured:disabled);}};
+ const view=await mountComponent('CertificateA1.tsx',{controller,canManage:true});try{await view.change('a1-disable-reason','Desativação sintética conferida');const checks=view.nodes().filter(n=>n.type==='input'&&n.props.type==='checkbox');checks[1].props.onChange({target:{checked:true}});await view.flush();await view.submit(1);assert.equal(sent.expected_version,1);assert.equal(Object.isFrozen(sent),true);assert.equal(posts,1);await view.click('Consultar resultado');assert.equal(posts,1);assert.match(view.text(),/Credencial desativada/);assert.equal(view.guard().changed,false);
+ }finally{view.unmount();}
+});
+test('rejected configure still needs current readback and does not keep credential bytes',async()=>{
+ let held,reads=0,failed=true;const controller={company:async()=>company,async a1(path,o={}){if(o.method==='POST'){held=o.body;return{...envelope(empty),state:'rejected',error_code:'HOLDER_MISMATCH',replayed:false};}if(++reads>1&&failed)return fail();return envelope(empty);}};
+ const view=await mountComponent('CertificateA1.tsx',{controller,canManage:true});try{await select(view);await view.submit();assert.ok(held.every(n=>n===0));assert.match(view.text(),/rejeição foi confirmada/);assert.equal(view.input('a1-file').disabled,true);failed=false;await view.click('Consultar resultado');assert.match(view.text(),/titular do certificado não corresponde/);assert.equal(view.guard().changed,false);
+ }finally{view.unmount();}
+});
+test('permission loss and late file reads never send credentials; pending navigation cleanup wipes buffers',async()=>{
+ let resolveFile,posts=0;const bytes=new Uint8Array([11,22,33]),controller={company:async()=>company,async a1(path,o={}){if(o.method==='POST'){posts++;return fail();}return envelope(empty);}};
+ let view=await mountComponent('CertificateA1.tsx',{controller,canManage:true});try{view.input('a1-file').props.onChange({target:{files:[{size:3,arrayBuffer:()=>new Promise(resolve=>{resolveFile=resolve;})}]}});await view.flush();await view.change('a1-password','sintética');await view.change('a1-reason','Motivo sintético');view.nodes().find(n=>n.type==='input'&&n.props.type==='checkbox').props.onChange({target:{checked:true}});await view.flush();await view.submit();await view.updateProps({canManage:false});resolveFile(bytes.buffer);await view.flush();assert.equal(posts,0);assert.ok(bytes.every(n=>n===0));assert.doesNotMatch(view.text(),/Guardar e conferir/);
+ }finally{view.unmount();}
+ let held;view=await mountComponent('CertificateA1.tsx',{controller:{...controller,async a1(path,o={}){if(o.method==='POST'){held=o.body;return fail();}return envelope(empty);}},canManage:true});await select(view);await view.submit();assert.ok(held.some(n=>n!==0));view.unmount();assert.ok(held.every(n=>n===0));
+});
+test('a late initial metadata response cannot replace a newly mounted session and fiscal mode never writes',async()=>{
+ let resolveOld;const old={company:async()=>company,a1:async()=>new Promise(resolve=>{resolveOld=resolve;})},next={company:async()=>({...company,record:null}),a1:async()=>envelope(disabled)};
+ const view=await mountComponent('CertificateA1.tsx',{controller:old,canManage:false});try{await view.updateProps({controller:next});resolveOld(envelope(configured));await view.flush();assert.match(view.text(),/Credencial desativada/);assert.doesNotMatch(view.text(),/EMPRESA SINTETICA A1|Guardar e conferir|Conferência do arquivo/);assert.equal(view.guard().changed,false);}finally{view.unmount();}
+});

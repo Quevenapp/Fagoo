@@ -1,5 +1,5 @@
 /**
- * Native NF-e / NFC-e 4.00 XML of a note of the Fagoo (notas fiscais lane, wave F): "Validar" and "Gerar XML (suporte)".
+ * Native NF-e / NFC-e 4.00 XML of a note of the Brufap (notas fiscais lane, wave F): "Validar" and "Gerar XML (suporte)".
  * The XML is built from the saved note (the record of erp_fiscal_invoice_get), the company identity, its extra data (Tipo da Pessoa,
  * Isento, IM, CNAE, Suframa, IE dos substitutos tributários) and the next number of the homologation series, which is only predicted:
  * nothing is reserved, signed, transmitted or stored, and tpAmb is always 2 (homologação, sem valor fiscal). The element order comes from
@@ -11,7 +11,7 @@ import { checkNfeSchema, schemaErrorText, schemaXml, SCHEMA_PROFILE } from './sc
 import { accessKeyCheckDigit, isValidCnpj } from '../../fiscal-core/src/identity.mjs';
 import { NFCE_SP_HOMOLOGATION_QR_V3 } from '../../fiscal-core/src/nfce-qr-profile.mjs';
 
-export const NATIVE_XML_PROFILE = 'fagoo-native-invoice-v1';
+export const NATIVE_XML_PROFILE = 'brufap-native-invoice-v1';
 export const HOMOLOGATION_RECIPIENT = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
 export const HOMOLOGATION_PRODUCT = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
 export const STATE_CODES = Object.freeze({ RO: '11', AC: '12', AM: '13', RR: '14', PA: '15', AP: '16', TO: '17', MA: '21', PI: '22', CE: '23', RN: '24', PB: '25', PE: '26', AL: '27', SE: '28', BA: '29',
@@ -179,7 +179,7 @@ function icmsGroup(item, rules, n) {
     case '500': return { ICMSSN500: { orig, CSOSN: s, ...retained() } };
     case '900': return { ICMSSN900: { orig, CSOSN: s, ...(positive(i.base) ? { modBC: i.bc_mode ?? '3', vBC: money(cents(i.base)), ...(i.base_rate && scaled(i.base_rate, 4) < 1000000n ? reduced() : {}), pICMS: rate(i.rate), vICMS: money(cents(i.value)) } : {}),
       ...(positive(i.st_base) ? st() : {}), ...(positive(i.credit_value) ? { pCredSN: rate(i.credit_rate), vCredICMSSN: money(cents(i.credit_value)) } : {}) } };
-    default: rule(rules, 'error', 'item_icms', `Item ${n}: a situação ${s} do ICMS não é gerada pelo Fagoo.`, `det[${n}].imposto.ICMS`); return null;
+    default: rule(rules, 'error', 'item_icms', `Item ${n}: a situação ${s} do ICMS não é gerada pelo Brufap.`, `det[${n}].imposto.ICMS`); return null;
   }
 }
 const TAXED_IPI = ['00', '49', '50', '99'];
@@ -333,7 +333,7 @@ function numericCode(id, number) {
   return code;
 }
 /**
- * The XML of a note of the Fagoo and the offline rules. source: { invoice, emitter, numbering: { next_number }, now: { date, time, offset } }.
+ * The XML of a note of the Brufap and the offline rules. source: { invoice, emitter, numbering: { next_number }, now: { date, time, offset } }.
  * Returns { xml, access_key, number, cnf, issued_at, rules } (rules: [{ severity: 'error'|'warning', code, message, field }]).
  */
 export function nativeInvoiceXml({ invoice, emitter, numbering, now }) {
@@ -362,14 +362,14 @@ export function nativeInvoiceXml({ invoice, emitter, numbering, now }) {
     ...(invoice.model === '55' && invoice.exit_date ? { dhSaiEnt: `${invoice.exit_date}T${invoice.exit_time ? `${invoice.exit_time}:00` : now.time}${now.offset}` } : {}),
     tpNF: invoice.direction, idDest: destination.idDest, cMunFG: emitter.address?.municipality_code ?? null, tpImp: invoice.model === '65' ? '4' : '1', tpEmis: '1', cDV: key.at(-1), tpAmb: '2',
     finNFe: invoice.purpose, ...(invoice.purpose === '5' && invoice.credit_debit_type ? { tpNFDebito: invoice.credit_debit_type } : {}), ...(invoice.purpose === '6' && invoice.credit_debit_type ? { tpNFCredito: invoice.credit_debit_type } : {}),
-    indFinal: invoice.final_consumer ? '1' : '0', indPres: invoice.presence, ...(intermediated ? { indIntermed: invoice.intermediary?.present ? '1' : '0' } : {}), procEmi: '0', verProc: 'FAGOO-NATIVO-1',
+    indFinal: invoice.final_consumer ? '1' : '0', indPres: invoice.presence, ...(intermediated ? { indIntermed: invoice.intermediary?.present ? '1' : '0' } : {}), procEmi: '0', verProc: 'BRUFAP-NATIVO-1',
     NFref: referenceGroups(invoice) };
   if (['2', '4'].includes(invoice.purpose) && !(invoice.references ?? []).length) rule(rules, 'error', 'reference_missing', 'A nota complementar ou de devolução precisa do documento referenciado (aba Documento referenciado).', 'ide.NFref');
   if (invoice.model === '65' && invoice.direction !== '1') rule(rules, 'error', 'nfce_direction', 'A NFC-e é sempre de saída.', 'ide.tpNF');
   const homologationProduct = invoice.model === '65';
   const det = (invoice.items ?? []).map((item, index) => {
     const n = index + 1;
-    if (item.kind === 'S') rule(rules, 'error', 'item_service', `Item ${n}: serviço (ISSQN) não é gerado no XML da NF-e pelo Fagoo.`, `det[${n}]`);
+    if (item.kind === 'S') rule(rules, 'error', 'item_service', `Item ${n}: serviço (ISSQN) não é gerado no XML da NF-e pelo Brufap.`, `det[${n}]`);
     const tax = { ...(positive(item.others?.approx_taxes) ? { vTotTrib: item.others.approx_taxes } : {}), ICMS: icmsGroup(item, rules, n), IPI: ipiGroup(item),
       ...(item.ii?.situation === 'T' || positive(item.ii?.value) ? { II: { vBC: money(cents(item.ii.base)), vDespAdu: money(cents(item.ii.customs_expense)), vII: money(cents(item.ii.value)), vIOF: '0.00' } } : {}),
       PIS: pisGroup(item, 'PIS', rules, n), COFINS: pisGroup(item, 'COFINS', rules, n), ICMSUFDest: difalGroup(item) };

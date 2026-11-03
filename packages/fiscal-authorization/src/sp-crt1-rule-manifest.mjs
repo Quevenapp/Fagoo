@@ -5,7 +5,7 @@ export const SP_CRT1_RULE_MANIFEST=freeze({
  profile:'sp-crt1-internal-sale-homologation-20261016-v1',
  reviewedOn:'2026-10-16',
  scope:{uf:'SP',environment:'2',crt:'1',models:['55','65'],tpNF:'1',idDest:'1',finNFe:'1',tpEmis:'1',indPres:'1',cfop:['5102','5405'],payment:['01','15']},
- timePolicy:{validFrom:'2026-10-16T00:00:00-03:00',reviewBefore:'2026-10-26T00:00:00-03:00',kind:'fagoo_conservative_review_boundary',officialTaxDeadline:false},
+ timePolicy:{validFrom:'2026-10-16T00:00:00-03:00',reviewBefore:'2026-10-26T00:00:00-03:00',kind:'brufap_conservative_review_boundary',officialTaxDeadline:false},
  sources:[
   {id:'moc7',url:'https://www.confaz.fazenda.gov.br/legislacao/arquivo-manuais/moc7-anexo-i-leiaute-e-rv.pdf',sha256:'5eb4cf2010b10b0b62f78197c4eb64025f24535d4c6e61158bc7806dd008f55d',pages:[62,107,108,112,128]},
   {id:'cfop2023',url:'https://www.nfe.fazenda.gov.br/portal/exibirArquivo.aspx?conteudo=JSxhEY85vRU=',sha256:'18b8ce0d3f5fdf46b32bce5588f9f7bef88e123b07ac3bb1adf855339971f7f8',pages:[6,7]},

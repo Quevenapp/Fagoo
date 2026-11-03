@@ -1,0 +1,1656 @@
+{
+  "types": [
+    "_audit",
+    "_policy",
+    "_query",
+    "_request",
+    "_result",
+    "audit",
+    "policy",
+    "query",
+    "request",
+    "result"
+  ],
+  "tables": {
+    "audit": {
+      "columns": [
+        [
+          "id",
+          "bigint",
+          true,
+          "",
+          "a",
+          "",
+          0
+        ],
+        [
+          "query_id",
+          "uuid",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "actor",
+          "uuid",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "action",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "created_at",
+          "timestamp with time zone",
+          true,
+          "clock_timestamp()",
+          "",
+          "",
+          0
+        ]
+      ],
+      "indexes": {
+        "audit_pkey": [
+          "CREATE UNIQUE INDEX audit_pkey ON erp_fiscal_receipt_query.audit USING btree (id)",
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false
+        ]
+      },
+      "triggers": {
+        "immutable": [
+          "CREATE TRIGGER immutable BEFORE DELETE OR UPDATE ON erp_fiscal_receipt_query.audit FOR EACH ROW EXECUTE FUNCTION erp_fiscal_authorization.immutable()",
+          "O",
+          false,
+          false
+        ]
+      },
+      "constraints": {
+        "audit_pkey": [
+          "p",
+          "PRIMARY KEY (id)",
+          true,
+          false,
+          false
+        ],
+        "audit_actor_fkey": [
+          "f",
+          "FOREIGN KEY (actor) REFERENCES auth.users(id)",
+          true,
+          false,
+          false
+        ],
+        "audit_action_check": [
+          "c",
+          "CHECK ((action = ANY (ARRAY['begin'::text, 'prepare'::text, 'consume'::text, 'finish'::text, 'fail'::text])))",
+          true,
+          false,
+          false
+        ],
+        "audit_query_id_fkey": [
+          "f",
+          "FOREIGN KEY (query_id) REFERENCES erp_fiscal_receipt_query.query(id)",
+          true,
+          false,
+          false
+        ]
+      }
+    },
+    "query": {
+      "columns": [
+        [
+          "id",
+          "uuid",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "actor",
+          "uuid",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "request_body_hash",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "authorization_attempt_id",
+          "uuid",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "authorization_command_id",
+          "uuid",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "source_kind",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "source_command_id",
+          "uuid",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "source_binding_hash",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "source",
+          "jsonb",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "source_validation",
+          "jsonb",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "selection",
+          "jsonb",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "predecessors_hash",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "ordinal",
+          "integer",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "model",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "policy_version",
+          "integer",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "policy",
+          "jsonb",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "identity_version",
+          "integer",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "a1_version",
+          "integer",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "credential_id",
+          "uuid",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "envelope_hash",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "certificate_fingerprint",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "lease_id",
+          "uuid",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "nonce",
+          "uuid",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "created_at",
+          "timestamp with time zone",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "expires_at",
+          "timestamp with time zone",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "receipt",
+          "jsonb",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "state",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "used_at",
+          "timestamp with time zone",
+          false,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "finished_at",
+          "timestamp with time zone",
+          false,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "error_code",
+          "text",
+          false,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "finalize_hash",
+          "text",
+          false,
+          "",
+          "",
+          "",
+          0
+        ]
+      ],
+      "indexes": {
+        "query_pkey": [
+          "CREATE UNIQUE INDEX query_pkey ON erp_fiscal_receipt_query.query USING btree (id)",
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false
+        ],
+        "query_nonce_key": [
+          "CREATE UNIQUE INDEX query_nonce_key ON erp_fiscal_receipt_query.query USING btree (nonce)",
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false
+        ],
+        "query_lease_id_key": [
+          "CREATE UNIQUE INDEX query_lease_id_key ON erp_fiscal_receipt_query.query USING btree (lease_id)",
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false
+        ],
+        "query_authorization_attempt_id_ordinal_key": [
+          "CREATE UNIQUE INDEX query_authorization_attempt_id_ordinal_key ON erp_fiscal_receipt_query.query USING btree (authorization_attempt_id, ordinal)",
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false
+        ]
+      },
+      "triggers": {
+        "guard_query": [
+          "CREATE TRIGGER guard_query BEFORE DELETE OR UPDATE ON erp_fiscal_receipt_query.query FOR EACH ROW EXECUTE FUNCTION erp_fiscal_receipt_query.guard_query()",
+          "O",
+          false,
+          false
+        ],
+        "receipt_query_use_commit": [
+          "CREATE CONSTRAINT TRIGGER receipt_query_use_commit AFTER UPDATE ON erp_fiscal_receipt_query.query DEFERRABLE INITIALLY DEFERRED FOR EACH ROW WHEN (((old.used_at IS NULL) AND (new.used_at IS NOT NULL))) EXECUTE FUNCTION erp_fiscal_receipt_query.commit_use()",
+          "O",
+          true,
+          true
+        ]
+      },
+      "constraints": {
+        "query_pkey": [
+          "p",
+          "PRIMARY KEY (id)",
+          true,
+          false,
+          false
+        ],
+        "query_check": [
+          "c",
+          "CHECK ((expires_at = (created_at + '00:01:00'::interval)))",
+          true,
+          false,
+          false
+        ],
+        "query_check1": [
+          "c",
+          "CHECK (((state = ANY (ARRAY['prepared'::text, 'request_ready'::text, 'dispatched'::text])) = (finished_at IS NULL)))",
+          true,
+          false,
+          false
+        ],
+        "query_check2": [
+          "c",
+          "CHECK (((state = ANY (ARRAY['prepared'::text, 'request_ready'::text, 'failed_before_dispatch'::text])) = (used_at IS NULL)))",
+          true,
+          false,
+          false
+        ],
+        "query_nonce_key": [
+          "u",
+          "UNIQUE (nonce)",
+          true,
+          false,
+          false
+        ],
+        "query_actor_fkey": [
+          "f",
+          "FOREIGN KEY (actor) REFERENCES auth.users(id)",
+          true,
+          false,
+          false
+        ],
+        "query_state_check": [
+          "c",
+          "CHECK ((state = ANY (ARRAY['prepared'::text, 'request_ready'::text, 'dispatched'::text, 'uncertain'::text, 'failed_before_dispatch'::text, 'receipt_pending'::text, 'rejected'::text, 'review_required'::text, 'authorized_homologation'::text])))",
+          true,
+          false,
+          false
+        ],
+        "query_lease_id_key": [
+          "u",
+          "UNIQUE (lease_id)",
+          true,
+          false,
+          false
+        ],
+        "query_ordinal_check": [
+          "c",
+          "CHECK ((ordinal > 0))",
+          true,
+          false,
+          false
+        ],
+        "query_a1_version_check": [
+          "c",
+          "CHECK ((a1_version > 0))",
+          true,
+          false,
+          false
+        ],
+        "query_source_kind_check": [
+          "c",
+          "CHECK ((source_kind = ANY (ARRAY['authorization'::text, 'revalidation'::text])))",
+          true,
+          false,
+          false
+        ],
+        "query_credential_id_fkey": [
+          "f",
+          "FOREIGN KEY (credential_id) REFERENCES erp_a1.credential(id)",
+          true,
+          false,
+          false
+        ],
+        "query_envelope_hash_fkey": [
+          "f",
+          "FOREIGN KEY (envelope_hash) REFERENCES erp_a1.sealed_object(hash)",
+          true,
+          false,
+          false
+        ],
+        "receipt_query_use_commit": [
+          "t",
+          "TRIGGER DEFERRABLE INITIALLY DEFERRED",
+          true,
+          true,
+          true
+        ],
+        "query_finalize_hash_check": [
+          "c",
+          "CHECK ((finalize_hash ~ '^[a-f0-9]{64}$'::text))",
+          true,
+          false,
+          false
+        ],
+        "query_identity_version_check": [
+          "c",
+          "CHECK ((identity_version > 0))",
+          true,
+          false,
+          false
+        ],
+        "query_predecessors_hash_check": [
+          "c",
+          "CHECK ((predecessors_hash ~ '^[a-f0-9]{64}$'::text))",
+          true,
+          false,
+          false
+        ],
+        "query_request_body_hash_check": [
+          "c",
+          "CHECK ((request_body_hash ~ '^[a-f0-9]{64}$'::text))",
+          true,
+          false,
+          false
+        ],
+        "query_model_policy_version_fkey": [
+          "f",
+          "FOREIGN KEY (model, policy_version) REFERENCES erp_fiscal_receipt_query.policy(model, version)",
+          true,
+          false,
+          false
+        ],
+        "query_source_binding_hash_check": [
+          "c",
+          "CHECK ((source_binding_hash ~ '^[a-f0-9]{64}$'::text))",
+          true,
+          false,
+          false
+        ],
+        "query_authorization_attempt_id_fkey": [
+          "f",
+          "FOREIGN KEY (authorization_attempt_id) REFERENCES erp_fiscal_authorization.attempt(id)",
+          true,
+          false,
+          false
+        ],
+        "query_authorization_command_id_fkey": [
+          "f",
+          "FOREIGN KEY (authorization_command_id) REFERENCES erp_fiscal_authorization.command(id)",
+          true,
+          false,
+          false
+        ],
+        "query_certificate_fingerprint_check": [
+          "c",
+          "CHECK ((certificate_fingerprint ~ '^[a-f0-9]{64}$'::text))",
+          true,
+          false,
+          false
+        ],
+        "query_authorization_attempt_id_ordinal_key": [
+          "u",
+          "UNIQUE (authorization_attempt_id, ordinal)",
+          true,
+          false,
+          false
+        ]
+      }
+    },
+    "policy": {
+      "columns": [
+        [
+          "model",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "version",
+          "integer",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "enabled",
+          "boolean",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "profile",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "manifest_hash",
+          "text",
+          false,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "origin",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "binding_profile",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "lease_seconds",
+          "integer",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "cadence_seconds",
+          "integer",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "max_queries_per_hour",
+          "integer",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "valid_from",
+          "timestamp with time zone",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "valid_until",
+          "timestamp with time zone",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "created_at",
+          "timestamp with time zone",
+          true,
+          "clock_timestamp()",
+          "",
+          "",
+          0
+        ]
+      ],
+      "indexes": {
+        "policy_pkey": [
+          "CREATE UNIQUE INDEX policy_pkey ON erp_fiscal_receipt_query.policy USING btree (model, version)",
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false
+        ]
+      },
+      "triggers": {
+        "immutable": [
+          "CREATE TRIGGER immutable BEFORE DELETE OR UPDATE ON erp_fiscal_receipt_query.policy FOR EACH ROW EXECUTE FUNCTION erp_fiscal_authorization.immutable()",
+          "O",
+          false,
+          false
+        ],
+        "policy_lock": [
+          "CREATE TRIGGER policy_lock BEFORE INSERT ON erp_fiscal_receipt_query.policy FOR EACH ROW EXECUTE FUNCTION erp_fiscal_receipt_query.policy_lock()",
+          "O",
+          false,
+          false
+        ]
+      },
+      "constraints": {
+        "policy_pkey": [
+          "p",
+          "PRIMARY KEY (model, version)",
+          true,
+          false,
+          false
+        ],
+        "policy_check": [
+          "c",
+          "CHECK ((isfinite(valid_from) AND isfinite(valid_until) AND (valid_until > valid_from)))",
+          true,
+          false,
+          false
+        ],
+        "policy_check1": [
+          "c",
+          "CHECK (((NOT enabled) OR (manifest_hash IS NOT NULL)))",
+          true,
+          false,
+          false
+        ],
+        "policy_model_check": [
+          "c",
+          "CHECK ((model = ANY (ARRAY['55'::text, '65'::text])))",
+          true,
+          false,
+          false
+        ],
+        "policy_origin_check": [
+          "c",
+          "CHECK ((origin = 'operational'::text))",
+          true,
+          false,
+          false
+        ],
+        "policy_version_check": [
+          "c",
+          "CHECK ((version > 0))",
+          true,
+          false,
+          false
+        ],
+        "policy_lease_seconds_check": [
+          "c",
+          "CHECK ((lease_seconds = 60))",
+          true,
+          false,
+          false
+        ],
+        "policy_manifest_hash_check": [
+          "c",
+          "CHECK ((manifest_hash ~ '^[a-f0-9]{64}$'::text))",
+          true,
+          false,
+          false
+        ],
+        "policy_cadence_seconds_check": [
+          "c",
+          "CHECK ((cadence_seconds = 60))",
+          true,
+          false,
+          false
+        ],
+        "policy_max_queries_per_hour_check": [
+          "c",
+          "CHECK ((max_queries_per_hour = 10))",
+          true,
+          false,
+          false
+        ]
+      }
+    },
+    "result": {
+      "columns": [
+        [
+          "query_id",
+          "uuid",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "response_hash",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "response_size",
+          "integer",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "observation_hash",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "observation_size",
+          "integer",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "evidence",
+          "jsonb",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "processed_hash",
+          "text",
+          false,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "processed_size",
+          "integer",
+          false,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "created_at",
+          "timestamp with time zone",
+          true,
+          "clock_timestamp()",
+          "",
+          "",
+          0
+        ]
+      ],
+      "indexes": {
+        "result_pkey": [
+          "CREATE UNIQUE INDEX result_pkey ON erp_fiscal_receipt_query.result USING btree (query_id)",
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false
+        ]
+      },
+      "triggers": {
+        "immutable": [
+          "CREATE TRIGGER immutable BEFORE DELETE OR UPDATE ON erp_fiscal_receipt_query.result FOR EACH ROW EXECUTE FUNCTION erp_fiscal_authorization.immutable()",
+          "O",
+          false,
+          false
+        ]
+      },
+      "constraints": {
+        "result_pkey": [
+          "p",
+          "PRIMARY KEY (query_id)",
+          true,
+          false,
+          false
+        ],
+        "result_check": [
+          "c",
+          "CHECK (((processed_hash IS NULL) = (processed_size IS NULL)))",
+          true,
+          false,
+          false
+        ],
+        "result_query_id_fkey": [
+          "f",
+          "FOREIGN KEY (query_id) REFERENCES erp_fiscal_receipt_query.query(id)",
+          true,
+          false,
+          false
+        ],
+        "result_response_hash_check": [
+          "c",
+          "CHECK ((response_hash ~ '^[a-f0-9]{64}$'::text))",
+          true,
+          false,
+          false
+        ],
+        "result_response_size_check": [
+          "c",
+          "CHECK (((response_size >= 1) AND (response_size <= 512000)))",
+          true,
+          false,
+          false
+        ],
+        "result_processed_hash_check": [
+          "c",
+          "CHECK ((processed_hash ~ '^[a-f0-9]{64}$'::text))",
+          true,
+          false,
+          false
+        ],
+        "result_processed_size_check": [
+          "c",
+          "CHECK (((processed_size >= 1) AND (processed_size <= 512000)))",
+          true,
+          false,
+          false
+        ],
+        "result_observation_hash_check": [
+          "c",
+          "CHECK ((observation_hash ~ '^[a-f0-9]{64}$'::text))",
+          true,
+          false,
+          false
+        ],
+        "result_observation_size_check": [
+          "c",
+          "CHECK (((observation_size >= 1) AND (observation_size <= 8192)))",
+          true,
+          false,
+          false
+        ]
+      }
+    },
+    "request": {
+      "columns": [
+        [
+          "query_id",
+          "uuid",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "sha256",
+          "text",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "size_bytes",
+          "integer",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "evidence",
+          "jsonb",
+          true,
+          "",
+          "",
+          "",
+          0
+        ],
+        [
+          "created_at",
+          "timestamp with time zone",
+          true,
+          "clock_timestamp()",
+          "",
+          "",
+          0
+        ]
+      ],
+      "indexes": {
+        "request_pkey": [
+          "CREATE UNIQUE INDEX request_pkey ON erp_fiscal_receipt_query.request USING btree (query_id)",
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false
+        ]
+      },
+      "triggers": {
+        "immutable": [
+          "CREATE TRIGGER immutable BEFORE DELETE OR UPDATE ON erp_fiscal_receipt_query.request FOR EACH ROW EXECUTE FUNCTION erp_fiscal_authorization.immutable()",
+          "O",
+          false,
+          false
+        ]
+      },
+      "constraints": {
+        "request_pkey": [
+          "p",
+          "PRIMARY KEY (query_id)",
+          true,
+          false,
+          false
+        ],
+        "request_sha256_check": [
+          "c",
+          "CHECK ((sha256 ~ '^[a-f0-9]{64}$'::text))",
+          true,
+          false,
+          false
+        ],
+        "request_query_id_fkey": [
+          "f",
+          "FOREIGN KEY (query_id) REFERENCES erp_fiscal_receipt_query.query(id)",
+          true,
+          false,
+          false
+        ],
+        "request_size_bytes_check": [
+          "c",
+          "CHECK (((size_bytes >= 1) AND (size_bytes <= 512000)))",
+          true,
+          false,
+          false
+        ]
+      }
+    }
+  },
+  "relations": {
+    "audit": "r",
+    "query": "r",
+    "policy": "r",
+    "result": "r",
+    "request": "r",
+    "audit_pkey": "i",
+    "query_pkey": "i",
+    "policy_pkey": "i",
+    "result_pkey": "i",
+    "audit_id_seq": "S",
+    "request_pkey": "i",
+    "query_nonce_key": "i",
+    "query_lease_id_key": "i",
+    "query_authorization_attempt_id_ordinal_key": "i"
+  },
+  "sequences": {
+    "audit_id_seq": {
+      "max": "9223372036854775807",
+      "min": "1",
+      "type": "bigint",
+      "cache": "1",
+      "cycle": false,
+      "start": "1",
+      "increment": "1",
+      "dependency": [
+        [
+          "erp_fiscal_receipt_query.audit",
+          1,
+          "i"
+        ]
+      ]
+    }
+  },
+  "fk_triggers": {
+    "erp_fiscal_receipt_query.audit.audit_actor_fkey": [
+      [
+        "auth.users",
+        9,
+        "\"RI_FKey_noaction_del\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.audit",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "auth.users",
+        17,
+        "\"RI_FKey_noaction_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.audit",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.audit",
+        5,
+        "\"RI_FKey_check_ins\"",
+        "O",
+        false,
+        false,
+        "auth.users",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.audit",
+        17,
+        "\"RI_FKey_check_upd\"",
+        "O",
+        false,
+        false,
+        "auth.users",
+        0,
+        "\\x",
+        null
+      ]
+    ],
+    "erp_fiscal_receipt_query.query.query_actor_fkey": [
+      [
+        "auth.users",
+        9,
+        "\"RI_FKey_noaction_del\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "auth.users",
+        17,
+        "\"RI_FKey_noaction_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        5,
+        "\"RI_FKey_check_ins\"",
+        "O",
+        false,
+        false,
+        "auth.users",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        17,
+        "\"RI_FKey_check_upd\"",
+        "O",
+        false,
+        false,
+        "auth.users",
+        0,
+        "\\x",
+        null
+      ]
+    ],
+    "erp_fiscal_receipt_query.audit.audit_query_id_fkey": [
+      [
+        "erp_fiscal_receipt_query.audit",
+        5,
+        "\"RI_FKey_check_ins\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.audit",
+        17,
+        "\"RI_FKey_check_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        9,
+        "\"RI_FKey_noaction_del\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.audit",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        17,
+        "\"RI_FKey_noaction_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.audit",
+        0,
+        "\\x",
+        null
+      ]
+    ],
+    "erp_fiscal_receipt_query.result.result_query_id_fkey": [
+      [
+        "erp_fiscal_receipt_query.query",
+        9,
+        "\"RI_FKey_noaction_del\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.result",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        17,
+        "\"RI_FKey_noaction_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.result",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.result",
+        5,
+        "\"RI_FKey_check_ins\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.result",
+        17,
+        "\"RI_FKey_check_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ]
+    ],
+    "erp_fiscal_receipt_query.request.request_query_id_fkey": [
+      [
+        "erp_fiscal_receipt_query.query",
+        9,
+        "\"RI_FKey_noaction_del\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.request",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        17,
+        "\"RI_FKey_noaction_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.request",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.request",
+        5,
+        "\"RI_FKey_check_ins\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.request",
+        17,
+        "\"RI_FKey_check_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ]
+    ],
+    "erp_fiscal_receipt_query.query.query_credential_id_fkey": [
+      [
+        "erp_a1.credential",
+        9,
+        "\"RI_FKey_noaction_del\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_a1.credential",
+        17,
+        "\"RI_FKey_noaction_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        5,
+        "\"RI_FKey_check_ins\"",
+        "O",
+        false,
+        false,
+        "erp_a1.credential",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        17,
+        "\"RI_FKey_check_upd\"",
+        "O",
+        false,
+        false,
+        "erp_a1.credential",
+        0,
+        "\\x",
+        null
+      ]
+    ],
+    "erp_fiscal_receipt_query.query.query_envelope_hash_fkey": [
+      [
+        "erp_a1.sealed_object",
+        9,
+        "\"RI_FKey_noaction_del\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_a1.sealed_object",
+        17,
+        "\"RI_FKey_noaction_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        5,
+        "\"RI_FKey_check_ins\"",
+        "O",
+        false,
+        false,
+        "erp_a1.sealed_object",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        17,
+        "\"RI_FKey_check_upd\"",
+        "O",
+        false,
+        false,
+        "erp_a1.sealed_object",
+        0,
+        "\\x",
+        null
+      ]
+    ],
+    "erp_fiscal_receipt_query.query.query_model_policy_version_fkey": [
+      [
+        "erp_fiscal_receipt_query.policy",
+        9,
+        "\"RI_FKey_noaction_del\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.policy",
+        17,
+        "\"RI_FKey_noaction_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        5,
+        "\"RI_FKey_check_ins\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.policy",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        17,
+        "\"RI_FKey_check_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.policy",
+        0,
+        "\\x",
+        null
+      ]
+    ],
+    "erp_fiscal_receipt_query.query.query_authorization_attempt_id_fkey": [
+      [
+        "erp_fiscal_authorization.attempt",
+        9,
+        "\"RI_FKey_noaction_del\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_authorization.attempt",
+        17,
+        "\"RI_FKey_noaction_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        5,
+        "\"RI_FKey_check_ins\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_authorization.attempt",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        17,
+        "\"RI_FKey_check_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_authorization.attempt",
+        0,
+        "\\x",
+        null
+      ]
+    ],
+    "erp_fiscal_receipt_query.query.query_authorization_command_id_fkey": [
+      [
+        "erp_fiscal_authorization.command",
+        9,
+        "\"RI_FKey_noaction_del\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_authorization.command",
+        17,
+        "\"RI_FKey_noaction_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_receipt_query.query",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        5,
+        "\"RI_FKey_check_ins\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_authorization.command",
+        0,
+        "\\x",
+        null
+      ],
+      [
+        "erp_fiscal_receipt_query.query",
+        17,
+        "\"RI_FKey_check_upd\"",
+        "O",
+        false,
+        false,
+        "erp_fiscal_authorization.command",
+        0,
+        "\\x",
+        null
+      ]
+    ]
+  }
+}

@@ -68,7 +68,7 @@ export function createSubsetReviewService(configuration){
   const before=await metadata(x,s),r=before.receipt,a=before.artifact;let response,bytes;
   try{
    if(x.signedHash!==undefined)need(a.signed_hash===x.signedHash&&r.version===x.expectedCandidateVersion,'40001');
-   const pending=Promise.resolve().then(()=>{s.check();return read(Object.freeze({bucket:'fagoo-fiscal-artifacts',key:`candidates/${r.candidate_id}/${a.signed_hash}.xml`,signal:s.signal,deadline:s.deadline}));});
+   const pending=Promise.resolve().then(()=>{s.check();return read(Object.freeze({bucket:'brufap-fiscal-artifacts',key:`candidates/${r.candidate_id}/${a.signed_hash}.xml`,signal:s.signal,deadline:s.deadline}));});
    try{response=await s.bounded(()=>pending);}catch(error){void pending.then(v=>cancel(v?.body)).catch(()=>{});throw error;}
    bytes=await readBody(response,s,{expectedHash:a.signed_hash,expectedSize:a.size_bytes});s.check();
    const cert=pinnedCandidateCertificate({signedBytes:bytes,signedHash:a.signed_hash,signedSize:a.size_bytes,certificateFingerprint:r.certificate_fingerprint,model:r.model,now:new Date(a.created_at)});

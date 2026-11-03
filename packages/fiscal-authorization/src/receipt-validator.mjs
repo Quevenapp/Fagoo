@@ -5,9 +5,9 @@ import {createHash} from 'node:crypto';
 import {receiptRequestBytes,receiptValidationContext,parseReceiptResponse,FiscalReceiptError,MAX_RECEIPT_BYTES} from './receipt-core.mjs';
 
 export const RECEIPT_VALIDATOR_PROFILE=Object.freeze({
-  profile:'fagoo-receipt-pl010f-v1.04',
-  validatorHash:'24d17cb5966fbb24a582187e020bc171811949c8ced4716909e0a8f5b8cb16c2',
-  manifestHash:'371517654618b1e6f99cfa4e3383c9fba2ac45cb5616dc893106de6d9366a6d0',
+  profile:'brufap-receipt-pl010f-v1.04',
+  validatorHash:'13773b14382b10d559b8a8d5c6d13d03c01f317ce7173e238955996c408662a0',
+  manifestHash:'01b172bfb96670a9f271c7fabf1987dc66a1fe7e2290b423f77519ed7e4bbdda',
 });
 const XML_CODES=Object.freeze(['RECEIPT_INPUT_INVALID','RECEIPT_ENCODING_INVALID','RECEIPT_SIZE_LIMIT',
   'RECEIPT_XML_DECLARATION_UNSUPPORTED','RECEIPT_XML_INVALID','RECEIPT_ROOT_INVALID','RECEIPT_TREE_LIMIT',

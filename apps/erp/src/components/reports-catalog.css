@@ -1,0 +1,21 @@
+/* Catálogo de relatórios no padrão do Origin (relatorios.php) */
+.reports-catalog { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 14px; margin: 0 12px 24px; color: var(--text); }
+.reports-main h1 { margin: 12px 0 6px; padding-bottom: 8px; border-bottom: 1px solid var(--border); color: var(--heading); font-size: 18px; font-weight: 400; }
+.reports-areas { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
+.reports-areas button { padding: 4px 10px; border: 1px solid var(--border-strong); border-radius: 14px; color: var(--heading); background: transparent; font-size: 12px; }
+.reports-areas button[aria-current="page"] { color: var(--accent-text); background: var(--accent); border-color: var(--accent); }
+.reports-group { margin-bottom: 4px; }
+.reports-group h2 { margin: 0; padding: 4px 8px; color: var(--heading); background: var(--surface-alt); font-family: var(--font-body); font-size: 12px; font-weight: 700; }
+.reports-group ul { margin: 0; padding: 0; list-style: none; }
+.reports-item { display: flex; align-items: center; gap: 10px; padding: 6px 8px; color: var(--heading); text-decoration: none; }
+a.reports-item:hover { background: var(--surface-alt); text-decoration: none; }
+.reports-item.is-disabled { opacity: .85; cursor: not-allowed; }
+.reports-item strong { display: block; font-size: 12px; }
+.reports-item small { display: block; color: var(--muted); font-size: 11px; }
+.reports-icon { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 30px; border-radius: 3px; color: #fff; background: #1a8fd8; }
+.reports-icon.is-chart { background: #d9534f; }
+.reports-tips h2 { margin: 12px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); color: var(--heading); font-size: 16px; font-weight: 400; }
+.reports-tip { display: grid; justify-items: center; gap: 8px; padding: 16px 12px; color: #3d3f33; background: #ffefa8; border-radius: 2px; text-align: center; font-size: 11px; }
+.reports-tip h3 { margin: 0; font-size: 13px; }
+.reports-tip p { margin: 0; }
+@media (max-width: 900px) { .reports-catalog { grid-template-columns: 1fr; } }

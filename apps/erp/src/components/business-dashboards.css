@@ -1,0 +1,81 @@
+/* Meu Negócio dashboards (Origin dashboard.meu.negocio.php): side menu, filters, KPI cards, charts and tables. */
+.business-dashboards{display:grid;grid-template-columns:210px minmax(0,1fr);gap:16px;align-items:start;margin:0 14px 24px}
+.business-nav{position:sticky;top:calc(var(--topbar-height,56px) + 8px);display:grid;gap:10px;padding:10px 12px;border-radius:var(--radius);background:var(--surface)}
+.business-nav h2{margin:0 0 4px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.business-nav ul{display:grid;gap:2px;margin:0;padding:0;list-style:none}
+.business-nav a{display:block;padding:6px 8px;border-radius:var(--radius-small);color:var(--heading);text-decoration:none}
+.business-nav a[aria-current=page]{color:var(--accent-strong);background:var(--accent-soft);font-weight:700}
+.business-nav-disabled{display:grid;padding:6px 8px;color:var(--muted)}.business-nav-disabled small{font-size:11px}
+.business-nav-settings{display:flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius-small);background:transparent;color:var(--heading);cursor:pointer}
+.business-main,.business-panel,.business-goals{display:grid;gap:12px;min-width:0}
+.business-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.business-heading h1{margin:0}
+.business-heading button svg,.business-table-tools button svg,.business-goal-new svg{margin-right:4px}
+.business-help p{margin:0 0 6px}
+.business-filters{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 14px;padding:12px;border-radius:var(--radius);background:var(--surface)}
+.business-filters .form-field{min-width:150px}.business-range{display:flex;flex-wrap:wrap;gap:8px}
+.business-statuses{display:flex;flex-wrap:wrap;gap:4px 8px;margin:0;padding:0;border:0;flex-basis:100%}
+.business-statuses legend{margin-bottom:4px;font-size:12px;font-weight:600}
+.business-statuses label{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border:1px solid var(--border);border-radius:999px;font-size:12px;cursor:pointer}
+.business-statuses label.is-on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-strong)}
+.business-keywords{display:grid;gap:4px;min-width:220px}.business-tags{display:flex;flex-wrap:wrap;gap:4px}
+.business-tag{padding:2px 8px;border:1px solid var(--border);border-radius:999px;background:var(--accent-soft);color:var(--heading);font-size:12px;cursor:pointer}
+.business-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.business-kpi{display:flex;gap:10px;padding:12px;border-radius:var(--radius);background:var(--surface)}
+.business-kpi h3{margin:0;color:var(--muted);font-size:12px;font-weight:600}.business-kpi strong{display:block;margin-top:4px;color:var(--heading);font-size:20px}
+.business-kpi-icon{display:grid;place-items:center;flex:0 0 32px;height:32px;border-radius:50%;color:#fff;background:var(--accent)}
+.business-kpi-previous{margin:4px 0 0;color:var(--muted);font-size:11px}.business-kpi-previous span{margin-right:6px;font-weight:700}
+.business-kpi-previous .is-up{color:var(--accent-strong)}.business-kpi-previous .is-down{color:var(--danger)}
+.business-hint{margin-left:4px;color:var(--muted);cursor:help}
+.business-tone-blue .business-kpi-icon,.business-bar.business-tone-blue,.business-swatch.business-tone-blue{background:#0065f9;fill:#0065f9}
+.business-tone-green .business-kpi-icon,.business-bar.business-tone-green,.business-swatch.business-tone-green{background:#34ad61;fill:#34ad61}
+.business-tone-orange .business-kpi-icon,.business-bar.business-tone-orange,.business-swatch.business-tone-orange{background:#ff7835;fill:#ff7835}
+.business-tone-purple .business-kpi-icon,.business-bar.business-tone-purple,.business-swatch.business-tone-purple{background:#7c4dff;fill:#7c4dff}
+.business-tone-gray .business-kpi-icon,.business-bar.business-tone-gray,.business-swatch.business-tone-gray{background:#9aa5b1;fill:#9aa5b1}
+.business-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:start}
+.business-card,.business-chart,.business-table{padding:12px;border-radius:var(--radius);background:var(--surface);min-width:0}
+.business-card h2,.business-chart h2,.business-table h2{margin:0 0 8px;font-size:14px;color:var(--heading)}
+.business-card-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.business-status-list{display:grid;gap:6px;margin:0;padding:0;list-style:none}.business-status-list li{display:grid;grid-template-columns:1fr auto auto;gap:10px;font-size:13px}
+.business-status-list small{color:var(--muted)}
+.business-indicators{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px 14px;margin:0}
+.business-indicators dt{color:var(--muted);font-size:11px;font-weight:600}.business-indicators dd{margin:2px 0 0;font-weight:700;color:var(--heading)}
+.business-table header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}.business-table header h2{margin:0}
+.business-table-tools{display:flex;flex-wrap:wrap;align-items:center;gap:6px}.business-search{display:inline-flex;align-items:center;gap:6px;font-size:12px}
+.business-search input{width:160px}.business-table .table-scroll{margin-top:8px}
+.business-table tfoot th{border-top:2px solid var(--border-strong,var(--border))}
+.business-legend{display:flex;flex-wrap:wrap;gap:4px 12px;margin-bottom:6px;font-size:12px}.business-legend span{display:inline-flex;align-items:center;gap:4px}
+.business-swatch{display:inline-block;width:10px;height:10px;border-radius:2px}
+.business-chart-scroll{overflow-x:auto}.business-chart-scroll svg{display:block}
+.business-axis{fill:var(--muted);font-size:9px}.business-baseline{stroke:var(--border);stroke-width:1}
+.business-tabs{display:flex;flex-wrap:wrap;align-items:center;gap:4px;border-bottom:1px solid var(--border)}
+.business-tabs [role=tab]{padding:7px 12px;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--heading);cursor:pointer}
+.business-tabs [role=tab].active{border-bottom-color:var(--accent);color:var(--accent-strong);font-weight:700}
+.business-goal-new{margin-left:auto;display:inline-flex;align-items:center}
+.business-abc-cards{display:flex;flex-wrap:wrap;gap:8px}.business-abc{display:grid;gap:2px;min-width:120px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius);background:transparent;color:var(--heading);cursor:pointer;text-align:left}
+.business-abc.active{border-color:var(--accent);background:var(--accent-soft)}.business-abc span{color:var(--muted);font-size:12px}
+.business-goals-mini,.business-goal-list{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.business-goals-mini li{display:grid;grid-template-columns:1fr 160px auto;align-items:center;gap:10px;font-size:13px}
+.business-goal-list li{display:grid;grid-template-columns:minmax(0,1fr) 180px auto auto;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--radius);background:var(--surface)}
+.business-goal-list li div{display:grid;gap:2px}.business-goal-list small{color:var(--muted)}
+.business-goal-list progress,.business-goals-mini progress{width:100%;accent-color:var(--accent)}
+.business-drawer{position:fixed;top:0;right:0;bottom:0;z-index:1500;display:flex;flex-direction:column;gap:10px;width:min(420px,100vw);padding:16px;overflow:auto;background:var(--surface);box-shadow:-4px 0 18px rgba(0,0,0,.18)}
+.business-drawer header{display:flex;align-items:center;justify-content:space-between}.business-drawer h2{margin:0;font-size:16px}
+.business-drawer-fields{display:grid;gap:10px;margin:0;padding:0;border:0}
+.business-settings{max-width:640px;width:calc(100vw - 32px)}
+.business-updated{margin:0}.business-empty{margin:8px 0}
+@media(max-width:1000px){.business-dashboards{grid-template-columns:minmax(0,1fr)}.business-nav{position:static}}
+@media(max-width:640px){.business-dashboards{margin:0 8px 16px}.business-goal-list li,.business-goals-mini li{grid-template-columns:minmax(0,1fr)}.business-search input{width:120px}}
+/* 188: Filtro por Estados (mapa) and Previsão Inteligente. */
+.business-map{display:grid;gap:6px;padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.business-map h2{margin:0;font-size:14px;color:var(--heading)}
+.business-map svg{max-width:100%;height:auto}
+.business-map-tile{cursor:pointer;outline:none}
+.business-map-tile rect{fill:var(--surface-alt);stroke:var(--border)}
+.business-map-tile text{fill:var(--heading);font-size:11px;font-weight:700;pointer-events:none}
+.business-map-shade-1 rect{fill:#d6f0df}.business-map-shade-2 rect{fill:#a9dfbc}.business-map-shade-3 rect{fill:#6cc690}.business-map-shade-4 rect{fill:#34ad61}
+.business-map-shade-3 text,.business-map-shade-4 text{fill:#fff}
+.business-map-tile.is-selected rect,.business-map-tile:focus-visible rect{stroke:var(--accent-strong);stroke-width:3}
+.business-map-tile[aria-disabled=true]{cursor:default;opacity:.6}
+.business-forecast strong{font-size:18px;color:var(--heading)}
+.business-freight-paid { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; margin: 16px 0; }
+.business-freight-paid h3, .business-freight-paid p { flex-basis: 100%; margin: 0; }

@@ -1,0 +1,14 @@
+.fiscal-review{border-top:1px solid var(--border,#d5dde5);padding-top:1rem;margin-top:1.25rem;min-width:0}
+.fiscal-review-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.75rem}
+.fiscal-review-heading h3{margin:0 0 .25rem;font-size:1rem}.fiscal-review-heading p{margin:0;font-size:.82rem;color:var(--muted,#526273)}
+.fiscal-review-counts{display:flex;flex-wrap:wrap;gap:.55rem 1.25rem;padding:.65rem 0;font-size:.85rem}
+.fiscal-review-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem 1.25rem;margin:.5rem 0 1rem}
+.fiscal-review-groups h4{font-size:.88rem;margin:.5rem 0}.fiscal-review ul{padding-left:1.15rem;margin:.35rem 0}
+.fiscal-review li{font-size:.82rem;margin-bottom:.45rem;line-height:1.45}.fiscal-review small{display:block;font-size:.75rem;color:var(--muted,#526273);margin-top:.15rem}
+.fiscal-review-blocker{font-weight:600}.fiscal-review-table{min-width:780px}.fiscal-review-table th:first-child{max-width:230px;overflow-wrap:anywhere}
+.fiscal-review-table td{vertical-align:top}.fiscal-review-table details{min-width:210px;max-width:390px}.fiscal-review-table summary{cursor:pointer;font-weight:600}
+.fiscal-review-table summary:focus-visible{outline:2px solid var(--accent,#007f82);outline-offset:3px}
+.fiscal-review-comparison{display:grid;grid-template-columns:1fr 1fr;gap:.3rem .6rem;font-size:.8rem;border-top:1px solid var(--border,#d5dde5);padding-top:.6rem}
+.fiscal-review-comparison dt{font-weight:600}.fiscal-review-comparison dd{margin:0;overflow-wrap:anywhere}
+@media(max-width:760px){.fiscal-review-heading{flex-wrap:wrap}.fiscal-review-groups{grid-template-columns:1fr}.fiscal-review-counts{gap:.4rem}}
+@media print{.fiscal-review button{display:none}.fiscal-review .table-scroll{overflow:visible}.fiscal-review-table{min-width:0}.fiscal-review details{max-width:none}}

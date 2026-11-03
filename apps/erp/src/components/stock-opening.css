@@ -1,0 +1,28 @@
+/* Saldo de abertura do estoque (Origin) e política de estoque negativo */
+.stock-opening { display: grid; gap: 12px; min-width: 0; }
+.stock-opening h2 { margin: 0; font-size: 15px; }
+.stock-opening p { margin: 4px 0; }
+.stock-opening small { display: block; color: var(--muted); }
+.stock-opening-panel { display: grid; gap: 8px; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.stock-opening-panel > header { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.stock-opening-warning { border-left: 3px solid var(--warning); }
+.stock-opening-fields, .stock-opening-actions { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+.stock-opening-fields label, .stock-opening-actions label, .stock-opening-confirm > label { display: grid; gap: 4px; min-width: 14rem; font-size: 12px; color: var(--heading); }
+.stock-opening select, .stock-opening input:not([type="checkbox"]) { min-height: 32px; max-width: 100%; padding: 4px 8px; border: 1px solid var(--border); border-radius: var(--radius-small); background: var(--surface); color: var(--text); }
+.stock-opening-switch, .stock-opening-check { display: flex !important; align-items: flex-start; gap: 8px; font-weight: 600; }
+.stock-opening-check { font-weight: 400; }
+.stock-opening-confirm { display: grid; gap: 8px; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-alt); }
+.stock-opening-counts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 0; }
+.stock-opening-counts div { padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius); }
+.stock-opening-counts dt { font-size: 11px; color: var(--muted); }
+.stock-opening-counts dd { margin: 2px 0 0; font-size: 18px; font-weight: 700; color: var(--heading); }
+.stock-opening .table-scroll { overflow: auto; }
+.stock-opening-table td small { display: block; }
+/* Saldos negativos ficam visíveis, nunca disfarçados de zero. */
+.stock-opening-negative, .stock-opening-negative dd { color: var(--danger); font-weight: 700; }
+.stock-opening code { overflow-wrap: anywhere; word-break: break-word; }
+@media (max-width: 600px) {
+  .stock-opening-fields label, .stock-opening-actions label { min-width: 0; width: 100%; }
+  .stock-opening-actions button { min-height: 40px; }
+  .stock-opening-counts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

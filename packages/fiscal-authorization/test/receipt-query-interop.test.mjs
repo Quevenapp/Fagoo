@@ -1,0 +1,14 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';
+import {receiptQueryInteropFixture} from './receipt-query-interop-fixture.mjs';import {createReceiptQueryTransport} from '../src/receipt-query-transport.mjs';import {receiptResponse} from './receipt-fixtures.mjs';import {wire} from '../../fiscal-reconciliation/test/protocol-wire.mjs';import {hash} from '../src/service-common.mjs';
+test('SQL069/079→source089→RPC→encrypted041→PKCS12→query transport→XSD→SQL089 and public readback for55/65',{timeout:60000},async()=>{
+ const f=await receiptQueryInteropFixture();let sends=0;try{for(const model of ['55','65'])for(const kind of ['authorization','revalidation']){
+  const c=await f.querySource(model,kind),transport=async(v,session,o)=>{sends++;const g=v.used.grant,payload=receiptResponse({accessKey:g.access_key,referenceDigest:g.reference_digest,receiptNumber:g.receipt_number},{batch:kind==='authorization'?'105':'104'}).toString().replaceAll('2026-10-16T09:02:00-03:00',new Date(Date.now()-10800000+1000).toISOString().slice(0,19)+'-03:00').replaceAll('2026-10-16T09:01:00-03:00',new Date(Date.now()-10800000+1000).toISOString().slice(0,19)+'-03:00');
+   const body=Buffer.from(`<Envelope xmlns="http://www.w3.org/2003/05/soap-envelope"><Body><nfeResultMsg xmlns="${v.request.binding.serviceNamespace}">${payload}</nfeResultMsg></Body></Envelope>`),driver=wire({body});return createReceiptQueryTransport({requestImpl:driver.requestImpl})(v,session,o);
+  },service=f.queryCompose({transport}),context=await service.context({actor:c.actor,request:c.contextInput});assert.equal(context.can_query,true,JSON.stringify(context.blockers));
+  const command_id=randomUUID(),input={actor:c.actor,request:{...context.selection,command_id,confirmed:true}},result=await service.run(input);assert.equal(result.current.state,kind==='authorization'?'receipt_pending':'authorized_homologation',JSON.stringify(result));assert.equal(result.source.source_kind,kind);assert.equal(result.can_transmit,false);assert.equal(result.tax_rules_validated,false);
+  const before=sends,replay=await service.run(input),read=await service.command({actor:c.actor,commandId:command_id});assert.equal(sends,before);assert.equal(replay.replayed,true);assert.equal(read.observation.response_hash,result.observation.response_hash);if(result.observation.processed_hash){const b=f.files.get(`receipt-queries/${command_id}/processed/${result.observation.processed_hash}.xml`);assert.equal(hash(b),result.observation.processed_hash);}
+  const h=await service.history({actor:c.actor,request:{authorization_command_id:result.source.authorization_command_id,expected_attempt_id:c.contextInput.expected_attempt_id,limit:25,before:null}});assert.equal(h.items.length,1);
+ }
+ assert.equal(sends,4);assert.equal((await f.db.query('select count(*)::int n from erp_fiscal_receipt_query.result')).rows[0].n,4);
+ }finally{await f.close();}
+});

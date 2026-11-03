@@ -1,0 +1,1695 @@
+{
+  "schema": 1,
+  "source_commit": "97be7a7eab5c132e540748757120a55897f1e971",
+  "scope": "Recorded file-level deviations from the normalized source. This manifest does not certify runtime parity or customer data migration.",
+  "files": {
+    ".gitignore": {
+      "sha256": "0a94339b506636b0f68ed7888882106e7470ac1ca7ae90282307a31a8220f3d2",
+      "reason": "FAGOO development identity/version, verification commands, dependency security update or repository artifact hygiene."
+    },
+    "apps/erp/.env.example": {
+      "sha256": "246a4c7580b747801fa59879c8a86e733be6b3f2d6778dbadb4eae39abf84275",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/boleto-qa.html": {
+      "sha256": "ef04f3db261443be2edab67bcd170e78fd1a6361028019e57a99851da3865998",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/danfe-qa.html": {
+      "sha256": "b8850ea76c3b96b8771470af2059e4d2f0711f15cb4e9663c9fb955d125b737d",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/index.html": {
+      "sha256": "12888d3e9d2f0cfd1132ca63fd545ec7877eb6ec26bc3dae7de92f8a90229a63",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/purchase-readiness-qa.html": {
+      "sha256": "3b4a3711dc463e1e5ca4745b06ac50a5945321daa557e24fc82766d7c03aabde",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/qa.html": {
+      "sha256": "d2aca6ea365324118fe4d74d7b5c1a653621fd6ca4237f4afa7294a3520a77d2",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/reconciliation-qa.html": {
+      "sha256": "81af3c12cca245dbe887331b173f1d8ec070edb34d73151342ad6a068b7ea417",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/sales-history-qa.html": {
+      "sha256": "108aff8bbd4f967351441222f29f735fa5e390f92f5ffe70ee6c064c56f1237f",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/sales-readiness-qa.html": {
+      "sha256": "a98283c507840df416d07d827d0c9631c09f058d5f608a0b703fd3e1aebf1723",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/App.tsx": {
+      "sha256": "648fd1fa8016c9c74a6c93dd8966670ab8a03643c847f61e737207bc47b9312c",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/origin-lists.ts": {
+      "sha256": "a91427b7ec04cee8b650d503ec8ad5cf52d143badc85a01b2a287f24b2b48a55",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/AccountSecurity.tsx": {
+      "sha256": "eff476d07fdce1d8f3ede1400d2710225c56d68c7abfc1764b172091a4e2e8fe",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/OriginCatalogSync.tsx": {
+      "sha256": "87e2f440a55c2ffb6059b858226a41c71769c736a584689ca4e4b4052e912bc7",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/OriginList.tsx": {
+      "sha256": "2f22618653127309fb4ae43ed151ee24e45ca48978fae8f45c0f0382938cdf0f",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/OriginMirrorPanel.tsx": {
+      "sha256": "40b5f6aa4cb092cd83fcbe58739c2e3d1a17a59a556d00f2a240c00bfcde36d0",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/OriginPurchaseReadiness.tsx": {
+      "sha256": "eecc7240a383e8374e783a0f45c892c0f09c766889fa1b11fb9549269de3b3a8",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/OriginSalesReadiness.tsx": {
+      "sha256": "33a0f58aa29b400578961fa05f92d01591218f31f68924853cbc33d7cbd16a56",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/OriginStockObservations.tsx": {
+      "sha256": "7cb5662013455e35a14d1e103eab2cba367b9937310c91cd139e02617b370546",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/OriginSyncButton.tsx": {
+      "sha256": "7749e6b9cd2cd18a5baf286f39d648f247de8464f568e0c0b9582f2c78792d98",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/OriginTopBar.tsx": {
+      "sha256": "f3ea2783aef2a7fcb6bc60baf1a3a1b6f678fd58cc3866fb898df59d79ee6699",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/OriginWarehouseImport.tsx": {
+      "sha256": "9d68480778c99832fbc730f8b8a464c322801c8c21c4143913f0955e744bf752",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/BusinessDashboards.tsx": {
+      "sha256": "79b51ebf06834ae81205051ddb7a967bd9d59963ff512992bc564b988d456a13",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/BusinessWidgets.tsx": {
+      "sha256": "00d2113ea297b15da4e1dc4ed7452a9ed49ed1f0267721acd2b15d45cffe121b",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/CatalogEditor.tsx": {
+      "sha256": "c63fe073893454676f9fcd44b78c3eb55d4babc9971bb70523ff86fc70db0456",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/CatalogList.tsx": {
+      "sha256": "0056cb70932e0fb8f80f2d25021861b52dc22d19f2d000256e9e71a985ad575d",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/CertificateA1.tsx": {
+      "sha256": "bb6ddec3b2788a2c05570d2d7943dde792ab6b120ddd91a30472d7bb8ec4bfe2",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/CnabOperationalV2.tsx": {
+      "sha256": "24c2974c57d6698d261f32d6d43b94e08b004373fffe6057ebf540b35b7d40af",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/CnabReturnAmounts.tsx": {
+      "sha256": "de22c48e939b865c0e9f9d0725babb7b456f6d64a77035b69c101027b04dddf9",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/CompanyExport.tsx": {
+      "sha256": "10a7c15d86284adde77c127a21e1d60a1745a01ac8f0fc5e3ac2fc16e32996a5",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/CompanyExtra.tsx": {
+      "sha256": "4dd52e8ba9a060671626c89cb539278a55442e7b5ffb52d84a0af8e0122e716f",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/CompanyLogo.tsx": {
+      "sha256": "ec74ee683d578a477b21751211a3048d1c93c13f06e935f4a4fd1831cd1e73ae",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/CompanyNavigation.tsx": {
+      "sha256": "7666ebe019b11fc5282dfd9768f4f032c38034bc35816a08c776539b9cc7e814",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/ContactBilling.tsx": {
+      "sha256": "d81c639c3c2a77dc1b5a3280e3894e2afea828d92a408fc4f7997fa7506eebf0",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/ContactEditor.tsx": {
+      "sha256": "d01b214ba9c645e0bfe76db913a334179b61a6211674f170d75e191200fa23b2",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/ContactExportDialog.tsx": {
+      "sha256": "b6e873d89f7bc716dd87b39b25851f2557f2d4930fe1199a6c6e7ccc38d0ceeb",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/ContactList.tsx": {
+      "sha256": "de816e56d48d3f897d5079168044f68730f43cff034573abd7092cb4a1f81793",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/ContactListPrint.tsx": {
+      "sha256": "87abb3cfc8c1e56fa2e8813ff2f0b532a11264e78ebd7310d3384c193e85219e",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/CustomFields.tsx": {
+      "sha256": "3f007b43c158d5192339595c49717132b46aa897fa9efa3c88406ab362f2af66",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/CutoverReadiness.tsx": {
+      "sha256": "ca0423c1722e11a539ef56b700a67df64d3e22ccb9a6a1f3d1b0462a579cb99f",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/DemoPdv.tsx": {
+      "sha256": "47253e458f5192f4c17658cd52d7101716176b5c6a0c757c0c9e0006a1a35e32",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/DocumentAutoFinance.tsx": {
+      "sha256": "19bb7464557b08edcf47b679c5e2ed6a4600047bd0e3095874411ca89dc26c19",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/DocumentCommercialFields.tsx": {
+      "sha256": "1dd50fd15a83ca9bc03d171cb549730f31e265d481038d9f12e6a9adb8437437",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/DocumentCustomFieldsAdmin.tsx": {
+      "sha256": "4a8f7381f07331f6b3fe7aafa441812042489dcc51bc9f163a2ce85ce4511b21",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/DocumentList.tsx": {
+      "sha256": "7f7cb6f79a08f6925f958da5a83c5136c52903e3334d4592e23ed20a0e72e92b",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/DocumentListPrint.tsx": {
+      "sha256": "d5fb8311dea5b2add0b833d82282d363c1bf76df69c18e5e45c2efc3318f1061",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/DocumentMirrorView.tsx": {
+      "sha256": "0c98a99237b3c40a924404d13bc6bddbf59334a928f77fdc13a2987ac73c511a",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/DocumentOriginTotals.tsx": {
+      "sha256": "dd255b36b28f0cfebd0be9e56d7537b5756136509b7e71ed5cbdd96287705a20",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/DocumentPrintPreview.tsx": {
+      "sha256": "1b7303b47bba7e2bec02fecef2daf2545799ec9cf7126988ec7d7b8cec646d48",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/DocumentReports.tsx": {
+      "sha256": "473afa954a1507f926f33369a4f8a72519ac135163b86393dd1ada33b6b20bd1",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/DocumentWaveG.tsx": {
+      "sha256": "de5ceb01d5c99751fbb6e07444cf59a356693a3056ceb166824d06c213f0ef69",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/DueDateReport.tsx": {
+      "sha256": "46f7366b4ab7b55e1851b04013dcc17f491d6339ac8aa0d29c856d791d412571",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FinanceCategoryTree.tsx": {
+      "sha256": "2ba72fa0fae65f87452a4f07754070eb491ca3ccf3da9d6a0dead14874a16800",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FinanceCommissions.tsx": {
+      "sha256": "71614eb61bd83e19105aae68ddf65c7d1d15787450ac109d4eaee5e3b653c3b9",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FinanceGroupedBilling.tsx": {
+      "sha256": "246ba6ee4e4a6db6815b0b654f2b343dda334fdaaa2d2ab89a22d624c7294f7a",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FinanceMovementHistory.tsx": {
+      "sha256": "13d9bb12d314524efba83751c9532955cda5b4d7ae2cb71fbf094733cdb92c6b",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FinanceReconciliation.tsx": {
+      "sha256": "aadd21aab0f44c95757c57a3c15e509337ff7f9d991fb5836a16344b08541ee8",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FinanceRemittances.tsx": {
+      "sha256": "af29710b9c2d2b161f65a71620b58e9c88589316ffb622c4e87fe6692c084f05",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FinanceReturns.tsx": {
+      "sha256": "88353a85792c17e67aa371a25e58b04265471caa1fc8ba572ee71e4b247a7f7c",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FinanceSettleDrawer.tsx": {
+      "sha256": "28ff27774296910e457f8d29c54a36c57d56a47fb06be2bd9688c66149464690",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FinanceStatement.tsx": {
+      "sha256": "ef5e50ac52f28ac7606d780973aa164aa0c0acde78a73ae3acdcd37f2e4dfac3",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FinanceTitleDrawer.tsx": {
+      "sha256": "d6512335cb5ad42ab22ab8b9f7ce64c92e465d45b7b2e003939fdcf1cbaf4261",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FinanceTransfers.tsx": {
+      "sha256": "3f8a85df64bd932d56186fdd27144acf1ab92bb56c2bc0bae64e39f6ae9ca197",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FinanceWhatsappShare.tsx": {
+      "sha256": "71b7d299da7fac0ed7ace3b3ffd51b92d4b0142bae8b3ef05d7e04eb7767279a",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FinancialCutoverReview.tsx": {
+      "sha256": "b8e449bece6b6cf1e50f69278e247bf64c7a4696262780cab66fa9479f194441",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FinancialImportReview.tsx": {
+      "sha256": "37dff988315e11577b1a6e86012160abb734d38dfdf63d2bfd9b1dd06c4af488",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FiscalAccountantPackage.tsx": {
+      "sha256": "1e11e0dfa538756a83ecfca76dfa8d2da021abc4590bbcfe78a3bd9d589ff349",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FiscalEventDialogs.tsx": {
+      "sha256": "f2a7751ad9cc9fd48acd22194e12b1e987e6b5bff79540e85df318ae3434a0fc",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FiscalEventList.tsx": {
+      "sha256": "97c51f73eed9ed958650fa4a23e23144e9ab93848ccc89feb3310f628dcd9f5d",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FiscalImportDialog.tsx": {
+      "sha256": "3b21c4f6fd37209114422b0b6d96f65abdb1dce257dfa94265c7163f21fcc425",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FiscalInvoiceFinance.tsx": {
+      "sha256": "583c2b6650480366f968b82a0c1d78b311ccdae0b6368c535de6d39d8c09e56e",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FiscalInvoiceForm.tsx": {
+      "sha256": "b4015c152436d9b61889e9ffeea6169b8b6e56f58432ef140f0083d6aead4eef",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FiscalInvoiceItemDialog.tsx": {
+      "sha256": "943ac0a9f4f7239076abb9d0d4f09835ca28d9d06631d092465776c4d6c4598c",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FiscalInvoiceItemHistory.tsx": {
+      "sha256": "59b3a5217059496cb8745f4a6b8e26fa9281e8f890a9d6cf730c5aa134377f7a",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FiscalNativeXmlDialog.tsx": {
+      "sha256": "ccdd8b7e1ef1c75eadf88af04e47c604c683ae8eef04e3edcb00fa00e9f699e5",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FiscalOrderBatch.tsx": {
+      "sha256": "0af620199c978e70633943d12ab33c2dbd0381be79887f3594d3d9030e6de012",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FiscalReviewedAuthorization.tsx": {
+      "sha256": "9e64f65779aa793570d4d1d42326b1d26bdc4bcc3fd5b5b60eca4b676085c95d",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FiscalSubsetReview.tsx": {
+      "sha256": "b73b738e22267a7420d129bcc363c6adbe36577c20de086e1266e62199949c3f",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FiscalTaxSettings.tsx": {
+      "sha256": "c348604d133cae47de1e53f48273ee4ce1a7817f20a0ca2588878b1f47d12b5b",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/FiscalXmlExportDialog.tsx": {
+      "sha256": "f55ccbc5395547aed08325e107a47ef66f5e3663a9159e2ac064af4897d14a72",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/HelpCenter.tsx": {
+      "sha256": "3d1f36d31ec7ef612562676e7cea7dc098de0f4b028d349ffec3d60897e9f78f",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/HomeFavorites.tsx": {
+      "sha256": "caf35938d36e9553b950873a21a9ead683ebe4a1d9a5d7fef5dc586124f7419f",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/IntegrationProgress.tsx": {
+      "sha256": "be5bf6b5138e914bc7610cda07d5aa43b0ab1d91bd0b4fc2fa9b841d83f225d3",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/InviteActivation.tsx": {
+      "sha256": "89099adbfc61d686c46a0bea0e11dccdf10bb9ab7f7bfb03449220446273e965",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/ItauCutoverGuide.tsx": {
+      "sha256": "8c80e12147dba32844cb19e3cc3f30b095d0dc39dbc675882cdb57858c0bc77a",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/ItauNetCredit.tsx": {
+      "sha256": "4b6a9b91e9fcec8d21cefb20b8d5ab4959af1b67e0c9e88421fa5e348966d2d1",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/MfaSetup.tsx": {
+      "sha256": "55fe38267aeb2a56c4e5c6876ac57752fa08716d304c6373d23a5806e742bc08",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/PdvDialogs.tsx": {
+      "sha256": "4493c8b011d27df1f75a380673c2d4413e7d2d6eeac2df9d135059785e712572",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/PreferenceSettingsPage.tsx": {
+      "sha256": "214007ea3418cf84c940e293b9d9f570b36995e5057da2fa3e8d767837d57ed3",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/PreferencesPage.tsx": {
+      "sha256": "2e83ba3bc579ee3f5109c1bab629149b49dcf9c528e2886d52f2d57e756bc123",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/PriceListWizard.tsx": {
+      "sha256": "cdb84ccc2013b806154ae203bd89201e26ec5d3c573b6f5efe94262c99c8eb5b",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/PriceLists.tsx": {
+      "sha256": "7cf2f674dd1a1e1ed40d6e547f6390035d62dcec2b253930f1374f135ad6d23d",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/PrintSheet.tsx": {
+      "sha256": "5599b4d1a40483becd61fd14599efbf3c54297b2dd78442bac9b503039159cc6",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/ProductExport.tsx": {
+      "sha256": "7090f62fd165cafdcf3fa3e5fd9f8eac751b2e8a5c8f1bb47b1f481f3c911ec1",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/ProductList.tsx": {
+      "sha256": "ad3c8046cef59f0945e02254fe480ca93ba298d473432fb9c8c2dd5986bdc212",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/ProductStoredImages.tsx": {
+      "sha256": "48c987e0354ba8a1796a2c2e842dfd744836ebd714f84367e54c1f8fcb885892",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/ProductTaxonomy.tsx": {
+      "sha256": "1a282a50a1a701a5dbc9597a931c1813b58534b9a4b79eb6fab25296ab9b25db",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/ProductValidationPanel.tsx": {
+      "sha256": "eed9c134aef5c10921e53f801bb7fe760e9c5a17f3133b19d468c32c17574de9",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealAccess.tsx": {
+      "sha256": "25caed654a744813e6be730d96c97eb8cf283019917cf36ace816cfd7fe52ff0",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealActivity.tsx": {
+      "sha256": "d08a6b4dac575a7c56a3dda7639d8031cc6764a40cc03926b2745945ee0bfa45",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealCnab.tsx": {
+      "sha256": "4c0ce8dbadfd5c3daeb9c21ed523f16757604eb7a72cb3fea92467dd7d59fd74",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealCnabOperationalReturns.tsx": {
+      "sha256": "81cd0f98b2638c2680cab9f9340d60a9eb151060d94928a2f4c5719a7800260e",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealDocuments.tsx": {
+      "sha256": "79a280b37ed310e647be37a67fafdbaaa6c54ef7c8e14f671d6fbd5c8df1d128",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealEmployees.tsx": {
+      "sha256": "94f353146f809e76d0da60899a42319910cb0ad734e2060a1cada38b2ac23c46",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealFiles.tsx": {
+      "sha256": "b46e0660cd83aeb2c54c56ed1b672679869eb8769d79ed1544017d56e5e0aef9",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealFinance.tsx": {
+      "sha256": "6e3b314945913b2bd494a8c719c0923b87e13cce0570487bd09845c284acddb8",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealFiscalInvoices.tsx": {
+      "sha256": "97b39814676ff57d2d0506202d0e099e82462a852147b767dd6aae98dcaf4e13",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealFiscalNumbering.tsx": {
+      "sha256": "b2c310b70714122a31784da57dd9d8a98c0e09299e4155067ab5deaf039c2ff8",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealHome.tsx": {
+      "sha256": "35a5b85323063b968eab6d988dfc0d6922e450b8df1b1e5fecc2564086f33b56",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealImportCatalog.tsx": {
+      "sha256": "96e212cdde112cb9b2f891f32ed8961c3ed4f5ce94918f3c4d965985154a5bdb",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealImportContacts.tsx": {
+      "sha256": "c54af58aab46b81bde072602f04aed499b26c0812dcbc9f981651a5c2bd52c28",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealImportProposals.tsx": {
+      "sha256": "6cc5aa1e57cc82a12d68b78966a03a662c711c442be2d5eeef1f168674de93dc",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealOperationNatures.tsx": {
+      "sha256": "165b20113a129fed1dc42f888c5665ccb7f2d9987b7bb0b63b038d8594c9eded",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealPaymentMethods.tsx": {
+      "sha256": "e7739da48cdbcd4a6f302150dc44a6cc45b5181bece604e07daedebfee39ba87",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealReceivedDfe.tsx": {
+      "sha256": "ead28810670b6123631c3941de00980bdd625b32ebd76132592b84df1524bc83",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealSellers.tsx": {
+      "sha256": "3154ac83ad5bb5322a327046cec4a633fa2646050e5fc8dd3fc4c4774ac24e19",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealSituations.tsx": {
+      "sha256": "5e11f46eab45c14c3d35f9fbd9b5349e42150a30f1eb2817db26dcf4b05003ee",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealStock.tsx": {
+      "sha256": "d836d48c06c4b4e814c03049bd95eff1127a9e67609698ffdd6d063d06a64053",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealStockOpening.tsx": {
+      "sha256": "6fe56ba769b1be6f2d5ebbd8f11f0f00abe96c0411ace012644722fd20538247",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/RealUsers.tsx": {
+      "sha256": "a813e7ef1f7cda8b5631aa32bec69ed613bca5526fc98fd8dc071144873f5d57",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/ReceiptCheckin.tsx": {
+      "sha256": "ca6a26aa72dfe0f414310cf541b4e028734e90096f97ca78c9f961ae8b52d6dc",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/ReleaseNotesPanel.tsx": {
+      "sha256": "8e642a8bf73e617d5d3c305b05226653380f7d8a7f901ff9ed47221acccee5d1",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/ReportsCatalog.tsx": {
+      "sha256": "0e4465f60ee8d727ad3662c6f77e4646adb2fe407f10406e59776a4655871b9d",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/SpreadsheetImport.tsx": {
+      "sha256": "f23bc36c447cf3c44fbb4c10e18465a30c5f8886cbfa58ca68e2fddec2e8e916",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/StockOriginMirror.tsx": {
+      "sha256": "ae535b2bd4c61257edb31d4bb833751b223641ed218728d5df5a044e3c52b1bf",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/StockDashboards.tsx": {
+      "sha256": "d75b0211abb8046a3bc5e191822857b074c04b976aa98388b8fe2c83956060dc",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/StockLots.tsx": {
+      "sha256": "420220474e03ce47864339a999854fd3c389061d77168e58771900aa02b7b996",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/StockReports.tsx": {
+      "sha256": "55fc5c595f65c0b3614679d997d9ac1c726fa3e3b64b730fe593d740e0245c28",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/StructureExport.tsx": {
+      "sha256": "f90fec196e4cd91aa6af595e7a53dcfbae9c263b2c60f2db4b45eda3c7ad19e0",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/UserControls.tsx": {
+      "sha256": "6e65db684d3b791dff426682c6bdbd110a468f2fc6121b21d25e219b8c91438c",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/UserPermissions.tsx": {
+      "sha256": "250d3e3d6f51f49eb656ff51e2033f56cacc2e1b94ccd7c15f13560acfeb68f1",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/components/UserSecurity.tsx": {
+      "sha256": "58970d947d6b1b0622abda1142a8e844c827b12503b1497acf9f8a915d1971da",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/access-config.ts": {
+      "sha256": "347e139ba5b090885d0bc4aa32fe4811cf601ded49a6d2d0c9745212f32a9e15",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/account-security.ts": {
+      "sha256": "e741d7803430f54f39353a11dd1a415fa37272f64fafe79888b7217a26c9b3ea",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/origin-menu.ts": {
+      "sha256": "e3abc121752682e950d3d05b626378e2791c6c2dbd1b69713ea7c62cf14ed5a5",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/origin-mirror-model.ts": {
+      "sha256": "1d26b92d7ad2b598896cecc6cab4985c56a78d5d1287e37a410266526dbd46a2",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/origin-proposal-import-model.ts": {
+      "sha256": "6dc00c54bf4d84a60ba3356406643d1b62b83e6698ba1a55e194c9d61c7fe624",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/origin-purchase-readiness-model.ts": {
+      "sha256": "6b585809e7c53d2dce007d35218ac8bd665f7d204668981a96d6a02b7ed48081",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/origin-sales-history-model.ts": {
+      "sha256": "670019ba764014cc05eb24424bf9d507cbf675e71324776b327e7b792427664e",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/origin-sales-readiness-model.ts": {
+      "sha256": "bb3faf848c5256d7b4e1b8d3c8f2c832b0b43025cf4e4728c8eec9c5aabfcd30",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/origin-stock-observations-model.ts": {
+      "sha256": "83f7411651ea361a736be8e4f000048d785b7725168c8213a94d7021b07570e8",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/origin-sync-model.ts": {
+      "sha256": "33c8589d7248573aa6f2bc6b1ab20f1d5a25218bc3f4fc5433410f9d7f452b83",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/business-model.ts": {
+      "sha256": "09d72c4dcad085e3d43486652252e698d8c4558cf2c1681c2102ba454e1b6569",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/catalog-import-model.ts": {
+      "sha256": "f73e793be5c41e551aabe47d88dc8863df6b6617ddfa6ef4827c55dda03c61b5",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/cutover-model.ts": {
+      "sha256": "b7da74635354d344ad035709066cc632befbe89082861b7a3c6df7fc388a9690",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/danfe.ts": {
+      "sha256": "38a507493ef3c1b56a3b0a4a0ac0571d735eb3bfff93dc89d20012583f66100c",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/document-list-export.ts": {
+      "sha256": "0d00d641d82676756cf850d1d5dd409bb1b320c659fc909707884ca48dbe1f08",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/document-list-model.ts": {
+      "sha256": "d260fbed87d831aa1644c4c2e2d5fa117af1857718c9b87e7d4cbdfde310848d",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/document-mirror-model.ts": {
+      "sha256": "c2bd97cc4fa2d51730ba1b0eb486325bf5704388431cfd9a26998b86c096ca42",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/document-reports-model.ts": {
+      "sha256": "9af6d5369380dddeec7b9d9bd149711da0a07a602d2d84a731352f3b4c30f40e",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/finance-title-drawer.ts": {
+      "sha256": "d0762f5ca52cd41dc4dbc677463224c46ee3f0225f1e3808e08028c2b34893b7",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/finance-title-list.ts": {
+      "sha256": "1080faf700d4839dd4e148e69319d7c8f99e4eba20438006846c10d395fdc17e",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/financial-import-model.ts": {
+      "sha256": "da0a38170b083def3cfb5deddeeae204183e37d852189864e1355bbdb8222cbd",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/fiscal-invoice-list-model.ts": {
+      "sha256": "9aafb13ffa75fb6dac885fcf3dc8261793639d81f376e0e077588df4e58b61e8",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/fiscal-native-xml.ts": {
+      "sha256": "c174718b1be904b18d474f16a7fc2cab699b5aec7e08b414b9af0e2688dbd1fa",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/fiscal-reviewed-authorization-model.ts": {
+      "sha256": "93de2f5fc4f0cced20a380724a4d516ab4e643f71f0a1ab46d30f2e8a1b2b5b3",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/help-content.ts": {
+      "sha256": "72e0f52bf1cc0b2a950e5c48362d66f0f60b6560b031e6796008577dcef7ef2b",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/pdf-writer.ts": {
+      "sha256": "eb3a3800e961383554987c7fc6198c81c425cdf7b8d697fd8c7f57efa9dbea7f",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/platform-model.ts": {
+      "sha256": "3a97673d4e81dbfc4a9dd2468bd0ea76fdb69ccaddf635f19a36b35225c05937",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/product-origin-stock-model.ts": {
+      "sha256": "c1e4902f3ae605748158ca4e1f96ff34afaa244aead26910ab9cd5afe8973881",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/real-access.ts": {
+      "sha256": "9ea4ea66a8d960af99f1444f011dd0d53a7b3b9d102b4004283de63891ad53fb",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/real-cnab-model.ts": {
+      "sha256": "9fe2ac1aca6f20e8add852d70b49fd5d1976614fef9af9ed05c7885cc09fbb87",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/receipt-checkin-model.ts": {
+      "sha256": "f1bd4829ae303a35470667811412f322b348a15ded415424aa592d63466f3f9f",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/received-dfe-model.ts": {
+      "sha256": "1aadbfffffb5a0bc16985a24fc7020567e469bf96d5cdd71dc7df29e0e7c7ff7",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/release-notes.ts": {
+      "sha256": "9c2a5ee8f1ecdff94f1c115a3351ae6f2355107c46c13e4c2dbfdf62e999326f",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/spreadsheet-import.ts": {
+      "sha256": "d47ba516ea9777e215d57f7044678912d16c5bc3e1b3431ca77faae8fd350fcf",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/stock-dashboards-model.ts": {
+      "sha256": "6a58bfaab55acc3c499a37f689906f1f0da1f8c238fd4f72c39de6be363e4348",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/stock-launch-model.ts": {
+      "sha256": "c770954b76183007ee9d52acb00fe28d49b86857df13f092079c99ed7123e5ee",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/stock-opening-model.ts": {
+      "sha256": "904ba7867d39e3ee6b6b31dfd2320fa7d10c23fe77f0cbaf648c95392b35e170",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/lib/stock-reports-model.ts": {
+      "sha256": "6c567bc8b7388fcd8bc5a632c9847fe08f2b479b453b3f1e759a151012bc88f4",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/main.tsx": {
+      "sha256": "068042888e814ca93795b2c116f8a22d8f5e9eb909ff9b14ca23843a64cbf31b",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa.tsx": {
+      "sha256": "60f0f86c3a834eff0c90f0b55066c6acfb10a92f10fd4963c2b119bcb9765bb0",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa/FiscalReviewedAuthorizationQA.tsx": {
+      "sha256": "6e387daf001332b7b1a7ccd8f4a8a30d940a060054768b7174bf0971c43a0a28",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa/StockReservationsQA.tsx": {
+      "sha256": "46bfd0ff2bbf5483c18ab21cbbe640d163818f380c928a597a366b2d67f783e0",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa/document-finance-link-main.tsx": {
+      "sha256": "f553307b1dceafb67ba09b40b99d43a23c500a00530149b63429e848671c3af3",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa/finance-movement-period-main.tsx": {
+      "sha256": "fb14a0631204ff448ec7f47b793c6c5285beda3d71fb4975e0c17b895600a39a",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa/fiscal-draft-status-main.tsx": {
+      "sha256": "a54de12566234833ca70b9737748bca11ed9d9c6199cb7e6baa91c001c7ce480",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa/itau-legacy-readiness-main.tsx": {
+      "sha256": "8349a4b2f8cae93924aa4e185a783c2ea73ae180e20fa0759aa438059d10d4b1",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa/purchase-readiness-main.tsx": {
+      "sha256": "c86074c81c9fa6fb41c3acb5e759d05f9b3fbcc8ca4e6f22c6d495d170e02445",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa/purchase-receipts-main.tsx": {
+      "sha256": "d30bde2b2fa6aa474f1e7144d2ecc1e2d77301fbc391a87051e422d1238b9801",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa/receipt-query-main.tsx": {
+      "sha256": "a550507b239cd32fa64d3002eb7d4a99df73617c3ef20d4ce6d3ef56daf0b323",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa/sales-history-main.tsx": {
+      "sha256": "9c9554c04e4e823f54c7897fb1afb8ec85c8cc2d55118aece980e196a0ab7d77",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa/sales-readiness-main.tsx": {
+      "sha256": "91966baccde33af4eae5462fb6076c5169407ee284077818907e8630b15dad1c",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa/stock-availability-main.tsx": {
+      "sha256": "dee92e90c5514087042f3cb0dfb28ca51bfafeb59c6092569e3d44a2d21c09ff",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa/stock-observations-fixture.ts": {
+      "sha256": "03bd733d6c4006d1da97d5bbe09d394433f203a6143bc838c21934fe00d38e03",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa/stock-observations-main.tsx": {
+      "sha256": "d3bc4a0e5f4566160c83db68538cda6a5700666bf601141806646481ca65a755",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/src/qa/warehouse-import-main.tsx": {
+      "sha256": "2a1ceea0fb1c571ba6bc5ae5b11b941235db654e74c771c67a897a9dcd268e7e",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/activity-ui.test.mjs": {
+      "sha256": "91c1fb3bbdcb51ad9b2dc34748c8740f1cb7f8433abad4a772f3016106e6f121",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/origin-menu-model.test.mjs": {
+      "sha256": "960424d4f2d61f38760bbd659a03758b7e08794023fe3bd587a96fbb29c1f723",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/origin-purchase-readiness-qa.test.mjs": {
+      "sha256": "5d751467830c2e5591e31902ac3c5d1d129cc3f89eaa89078d81d12000501be2",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/origin-sales-readiness-qa.test.mjs": {
+      "sha256": "a31143aa6218f6fa41e0b3c17bcdb27e42c210c2add17246f0fbe7c41d24bc8d",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/origin-shell-ui.test.mjs": {
+      "sha256": "ec4b7478ea387a424c4116120eb1b995ecec6810dfc3b4c9d40f3395b39a9fbc",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/origin-sync-ui.test.mjs": {
+      "sha256": "0ddec5a93f93dd6748532060de80a88d789d3cde9808ad0f3deb32c1361a2439",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/business-dashboards-ui.test.mjs": {
+      "sha256": "c975c7ce688a8feb940d456c8a5ba6fdcbb5053a56e849f6a14dfd5f0882d955",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/cnab-return-amounts-ui.test.mjs": {
+      "sha256": "5191ac53a41875824e62e7dd6d4e455bc9f9b7489d106e3b4db9fb1fecbb7a38",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/cnab-write-recovery.test.mjs": {
+      "sha256": "bc561518fb1645aeb2a637835d81f3c11b05d714ca9cdfeefee81fc040806fda",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/company-logo-ui.test.mjs": {
+      "sha256": "4487409cd5a83693d92717426acac4c80f4446678ce0e1b209c5b9eb6dbf3703",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/document-list-vendas-model.test.mjs": {
+      "sha256": "b9d94ef892308d94e05c16d14d2865beb59bda5230f5ca6bec00088532eb052b",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/document-list-vendas-ui.test.mjs": {
+      "sha256": "60492695fe880e3f3d1432758e33125ccd9322b2455f8bdff7d8d4db0187f55a",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/document-mirror-ui.test.mjs": {
+      "sha256": "f1c0fbc2a11db6d5573f6383e50939f9cec4ae1663c2433ab99fcb996533f00d",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/document-payment-ui.test.mjs": {
+      "sha256": "ac09024e0c0cf34992808f6b6bc142b7c74651873166bc14471ede18c7c6f06e",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/document-preferences-model.test.mjs": {
+      "sha256": "1284b873e80fe4aefd0f56521e5a904ad9df8a90cae8468f68820f640fb42379",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/document-reports-ui.test.mjs": {
+      "sha256": "bc65b718c3645d74939a8193ba62405f30541cce7a611d809bba5fe26659d6c0",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/document-rich-text-ui.test.mjs": {
+      "sha256": "1c1a98b6ea323c41a592e724faeea4237fcf6039a8cf8f5fbb8b5df77422c831",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/espelho-notas-model.test.mjs": {
+      "sha256": "3ee214358e75a0f7151a00b4866df105e3991ac558ffe4d51be7a6a1cee833d9",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/finance-borderos-ui.test.mjs": {
+      "sha256": "0284e355b57ff255d0016a8f8b0cd8b44ed2aeb8da336e15efc2f9a638352055",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/finance-credit-print-ui.test.mjs": {
+      "sha256": "0eab6d72a27ab51a3045977159fde0d7dee338bf09bae1a6f79b0ed7a2e400f6",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/finance-movement-period-parent.test.mjs": {
+      "sha256": "c4c766d52a331296ca495e201644760eda0695d9c96fc9448bf1affc6f934474",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/finance-print-ui.test.mjs": {
+      "sha256": "807be391b57f01c0274d102fa813e25c46b0db242017a8c45682ecc662e6f4d5",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/finance-reconciliation-ui.test.mjs": {
+      "sha256": "13105becd3baf726cc369d4c4853cbae610d563782731495d52b94ab8ba6f5c2",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/finance-statement-ui.test.mjs": {
+      "sha256": "48ebb62df280e775408d8de57695d6f2c8e7b7237059afd87c8dbb7dbdd54637",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-invoice-finance-ui.test.mjs": {
+      "sha256": "f96c60497bee95503470ebc9b5dcd0b57514d86c4e04bcaacbf787f0b45ad9e0",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-invoices-ui.test.mjs": {
+      "sha256": "09fa5459cf7c5266045489ec5dd332c4d035c1befa095cb6fd0938435b5b9d7a",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-invoices-wave-b-ui.test.mjs": {
+      "sha256": "b5fd286399d4d74b8c356e8566bf0e8bc4e93956aa6526154f71cd2cfa5af4b9",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-list-print.test.mjs": {
+      "sha256": "b5a8491307b3727a5d755bbf048e34aff78cf1348e3b5ab0ed633b88e3f74cb5",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-profile-transition.test.mjs": {
+      "sha256": "c8b70626e3c8a0b3ddd7f74f2c54025937e500a132190d33f7996896ac444fa0",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-return-search-ui.test.mjs": {
+      "sha256": "7c7d28e20e4aae50569113c0781609c96c9774e0c33d9ea06366762eceb741f7",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-reviewed-authorization-access.test.mjs": {
+      "sha256": "5716ddcbd3fc57e038b95b0efa89ff69e3096a1f0b973258f90780926831a74b",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-reviewed-authorization-model.test.mjs": {
+      "sha256": "65a8bf249ced21fc50c0019a16aaba7590085fbb697a69975949d742a613790d",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-reviewed-authorization-parent.test.mjs": {
+      "sha256": "0a4e5aafde50373df5d40ee023cc5fb3376869d73d8d13e56eabc89ead87c2a7",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-reviewed-authorization-qa.test.mjs": {
+      "sha256": "8f2894943bbfd7c7b41b7f18084a030447321fd524a8781e148e9d3810ada058",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-reviewed-emission-window.test.mjs": {
+      "sha256": "d50842f36db2e16e2301b0b81ba3ed0ea5e473946ef655c2ccedd37f35330cee",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-reviewed-preflight-ui.test.mjs": {
+      "sha256": "2a1071c9b47aaddc1b883645c6056274fcebf453e8564e3248695c3b0305247c",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-subset-review-access.test.mjs": {
+      "sha256": "9884ffa2a313a14ef377ac6ff16bc20c33ebe2269ac1b9e76a5ad35ed1c4f48b",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-subset-review-client.test.mjs": {
+      "sha256": "dfdba0d83ab066730ff6b3e5f04a032f0b741549a92314dc508d891543e7817a",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-subset-review-ui.test.mjs": {
+      "sha256": "75111e39ca940084f3ebf47f69f18302835ccb9c25d10d69f16de2cad592a9ec",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-wave-e-ui.test.mjs": {
+      "sha256": "a6da60b605d5d2b8825f6850726a222e31b12b4430ba79026ba0ee8901e3f487",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/fiscal-wave-f-ui.test.mjs": {
+      "sha256": "bee4393bd5f35371d3c14d1d6b8af9f730f27cdf6556827b8ce9606a78331e10",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/helpers/component-recovery-harness.mjs": {
+      "sha256": "1560fad8145ae7d6c8c30151b4e21f742ba0f20a1b1e86015d8157399929553d",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/home-origin-model.test.mjs": {
+      "sha256": "87799fd37c695704fdf6caac40be7b0f9a6827398a29d923eb22b4eed7c7fb24",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/home-origin-ui.test.mjs": {
+      "sha256": "e67bf1723949eab7f1d9bdcfbf2279fc3e96a55894733b8020f6318211cff733",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/invoice-stock-ui.test.mjs": {
+      "sha256": "346d30a12bc9056e2cf51a17af6a7129d6f6060871a85060e004f00387ff55e7",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/itau-cutover-guide.test.mjs": {
+      "sha256": "df8721e8e34ed9954cb3953cc9cde82be7d516d9bc9b8314c6aa8e99310e1abf",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/plataforma-h-ui.test.mjs": {
+      "sha256": "794ada8d0e7a33e57a61353f2a86e9a2244e035e3a3d9b4c86e3abc15810c299",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/preferences-c-ui.test.mjs": {
+      "sha256": "5e9909f1f9e9971cea40eb1e37cc46fcc72f4d4008be162c15a240c20a34cf1a",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/preferences-d-ui.test.mjs": {
+      "sha256": "672cb27bb4c5110587a1c66d2fd3ed3360ce9893b2918eb7a4344501b8919180",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/preferences-ui.test.mjs": {
+      "sha256": "00ce572206facbaae17fab7bf3544752564658856e156582e5c0990790a0056d",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/product-list-origin-stock-ui.test.mjs": {
+      "sha256": "4cde58b20195a84b3a5a85c2a400b96d7eed8b9cf4b541a371d65da9a195f4b7",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/produtos-c-list-form-ui.test.mjs": {
+      "sha256": "ea248c924da98c9b5d74bf0a648e99d679a242544ff4ce3e24a4eb72efae9a72",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/produtos-d-images-ui.test.mjs": {
+      "sha256": "cd97cd48f1a5d801dc9e090802dd1e00fa13c135a120687c56280a93b8c74e67",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/produtos-d-ui.test.mjs": {
+      "sha256": "0618332797532f19c418e24fd741535ac053c48bcd97e11192e2f1e61ca8d939",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/produtos-e-ui.test.mjs": {
+      "sha256": "4d2468c096168753b5513c235e8a94dd7b35984b2773f66ed0e3e52169f2cf61",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/reports-labels-ui.test.mjs": {
+      "sha256": "280ed2fd234af5c4afbd3f88043431b443e0476ec8c26dd6d4478263f90886f7",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/spreadsheet-import-ui.test.mjs": {
+      "sha256": "b7b570d9ea170f6d1f2435f3fd7916af2a5f5daf6ae88b568f681d2a08942712",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/stock-dashboards-ui.test.mjs": {
+      "sha256": "ad24d22f1028ec8c14246eac0899c5e46b79a029f7c54a27764927565a2e759c",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/stock-ledger-model.test.mjs": {
+      "sha256": "3533c97c383f80a7b4c5ae1950330f553a8baabc5f87da45b784e6bda2dd6f55",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/stock-lots-ui.test.mjs": {
+      "sha256": "ab91e9e4ed8c02e14ca69400de23de9ed097967e221cdbe4cbfe89e1104d2715",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/stock-opening-ui.test.mjs": {
+      "sha256": "cbf7992f0618d138e9cc464639343806f4d59425cf5d5d1a9f61937cb4770c0b",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/stock-reports-ui.test.mjs": {
+      "sha256": "90a017d90c76d839f0c69493725ddf3c5577e2f34714b51db36c8f013fb33cf3",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "apps/erp/test/stock-supply-ui.test.mjs": {
+      "sha256": "9aa95ef95fb03a43522f0a967bc2ea7ed0346e69b58fee9119533ef49561c5d3",
+      "reason": "FAGOO displayed identity, explicit self-hosted origin configuration, secure export origin, identifier collision correction, or deterministic historical test fixtures. Original layout and modules retained."
+    },
+    "package-lock.json": {
+      "sha256": "d0e38cce9d76513accd7b072fc8c41a10b352f6203d29f503b53a41b88892acf",
+      "reason": "FAGOO development identity/version, verification commands, dependency security update or repository artifact hygiene."
+    },
+    "package.json": {
+      "sha256": "48f714fce0216deb8c3e3585ee87140d95d304b0a54d6d891bc13ea61a5af01e",
+      "reason": "FAGOO development identity/version, verification commands, dependency security update or repository artifact hygiene."
+    },
+    "packages/erp-domain/src/preferences/core.mjs": {
+      "sha256": "b8ce779ef72e5be749d7a53aeecd6801d916e66672a651a5b35e92cf6b916cad",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/erp-domain/src/preferences/fields.mjs": {
+      "sha256": "dd3b90e3723e49271b0e864e318224d5a6efd46d4e77ea88be3668c2734e6da9",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/erp-domain/src/preferences/pages/cadastros-produtos.mjs": {
+      "sha256": "69ff078b0942f7d8de2dd0c4f3309a4b200b80c2ee896fcba8ad0b1425bcf1dd",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/erp-domain/src/preferences/pages/certificado-digital.mjs": {
+      "sha256": "4d0085e33cdea5e099a4bff89ca26ed622890895d148ab835fc52af5506d330d",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/erp-domain/src/preferences/pages/contabilidade-contador.mjs": {
+      "sha256": "a61792903c5d6b8fa0348ed6e95755e11e75af037da850c46364a92a6b685099",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/erp-domain/src/preferences/pages/empresa-geral.mjs": {
+      "sha256": "95c15f812bdfbd9342d01cc2ce8dff3130bda82caaa61b69389a0c083e7098a0",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/erp-domain/src/preferences/pages/financas-pagar.mjs": {
+      "sha256": "8cf479902f0423c78f30b4f38997720ec1e8dc07fe76725bc1e75ad091b5c8f1",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/erp-domain/src/preferences/pages/financas-receber.mjs": {
+      "sha256": "99b5b1fae2e866d0d96653d892145bfd89726aa6d5cf5a4cf686d9bfaa8fa5c8",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/erp-domain/src/preferences/pages/meu-negocio.mjs": {
+      "sha256": "f8cc2502bff930a53d847dc38b6264cebbb566ef02e76781b538465687bce63e",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/erp-domain/src/preferences/pages/notas-nfce.mjs": {
+      "sha256": "71a7f3c57a0a254fce8f5820176a282190764ea0f474e6ec2a5af24317b5c3d7",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/erp-domain/src/preferences/pages/notas-nfe.mjs": {
+      "sha256": "1a3bc0bcf975527706829c99023ba88b28730ce80141b57a24ae9f666028666e",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/erp-domain/src/preferences/pages/servicos-os.mjs": {
+      "sha256": "e1599667a2b19553c8fdcfc58d0d1566ac6a665b532e194824b9e9b2e2081663",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/erp-domain/src/preferences/pages/suprimentos-compras.mjs": {
+      "sha256": "bce44d3064f5721575bb57ccfd1119d5df32f5fb99c76d88a81a21f03414204e",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/erp-domain/src/preferences/pages/suprimentos-estoque.mjs": {
+      "sha256": "d2ce9bce539fdf6fe362e9b56e122f3becba6d2d09b4a482b4e9d6b0e3c85b73",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/erp-domain/src/preferences/pages/vendas-propostas.mjs": {
+      "sha256": "e83e3484d81d540501ff4e9995bb2f3186893e3db6e77842ee0d41d293411283",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/erp-domain/src/preferences/pages/vendas-vendas.mjs": {
+      "sha256": "f3f96b28bea4f8c13743db1ea93f95f4062c1720c3e46677fb391a0e75eb9d13",
+      "reason": "Displayed product identity only; preference keys and rules retained."
+    },
+    "packages/fiscal-artifact-storage/src/storage.mjs": {
+      "sha256": "971daeb30435493de67e248d4bf71a4b70e997b022e4815ac651e3f0a52b10d5",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization-runtime/src/dispatch-access.mjs": {
+      "sha256": "f1a13f7bd08287ecbdd1184e46c8d45c970e4e79a77c7704504a2c44719a30ec",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization-runtime/src/gateway.mjs": {
+      "sha256": "38b012719911b1719c508def08008aa258b970c8087e43074cbf835341d5d3f0",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization-runtime/test/dispatch-fixtures.mjs": {
+      "sha256": "59734901693c85a3c65aa785a7331c02ddc3f4850fffb8f201ead3b92a895594",
+      "reason": "Historical synthetic fiscal observation/clock aligned with its existing validity window. Runtime policy and expiration checks retained."
+    },
+    "packages/fiscal-authorization/src/closure-lookup-rpc.d.mts": {
+      "sha256": "d73c04832a2bc536c1c6f0d75db10e91208b62525fcad9aaeaffdfcee942636b",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/closure-lookup-rpc.mjs": {
+      "sha256": "d5a503a3e74870f5a2233dc4954b1c8630f71e08fa234dbb15bf70957a8c8444",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/closure-rpc.d.mts": {
+      "sha256": "8a679a03bec43d40e72432c91534107594b3e1d6dc52473b150989ac65c0b91c",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/closure-rpc.mjs": {
+      "sha256": "85411d2e334a8aaba913ab6c97773b9bba99c49aea30ce04c2582cd1bec38f22",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/preflight-rpc.d.mts": {
+      "sha256": "adad597b349290b773ab732e231fd0bd5e510ac1860843588c6213a80e7cd65c",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/preflight-rpc.mjs": {
+      "sha256": "58ed41320f8690ee0e0221913ef82176c0b6bb8e726ffbef15d06b0df0bc6b05",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/receipt-query-rpc.d.mts": {
+      "sha256": "d4a1eb72861f63b3790b5b7239e77315a2f27ecbde2453114d5b2f77b7b333dc",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/receipt-query-rpc.mjs": {
+      "sha256": "9f823ea15e312f22847c71fb7245d6eaddad4b04fb5a0c1e31e402b06cb2e0db",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/receipt-query-storage.d.mts": {
+      "sha256": "6acd62f2bc41d8187933a3f4f7307b89f234809cdc3d82f44abbb1373ccf0d64",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/receipt-query-storage.mjs": {
+      "sha256": "cf5a2d18781216a1f25544c5d5991f3104b5021adecef0b579017e74cf63d388",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/revalidation-rpc.d.mts": {
+      "sha256": "ac6c88ccff546dcea6b032f0585b80dfc41a21160a345a567a676a800077333a",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/revalidation-rpc.mjs": {
+      "sha256": "a98137509ee189c6526d7cf8a322d364acaaf150a25c2ea53990041e021d321f",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/revalidation-storage.d.mts": {
+      "sha256": "62f171b8363b12e1ea5a3be1867e5ade3f29898cff00d7d1c905887a01409efe",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/revalidation-storage.mjs": {
+      "sha256": "f086f64a04eccf03b713f2f37c4a99c08971d6534a8d9890075361329cbc6544",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/reviewed-ledger-rpc.d.mts": {
+      "sha256": "77be753af130ae544746498377374368937a26c4dff4411c885a24a8d1b9d166",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/reviewed-ledger-rpc.mjs": {
+      "sha256": "41ac38ed6ca8e915e05b1bbbdb875c47a586263f0afe1a421cf5cd30f8400524",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/rpc.d.mts": {
+      "sha256": "b616848f241d5485263b2816d2feb1bda5b488e438c7fc5a2de6f9d4b6fc203c",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/rpc.mjs": {
+      "sha256": "2edca8195ab341a0200db2d4cef27899f16f0f71a63dc36d9ef26a33cc5fff8b",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/storage.d.mts": {
+      "sha256": "8bc5cd75b43d688ee816c19294914224ee5a37a80bb532d4698a0b3f16e4acb3",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/storage.mjs": {
+      "sha256": "324f5719ec53c6827b6a37b17f2a7283f1a6cf45b644f2c3996fc29355c66f43",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/subset-review-rpc.d.mts": {
+      "sha256": "31e4ad63373de2e0e98af53eedccd589c5275e5bd3033f28ddf57b16092f7b0a",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/src/subset-review-rpc.mjs": {
+      "sha256": "868f081e2b89a87c7d0714af933e962352e8966151d4700dd118ca99d79a8ee8",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-authorization/test/operational-fixtures.mjs": {
+      "sha256": "92bd21d29fdaa56d9427303cfdc34ee4a7e3a699b81c16abbd428b8c78fbf90b",
+      "reason": "Historical synthetic fiscal observation/clock aligned with its existing validity window. Runtime policy and expiration checks retained."
+    },
+    "packages/fiscal-authorization/test/receipt-query-source.test.mjs": {
+      "sha256": "825f55b9a644fc53fe8149ba6e84d1feb0e52fe2c7ffaf18ecdb14e70be27ca6",
+      "reason": "Historical synthetic fiscal observation/clock aligned with its existing validity window. Runtime policy and expiration checks retained."
+    },
+    "packages/fiscal-authorization/test/subset-review-fixtures.mjs": {
+      "sha256": "a95afa3c8545b353516316f5decc040b974d7e6ec61ded0633b5ba7b96a65be7",
+      "reason": "Historical synthetic fiscal observation/clock aligned with its existing validity window. Runtime policy and expiration checks retained."
+    },
+    "packages/fiscal-danfe-runtime/src/gateway.mjs": {
+      "sha256": "342448c8c2898e2656af7f69323a086228a9a1225b6abd9ab90c94fdd5605e07",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-danfe-runtime/src/processed-gateway.mjs": {
+      "sha256": "9483752b749e7fe1be02b22c4934b62d6f4e100a91762105702277848346aa05",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-dfe-storage/src/storage.mjs": {
+      "sha256": "8207e617e313fbc7b7c877a0bc425e005bfc5cd8465049c004bd871ceb3aff32",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-reconciliation-runtime/src/gateway.mjs": {
+      "sha256": "f1fcb2dcfe13d589688e484ab1bcdc015981cda12a011b0c1c067eebc7716aa7",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-reconciliation/src/rpc.mjs": {
+      "sha256": "059eff78879677ba21ad89b819c6d81826ca5efc7a9ac94384f42fc92e006766",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-reconciliation/src/storage.mjs": {
+      "sha256": "778f26ed7d2f77cd392d2e2543a5913d4d4856b9cd848c77d3246032e7238d36",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-runtime/Dockerfile": {
+      "sha256": "96fa46c94765a55c08e0fe747e8f9370df2168d607a9e07932505be349b3cae5",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-runtime/Dockerfile.dockerignore": {
+      "sha256": "7c3ee61a88309c3a5a753f55bbaa6886d2e9d8211e86be0accb161f9d2ddb0ac",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-runtime/src/authorization-dispatch.mjs": {
+      "sha256": "03bae27187af9562f1937932ac728c78ae2c1a04133a9351eeb5d517045eacd4",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-runtime/src/authorization-revalidation.mjs": {
+      "sha256": "c4931aa97f04e30208f1f3ccaa218b5520f56b8072c1f88df3247701130c1287",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-runtime/src/authorization-vault-read.d.mts": {
+      "sha256": "3d70e203cf263a3c0c6f055f6f4f73ae16e9e566e161fe11e241b5c051f1ab2b",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-runtime/src/authorization-vault-read.mjs": {
+      "sha256": "d13613c7df100cc22727aa364d97c3a5c9dc637ddd3fb2799e00508a8df9a427",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-runtime/src/processed-document.mjs": {
+      "sha256": "9aacb3165fca5a8e68eeb79b2d8bec48de912c9b137d896b2243dcd094c2b671",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-runtime/src/receipt-query.d.mts": {
+      "sha256": "f95163e7ede334fcbfb5b3e5b51568b4a1d4c3eef92ae9453c65949052f8dc97",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-runtime/src/receipt-query.mjs": {
+      "sha256": "2240665b18409fc034ac28e9f1405580a8d0e240e6deb39efb421c6d8285e0f9",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-runtime/src/repository.mjs": {
+      "sha256": "87cfa22f9a2fac4f491ea0be9c0b80a12a8d1e42886b62802eccded5956ae2d2",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-runtime/src/server.mjs": {
+      "sha256": "0a07d2de4b49dc925c75877fb6e0616d0a625be1216cc51c139e201f63f1d1ae",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-sefaz-wsdl/src/service-rpc.mjs": {
+      "sha256": "e0b20e6432796d3a65adb611a3338218ceb56815e72f947de8b5fbbfc8e874e9",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-signed-rpc/src/rpc.mjs": {
+      "sha256": "862c5fa1948ca7929a714506653e9edf3d80183f63912181d53539df278522ff",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-signed-runtime/src/gateway.mjs": {
+      "sha256": "f775737e2c671ae56e296587947a1a855217eb7832ec2ce0c6b54bfb73b493d7",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-unsigned-rpc/src/rpc.mjs": {
+      "sha256": "efc96f5fc2215ac856bd05602278ab978a7106702d5e0564d241e7356fe660b9",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "packages/fiscal-wsdl-runtime/src/gateway.mjs": {
+      "sha256": "35a8615372de358335b9c2a647c9ab87bea996d5f0ae9be070b613704af50650",
+      "reason": "Explicit opt-in backend origins with original credential/redirect rules, configuration propagation/types, and complete runtime Docker module graph."
+    },
+    "supabase/migrations/202610160088_financial_import_authorization_waits.sql": {
+      "sha256": "6a0312c8151a4d35fad8578ae6df23763e1ab2a83bd6dc8f22db757a7b8f41c2",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610200196_document_payment_pricing.sql": {
+      "sha256": "be815c85c35347c4961b07cc06ff11d278e0fe222ab3190983c162b2043ae05e",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610200210_finance_titles_parity_d.sql": {
+      "sha256": "98f6c50a82dfe0c64f198cf7270e7ccb28d867b8e794f89518d643058c5b6a4e",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610200215_fiscal_invoice_seller_order_integrity.sql": {
+      "sha256": "b31b7b449f3cfefb6210e0fd05b5db7d429d909c258f8ab62e3cde59ceeacda2",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610200232_activity_registry_wave_c.sql": {
+      "sha256": "bbd86dd62804d7290b0c3e77763c6fc2dc73af7d8d488b24c42341693db7db2a",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610200239_document_permissions_approval.sql": {
+      "sha256": "36b139d82bdfda8c9c29bdee03ca3e64b0dd6dacc4e6ace3008a2bd76af2ea7a",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610200246_finance_parity_e.sql": {
+      "sha256": "8ce00d1331a888f720ce64885c15c4713774308e0931b92b4cc01e9e50b1719e",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610200249_finance_settle_history.sql": {
+      "sha256": "226e570d95c54ad1644bd67a8dfd35a2c28638201b168bce41d4e3e99b58fc97",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610200253_fiscal_item_history_index.sql": {
+      "sha256": "b72a68cfc9d211674f0180155528eca26675daac3c114c4e1bbe38222c47d824",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610200268_service_order_parts.sql": {
+      "sha256": "423389fb0a35f76634c160628f98b960833eec99e30e63b68fcc1d6ebadd6b6f",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610200269_proposal_versions.sql": {
+      "sha256": "f3da80f425cd3e8f411827558811e688ca6c1771b6a049b4595cc4f950032894",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610200281_finance_returned_titles.sql": {
+      "sha256": "1e9c21945d68a0ef2e6b9a4837b22eaa4b93a045b7408c02ceeac6aaae166890",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610200283_preferences_activity_notifications_f.sql": {
+      "sha256": "708b71659a4d4bb4b1d46c1f7c63868c664d689048eb43ee7c515f6bdf92d418",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610200289_document_list_search.sql": {
+      "sha256": "b7f08a0eef558b6426bd65676a0c45df1249b139cd6dcc96ba0df3455b1bfa76",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610200301_company_files.sql": {
+      "sha256": "84f979f0ce3456f6c744e07b95bf3da24cec1e98d070f29c2499c4e147e56755",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610210356_fiscal_origin_order_links.sql": {
+      "sha256": "da8b03fdd5ce58402f89ab5b91e3c1eec5071f73173384d0bacd63cb27edbbfa",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610210358_fiscal_invoice_list_espelho.sql": {
+      "sha256": "65c5e1bd09535fc5a67b036ba138a92b4d15842b6ece3333d03020712af58d96",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610210392_document_trash.sql": {
+      "sha256": "9f63536fd0efaf6412dd6ede279f2ad621b00ef23d680f1d4391ab8041c75c56",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610220003_fiscal_mirror_reads.sql": {
+      "sha256": "7ac65629ea9c8888e1ecb87be20144c2ae254b28e0e71400f4ceef089e103cf5",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610220004_fiscal_xml_scope.sql": {
+      "sha256": "3453d85ea1a8190b675b1bb74565c995df15097372d9daa8e45b7e30d6849cab",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610220005_fiscal_mirror_invalid_state.sql": {
+      "sha256": "3851e29f68884956d3b16278e09725e8fcb88d82b37da052e13c3ef7f9f6d944",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "supabase/migrations/202610220007_document_mirror_guards.sql": {
+      "sha256": "c6bcc7a4c426577de0fd9c628c172d5567dc794a788b51b71d36083056e53b3b",
+      "reason": "Keep the original SQL bodies; reconcile pinned definition guards after namespace normalization, or correct a historical source comment. See the dual-catalog evidence in the migration guide."
+    },
+    "tools/deployment/rotate-origin-token-key.mjs": {
+      "sha256": "e73dbda7f9b5af2c241c435bee8fd3be442acbdcad86c7d71b240aac32e6d84f",
+      "reason": "FAGOO development identity/version, verification commands, dependency security update or repository artifact hygiene."
+    },
+    "tools/migration/helpers/fiscal55-window-fixture.mjs": {
+      "sha256": "63c827eda68212329de757b4398028960fddb294d591342a8e40e529dbf04ca2",
+      "reason": "Remove customer-specific defaults; require explicit actor/origin/baseline hash and regenerate opaque synthetic fixture digests without changing public contract hashes."
+    },
+    "tools/migration/plan_proposal_product_adoption.mjs": {
+      "sha256": "8fda1340f3dd462eb7466504823961d993e2564453214f6d5a25dd1232074b75",
+      "reason": "Remove customer-specific defaults; require explicit actor/origin/baseline hash and regenerate opaque synthetic fixture digests without changing public contract hashes."
+    },
+    "tools/migration/prepare_fiscal_homologation_55_window.mjs": {
+      "sha256": "b19e03491d1eb124c0482a52fe18b892094da101be46b8574ac2c25f0f88a724",
+      "reason": "Remove customer-specific defaults; require explicit actor/origin/baseline hash and regenerate opaque synthetic fixture digests without changing public contract hashes."
+    },
+    "tools/migration/test_fiscal_homologation_55_window.mjs": {
+      "sha256": "fb08d59c385805d470ce6aaba4824c4bedc79883aa49ca57e26d37bf4a783cfb",
+      "reason": "Remove customer-specific defaults; require explicit actor/origin/baseline hash and regenerate opaque synthetic fixture digests without changing public contract hashes."
+    },
+    "tools/migration/test_proposal_product_adoption_plan.mjs": {
+      "sha256": "b5fb5a0425db1df192681320bfb2888a46bdd43d5c89ba145773a0490c01defb",
+      "reason": "Remove customer-specific defaults; require explicit actor/origin/baseline hash and regenerate opaque synthetic fixture digests without changing public contract hashes."
+    },
+    "tools/recovery/private-storage-incremental.mjs": {
+      "sha256": "5f47a044cc8ddbc83ae84d75589bf5eea838c0531b66c4161e55ff7e6423a262",
+      "reason": "Require explicit private project/origin configuration, preserve immutable object semantics and reject mixed-project snapshots."
+    },
+    "tools/recovery/private-storage-incremental.test.mjs": {
+      "sha256": "081f3bb03a885a9208109ec79ca4c6c66505e201a63ee466b3cf63b23afdc013",
+      "reason": "Require explicit private project/origin configuration, preserve immutable object semantics and reject mixed-project snapshots."
+    },
+    "tools/recovery/private-storage-inventory.sql": {
+      "sha256": "2eeb06e3bffac66cf6175f371280597f0eea30c6c406892d4ed422d9c5619361",
+      "reason": "Require explicit private project/origin configuration, preserve immutable object semantics and reject mixed-project snapshots."
+    },
+    "tools/recovery/private-storage-inventory.test.mjs": {
+      "sha256": "eb53be3ff081844b3ed9b97ba56a4292d41e5a7c40c55c641971c5d0dc1aa19a",
+      "reason": "Require explicit private project/origin configuration, preserve immutable object semantics and reject mixed-project snapshots."
+    },
+    "tools/recovery/private-storage-snapshot.mjs": {
+      "sha256": "4ca61d667bd79deebe053ce5091ab91178a8442885a8701de578b5c16b6e8ad2",
+      "reason": "Require explicit private project/origin configuration, preserve immutable object semantics and reject mixed-project snapshots."
+    },
+    "tools/recovery/private-storage-snapshot.test.mjs": {
+      "sha256": "9e39e38acdaad2f161b77ac74315861d0efa4d21d0a2b1bd185a2d1b3e264ea8",
+      "reason": "Require explicit private project/origin configuration, preserve immutable object semantics and reject mixed-project snapshots."
+    },
+    "workers/origin-sync/src/client.mjs": {
+      "sha256": "b077e524df19cd1eefe882217ec7d3c3bb3b51af9f2e0effb59a54ea0f910fa9",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/src/index.mjs": {
+      "sha256": "5908e05d6dea86430176e36d687c940392ed9188f325c1c034ba2e422b6f5845",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/src/oauth.mjs": {
+      "sha256": "0c4ea739bea94995208512371db72659acf41d60dff27693e19e6eb4f3ebf73e",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/src/repository.mjs": {
+      "sha256": "9a819542da26195c85d063dea23e32555d18ad1ec2c41e0f1cc6f26f5152d253",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/src/resources.mjs": {
+      "sha256": "75b32c9534c3ec903495eb79703c11818b475a486b13b76e27abc5cb9c1d5b02",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/src/sync.mjs": {
+      "sha256": "a1fe4be06e65fb9800066e6209c5de4dcd6ff1db78f75e8c0460d054c5593fb7",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/src/tokens.mjs": {
+      "sha256": "f7ec5d53e29500e70778128e6a1f13d7793b346a1cea9fc35b5b050e48695d08",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/client.test.mjs": {
+      "sha256": "f4143154682d05a3e75eade24081824ac8c06fccd06b62f64bc3a9f0c38be1ad",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/extra-resources-sql.test.mjs": {
+      "sha256": "b53214fdc8326d8241cf25136e269c27667661e0385c0177f7d65cbff588e6d5",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/extra-resources-workerd.test.mjs": {
+      "sha256": "4cf7e61172ba14e1a473362ea4dbd095559c1d059dd9f34da28482629cd8e68c",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/extra-resources.test.mjs": {
+      "sha256": "5d91177cb40bdb68e5c3440f162b9623fed77eb1308ef1a20e612ce6863073ba",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/finance-refresh-integration.test.mjs": {
+      "sha256": "513dcc2a575dae2d0ad1f5b7dff6a4b3fc73c189895763d77f600643ac2ed3e0",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/finance-refresh-sql.test.mjs": {
+      "sha256": "b274a75c695038b6f9283c561632397348e349d396a8550335b83050f378ab9d",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/finance-refresh.test.mjs": {
+      "sha256": "3676d33fe60d9cafff21b0990b48742b10dd2ef29ea0f1cd236fb4aea8779573",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/financial-categories-page.test.mjs": {
+      "sha256": "2cf6629711a11094b576803771778b095decbfe955c96fa8f73bb8901cd15637",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/history-continuation.test.mjs": {
+      "sha256": "380964d3f166ef67934e12afae426ba38d2f6862f74f34011959ee7d6ee1398f",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/migration-policy.test.mjs": {
+      "sha256": "306325ad3198b1c5a2fb2103582ded0c8796ab727c2c436534ae1281b8861804",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/migration-sweep-integration.test.mjs": {
+      "sha256": "47833296efe6b9a385f7c871d96acf1caf488faf72d516bc6ad1e70c908f4e88",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/migration-sweep.test.mjs": {
+      "sha256": "2516c49759a47d03a5135e3189887e365421cefd0d7e06568ebe55433a26ef31",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/oauth.test.mjs": {
+      "sha256": "afdce3d6afa964b9c0e40f4c14584ee5bcd329fbd6418b6655f5dc03b64fa79f",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/price-capture-sql.test.mjs": {
+      "sha256": "a9fb643a029cc7c468a2e3a6a004b15428d9f15e50d83792977f56953c6514dd",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/price-json.test.mjs": {
+      "sha256": "3bc685b36c90d2aadcc33d60b9956e275442d8d005a09ec114b981715215d70a",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/price-refresh-sql.test.mjs": {
+      "sha256": "e17ee4218f8ffcab499f5f1f4ac0bd3408a355aada0485b77e7e4ad859522562",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/price-refresh.test.mjs": {
+      "sha256": "3786c4ef7a63f32412deaaf829099813dd1a0133fbe511eceef2957e9419f237",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/price-workerd.test.mjs": {
+      "sha256": "c89b1595be5d1f5db9a8b627701c9e19cc00ef035e5c79a978da4b45a35bbff8",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/purchase-price-capture-sql.test.mjs": {
+      "sha256": "5a72bfdd022b778a92abda71b60ad9846ee87994a0dd66ac5bb6b5b526625fcf",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/purchase-price-json.test.mjs": {
+      "sha256": "ff999c4225554d3b5c45d75a7483026e43030a50b664b1e9c939b30a85f07e54",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/purchase-price-workerd.test.mjs": {
+      "sha256": "52a83132cb32e149a56ea7625eb3c1e2953d9708634b379847eda08c1f945efe",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/reference-fetch-integration.test.mjs": {
+      "sha256": "1ebdabca147a3d4ccf84c91f165f707cb083ea6e22ca95b1660e42507845f4f5",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/reference-fetch-sql.test.mjs": {
+      "sha256": "2309e3a4a78dab8cc1e49184d2cd0ae3434fb16e1ccc00df4784a8357c68d819",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/reference-fetch.test.mjs": {
+      "sha256": "4d03c05c9230a16cea8e08829271e06fb9b465fbbcdb2166b035f7f3eb3668e4",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/sales-price-capture-sql.test.mjs": {
+      "sha256": "0be0ca40a87f0b4fbbab8ef4f7e0972ebc2262b1e880f6a8e84bacf4bc316e58",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/sales-price-json.test.mjs": {
+      "sha256": "550b7e8a0cfebaaa629b0c8cbbad50d99ec666ace70992a5e1b0bd9e425310bf",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/sales-price-refresh-sql.test.mjs": {
+      "sha256": "3ad4eec4eba84cda188efb15574d64ffe3d88268790613fc94455ca11b4d09a9",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/sales-price-refresh.test.mjs": {
+      "sha256": "ae7527254995faed545c8752bff7bb92b67bfde99adf3802d48a39c38dd0863a",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/sales-price-workerd.test.mjs": {
+      "sha256": "a46c9a1aad1e2fbcb3a00b9a286f472333a8f5ddd02c45b3a0ba89a0e1e0e28e",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/service-json.test.mjs": {
+      "sha256": "b1fa839b924d28c8c30a61fc0d2ca6bc7b9ab5b8bb790736ec40fcc9571ff8e9",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/stock-mirror.test.mjs": {
+      "sha256": "75b1430f4381ec8d9faf09af5bb1eb446c48ede5f6854b8938eaabe8b1cf865c",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/stock-overlap.test.mjs": {
+      "sha256": "0cef55dcaed08520585999278fd11ce020551c544bfd1d8c6297e190d596c6ba",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/stock-priority-peer.test.mjs": {
+      "sha256": "bc7987b7e9c0e93ff865a707200842e437c63c0e997b36e5bb3c241151fa68f8",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/stock-priority-workerd-peer.test.mjs": {
+      "sha256": "4acb7e18a398f2d877f99a0f81b18d5a0ee6f37157e8e0c759aff69d25ecfc58",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/stock-priority.test.mjs": {
+      "sha256": "ea54d7751409b5da8276dd3cbd7072b2e9e2fbf9ae304c177ed4f7172116fafd",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/sync.test.mjs": {
+      "sha256": "4c633160a08fa28c44bd21fe0d4ea6ffc994ad4fcfa60e3cd07865ae1762ceaf",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/tokens.test.mjs": {
+      "sha256": "e5359a0847f50bdba85cd8789533ea5b94c73204cb91693f6917b1dbb82fed58",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/worker.test.mjs": {
+      "sha256": "19f64b61f745fe53256b0700c77cbac7d63aba93765d769260350133361bbf6b",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/xml-api-error.test.mjs": {
+      "sha256": "6e04bc4e1c8202f39513dd7f06c26b4d41cd6897280559c2fe258d592a1394d6",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/xml-priority-scheduler.test.mjs": {
+      "sha256": "9d5c13127527b2e5bc132d1dd681a46c75605c5f1fd15bdb8e62c7eaf2acbd9b",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/xml-residual.test.mjs": {
+      "sha256": "5ef22dc1ff16fac3dadf1a76cdda0f2b6eb48b765f11917ab9b9da4a7204272c",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/test/xml-worker.test.mjs": {
+      "sha256": "71f3f22852192f90d45514b1fabfec90a160a81eeaea856e938fdb6e008ebc27",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/origin-sync/wrangler.jsonc": {
+      "sha256": "6f8685f7b102a373c3be5a9c223967fe117b1a6af351462b26dac7e05426cdc2",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/erp-api/README.md": {
+      "sha256": "f1aab6cc6f28677473faea72555b9acbb248d1490b97572bab48440244587d83",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/erp-api/package-lock.json": {
+      "sha256": "ec9a5fa5d7706378eca7c98bef83f9f843111bac8bb65168a5888c7443ad62f4",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/erp-api/package.json": {
+      "sha256": "3ba70cbeaf546d0d807417c2a2caa8fcac47bfdf9f4c57a6071829ca0ef98bf2",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/erp-api/src/attachment-storage.mjs": {
+      "sha256": "9478aad0fb361081c28997e4fae951f520c1b245e35708f34efa218f106f8284",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/erp-api/src/origin-two-way.mjs": {
+      "sha256": "b99713e7f677ab057f41c825a23198a3ad3ffe202ca41d6a777fca2b3bad5340",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/erp-api/src/cnab.mjs": {
+      "sha256": "05fceb0aec76d751e637078931c623026a183881d3da6115eb76401a2e57acc7",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/erp-api/src/documents.mjs": {
+      "sha256": "a64d78892db33f21203ec4a2c97d08f822405243e31a12c009235675d392f338",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/erp-api/src/index.mjs": {
+      "sha256": "e57e6dcdcd564fa2f16dab0ad647d2cb53db5d694d7d75981d2c27802ee1725d",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/erp-api/test/origin-two-way-worker.test.mjs": {
+      "sha256": "3fbae28dcd169c3b12864c5f5f6e1b08a36df970bac83611e0ebb7bc555e669e",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/erp-api/test/stock-mirror-http.test.mjs": {
+      "sha256": "f0b8fd12296c523bc3bed8da64c237dcb60a58618f2af6e80fa45a8d70597f0a",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/erp-api/wrangler.jsonc": {
+      "sha256": "f448525d92f768502bdbd2e3a64cefc1a3803af519f7518898c0a37f1b146965",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/erp-preview/wrangler.jsonc": {
+      "sha256": "1942a8f16b80cec2f92679dffec87d838771a0b6ba40241c3d9e9d0ffd53827e",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/fiscal-executor/src/bridge.mjs": {
+      "sha256": "7ffd2fc98396f206bc60148af5a7201c38353f041c9ba0ce7d2990b53be25ef3",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/fiscal-executor/wrangler.example.jsonc": {
+      "sha256": "b76956f3606b6a1825bdce95a0ade817ea8ab0b3166815be19448a42c0511ec9",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/fiscal-executor/wrangler.jsonc": {
+      "sha256": "9498b45bd3f15fa86e5b0f06ed1662c9d1481ddfecc2956166e3318b9016fcf4",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/fiscal-gateway/src/index.mjs": {
+      "sha256": "cc15ff5012c7d196bf3b98d85c36fe0f335c77878c2b386c2bb7ecdac042b6be",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/fiscal-gateway/src/unsigned.mjs": {
+      "sha256": "a77eaeec5fa168af56dc760c6a652ff102c96cb4eb93b68f8068098c24a6d148",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/fiscal-gateway/wrangler.example.jsonc": {
+      "sha256": "5ac08bc1a1ab7eb3762c3723e30ef21b61b8a2663b5897388231993c3f3039e5",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    },
+    "workers/fiscal-gateway/wrangler.jsonc": {
+      "sha256": "856c07a95e82a7bd1ac9c68a3903485c90cb82aa183182ad987860c2eab67724",
+      "reason": "Generic installation configuration, explicit backend/external endpoints, opt-in side effects, identifier collision correction, displayed identity and corresponding regression tests."
+    }
+  }
+}

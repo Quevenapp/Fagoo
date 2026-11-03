@@ -1,0 +1,14 @@
+/* Leva H, lane financeiro: aba Comissões congelada, Relatório complementar de comissões, revisões de envio e filtros da remessa. */
+.document-commission-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px 16px; margin: 12px 0 4px; }
+.document-commission-summary div { display: flex; flex-direction: column; gap: 2px; }
+.document-commission-summary dt { font-size: 0.8rem; color: var(--muted, #5b6472); }
+.document-commission-summary dd { margin: 0; font-weight: 600; }
+.finance-commission-report { display: flex; flex-direction: column; gap: 16px; padding: 16px; }
+.finance-commission-report-filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.finance-commission-report-filters label { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; }
+.finance-commission-report-pages { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+.finance-share-review { display: flex; flex-direction: column; gap: 12px; }
+.finance-share-review label { display: flex; flex-direction: column; gap: 4px; }
+.finance-share-review textarea { min-height: 120px; }
+.contact-billing { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.contact-verified { margin-left: 6px; color: var(--success, #2e7d32); }

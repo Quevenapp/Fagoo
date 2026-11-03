@@ -1,0 +1,21 @@
+.document-picker-label{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:22px}
+.document-picker-add{display:inline-grid;place-items:center;width:22px;height:22px;padding:0;border:1px solid var(--border,#dce3df);border-radius:5px;background:var(--surface,#fff);color:var(--accent,#2f9e44);cursor:pointer}
+.document-picker-add:hover:not(:disabled){border-color:var(--accent,#2f9e44)}
+.document-picker-add:disabled{opacity:.5;cursor:not-allowed}
+.document-product-stock{margin:-6px 0 16px;font-size:13px}
+.document-product-stock p{margin:4px 0}
+.quick-contact-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px;margin:0;padding:0;border:0;min-width:0}
+.quick-contact-fields h3{grid-column:1/-1;margin:6px 0 0;font-size:14px}
+.quick-contact-wide{grid-column:1/-1}
+.quick-contact-fields .form-field{display:grid;gap:5px;min-width:0}
+.quick-contact-fields input,.quick-contact-fields select{width:100%;border:1px solid var(--border,#dce3df);border-radius:6px;background:var(--surface,#fff);color:inherit;padding:8px}
+.quick-contact-fields [aria-invalid="true"]{border-color:var(--danger,#c92a2a)}
+.quick-contact-roles{display:flex;flex-wrap:wrap;gap:12px;margin:0;padding:8px 10px;border:1px solid var(--border,#dce3df);border-radius:6px}
+.quick-contact-roles legend{padding:0 6px;font-size:13px;font-weight:600}
+.quick-contact-roles label{display:flex;align-items:center;gap:6px}
+.quick-contact-roles input{width:auto}
+@media(max-width:600px){.quick-contact-fields{grid-template-columns:1fr}}
+/* Lápis "Editar Contato": the contact form over the document (202610200168). */
+.document-contact-edit{position:fixed;inset:0;z-index:60;overflow:auto;background:rgba(15,23,42,.45);padding:24px 16px}
+.document-contact-edit>*{max-width:1100px;margin:0 auto;background:var(--surface,#fff);border-radius:10px}
+.document-contact-edit-open,.document-contact-search-open,.document-history-open{display:inline-flex;align-items:center;gap:4px}

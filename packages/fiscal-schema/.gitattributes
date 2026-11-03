@@ -1,3 +1,0 @@
-validator.py -text
-protocol_validator.py -text
-schemas/** -text -whitespace

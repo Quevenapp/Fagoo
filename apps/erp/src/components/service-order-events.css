@@ -1,0 +1,29 @@
+.service-events{min-width:0}
+.service-events fieldset{min-width:0;padding:14px;border:1px solid var(--border-color,var(--border,#d9e1e8));border-radius:6px}
+.service-events legend{padding:0 6px;font-weight:600}
+.service-event-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px}
+.service-event-wide{grid-column:1/-1}
+.service-events textarea{width:100%;min-height:80px;resize:vertical}
+.service-events input:not([type=checkbox]),.service-events select{width:100%;min-width:0}
+.service-event-basis{display:flex;align-items:center;flex-wrap:wrap;gap:6px 18px;padding:12px 0}
+.service-event-basis small{flex-basis:100%}
+.service-event-confirm{padding-top:6px;line-height:1.5}
+.service-event-confirm label{display:flex;align-items:flex-start;gap:9px}
+.service-event-confirm input{margin-top:4px;flex:0 0 auto}
+.service-event-field-error{color:var(--danger,#b42318);font-weight:600}
+.service-events [aria-invalid=true]{border-color:var(--danger,#b42318)}
+.service-event-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:20px 0 12px}
+.service-event-list{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.service-event-list>li,.service-event-recovery{border:1px solid var(--border-color,var(--border,#d9e1e8));border-radius:6px;padding:12px}
+.service-event-recovery{margin:14px 0}
+.service-event-list header{display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap}
+.service-event-list time,.service-event-list small{font-size:12px}
+.service-event-list p{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}
+.service-event-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px;margin:12px 0}
+.service-event-facts dt{font-size:12px;opacity:.75}
+.service-event-facts dd{margin:3px 0 0;overflow-wrap:anywhere}
+.service-event-list details{margin:10px 0}
+.service-event-list summary{cursor:pointer;font-size:13px;overflow-wrap:anywhere}
+.service-event-hash{font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;overflow-wrap:anywhere}
+@media(max-width:600px){.service-event-grid,.service-event-facts{grid-template-columns:minmax(0,1fr)}.service-event-toolbar,.service-event-list header{align-items:flex-start;flex-direction:column}.service-events fieldset{padding:10px}.service-event-confirm label{font-size:13px}.service-events .real-editor-actions{flex-wrap:wrap}}
+@media print{.service-events{display:none!important}}

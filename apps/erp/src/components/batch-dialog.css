@@ -1,0 +1,13 @@
+/* Ações em lote no padrão Origin: prévia, progresso e resultado por registro */
+.batch-dialog { display: grid; gap: 10px; color: var(--text); font-size: 12px; }
+.batch-dialog-lead { margin: 0; color: var(--heading); }
+.batch-dialog-list { display: grid; gap: 2px; max-height: 50dvh; margin: 0; padding: 0; overflow-y: auto; list-style: none; border: 1px solid var(--border); border-radius: var(--radius); }
+.batch-dialog-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 6px 10px; border-bottom: 1px solid var(--border); }
+.batch-dialog-list li:last-child { border-bottom: 0; }
+.batch-dialog-label { overflow: hidden; color: var(--heading); text-overflow: ellipsis; white-space: nowrap; }
+.batch-dialog-list small { grid-column: 1 / -1; color: var(--muted); }
+.batch-dialog-outcome { padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+.batch-dialog-list .is-ok .batch-dialog-outcome { color: var(--success); background: var(--success-bg); }
+.batch-dialog-list .is-failed .batch-dialog-outcome { color: var(--danger); background: var(--danger-bg); }
+.batch-dialog-list .is-uncertain .batch-dialog-outcome { color: var(--warning); background: var(--warning-bg); }
+.batch-dialog-list .is-skipped .batch-dialog-outcome { color: var(--muted); background: var(--surface-alt); }

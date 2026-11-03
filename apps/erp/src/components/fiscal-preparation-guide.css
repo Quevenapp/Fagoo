@@ -1,0 +1,12 @@
+.fiscal-preparation-guide { margin: 18px 0; padding: 18px; border: 1px solid var(--border, #dbe3ec); border-radius: 8px; min-width: 0; }
+.fiscal-preparation-guide > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+.fiscal-preparation-guide h2 { margin: 0 0 8px; font-size: 18px; }
+.fiscal-preparation-guide p { line-height: 1.5; font-size: 13px; }
+.fiscal-preparation-guide header p { margin: 0; }
+.fiscal-preparation-guide-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; padding: 0; margin: 20px 0; list-style: none; }
+.fiscal-preparation-guide-grid li { border-top: 1px solid var(--border, #dbe3ec); padding-top: 14px; min-width: 0; overflow-wrap: anywhere; }
+.fiscal-preparation-guide-grid h3 { margin: 0 0 8px; font-size: 15px; }
+.fiscal-preparation-guide-grid strong { font-size: 13px; }
+.fiscal-guide-missing,.fiscal-guide-attention { color: var(--text, #263846); }
+.fiscal-guide-unknown { color: var(--muted); }
+@media(max-width:600px) { .fiscal-preparation-guide > header { flex-direction: column; } .fiscal-preparation-guide-grid { grid-template-columns: 1fr; } }

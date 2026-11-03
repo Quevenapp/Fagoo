@@ -1,90 +1,54 @@
 # FAGOO
 
-ERP open source para instalação própria, com PostgreSQL, interface web e API para agentes externos. Licença AGPL-3.0-only.
+ERP de código aberto baseado na aplicação completa do [Brufap](https://github.com/brunovnq/brufap), preservando o template original, os módulos, as regras de negócio e os contratos do banco. Licença [AGPL-3.0](LICENSE).
 
-**Estado: versão alpha de avaliação.** O núcleo comercial funciona em uma instalação nova; emissão fiscal operacional, coleta automática de documentos e homologação bancária ainda possuem dependências descritas em [estado da implementação](docs/status.md). Não use a presença de uma tela ou de um parser como indicação de autorização fiscal ou bancária.
+Esta linha de reconstrução parte do commit `97be7a7eab5c132e540748757120a55897f1e971`. A mudança visual está adiada. A identidade apresentada ao usuário é FAGOO; identificadores técnicos usados em criptografia, arquivos e protocolos históricos permanecem quando sua alteração poderia quebrar compatibilidade.
 
-## Instalar do zero
+## Estado desta linha
 
-Plataforma suportada pelo instalador: **Ubuntu Server 24.04 LTS, x86-64**. A instalação usa Docker Compose e não exige token para baixar o FAGOO. O container do Hermes e os demais serviços existentes são preservados.
+O piloto `v0.1.0-alpha.1` usava outra aplicação e outro modelo de banco. Ele não é a base funcional desta reconstrução. Não aplique esta árvore como atualização automática do piloto e não use o instalador daquela versão para instalar o ERP desta linha. Consulte [instalação e validação](docs/operations/installation.md).
 
-Para a primeira avaliação, sem publicar recursos no Cloudflare:
+A aplicação original está em `apps/erp`, a API em `workers/erp-api`, os serviços fiscais em `packages` e `workers`, e o histórico completo de migrações em `supabase/migrations`. Isso inclui cadastros, documentos comerciais, PDV, estoque, financeiro, cobrança/CNAB, fiscal, preferências e controle de acesso. Cada módulo conserva seus limites de homologação e disponibilidade; presença de código não equivale a autorização para operação fiscal ou bancária em produção.
 
-```bash
-curl -fL https://github.com/Quevenapp/Fagoo/releases/download/v0.1.0-alpha.1/install.sh -o install.sh
-less install.sh
-sudo bash install.sh v0.1.0-alpha.1 --local
-```
+## Desenvolvimento
 
-O instalador solicita empresa, administrador e senha; verifica a assinatura da release, carrega a imagem pronta, cria o banco, aplica as migrações e prepara o backup e o atualizador. A aplicação fica acessível apenas em `http://localhost:8080` no servidor.
+Use Node.js 24. Para as verificações fiscais completas, use Linux/Ubuntu, OpenSSL 3 e Python com as dependências de `packages/fiscal-schema/requirements.txt`.
 
-Se estiver instalando em uma VPS, abra um túnel no seu computador para testar a interface:
-
-```bash
-ssh -L 8080:127.0.0.1:8080 usuario@seu-servidor
-```
-
-Depois acesse `http://localhost:8080` no navegador. O modo local não cria DNS, túnel Cloudflare ou publicação de site. A configuração pública é uma etapa separada e explícita do [guia de instalação](docs/operations/installation.md).
-
-Essa release foi instalada a partir dos downloads públicos, sem autenticação GitHub, em um segundo Ubuntu limpo. Consulte o [registro de verificação](docs/verification.md) para os resultados e os limites do ensaio.
-
-## O que já funciona
-
-- Produtos, clientes, fornecedores, depósitos e códigos de fornecedor com conversão de unidades.
-- Pedidos de compra e venda, preços por condição comercial, reserva e movimentação de estoque.
-- Recebimento parcial com confirmação física e lançamentos financeiros por parcelas.
-- Estornos com verificação de versão, disponibilidade e efeitos associados.
-- Histórico comercial, séries de vendas e dados completos de reposição com paginação.
-- Credenciais individuais de integração, permissões, auditoria e comandos idempotentes.
-- API REST documentada e ferramentas MCP para consulta e operações de negócio.
-- Descoberta de servidor e OAuth com PKCE para preparar o futuro aplicativo nativo.
-- Importação de XML para armazenamento privado configurado, sem lançamento automático de estoque ou financeiro.
-- Instalador público e atualização administrativa a partir de releases assinadas.
-
-## Agentes externos
-
-Hermes/WABABOTAI pode consultar e operar o FAGOO pela API. O sistema não executa um modelo de linguagem próprio e não inclui uma API de WhatsApp. O bot equipe recebe uma credencial restrita; o bot atendente não recebe credenciais administrativas.
-
-As análises podem ser feitas externamente com ferramentas de cálculo. Use os metadados de cobertura e percorra a paginação inteira. Preços, demanda e classificação fiscal não devem ser inferidos a partir de dados ausentes.
-
-- Descoberta: `GET /.well-known/fagoo.json`
-- OpenAPI: `GET /api/openapi.json`
-- Negócio: `/api/v1`
-- MCP HTTP: `/api/mcp`
-- Autenticação: `/api/auth`
-
-Consulte [integração com agentes](docs/integrations/agents.md), [API de negócio](docs/api/business.md), [documentos fiscais](docs/api/fiscal.md) e [aplicativos móveis](docs/integrations/mobile.md).
-
-## Desenvolvimento e validação
-
-Requer Node.js 24 e PostgreSQL 17 para a API completa. Os testes do engine fiscal também usam Python 3, OpenSSL e as dependências fixadas em `packages/fiscal-schema/requirements.txt`; a imagem de instalação já inclui esse runtime. Em desenvolvimento, use um ambiente virtual Python e configure `FAGOO_TEST_PYTHON` com o caminho absoluto do executável.
-
-```bash
+```sh
 npm ci
-python -m venv .venv
-# Instale packages/fiscal-schema/requirements.txt com o pip desse ambiente virtual.
-# Configure FAGOO_TEST_PYTHON para o executável Python dentro de .venv.
-npm run check
-npm test
-npm run build
+npm ci --prefix packages/fiscal-xml --ignore-scripts
+npm ci --prefix packages/fiscal-danfe --ignore-scripts
+npm ci --prefix workers/erp-api --ignore-scripts
+cp apps/erp/.env.example apps/erp/.env.local
+npm run dev:erp
 ```
 
-Os testes de domínio usam PostgreSQL embarcado. A suíte adicional de autenticação, instalação e OAuth usa uma instância PostgreSQL local indicada por `FAGOO_TEST_DATABASE_URL`; ela cria e remove somente bancos temporários com prefixo próprio. Sem essa variável, esse teste é explicitamente marcado como não executado.
+Preencha apenas as variáveis públicas do frontend. Chaves de serviço, senhas, certificados e tokens de infraestrutura pertencem ao ambiente privado dos serviços. As rotas de QA e seus dados sintéticos não são um servidor de produção.
 
-Copie `.env.example` para um arquivo privado `.env`, configure banco, origem e uma chave de sessão aleatória e longa. Em seguida:
+Verificações disponíveis:
 
-```bash
-node --env-file=.env apps/api/src/migrate.mjs
-node --env-file=.env apps/api/src/bootstrap.mjs --email admin@empresa.example --name Administrador --company "Minha empresa" --password-stdin
-node --env-file=.env apps/api/src/server.mjs
+```sh
+npm run typecheck:erp
+npm run test:erp
+npm run test:backend
+npm run test:portability
+npm run check:reference
+npm run build:erp
+npm run check:erp:build
 ```
 
-A senha do bootstrap é recebida pela entrada padrão, não pelos argumentos do processo. O bootstrap recusa criar outro administrador inicial depois que a instalação foi inicializada.
+Algumas suítes herdadas precisam de dependências fiscais e configuração de ambiente descritas em [verificação](docs/verification.md).
 
-## Distribuição e operações
+## Supabase e VPS
 
-GitHub Actions permanece desativado. Builds, testes e assinatura de releases são executados pelo mantenedor seguindo [publicação de versões](docs/operations/releases.md). Downloads são públicos; operações administrativas do ERP continuam autenticadas.
+O ERP usa PostgreSQL, RPCs/PostgREST, Auth e Storage. Uma VPS com somente PostgreSQL não substitui esses contratos. O caminho de menor alteração funcional é manter serviços compatíveis com Auth e Storage, além de PostgREST e um proxy HTTPS, enquanto se valida a restauração do banco e dos objetos.
 
-O [procedimento de recuperação](docs/operations/recovery.md) descreve backups e falhas de atualização. A configuração inicial de 1 vCPU/4 GB precisa de medição com o uso real, incluindo o container do agente. O serviço de IA e os recursos de infraestrutura são contratados pelo cliente.
+O modo hospedado continua sendo o padrão. Uma instalação própria deve configurar explicitamente `SUPABASE_DEPLOYMENT=self-hosted` nos serviços e `VITE_SUPABASE_DEPLOYMENT=self-hosted` no build do frontend. Os adaptadores aceitam uma origem HTTPS configurada pelo instalador; URLs fornecidas por requisições não selecionam o destino de credenciais. Veja [conexões](docs/operations/backend-configuration.md).
 
-A página institucional está em `apps/site`; o código está preparado para o domínio `fagoo.queven.app`. Sua presença neste repositório não significa que tenha sido publicado.
+As ferramentas em `tools/portability` preparam um inventário somente leitura e comparam estrutura e contagens. Não exportam linhas de negócio, não restauram dados e não declaram uma migração concluída. O procedimento e os critérios de aceite estão em [migração do Supabase](docs/operations/supabase-migration.md).
+
+## Evolução prevista
+
+O instalador Ubuntu, o provisionamento Cloudflare, a atualização pública pelo painel, a API para agentes externos e a descoberta de servidor para aplicativos devem ser integrados sobre este ERP completo. Cada entrega precisa manter os mesmos fluxos e dados da referência. Não há nova publicação ou implantação implícita ao executar os testes locais.
+
+A análise de dimensionamento da VPS deve incluir o ERP e o container Hermes. A configuração de 1 vCPU e 4 GB precisa de medição com esses serviços antes de ser assumida como suficiente para produção.

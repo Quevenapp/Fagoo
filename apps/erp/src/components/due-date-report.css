@@ -1,0 +1,40 @@
+/* Relatório de vencimentos no padrão das listas do Origin: período na barra, atalhos no painel "Filtrar", ações na barra direita. */
+.due-date-report{--due-in:#288f4e;--due-out:#ba291c}
+[data-theme="dark"] .due-date-report{--due-in:#5ac782;--due-out:#fca097}
+.due-date-report .native-list-content>.due-period{flex:1 1 440px}
+.due-date-report .due-period{display:flex;gap:8px 10px;align-items:end;flex-wrap:wrap;padding:0;border:0}
+.due-date-report .due-period .form-field{margin:0;flex:0 1 170px;min-width:140px}
+.due-date-report .due-period .form-field>label{color:var(--heading);font-size:12px;font-weight:400}
+.due-date-report .due-period .form-field input{width:100%;min-height:32px;border-radius:var(--radius)}
+.due-date-report .due-filter-label{margin:4px 0 6px;color:var(--heading);font-size:12px;font-weight:700}
+.due-date-report .due-shortcuts{display:grid;gap:2px;margin:0 0 8px}
+.due-date-report .due-shortcut{display:block;width:100%;padding:6px 8px;border:0;border-radius:var(--radius-small);color:var(--heading);background:transparent;font-size:12px;text-align:left}
+.due-date-report .due-shortcut:hover:not(:disabled){color:var(--accent-strong);background:var(--surface-hover)}
+.due-date-report .native-list-filters .real-help{margin:0 0 12px}
+.due-date-report .due-empty-option{display:flex;gap:8px;align-items:start;margin:0 0 6px;color:var(--heading);font-size:12px;line-height:1.5}
+.due-date-report .due-empty-option input{margin-top:3px;flex-shrink:0}
+.due-date-report .native-list-actions>.real-help{margin:10px 0 0}
+.due-date-report .due-context{margin:0;font-size:12px;line-height:1.6;color:var(--muted)}
+.due-date-report .due-context strong{color:var(--heading)}
+.due-date-report .due-totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:0}
+.due-date-report .due-totals article{display:flex;flex-direction:column;gap:6px;min-width:0;padding:14px 16px;border:0;border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow)}
+.due-date-report .due-totals h2{margin:0;color:var(--heading);font-size:12px;font-weight:400}
+.due-date-report .due-totals strong{color:var(--heading);font-size:18px;font-weight:700;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.due-date-report .due-totals .due-total-in strong{color:var(--due-in)}
+.due-date-report .due-totals .due-total-out strong{color:var(--due-out)}
+.due-date-report .due-totals span{font-size:12px;color:var(--muted)}
+.due-date-report .due-totals .text-button{margin-top:auto}
+.due-date-report .due-negative,.due-date-report .due-totals .due-negative strong{color:var(--due-out)}
+.due-date-report .data-table{min-width:820px}
+.due-date-report .data-table th{white-space:normal}
+.due-date-report .data-table td{font-variant-numeric:tabular-nums;white-space:nowrap}
+.due-date-report .data-table tbody th{font-size:12px;font-weight:400;text-align:left;white-space:nowrap}
+.due-date-report .data-table tbody th .status-badge{display:inline-block;margin-left:8px;vertical-align:middle}
+.due-date-report .data-table tbody th,.due-date-report .data-table tfoot th,.due-date-report .data-table tfoot td{height:37px;background:var(--surface-row);border-bottom:1px solid var(--border)}
+.due-date-report .data-table tbody tr:hover th{background:var(--surface-hover)}
+.due-date-report .data-table tbody tr:first-child th{border-top-left-radius:var(--radius)}
+.due-date-report .data-table tbody tr:last-child td:last-child{border-bottom-right-radius:0}
+.due-date-report .data-table tfoot th,.due-date-report .data-table tfoot td{border-top:2px solid var(--border);color:var(--heading);font-weight:700}
+.due-date-report .data-table tfoot th{border-bottom-left-radius:var(--radius)}
+.due-date-report .data-table tfoot td:last-child{border-bottom-right-radius:var(--radius)}
+@media(max-width:600px){.due-date-report .native-list-content>.due-period{flex-basis:100%}.due-date-report .due-period .form-field{flex:1 1 130px;min-width:120px}.due-date-report .due-period>button{width:100%}.due-date-report .due-totals strong{font-size:17px}}

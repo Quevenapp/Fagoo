@@ -1,5 +1,5 @@
 {
-  "profile": "fagoo-authorization-pl010f-v1.04",
+  "profile": "brufap-authorization-pl010f-v1.04",
   "entrypoints": {
     "request": "enviNFe_v4.00.xsd",
     "response": "retEnviNFe_v4.00.xsd",
@@ -10,21 +10,21 @@
   "files": [
     {
       "name": "enviNFe_v4.00.xsd",
-      "bytes": 452,
-      "sha256": "25123fdf19ed850ef9bd7513a6b2d99a23bd9d8ef67f38bd8f722a47f42f4e59",
-      "provenance": "fagoo-local-entrypoint"
+      "bytes": 453,
+      "sha256": "ec61e07fd12f9691271125379e5c1f06020552d1067c46d24cd3350ef11d778e",
+      "provenance": "brufap-local-entrypoint"
     },
     {
       "name": "retEnviNFe_v4.00.xsd",
-      "bytes": 458,
-      "sha256": "42d91b44e72a1c8f3dc942aaff7512588d48c9e5511f42c5dd0845698ee74d8d",
-      "provenance": "fagoo-local-entrypoint"
+      "bytes": 459,
+      "sha256": "dd273bbbeddff829392d02f104b310268f065cbe3c66c7b5f17168eed191f181",
+      "provenance": "brufap-local-entrypoint"
     },
     {
       "name": "procNFe_v4.00.xsd",
-      "bytes": 452,
-      "sha256": "ec2a926778618f66b62fbd2e2930b0e5c84c2c76c7f67627006de116c356b89f",
-      "provenance": "fagoo-local-entrypoint"
+      "bytes": 453,
+      "sha256": "394286a44b97fc741293b8b088cd27eaa1715f2779ae01f9eb046ee7892ef5ae",
+      "provenance": "brufap-local-entrypoint"
     }
   ],
   "policy": "Local entrypoints over unmodified pinned official types. Offline structural validation; no rule applicability, binding or origin assertion."

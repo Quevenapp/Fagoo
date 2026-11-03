@@ -1,0 +1,10 @@
+export const id='a0000000-0000-4000-8000-000000000001',credential='a0000000-0000-4000-8000-000000000002';
+export const flags={data_mode:'a1_custody',environment:'2',purpose:'offline-homologation',can_emit:false,can_transmit:false};
+export const company={section:'identity',data_mode:'erp_native',emission_enabled:false,record:{version:2,data:{legal_name:'EMPRESA SINTETICA A1',cnpj:'12ABC34501DE35'}}};
+export const metadata={profile:'openssl3-pkcs12',legacy_provider_enabled:false,pfx_mac:'sha256',pfx_mac_iterations:2048,fingerprint_sha256:'a'.repeat(64),holder_cnpj:'12ABC34501DE35',not_before:'2026-01-01T00:00:00Z',not_after:'2027-01-01T00:00:00Z',rsa_bits:2048,presented_chain:['a'.repeat(64)],validated_at:'2026-10-16T12:00:00.123456-03:00',key_matches_certificate:true,presented_chain_links_checked:true,icp_brasil_chain_validated:false,revocation_checked:false,a1_policy_verified:false,client_auth_eku_verified:false,can_transmit:false};
+export const empty={version:0,state:'unconfigured',credential_id:null,company_identity_version:null,metadata:null,company_changed:false,time_valid_now:false};
+export const configured={version:1,state:'configured_offline',credential_id:credential,company_identity_version:2,metadata,company_changed:false,time_valid_now:true};
+export const disabled={version:2,state:'disabled',credential_id:null,company_identity_version:null,metadata:null,company_changed:false,time_valid_now:false};
+export const envelope=current=>({...flags,current});
+export const receipt=(command_id,action='configure')=>({command_id,action,version:action==='configure'?1:2,state:action==='configure'?'configured_offline':'disabled',credential_id:action==='configure'?credential:null,company_identity_version:action==='configure'?2:null,metadata:action==='configure'?metadata:null,recorded_at:'2026-10-16T15:00:00.123456Z'});
+export const committed=(command_id,current=configured,action='configure')=>({...flags,current,state:'committed',receipt:receipt(command_id,action),error_code:null,replayed:true});

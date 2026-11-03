@@ -1,0 +1,8 @@
+/* 202610200270: texto rico of the documents (editor and view). */
+.rich-text-editor{display:grid;gap:6px;min-width:0}.rich-text-label{font-weight:600}
+.rich-text-toolbar{display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:4px;border:1px solid var(--border,#dce3df);border-radius:8px 8px 0 0;background:var(--surface-alt,#f0f3f7)}
+.rich-text-tool{min-width:30px;height:28px;padding:0 6px;border:1px solid transparent;border-radius:6px;background:none;color:inherit;cursor:pointer;font:inherit}.rich-text-tool:hover{border-color:var(--border,#dce3df);background:var(--surface,#fff)}
+.rich-text-size,.rich-text-color{display:inline-flex;align-items:center;gap:4px;font-size:.85rem}.rich-text-color input{width:28px;height:24px;padding:0;border:0;background:none}
+.rich-text-area{min-height:120px;max-height:420px;overflow:auto;padding:10px;border:1px solid var(--border,#dce3df);border-top:0;border-radius:0 0 8px 8px;background:var(--surface,#fff);font-size:11pt;white-space:pre-wrap;overflow-wrap:anywhere}
+.rich-text-area:focus{outline:2px solid var(--focus,#2f6fde);outline-offset:-2px}.rich-text-area pre,.rich-text-view pre{font-family:ui-monospace,Consolas,monospace;background:var(--surface-alt,#f0f3f7);padding:2px 6px;margin:0;white-space:pre-wrap}
+.rich-text-view p{margin:0 0 4px;white-space:pre-wrap;overflow-wrap:anywhere}.rich-text-area>div,.rich-text-area>pre{min-height:1.3em}

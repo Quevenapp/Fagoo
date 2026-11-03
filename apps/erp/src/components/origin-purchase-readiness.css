@@ -1,0 +1,28 @@
+.origin-purchase-readiness{min-width:0}
+.origin-purchase-readiness .real-heading{gap:1rem}
+.origin-purchase-readiness .native-list-filters form{display:grid;gap:.75rem}
+.origin-purchase-readiness .native-list-actions p{font-size:.88rem;line-height:1.5;color:var(--text-muted,#64748b)}
+.purchase-readiness-notice,.purchase-readiness-panel{padding:1rem 1.15rem;margin:1rem 0;border:1px solid var(--border,#dbe2e8);border-radius:10px;background:var(--surface,#fff)}
+.purchase-readiness-notice{background:var(--surface-soft,#f4f7fa)}
+.purchase-readiness-panel>header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.purchase-readiness-panel h2:focus{outline:2px solid var(--accent,#277163);outline-offset:5px}
+.purchase-readiness-panel h2,.purchase-readiness-panel h3{margin-top:0}
+.purchase-readiness-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.purchase-readiness-values{display:grid;gap:.6rem}
+.purchase-readiness-values>div{display:grid;grid-template-columns:minmax(8rem,1fr) minmax(0,1.6fr);gap:.7rem}
+.purchase-readiness-values dt{color:var(--text-muted,#64748b)}
+.purchase-readiness-values dd{margin:0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.origin-purchase-readiness .table-scroll{max-width:100%;overflow:auto}
+.origin-purchase-readiness .data-table td{vertical-align:top}
+.origin-purchase-readiness small{display:block;margin-top:.25rem;color:var(--text-muted,#64748b)}
+.origin-purchase-readiness code,.purchase-readiness-observed{white-space:normal;overflow-wrap:anywhere}
+.purchase-readiness-number{font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.purchase-readiness-pagination,.purchase-readiness-buttons{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;padding:1rem 0}
+.purchase-readiness-pagination>div{display:flex;flex-wrap:wrap;gap:.5rem}
+.purchase-readiness-issues{padding:1rem;border:1px solid #e8d9ac;border-radius:8px;background:#fffaf0}
+.purchase-readiness-issues ul{margin-bottom:0;padding-left:1.25rem}
+.purchase-readiness-issues li{margin:.45rem 0;overflow-wrap:anywhere}
+.purchase-readiness-panel details{margin-top:1rem}
+.purchase-readiness-panel summary{cursor:pointer;font-weight:600}
+.origin-purchase-readiness[hidden]{display:none}
+@media(max-width:720px){.purchase-readiness-columns{grid-template-columns:1fr}.purchase-readiness-panel>header,.purchase-readiness-pagination{align-items:flex-start;flex-direction:column}.purchase-readiness-panel,.purchase-readiness-notice{padding:1rem}.purchase-readiness-values>div{grid-template-columns:1fr;gap:.2rem}.origin-purchase-readiness .real-heading{align-items:flex-start}.purchase-readiness-pagination>div{width:100%}}

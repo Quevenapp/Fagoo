@@ -1,0 +1,4 @@
+/* Origin situação colors (pedidos and OS); the hex values come from lib/document-status-colors.ts. */
+.document-status-color{border:0;font-weight:600}
+.document-status-dot{display:inline-flex;align-items:center;gap:4px;line-height:1}
+.document-status-dot-mark{display:inline-flex}

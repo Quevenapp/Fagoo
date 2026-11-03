@@ -1,0 +1,44 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createHandler} from '../src/index.mjs';
+import {ACTOR,HISTORY,COMMAND,publicHistory} from './helpers/sales-history-public-fixtures.mjs';
+const BASE='/v1/historico-vendas-origin',page=()=>publicHistory().page,detail=()=>publicHistory().detail;
+const env={SUPABASE_URL:'https://abcdefghijklmnopqrst.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'synthetic-service-key-083',ALLOWED_ORIGINS:'https://erp.synthetic.test'};
+const req=(path='',extra={})=>new Request('https://api.synthetic.test'+BASE+path,{headers:{Authorization:'Bearer synthetic-user-token',Origin:'https://erp.synthetic.test'},...extra});
+test('083 composition admits only GET and authenticates before a history RPC',async()=>{
+ let calls=0;const handle=createHandler({fetchImpl:async()=>{calls++;throw Error('UNEXPECTED');}});
+ for(const method of ['POST','PATCH','PUT','DELETE'])assert.equal((await handle(req('',{method}),env)).status,405);
+ assert.equal((await handle(req('',{headers:{Origin:'https://other.invalid'}}),env)).status,403);
+ assert.equal((await handle(req('',{headers:{Origin:'https://erp.synthetic.test'}}),env)).status,401);
+ const preflight=await handle(req('',{method:'OPTIONS',headers:{Origin:'https://erp.synthetic.test','Access-Control-Request-Method':'GET','Access-Control-Request-Headers':'Authorization'}}),env);
+ assert.equal(preflight.status,204);assert.equal(preflight.headers.get('Access-Control-Allow-Methods'),'GET');assert.equal(calls,0);
+});
+test('083 composition binds verified actor, fixed read RPC, response flags and cache policy',async()=>{
+ for(const[path,result,rpc,args]of [['?limit=25&q=QA',page(),'erp_origin_sales_history_list',{p_limit:25,p_after:null,p_query:'QA'}],['/'+HISTORY,detail(),'erp_origin_sales_history_detail',{p_history_id:HISTORY}]]){
+  const calls=[],handle=createHandler({fetchImpl:async(url,o)=>{calls.push({url,o});return Response.json(url.endsWith('/auth/v1/user')?{id:ACTOR}:result);}});
+  const r=await handle(req(path),env);assert.equal(r.status,200);assert.equal(r.headers.get('Cache-Control'),'no-store');assert.equal(calls.length,2);assert.ok(calls[1].url.endsWith('/'+rpc));assert.deepEqual(JSON.parse(calls[1].o.body),{...args,p_user_id:ACTOR});assert.equal(calls[1].o.redirect,'manual');assert.equal(calls[1].o.headers.Authorization,'Bearer '+env.SUPABASE_SERVICE_ROLE_KEY);
+  const out=await r.json();assert.equal(out.can_convert,false);assert.equal(out.native_effects,false);assert.equal(out.read_only,true);
+ }
+});
+test('083 composition sanitizes SQL failures and rejects invalid or oversized results',async()=>{
+ for(const[code,status]of [['42501',403],['22023',400],['P0002',404],['XX000',502]]){
+  const handle=createHandler({fetchImpl:async url=>url.endsWith('/auth/v1/user')?Response.json({id:ACTOR}):Response.json({code,message:'PRIVATE_RAW_SQL',hint:env.SUPABASE_SERVICE_ROLE_KEY},{status:400})});
+  const r=await handle(req(),env);assert.equal(r.status,status);assert.doesNotMatch(await r.text(),/PRIVATE|synthetic-service|synthetic-user/);
+ }
+ for(const bad of [{...page(),can_convert:true},{...page(),payload:'PRIVATE'}, {...page(),extra:'x'.repeat(1048577)}]){
+  const handle=createHandler({fetchImpl:async url=>Response.json(url.endsWith('/auth/v1/user')?{id:ACTOR}:bad)}),r=await handle(req(),env);assert.equal(r.status,502);assert.doesNotMatch(await r.text(),/PRIVATE|synthetic/);
+ }
+});
+test('083 composition aborts before Auth and propagates cancellation without another query',async()=>{
+ const stop=new AbortController();stop.abort();let calls=0;const unused=createHandler({fetchImpl:async()=>{calls++;throw Error('UNEXPECTED');}});assert.equal((await unused(req('',{signal:stop.signal}),env)).status,400);assert.equal(calls,0);
+ let entered,signal;const active=new AbortController(),started=new Promise(r=>entered=r);
+ const pending=createHandler({fetchImpl:async(url,o)=>{calls++;if(url.endsWith('/auth/v1/user'))return Response.json({id:ACTOR});signal=o.signal;entered();return new Promise((_,reject)=>signal.addEventListener('abort',()=>reject(Error('PRIVATE')),{once:true}));}})(req('',{signal:active.signal}),env);
+ await started;active.abort();const r=await pending;assert.ok([408,502,503].includes(r.status));assert.equal(signal.aborted,true);assert.equal(calls,2);assert.doesNotMatch(await r.text(),/PRIVATE/);
+});
+
+test('083 composition has no public preview/capture/receipt lookup and refuses unknown query/body',async()=>{
+ for(const [path,method,status]of [['/preview','GET',404],['/capture','GET',404],['/capture','POST',405],['/commands/'+COMMAND,'GET',404],['?actor='+ACTOR,'GET',400],['?limit=26','GET',400]]){
+  let calls=0;const handle=createHandler({fetchImpl:async url=>{calls++;assert.ok(url.endsWith('/auth/v1/user'));return Response.json({id:ACTOR});}});
+  assert.equal((await handle(req(path,{method}),env)).status,status);assert.equal(calls,method==='POST'?0:1);
+ }
+});

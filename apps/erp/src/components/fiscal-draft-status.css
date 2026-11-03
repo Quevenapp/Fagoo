@@ -1,0 +1,26 @@
+.fiscal-draft-status{min-width:0}
+.fiscal-draft-status .real-heading{gap:1rem}
+.fiscal-draft-status .real-heading h2{margin:0}
+.fiscal-draft-status .real-heading p{margin:.45rem 0 0}
+.fiscal-draft-status .native-list-actions p{font-size:.88rem;line-height:1.5;color:var(--text-muted,#64748b)}
+.fiscal-draft-status .table-scroll{max-width:100%;overflow:auto}
+.fiscal-draft-status .data-table{min-width:850px}
+.fiscal-draft-status .data-table td,.fiscal-draft-status .data-table th{vertical-align:top}
+.fiscal-draft-status .data-table td:nth-child(4){min-width:20rem;max-width:32rem;white-space:normal}
+.fiscal-draft-status small{display:block;margin-top:.3rem;font-weight:400;line-height:1.45;color:var(--text-muted,#64748b)}
+.fiscal-status-authorization p{margin:.3rem 0;line-height:1.5}
+.fiscal-status-authorization details{margin-top:.55rem}
+.fiscal-status-authorization summary{cursor:pointer;font-weight:600}
+.fiscal-status-records>section:first-of-type{margin-top:.75rem}
+.fiscal-status-main-result{font-size:.9rem}
+.fiscal-status-outcome{font-weight:600}
+.fiscal-status-result{font-size:.9rem}
+.fiscal-status-revalidation{margin-top:.9rem;padding:.75rem;border-left:3px solid var(--accent,#277163);background:var(--surface-soft,#f4f7fa)}
+.fiscal-status-warning{padding:.6rem .7rem;background:#fff8e9;border:1px solid #e8d9ac;border-radius:6px}
+.fiscal-status-details{display:grid;gap:.6rem;font-size:.88rem;margin:.8rem 0}
+.fiscal-status-details dt{font-weight:600}
+.fiscal-status-details dd{margin:.2rem 0 0;overflow-wrap:anywhere}
+.fiscal-status-identifier{font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.fiscal-status-pagination{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;padding:1rem 0}
+.fiscal-status-pagination>div{display:flex;gap:.5rem;flex-wrap:wrap}
+@media(max-width:720px){.fiscal-draft-status .real-heading{align-items:flex-start;flex-direction:column}.fiscal-status-pagination{align-items:flex-start;flex-direction:column}}

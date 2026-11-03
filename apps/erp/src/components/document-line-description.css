@@ -1,0 +1,8 @@
+/* Wave F: the search of the Descrição of each free item line (Origin "Pesquise por código, descrição ou GTIN"). */
+.document-line-suggest{position:relative;height:0}
+.document-line-suggestions{position:absolute;z-index:20;left:0;min-width:100%;width:max-content;max-width:min(420px,80vw);top:0;margin:2px 0 0;padding:4px 0;list-style:none;max-height:240px;overflow:auto;
+  background:var(--surface,#fff);border:1px solid var(--border,#d6dde3);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.document-line-suggestions li{padding:6px 10px;cursor:pointer;overflow-wrap:anywhere}
+.document-line-suggestions li[role="presentation"]{cursor:default}
+.document-line-suggestions li.is-active,.document-line-suggestions li[role="option"]:hover{background:var(--surface-hover,#eef6f1)}
+.document-line-suggestions small{color:var(--muted,#607268)}

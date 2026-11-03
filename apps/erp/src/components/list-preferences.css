@@ -1,0 +1,10 @@
+.list-preferences { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 6px 0; font-size: 12px; }
+.list-preferences-error { color: var(--danger); }
+.list-preferences-recovery { display: inline-flex; gap: 8px; }
+.list-preferences-panel { position: absolute; z-index: 20; top: 100%; left: 0; width: min(360px, calc(100vw - 32px)); padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-small); background: var(--surface); box-shadow: var(--shadow); }
+.list-preferences-panel h3 { margin: 0 0 4px; font-size: 14px; color: var(--heading); }
+.list-preferences-panel ol { max-height: 320px; margin: 8px 0; padding: 0; overflow: auto; list-style: none; }
+.list-preferences-panel li { display: flex; align-items: center; gap: 6px; padding: 4px 0; border-bottom: 1px solid var(--border); }
+.list-preferences-panel li label { display: flex; flex: 1; align-items: center; gap: 8px; }
+.list-preferences-panel li.is-off { color: var(--muted); }
+.list-preferences-panel .icon-button { min-height: 24px; padding: 2px 6px; }

@@ -8,8 +8,8 @@ import { COMPLETION_FLAGS, resolveBusinessCompletion } from './business-completi
 
 export const BUSINESS_PROFILE = 'sn-sp-internal-business-v1';
 export const BUSINESS_SCHEMA = 'pl010f-v1.04';
-export const BUSINESS_BUILDER = 'fagoo-business-builder-v1';
-export const BUSINESS_CONTENT_FINGERPRINT_PROFILE = 'fagoo-business-content-basis-v1';
+export const BUSINESS_BUILDER = 'brufap-business-builder-v1';
+export const BUSINESS_CONTENT_FINGERPRINT_PROFILE = 'brufap-business-content-basis-v1';
 export const HOMOLOGATION_RECIPIENT = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
 export const HOMOLOGATION_PRODUCT = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
 export const BUSINESS_FLAGS = Object.freeze({ operational_effects:false, numbering_reserved:false, tax_rules_validated:false,

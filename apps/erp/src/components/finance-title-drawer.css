@@ -1,0 +1,36 @@
+/* Origin SlideIn over the contas list (~60% of the width), with tabs, Resumo and the footer actions. */
+.finance-drawer-backdrop { position: fixed; inset: 0; z-index: 60; display: flex; justify-content: flex-end; background: #09203455; }
+.finance-drawer { box-sizing: border-box; width: min(60vw, 980px); min-width: min(100vw, 560px); height: 100dvh; overflow: auto; background: var(--surface); color: var(--text); box-shadow: -12px 0 40px #0004; padding: 18px 24px 24px; display: flex; flex-direction: column; gap: 10px; }
+.finance-drawer-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.finance-drawer-title { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.finance-drawer-title h2 { margin: 0; font-size: 20px; }
+.finance-drawer-sub { margin: 0; color: var(--muted); font-size: 13px; }
+.finance-drawer-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+.finance-drawer-tabs button { flex-shrink: 0; border: 0; border-bottom: 3px solid transparent; background: transparent; color: var(--muted); padding: 10px 12px; font-weight: 600; font-size: 13px; }
+.finance-drawer-tabs button[aria-selected="true"] { border-color: var(--accent, #087f8c); color: var(--text); }
+.finance-drawer-tabs button:disabled { opacity: .55; cursor: not-allowed; }
+.finance-drawer-form { display: flex; flex-direction: column; gap: 14px; }
+.finance-drawer-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px 16px; border: 0; padding: 0; margin: 0; min-width: 0; }
+.finance-drawer-wide { grid-column: 1 / -1; }
+.finance-drawer-fields textarea { width: 100%; box-sizing: border-box; resize: vertical; }
+.finance-drawer-counter { display: block; text-align: right; color: var(--muted); font-size: 11px; }
+.finance-drawer-info { display: inline-flex; margin-left: 4px; color: var(--accent, #087f8c); vertical-align: middle; cursor: help; }
+.finance-drawer-switch { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.finance-drawer-summary { border: 1px solid var(--border); border-radius: 5px; padding: 12px 14px; background: var(--bg); }
+.finance-drawer-summary h3 { margin: 0 0 8px; font-size: 14px; }
+.finance-drawer-summary dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 0; }
+.finance-drawer-summary dt { color: var(--muted); font-size: 12px; }
+.finance-drawer-summary dd { margin: 4px 0 0; font-weight: 600; }
+.finance-drawer-actions { display: flex; justify-content: flex-end; align-items: center; gap: 10px; flex-wrap: wrap; padding-top: 6px; border-top: 1px solid var(--border); }
+@media (max-width: 720px) { .finance-drawer { width: 100vw; min-width: 0; padding: 14px 16px 18px; } .finance-drawer-actions > button { flex: 1; justify-content: center; } }
+@media print { .finance-drawer-backdrop { display: none; } }
+/* Baixa de lançamentos (110): the subtable of selected contas. */
+.finance-settle-rows { display: grid; gap: 10px; }
+.finance-settle-rows h3 { margin: 0; font-size: 14px; }
+.finance-settle-row { border: 1px solid var(--border); border-radius: 5px; padding: 10px 12px; margin: 0; min-width: 0; }
+.finance-settle-row legend { font-size: 12px; padding: 0 4px; }
+.finance-settle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px 12px; }
+.finance-support-off { color: var(--muted); font-size: 13px; cursor: not-allowed; }
+.finance-propagation { display: grid; gap: 10px; }
+.finance-propagation label { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.finance-propagation fieldset { border: 0; margin: 0 0 0 22px; padding: 0; display: grid; gap: 6px; }

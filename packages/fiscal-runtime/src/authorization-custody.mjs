@@ -32,7 +32,7 @@ export function createAuthorizationCustodyPort(configuration){
    const check=()=>{need(!closed,'AUTHORIZATION_CUSTODY_CALLBACK_CLOSED');s.check();need(Date.now()<Date.parse(c.expires_at),'AUTHORIZATION_CUSTODY_LEASE_EXPIRED');};
    check();const fresh=await s.bounded(()=>authorize(v,{signal:s.signal,deadline:s.deadline}));
    need(same(captureDispatchPreparation({...v,execution:fresh}).execution,c),'AUTHORIZATION_CUSTODY_PREPARATION_CHANGED');check();
-   const ref=Object.freeze({bucket:'fagoo-a1-vault',key:`credentials/${c.credential_id}/${c.envelope_hash}.json`,sha256:c.envelope_hash,maxBytes:1500000});
+   const ref=Object.freeze({bucket:'brufap-a1-vault',key:`credentials/${c.credential_id}/${c.envelope_hash}.json`,sha256:c.envelope_hash,maxBytes:1500000});
    const pending=Promise.resolve().then(()=>{check();return readObject(ref,{signal:s.signal,deadline:s.deadline});});
    let received;try{received=await s.bounded(()=>pending);}catch(e){void pending.then(wipe,()=>{});throw e;}
    try{bytes=copy(received,1500000);need(hash(bytes)===c.envelope_hash,'AUTHORIZATION_CUSTODY_OBJECT_MISMATCH');}finally{wipe(received);}

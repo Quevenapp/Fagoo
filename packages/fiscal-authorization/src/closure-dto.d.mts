@@ -1,0 +1,11 @@
+export const CLOSURE_PROFILE:'reviewed-expired-unconsumed-v1';
+export const MAX_CLOSURE_REQUEST_BYTES:4096,MAX_CLOSURE_RESPONSE_BYTES:16384;
+export type ClosureInput=Readonly<{command_id:string;authorization_command_id:string;expected_attempt_id:string;expected_state:'prepared'|'request_ready';confirmed:true}>;
+export type ClosureReceipt=Readonly<{command_id:string;authorization_command_id:string;attempt_id:string;candidate_id:string;signed_hash:string;model:'55'|'65';origin:'synthetic'|'operational';policy_version:number;previous_state:'prepared'|'request_ready';review_id:string|null;lease_expired_at:string;closed_at:string;reason:'LEASE_EXPIRED_UNCONSUMED';state:'failed_before_dispatch';grant_consumed:false;tax_rules_validated:false}>;
+export type ClosureResult=Readonly<typeof import('../../fiscal-authorization-http/src/dto.mjs').FLAGS&{closure_profile:typeof CLOSURE_PROFILE;tax_rules_validated:false;command_id:string;receipt:ClosureReceipt;current:Readonly<{state:'failed_before_dispatch';grant_consumed:false;finished_at:string;successor_exists:boolean;intent_consumed:boolean}>;replayed:boolean;read_only:boolean}>;
+export type ClosureBinding=Readonly<{action:'closeExpired'|'closureCommand';commandId:string;input?:ClosureInput}>;
+export type ClosureLedgerResult=Omit<ClosureResult,'receipt'>&{receipt:ClosureReceipt&{request_hash:string|null}};
+export function captureClosureInput(value:unknown):ClosureInput;
+export function projectClosurePublic(value:unknown,binding:ClosureBinding):ClosureResult;
+export function projectClosureLedger(value:unknown,binding:ClosureBinding):ClosureLedgerResult;
+export function closurePublicFromLedger(value:unknown,binding:ClosureBinding):ClosureResult;

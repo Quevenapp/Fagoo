@@ -1,9 +1,9 @@
-// 202610200270 rich text of the documents (External editors of "Outros itens ou serviços", of the "Condições comerciais" Texto tab and of
+// 202610200270 rich text of the documents (Origin editors of "Outros itens ou serviços", of the "Condições comerciais" Texto tab and of
 // the "Cabeçalho personalizado" of the prints): a closed structure, never HTML. Every block and run carries every key; the editor
 // and the print render it as text (escaped by React), so no markup typed or pasted by a user reaches a page. The same rules are
 // checked by erp_documents.rich_text (SQL 270).
 export const RICH_ALIGNS = Object.freeze(['left', 'center', 'right', 'justify']);
-/** External "Tamanho" (11pt by default). */
+/** Origin "Tamanho" (11pt by default). */
 export const RICH_SIZES = Object.freeze([8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 36]);
 export const RICH_LIMITS = Object.freeze({ blocks: 200, runs: 1000, characters: 20000, indent: 5 });
 export const RICH_BLOCK_KEYS = Object.freeze(['align', 'indent', 'code', 'runs']);

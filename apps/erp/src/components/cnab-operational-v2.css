@@ -1,0 +1,8 @@
+.operational-cnab .table-scroll{max-width:100%;overflow:auto}
+.operational-review .table-scroll{max-width:100%;overflow:auto}
+.operational-review code{overflow-wrap:anywhere}
+.operational-review .operational-check{max-width:30rem;align-items:flex-start}
+.operational-review .numeric{font-variant-numeric:tabular-nums;text-align:right}
+@media(max-width:600px){.operational-cnab .cnab-tabs{flex-wrap:wrap}.operational-review .real-editor-actions{flex-wrap:wrap}}
+/* Leva H (FIN-182): each selected título keeps its document field and a remove button. */
+.cnab-selected-title { display: flex; align-items: flex-end; gap: 8px; }

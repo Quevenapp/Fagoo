@@ -1,0 +1,28 @@
+.origin-sales-readiness{min-width:0}
+.origin-sales-readiness .real-heading{gap:1rem}
+.origin-sales-readiness .native-list-filters form{display:grid;gap:.75rem}
+.origin-sales-readiness .native-list-actions p{font-size:.88rem;line-height:1.5;color:var(--text-muted,#64748b)}
+.sales-readiness-notice,.sales-readiness-panel{padding:1rem 1.15rem;margin:1rem 0;border:1px solid var(--border,#dbe2e8);border-radius:10px;background:var(--surface,#fff)}
+.sales-readiness-notice{background:var(--surface-soft,#f4f7fa)}
+.sales-readiness-panel>header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.sales-readiness-panel h2:focus{outline:2px solid var(--accent,#277163);outline-offset:5px}
+.sales-readiness-panel h2,.sales-readiness-panel h3{margin-top:0}
+.sales-readiness-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.sales-readiness-values{display:grid;gap:.6rem}
+.sales-readiness-values>div{display:grid;grid-template-columns:minmax(8rem,1fr) minmax(0,1.6fr);gap:.7rem}
+.sales-readiness-values dt{color:var(--text-muted,#64748b)}
+.sales-readiness-values dd{margin:0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.origin-sales-readiness .table-scroll{max-width:100%;overflow:auto}
+.origin-sales-readiness .data-table td{vertical-align:top}
+.origin-sales-readiness small{display:block;margin-top:.25rem;color:var(--text-muted,#64748b)}
+.origin-sales-readiness code,.sales-readiness-observed{white-space:normal;overflow-wrap:anywhere}
+.sales-readiness-number{font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.sales-readiness-pagination,.sales-readiness-buttons{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;padding:1rem 0}
+.sales-readiness-pagination>div{display:flex;flex-wrap:wrap;gap:.5rem}
+.sales-readiness-issues{padding:1rem;border:1px solid #e8d9ac;border-radius:8px;background:#fffaf0}
+.sales-readiness-issues ul{margin-bottom:0;padding-left:1.25rem}
+.sales-readiness-issues li{margin:.45rem 0;overflow-wrap:anywhere}
+.sales-readiness-panel details{margin-top:1rem}
+.sales-readiness-panel summary{cursor:pointer;font-weight:600}
+.origin-sales-readiness[hidden]{display:none}
+@media(max-width:720px){.sales-readiness-columns{grid-template-columns:1fr}.sales-readiness-panel>header,.sales-readiness-pagination{align-items:flex-start;flex-direction:column}.sales-readiness-panel,.sales-readiness-notice{padding:1rem}.sales-readiness-values>div{grid-template-columns:1fr;gap:.2rem}.origin-sales-readiness .real-heading{align-items:flex-start}.sales-readiness-pagination>div{width:100%}}

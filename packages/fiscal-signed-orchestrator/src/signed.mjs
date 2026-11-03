@@ -4,7 +4,7 @@ import {buildAccessKey} from '../../fiscal-core/src/identity.mjs';
 import {createSignedHomologationCandidate,disposeSigner,FiscalXmlError} from '../../fiscal-xml/src/index.mjs';
 import {inspectNfe} from '../../fiscal-xml/src/xml.mjs';
 
-const BUCKET='fagoo-fiscal-artifacts',MAX_UNSIGNED=480000,MAX_SIGNED=512000;
+const BUCKET='brufap-fiscal-artifacts',MAX_UNSIGNED=480000,MAX_SIGNED=512000;
 const UUID=/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/,SHA=/^[a-f0-9]{64}$/;
 const plain=v=>v!==null&&typeof v==='object'&&!Array.isArray(v)&&[Object.prototype,null].includes(Object.getPrototypeOf(v));
 const exact=(v,keys)=>plain(v)&&Reflect.ownKeys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k)&&Object.hasOwn(Object.getOwnPropertyDescriptor(v,k),'value'));
@@ -15,7 +15,7 @@ const canonical=v=>Array.isArray(v)?'['+v.map(canonical).join(',')+']':plain(v)?
 const equal=(a,b)=>canonical(a)===canonical(b);
 const frozen=v=>{if(v&&typeof v==='object'){Object.values(v).forEach(frozen);Object.freeze(v);}return v;};
 const copy=v=>frozen(structuredClone(v));
-const PROFILE=Object.freeze({candidate_profile:'signed-homologation-sp-v1',signature_profile:'nfe400-rsa-sha1-c14n-v1',schema_profile:'pl010f-v1.04',schema_manifest_hash:'6099e1ce8a90a079609f986ab0b9783744d2fbb10151fab0b5e7a3549c82d9a0',validator_version:'fiscal-schema-runner-v1',validator_hash:'7c546683d6ca94d124b60a32ca9f6bf8f731533455af634326a10ae078ea5cec',nfce_qr_profile:'sp-homologation-online-qr-v3'});
+const PROFILE=Object.freeze({candidate_profile:'signed-homologation-sp-v1',signature_profile:'nfe400-rsa-sha1-c14n-v1',schema_profile:'pl010f-v1.04',schema_manifest_hash:'6099e1ce8a90a079609f986ab0b9783744d2fbb10151fab0b5e7a3549c82d9a0',validator_version:'fiscal-schema-runner-v1',validator_hash:'1da9dba6f75bca015fd7bd114a9fa030e57bb11d46a8f4b248cc3214dcbc53c6',nfce_qr_profile:'sp-homologation-online-qr-v3'});
 const FALSE_FLAGS=['tax_rules_validated','icp_brasil_chain_validated','revocation_checked','authorized','can_emit','can_transmit','financial_mutation_performed','stock_mutation_performed'];
 const FLAGS=Object.freeze({offline_prototype:true,environment:'2',candidate_profile:PROFILE.candidate_profile,...Object.fromEntries(FALSE_FLAGS.map(k=>[k,false]))});
 const FAIL_CODES=new Set(['XML_INPUT_INVALID','SIGNATURE_INVALID','XSD_INVALID','QR_INVALID','XML_SIZE_LIMIT','CERTIFICATE_INVALID']);
@@ -71,7 +71,7 @@ function usage(raw,started,input){
   &&meta.fingerprint_sha256===r.certificate_fingerprint&&meta.holder_cnpj===i.cnpj&&['not_before','not_after','validated_at'].every(k=>time(meta[k]))&&[2048,3072,4096].includes(meta.rsa_bits)
   &&Array.isArray(meta.presented_chain)&&meta.presented_chain.length>=1&&meta.presented_chain.length<=10&&meta.presented_chain.every(digest)&&meta.presented_chain[0]===r.certificate_fingerprint&&new Set(meta.presented_chain).size===meta.presented_chain.length
   &&meta.key_matches_certificate===true&&meta.presented_chain_links_checked===true&&['icp_brasil_chain_validated','revocation_checked','a1_policy_verified','client_auth_eku_verified','can_transmit'].every(k=>meta[k]===false),'SIGNED_CUSTODY_BINDING_INVALID');
- need(exact(key,['bucket','path','hash','size','key_id'])&&key.bucket==='fagoo-a1-vault'&&digest(key.hash)&&key.path===`credentials/${r.credential_id}/${key.hash}.json`&&Number.isInteger(key.size)&&key.size>0&&key.size<=1500000&&typeof key.key_id==='string'&&/^[A-Za-z0-9_-]{1,64}$/.test(key.key_id),'SIGNED_CUSTODY_BINDING_INVALID');
+ need(exact(key,['bucket','path','hash','size','key_id'])&&key.bucket==='brufap-a1-vault'&&digest(key.hash)&&key.path===`credentials/${r.credential_id}/${key.hash}.json`&&Number.isInteger(key.size)&&key.size>0&&key.size<=1500000&&typeof key.key_id==='string'&&/^[A-Za-z0-9_-]{1,64}$/.test(key.key_id),'SIGNED_CUSTODY_BINDING_INVALID');
  return copy({actor:input.actor,command_id:input.commandId,candidate_id:r.candidate_id,a1_version:r.a1_version,lease_id:raw.lease_id,lease_until:raw.lease_until,used_at:raw.used_at,
   identity:i,access_key:accessKey,unsigned_object:o,credential_context:ctx,credential_metadata:meta,credential_object:key});
 }

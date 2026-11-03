@@ -1,0 +1,27 @@
+/* A4 preview of stock receipts and reports (comprovante de transferência, relatório de conferências). */
+.stock-print-root{position:fixed;inset:0;z-index:2000;background:#e9edf1;color:#18232a}
+.stock-print-dialog{display:flex;flex-direction:column;height:100%}
+.stock-print-controls{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 22px;background:var(--surface,#fff);border-bottom:1px solid var(--border,#d7dfe5)}
+.stock-print-controls h2{margin:0;font-size:16px}.stock-print-controls>div{display:flex;gap:8px}
+.stock-print-scroll{flex:1;overflow:auto;padding:22px}
+.stock-print-sheet{box-sizing:border-box;width:210mm;max-width:100%;min-height:150mm;margin:0 auto;padding:14mm;background:#fff;color:#000;box-shadow:0 2px 12px rgba(0,0,0,.18);font-size:10pt}
+.stock-print-sheet h1{margin:0 0 6px;font-size:15pt}.stock-print-sheet h2{margin:14px 0 6px;font-size:11pt}
+.stock-print-sheet table{width:100%;border-collapse:collapse;margin-top:6px}
+.stock-print-sheet th,.stock-print-sheet td{padding:4px 6px;border-bottom:1px solid #c9d1d9;text-align:left;vertical-align:top}
+.stock-print-sheet .numeric{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stock-print-sheet dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px;margin:8px 0}
+.stock-print-sheet dt{color:#4b5563;font-size:8.5pt}.stock-print-sheet dd{margin:2px 0 0;font-weight:700}
+.stock-print-signatures{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:40px}
+.stock-print-signatures span{display:block;padding-top:6px;border-top:1px solid #000;text-align:center;font-size:9pt}
+.stock-print-foot{margin-top:18px;color:#4b5563;font-size:8pt}
+@media(max-width:700px){.stock-print-controls{flex-direction:column;align-items:stretch}.stock-print-scroll{padding:10px}.stock-print-sheet{padding:8mm}}
+@media print{
+  @page{size:A4 portrait;margin:12mm}
+  body.stock-print-open{overflow:visible!important;background:#fff!important}
+  body.stock-print-open>*:not(.stock-print-root){display:none!important}
+  body.stock-print-open .stock-print-root{position:static!important;background:#fff!important;height:auto!important}
+  .stock-print-dialog,.stock-print-scroll{display:block!important;height:auto!important;overflow:visible!important;padding:0!important}
+  .stock-print-controls,.stock-print-root .real-alert{display:none!important}
+  .stock-print-sheet{width:auto!important;min-height:0!important;margin:0!important;padding:0!important;box-shadow:none!important}
+  .stock-print-sheet tr{break-inside:avoid;page-break-inside:avoid}
+}

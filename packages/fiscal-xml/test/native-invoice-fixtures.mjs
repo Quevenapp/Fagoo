@@ -1,4 +1,4 @@
-// Synthetic notes of the Fagoo for the native XML tests (wave F of the notas fiscais lane). Every party, product and number is fictitious;
+// Synthetic notes of the Brufap for the native XML tests (wave F of the notas fiscais lane). Every party, product and number is fictitious;
 // the records are built by the same contract the Worker checks the database with, so totals and allocations are the real ones.
 import { invoiceRecord, invoiceTotals, normalizeInvoiceInput } from '../../erp-domain/src/fiscal-invoice-contract.mjs';
 

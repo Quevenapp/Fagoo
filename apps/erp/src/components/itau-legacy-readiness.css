@@ -1,0 +1,21 @@
+.itau-legacy-readiness{min-width:0}
+.itau-legacy-toolbar,.itau-legacy-actions,.itau-legacy-pagination,.itau-legacy-pagination>div{display:flex;align-items:flex-end;flex-wrap:wrap;gap:.75rem}
+.itau-legacy-toolbar label{display:grid;gap:.35rem;min-width:12rem}
+.itau-legacy-toolbar input[type=file]{max-width:100%;width:24rem}
+.itau-legacy-readiness .real-heading{gap:1rem}
+.itau-legacy-files,.itau-legacy-detail{border:1px solid var(--border,#dbe2e8);border-radius:10px;padding:1rem;margin:1rem 0;background:var(--surface,#fff)}
+.itau-legacy-files h2,.itau-legacy-detail h2{margin:0 0 .8rem;font-size:1.1rem}
+.itau-legacy-actions{margin-top:.8rem;align-items:center}
+.itau-legacy-caption,.itau-legacy-actions>span{font-size:.88rem;color:var(--text-muted,#64748b)}
+.itau-legacy-readiness small{display:block;margin-top:.25rem;color:var(--text-muted,#64748b)}
+.itau-legacy-readiness .table-scroll{max-width:100%;overflow:auto}
+.itau-legacy-readiness .data-table td{vertical-align:top;font-variant-numeric:tabular-nums}
+.itau-legacy-literal{white-space:pre-wrap;overflow-wrap:anywhere}
+.itau-legacy-pagination{justify-content:space-between;padding:1rem 0}
+.itau-legacy-values{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem 1.2rem}
+.itau-legacy-values dt{color:var(--text-muted,#64748b);font-size:.88rem}
+.itau-legacy-values dd{margin:.25rem 0 0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.itau-legacy-disclosure,.itau-legacy-candidate{border-top:1px solid var(--border,#dbe2e8);padding-top:.75rem;margin-top:.75rem}
+.itau-legacy-readiness summary{cursor:pointer;font-weight:600}
+.itau-legacy-readiness code{overflow-wrap:anywhere;white-space:normal}
+@media(max-width:720px){.itau-legacy-values{grid-template-columns:repeat(2,minmax(0,1fr))}.itau-legacy-toolbar{align-items:stretch}.itau-legacy-toolbar label{min-width:0;width:100%}.itau-legacy-toolbar input[type=file]{width:100%}.itau-legacy-readiness .real-heading{align-items:flex-start}.itau-legacy-pagination{align-items:flex-start}.itau-legacy-files,.itau-legacy-detail{padding:.8rem}}

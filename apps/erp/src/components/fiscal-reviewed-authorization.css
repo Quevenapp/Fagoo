@@ -1,0 +1,16 @@
+.fiscal-reviewed-authorization{border-top:1px solid var(--line,#dce2e8);margin-top:1.25rem;padding-top:1.25rem}
+.fiscal-reviewed-authorization header>span{font-size:.8rem;color:var(--muted,#526478)}
+.fiscal-reviewed-authorization h4,.fiscal-reviewed-authorization h5{margin:.5rem 0}
+.fiscal-reviewed-authorization h6{font-size:.95rem;margin:0 0 .5rem}
+.fiscal-reviewed-authorization article,.reviewed-authorization-recovery{padding:1rem;margin-top:1rem;border:1px solid var(--line,#dce2e8);border-radius:.5rem}
+.fiscal-reviewed-authorization code{overflow-wrap:anywhere;white-space:normal}
+.reviewed-authorization-details p{margin:.5rem 0}
+.fiscal-reviewed-authorization .button-group{display:flex;gap:.6rem;flex-wrap:wrap}
+.fiscal-reviewed-authorization[hidden]{display:none}
+.reviewed-authorization-preflight{padding:1rem;margin:1rem 0;background:var(--surface-soft,#f4f7fa);border:1px solid var(--line,#dce2e8);border-radius:.5rem}
+.reviewed-authorization-preflight li{margin:.45rem 0}
+.reviewed-authorization-confirm{display:flex;align-items:flex-start;gap:.6rem;margin:1rem 0}
+.reviewed-authorization-confirm input{flex:0 0 auto;margin-top:.25rem}
+.fiscal-reviewed-authorization>details{margin:.75rem 0}
+.reviewed-authorization-closure{padding:1rem;margin-top:1rem;border:1px solid var(--line,#dce2e8);border-radius:.5rem;background:var(--surface-soft,#f4f7fa)}
+.reviewed-authorization-closure[hidden]{display:none}

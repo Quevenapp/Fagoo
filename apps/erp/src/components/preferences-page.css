@@ -1,0 +1,96 @@
+.preferences-page { margin: 0 14px 24px; color: var(--text); }
+.preferences-breadcrumb { display: flex; align-items: center; gap: 8px; padding: 14px 0 10px; border-bottom: 1px solid var(--border); }
+.preferences-breadcrumb a { color: var(--link-info); font-size: 13px; text-decoration: underline; }
+.preferences-breadcrumb svg { color: var(--muted); }
+.preferences-breadcrumb h1 { margin: 0; font-size: 18px; font-weight: 700; }
+.preferences-band { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 12px 0; padding: 18px 26px; border-radius: var(--radius-small); background: var(--surface); }
+.preferences-band h2 { margin: 0; font-size: 18px; font-weight: 700; }
+.preferences-search { position: relative; display: flex; align-items: center; width: min(470px, 50%); }
+.preferences-search input { width: 100%; padding-right: 32px; }
+.preferences-search svg { position: absolute; right: 11px; color: var(--accent); }
+.preferences-trail { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; color: var(--muted); font-size: 12px; }
+.preferences-layout { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 18px; align-items: start; }
+.preferences-categories { display: grid; border: 1px solid var(--border); border-radius: var(--radius-small); background: var(--surface); }
+.preferences-categories button { display: flex; align-items: center; gap: 12px; min-height: 46px; padding: 8px 14px; border: 0; border-bottom: 1px solid var(--border); border-radius: 0; color: var(--heading); background: transparent; font-family: var(--font-heading); font-size: 14px; font-weight: 700; text-align: left; }
+.preferences-categories button:last-child { border-bottom: 0; }
+.preferences-categories button:hover, .preferences-categories button.active { background: var(--surface-alt); }
+.preferences-icon { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border: 2px solid var(--muted); border-radius: 50%; color: var(--muted); }
+.preferences-categories button.active .preferences-icon { color: #f5b82a; border-color: #f5b82a; }
+.preferences-content { min-width: 0; }
+.preferences-category-title { margin: 0 0 6px; color: var(--accent); font-size: 13px; }
+.preferences-section { margin-bottom: 18px; }
+.preferences-section h3 { margin: 0 0 4px; color: var(--muted); font-family: var(--font-body); font-size: 12px; font-weight: 400; }
+.preferences-section ul { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
+.preferences-section li { border-bottom: 1px solid var(--border); }
+.preferences-section li a, .preferences-disabled { display: flex; align-items: center; gap: 8px; padding: 9px 8px; color: var(--heading); font-size: 12px; text-decoration: none; }
+.preferences-section li a svg { color: var(--accent); }
+.preferences-section li a:hover { background: var(--surface-alt); text-decoration: none; }
+.preferences-disabled { color: var(--subtle); cursor: not-allowed; }
+.preferences-section li small { display: block; margin: -6px 0 8px 25px; color: var(--muted); font-size: 11px; }
+@media (max-width: 900px) { .preferences-layout { grid-template-columns: 1fr; } .preferences-band { flex-direction: column; align-items: stretch; } .preferences-search { width: 100%; } }
+.preferences-categories a { display: flex; align-items: center; gap: 12px; min-height: 46px; padding: 8px 14px; border-bottom: 1px solid var(--border); color: var(--heading); font-family: var(--font-heading); font-size: 14px; font-weight: 700; text-decoration: none; }
+.preferences-categories a:last-child { border-bottom: 0; }
+.preferences-categories a:hover, .preferences-categories a.active { background: var(--surface-alt); text-decoration: none; }
+.preferences-categories a.active .preferences-icon { color: #f5b82a; border-color: #f5b82a; }
+.preferences-trail a { color: var(--link-info); }
+.preferences-section li small + small { margin-top: -4px; }
+.preferences-notice { margin: 4px 0 18px; padding: 12px 14px; border-left: 4px solid #f5a524; border-radius: var(--radius-small); background: var(--warning-bg); color: var(--warning); font-size: 12px; }
+.preferences-notice p { margin: 4px 0 0; }
+/* Settings page: subsections on the left with a green bar on the active one, fields on the right, Salvar / Voltar. */
+.preference-has-subsections { grid-template-columns: 280px minmax(0, 1fr); }
+.preferences-subsections { display: grid; align-content: start; border: 1px solid var(--border); border-radius: var(--radius-small); background: var(--surface); }
+.preferences-subsections button { min-height: 42px; padding: 8px 14px; border: 0; border-left: 4px solid transparent; border-bottom: 1px solid var(--border); border-radius: 0; color: var(--heading); background: transparent; font-size: 13px; font-weight: 600; text-align: left; }
+.preferences-subsections button:last-child { border-bottom: 0; }
+.preferences-subsections button.active { border-left-color: var(--accent); background: var(--surface-alt); }
+.preference-single { max-width: 980px; }
+.preference-form { min-width: 0; padding: 16px 20px; border: 1px solid var(--border); border-radius: var(--radius-small); background: var(--surface); }
+.preference-section { margin-bottom: 18px; }
+.preference-section h3 { margin: 0 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); color: var(--heading); font-size: 15px; }
+.preference-group { margin: 14px 0 6px; color: var(--muted); font-size: 12px; font-weight: 700; text-transform: none; }
+.preference-fields { display: grid; gap: 4px; }
+.preference-field { display: grid; grid-template-columns: minmax(200px, 38%) minmax(0, 1fr); gap: 6px 18px; align-items: start; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.preference-field:last-child { border-bottom: 0; }
+.preference-toggle { grid-template-columns: 1fr; }
+.preference-label { color: var(--heading); font-size: 13px; font-weight: 600; }
+.preference-field select, .preference-field input:not([type="checkbox"]):not([type="radio"]), .preference-field textarea { width: min(100%, 460px); }
+.preference-switch { display: flex; align-items: center; gap: 10px; color: var(--heading); font-size: 13px; font-weight: 600; }
+.preference-switch input[type="checkbox"] { appearance: none; -webkit-appearance: none; position: relative; flex: 0 0 auto; width: 34px; height: 18px; margin: 0; border-radius: 999px; background: var(--border-strong); cursor: pointer; transition: background .15s; }
+.preference-switch input[type="checkbox"]::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: var(--shadow-small); transition: transform .15s; }
+.preference-switch input[type="checkbox"]:checked { background: var(--accent); }
+.preference-switch input[type="checkbox"]:checked::after { transform: translateX(16px); }
+.preference-switch input[type="checkbox"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.preference-switch input[type="checkbox"]:disabled { opacity: .55; cursor: not-allowed; }
+.preference-switch em { color: var(--muted); font-size: 12px; font-style: normal; font-weight: 400; }
+.preference-hint { display: inline-flex; margin-left: 6px; color: var(--link-info); cursor: help; vertical-align: middle; }
+.preference-note { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; line-height: 1.45; }
+.preference-note .status-badge { margin-right: 4px; }
+.preference-invalid { display: block; margin-top: 4px; color: var(--danger); font-size: 12px; }
+.preference-value { margin: 0 0 4px; color: var(--heading); font-size: 13px; }
+.preference-info.is-unavailable .preference-label { color: var(--subtle); }
+.preference-radios { display: grid; gap: 6px; font-size: 13px; }
+.preference-radios label { display: flex; align-items: center; gap: 8px; }
+.preference-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.preference-chips label { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border: 1px solid var(--border-strong); border-radius: 999px; font-size: 12px; cursor: pointer; }
+.preference-chips label.is-on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-strong); }
+.preference-chips label small { color: var(--muted); }
+.data-table.preference-keymap, .data-table.preference-documents { width: min(100%, 560px); min-width: 0; margin-bottom: 6px; }
+.preference-keymap input { width: 44px !important; text-align: center; text-transform: uppercase; }
+.preference-documents small { display: block; color: var(--muted); font-size: 11px; }
+.preference-updated { margin: 6px 0 0; }
+.preference-steps { display: flex; justify-content: space-between; gap: 12px; margin: 8px 0 14px; }
+.preference-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.preference-saved { color: var(--success); font-size: 12px; font-weight: 600; }
+.preference-discard { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 12px; }
+@media (max-width: 900px) { .preference-has-subsections { grid-template-columns: 1fr; } .preference-field { grid-template-columns: 1fr; } .preference-form { padding: 12px; } }
+.preference-embedded{margin:0;padding:0;max-width:none}.preference-embedded .preference-form{padding:0}.preference-embedded-title{margin:0 0 10px;font-size:16px}
+/* 187: Central de Notificações as the Origin table "Notificação | Destinatários | Editar". */
+.notification-center{display:grid;gap:8px;min-width:0}
+.notification-center-table td{vertical-align:top}
+.notification-center-hint{display:block;color:var(--muted);font-size:12px;font-weight:400}
+.notification-recipients-count{color:var(--muted)}
+.notification-recipients-edit{display:grid;gap:6px}
+.notification-recipients-chips{display:flex;flex-wrap:wrap;gap:4px;margin:0;padding:0;list-style:none}
+.notification-recipients-chips li{display:inline-flex;align-items:center;gap:2px;padding:2px 4px 2px 8px;border:1px solid var(--border);border-radius:12px;background:var(--surface-alt)}
+.notification-recipients-edit input{max-width:320px}
+/* 299: the color of a custom situação in Suprimentos › Estoque › Reserva de estoque. */
+.preference-situation-dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex:none}

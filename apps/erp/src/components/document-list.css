@@ -1,0 +1,64 @@
+/* Origin list for documents: situação checkboxes, sortable headers, selection, indicators, ⋮ and batch dialogs. */
+.documents-status-filter{display:grid;gap:4px;margin:0 0 12px;padding:0;border:0;min-width:0}
+.documents-status-filter legend{font-size:12px;font-weight:700;margin-bottom:4px;padding:0}
+.documents-status-filter label{display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer}
+.documents-status-filter input{width:auto;margin:0}
+.documents-product-filter select,.documents-product-filter input{width:100%}
+.documents-product-filter select{margin-top:6px}
+.documents-picked{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;min-width:0}
+.documents-picked>span{overflow-wrap:anywhere}
+.documents-list-controls input[type=checkbox]{margin:0 4px 0 2px}
+/* Hidden header labels stay inside the scrolling table, so narrow screens do not scroll the page sideways. */
+.documents-table th{position:relative}
+.documents-table th .documents-sort{display:inline-flex;align-items:center;gap:4px;border:0;background:none;color:inherit;font:inherit;font-weight:inherit;padding:0;cursor:pointer}
+.documents-table th .documents-sort:disabled{cursor:default;opacity:.7}
+.documents-table .documents-expected{color:var(--muted,#607268);font-size:11px;white-space:nowrap}
+.documents-table .documents-note{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.documents-table .documents-template{margin-left:6px}
+.documents-panel-actions{display:grid;gap:4px;margin-bottom:12px}
+.documents-panel-actions .origin-action{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;color:inherit;text-align:left;font:inherit;font-size:12px;padding:6px 4px;border-radius:6px;cursor:pointer}
+.documents-panel-actions .origin-action:hover:not(:disabled){background:var(--surface-alt,#f0f3f7)}
+.documents-panel-actions .origin-action:disabled{opacity:.5;cursor:default}
+.documents-batch-form{display:grid;gap:12px;margin-bottom:12px}
+.documents-effect-dialog{min-width:min(760px,80vw);max-width:100%}
+.document-batch-print .commercial-sheet+.commercial-sheet{margin-top:24px}
+@media(max-width:600px){.documents-effect-dialog{min-width:0}.documents-table .documents-note{max-width:140px}}
+@media print{.document-batch-print .commercial-sheet+.commercial-sheet{break-before:page;page-break-before:always;margin-top:0!important}.documents-panel-actions,.documents-list-controls input[type=checkbox]{display:none}}
+/* Wave 2 (vendas): search clear, "Mais ações", empty sales page cards. */
+.documents-toolbar .form-field{position:relative}
+.documents-search-clear{position:absolute;right:6px;bottom:7px;display:inline-flex;padding:2px;border:0;background:none;color:var(--muted,#607268);cursor:pointer}
+.documents-toolbar .form-field input[type=search]{padding-right:24px}
+.documents-more{display:grid;gap:2px;margin:0 0 12px}
+.documents-more h3{font-size:12px;margin:0}
+.documents-more h4{font-size:11px;margin:4px 0 0;color:var(--muted,#607268);font-weight:700}
+.documents-more .origin-action{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;color:inherit;text-align:left;font:inherit;font-size:12px;padding:6px 4px;border-radius:6px;cursor:pointer}
+.documents-more .origin-action:disabled{opacity:.5;cursor:default}
+.documents-welcome-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px;text-align:left}
+.documents-welcome-cards section{border:1px solid var(--border,#d7dfe5);border-radius:var(--radius,8px);padding:12px;display:grid;gap:8px;align-content:start}
+.documents-welcome-cards h3{margin:0;font-size:14px}
+.documents-welcome-cards p{margin:0;font-size:12px}
+.documents-first-sale{background:#8a8f98;color:#fff;margin-left:4px;font-size:10px}
+/* 202610200104: Tornar padrão and the "Informações visíveis" list. */
+.documents-status-default{margin-top:6px;font-weight:700}
+.documents-views{display:inline-flex;gap:2px;margin-left:6px}
+.documents-columns{display:grid;gap:8px;min-width:min(520px,80vw)}
+.documents-columns h2{margin:0;font-size:15px}
+.documents-columns p{margin:0}
+.documents-columns-list{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.documents-columns-list li{display:grid;grid-template-columns:16px 1fr auto;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--border,#d7dfe5);border-radius:var(--radius,8px);cursor:grab}
+.documents-columns-list li small{grid-column:2/4;font-size:11px;color:var(--muted,#607268)}
+.documents-columns-list label{display:flex;align-items:center;gap:6px}
+.documents-columns-move{display:inline-flex;gap:2px}
+.documents-columns-move button{border:1px solid var(--border,#d7dfe5);background:none;border-radius:4px;padding:0 6px;cursor:pointer}
+@media(max-width:600px){.documents-columns{min-width:0}}
+.documents-print-options{display:grid;gap:8px;margin:0 0 12px;padding:8px;border:1px solid var(--border,#d7dfe5);border-radius:var(--radius,8px)}.documents-print-options legend{font-weight:700;font-size:12px}
+/* 202610200129: Preferências sections (Opcional | Não), purchase empty search and the hidden internal note on small screens. */
+.document-section-toggle{display:block;margin:6px 0}
+.documents-empty-search{text-align:center}.documents-empty-search svg{color:var(--muted,#607268)}
+@media(max-width:767px){.documents-table .documents-note{display:none}}
+/* EST-029: pedidos de compra in one scroll with a fixed header (Origin). */
+.documents-single-scroll{max-height:70vh;overflow:auto}.documents-single-scroll thead th{position:sticky;top:0;z-index:1;background:var(--surface,#fff)}
+.documents-table .documents-origin{display:block;font-size:10px;line-height:1.35;color:var(--muted,#607268);white-space:normal;max-width:220px;min-width:130px;margin-top:3px;overflow-wrap:anywhere}
+.document-origin-totals{display:grid;gap:12px;margin-top:10px}.document-origin-totals section+section{border-top:1px solid var(--border,#d7dfe5);padding-top:10px}
+.real-editor>.document-mirror-sheet{width:100%;max-width:1100px;min-height:0;margin:16px 0;padding:24px;box-shadow:none;border:1px solid var(--border,#d7dfe5);border-radius:8px}
+.document-origin-totals,.document-origin-totals section,.document-origin-totals dl{min-width:0;max-width:100%}.document-origin-totals dd{white-space:normal;overflow-wrap:anywhere}.documents-table .origin-indicators .origin-tag{white-space:nowrap}

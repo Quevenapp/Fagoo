@@ -1,0 +1,57 @@
+.document-print-root{position:fixed;inset:0;z-index:2000;background:#e9edf1;color:#18232a}.document-print-dialog{height:100%;display:flex;flex-direction:column}.document-print-controls{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px 24px;background:var(--surface,#fff);color:var(--text,#18232a);border-bottom:1px solid var(--border,#d7dfe5);flex-shrink:0}.document-print-controls h2{font-size:18px;margin:0 0 4px}.document-print-controls p{font-size:13px;margin:0;color:var(--muted,#56636e)}.document-print-controls>div:last-child{display:flex;gap:10px;flex-shrink:0}.document-print-scroll{overflow:auto;flex:1;min-height:0;padding:24px}.document-print-scroll:focus-visible{outline:2px solid #247a84;outline-offset:-3px}.document-print-error{padding:18px;background:#fff2ef;color:#8b2415;margin:0}.commercial-sheet{box-sizing:border-box;width:210mm;max-width:100%;min-height:270mm;margin:0 auto;padding:12mm;background:#fff;color:#18232a;box-shadow:0 2px 16px #21344520;font-family:Arial,Helvetica,sans-serif;font-size:10pt;line-height:1.4;overflow-wrap:anywhere}.commercial-sheet h2,.commercial-sheet h3,.commercial-sheet p,.commercial-sheet dl,.commercial-sheet dd{margin:0}.commercial-sheet h2{font-size:20pt;line-height:1.2}.commercial-sheet h3{font-size:11pt;margin-bottom:6px}.commercial-heading{display:flex;justify-content:space-between;gap:18px;border-bottom:2px solid #2e737c;padding-bottom:14px;margin-bottom:16px}.commercial-brand{font-size:9pt;color:#42656c;margin-bottom:5px!important}.commercial-fiscal-notice{font-size:9pt;font-weight:700;margin-top:8px!important}.commercial-identity{display:grid;text-align:right;align-content:start;gap:4px;min-width:130px;font-size:9pt}.commercial-identity>strong{font-size:17pt}.commercial-status{border:2px solid #83352b;color:#83352b;font-weight:700;padding:10px;text-align:center;margin:12px 0!important}.commercial-contact,.commercial-service,.commercial-text,.commercial-installments{margin:18px 0}.commercial-contact p{margin-top:3px}.commercial-dates{display:flex;flex-wrap:wrap;gap:12px 30px;margin:15px 0!important}.commercial-dates dt{font-size:9pt;font-weight:700}.commercial-dates dd{white-space:pre-wrap}.commercial-items{margin-top:18px}.commercial-sheet table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:9pt}.commercial-sheet th{text-align:left;background:#eef3f5;color:#22343c;font-size:8pt;font-weight:700;padding:7px 5px;border-bottom:1px solid #8b9da7;letter-spacing:0;text-transform:none;white-space:normal}.commercial-sheet td{padding:8px 5px;vertical-align:top;border-bottom:1px solid #d4dce1;white-space:normal}.commercial-sheet td small{display:block;font-size:8pt;margin-top:4px;color:#4b5961}.commercial-sheet .commercial-numeric{text-align:right;font-variant-numeric:tabular-nums}.commercial-col-number{width:5%}.commercial-col-item{width:30%}.commercial-col-unit{width:6%}.commercial-col-quantity{width:13%}.commercial-col-price{width:17%}.commercial-col-discount{width:9%}.commercial-col-total{width:20%}.commercial-totals{display:flex;justify-content:flex-end;margin:16px 0 22px}.commercial-totals dl{width:340px;max-width:100%}.commercial-totals dl>div{display:flex;justify-content:space-between;gap:15px;padding:4px 0}.commercial-totals dd{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}.commercial-grand-total{border-top:2px solid #2e737c;margin-top:6px;padding-top:9px!important;font-size:12pt;font-weight:700}.commercial-text p{white-space:pre-wrap}.commercial-footnote{font-size:8pt;color:#4b5961;margin-top:7px!important}.commercial-footer{font-size:8pt;color:#4b5961;border-top:1px solid #bcc8ce;margin-top:26px;padding-top:10px}.document-preview-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:18px 0}.document-preview-actions p{margin:0;font-size:13px;color:var(--muted,#607268)}
+@media(max-width:700px){.document-print-controls{padding:12px;align-items:stretch;flex-direction:column;gap:10px}.document-print-controls>div:last-child{justify-content:space-between}.document-print-scroll{padding:10px}.commercial-sheet{max-width:none;width:210mm;padding:10mm}.document-print-controls button{padding:9px 12px}}
+@media print{
+  @page{size:A4 portrait;margin:12mm}
+  body.document-print-open{overflow:visible!important;background:#fff!important}
+  body.document-print-open>*:not(.document-print-root){display:none!important}
+  body.document-print-open .document-print-root{position:static!important;inset:auto!important;z-index:auto!important;background:#fff!important;color:#000!important;height:auto!important;overflow:visible!important}
+  .document-print-dialog,.document-print-scroll{display:block!important;position:static!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;padding:0!important;margin:0!important}
+  .document-print-controls,.document-print-error{display:none!important}
+  .commercial-sheet{width:auto!important;max-width:none!important;min-height:0!important;margin:0!important;padding:0!important;box-shadow:none!important;color:#000!important;font-size:9pt}
+  .commercial-sheet thead{display:table-header-group!important}
+  .commercial-sheet tr,.commercial-heading,.commercial-contact,.commercial-dates,.commercial-totals{break-inside:avoid;page-break-inside:avoid}
+  .commercial-sheet h3{break-after:avoid;page-break-after:avoid}
+  .commercial-sheet table{break-inside:auto;page-break-inside:auto}
+  .commercial-text p{orphans:3;widows:3}
+  .commercial-sheet th{background:#eee!important;color:#000!important;print-color-adjust:exact}
+}
+.commercial-company{margin:16px 0;padding:12px 0;border-bottom:1px solid #cad2d6;break-inside:avoid}.commercial-company h3{margin:0 0 5px;font-size:13px}.commercial-company p{margin:4px 0}.commercial-company small{color:#52636a}
+
+.commercial-line-detail{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;margin:6px 0}.commercial-dates dd{overflow-wrap:anywhere}.commercial-installments small{display:block;white-space:pre-wrap;overflow-wrap:anywhere}
+/* Vendas wave 2: comprovante (A4 / 80 mm), carnê and the detailed print. */
+.document-print-format{display:inline-flex;gap:4px;margin-right:6px}
+.document-print-format button[aria-pressed=true]{font-weight:700;border-color:#2e737c}
+.commercial-receipt-head{display:grid;gap:2px;text-align:center;border-bottom:1px dashed #8b9da7;padding-bottom:8px;margin-bottom:8px}
+.commercial-receipt-head h2{font-size:14pt!important}
+.commercial-receipt-items td small{display:block}
+.commercial-receipt-totals{display:grid;gap:2px;margin:10px 0!important}
+.commercial-receipt-totals>div{display:flex;justify-content:space-between;gap:10px}
+.commercial-receipt-installments{margin:4px 0;padding-left:18px}
+.commercial-receipt-sign{margin-top:24px!important}
+.commercial-receipt-80{width:80mm!important;min-height:0!important;padding:4mm!important;font-size:8.5pt!important;page:receipt80}
+.commercial-carne{display:grid;gap:8mm;min-height:0!important}
+.commercial-carne-slip{display:grid;grid-template-columns:55mm 1fr;border:1px dashed #6b7c85;break-inside:avoid;page-break-inside:avoid}
+.commercial-carne-stub{display:grid;gap:3px;padding:4mm;border-right:1px dashed #6b7c85;font-size:8.5pt}
+.commercial-carne-body{padding:4mm}
+@media print{@page receipt80{size:80mm auto;margin:3mm}}
+.commercial-labels{display:grid;gap:3mm;min-height:270mm;align-content:start}
+.commercial-label{display:grid;gap:2px;align-content:start;min-height:34mm;padding:3mm;border:1px dotted #b7c2c8;font-size:9pt;overflow-wrap:anywhere;break-inside:avoid}
+.commercial-label small{color:#4b5961}
+.commercial-labels+.commercial-labels{margin-top:24px}
+@media print{.commercial-labels+.commercial-labels{break-before:page;page-break-before:always;margin-top:0!important}.commercial-label{border-color:transparent}}
+/* 202610200199 Proposta › Assinatura (Saudação, nome do usuário e Departamento). */
+.commercial-user-signature{margin-top:24px}
+.commercial-user-signature p{margin:2px 0}
+
+/* 202610200240: Code 128 bars of the code and of the number, the structure of the products and the approval of the proposta. */
+.commercial-bars { display: block; width: 46mm; height: 9mm; margin-top: 1mm; fill: #000; }
+.commercial-heading .commercial-bars { width: 60mm; height: 11mm; }
+.commercial-components { margin: 1mm 0 0 4mm; padding: 0; font-size: 0.85em; list-style: square; }
+.commercial-approval { display: grid; gap: 4mm; margin-top: 6mm; }
+.commercial-production table td:last-child { text-align: center; }
+/* 202610200270: texto rico in the print (Outros itens, Condições comerciais) and the Cabeçalho personalizado. */
+.commercial-custom-header .rich-text-view p{margin:0 0 2px}.commercial-other-items .rich-text-view{margin:4px 0}
+/* 202610200287/288/294: image of the product, company footer and campos customizados of the OS in the print. */
+.commercial-item-image{display:block;max-width:22mm;max-height:22mm;object-fit:contain;margin:0 0 1mm}.commercial-company-footer{margin:4mm 0 0;font-size:0.85em;text-align:center}
+.commercial-items td small{display:block}
+.document-mirror-sheet .commercial-totals dl{width:100%}.document-mirror-sheet .commercial-totals dl>div{display:grid;grid-template-columns:minmax(150px,1fr) minmax(0,2fr);gap:18px}.document-mirror-sheet .commercial-totals dd{white-space:normal;overflow-wrap:anywhere;min-width:0}.document-list-sheet .commercial-totals{display:block}.document-list-sheet .document-origin-totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}.document-list-sheet .document-origin-totals dl{width:100%}.document-list-sheet .document-origin-totals dl>div{display:block}.document-list-sheet .document-origin-totals dd{white-space:normal;overflow-wrap:anywhere;text-align:left}.document-list-sheet .document-origin-totals section+section{border-top:0;padding-top:0}

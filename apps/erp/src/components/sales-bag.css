@@ -1,0 +1,8 @@
+/* Sacola de vendas (202610200197): contador da barra, popover da linha e tabela da gaveta. */
+.sales-bag-button{position:relative;display:inline-flex;align-items:center;gap:4px}
+.sales-bag-count{min-width:16px;padding:0 4px;border-radius:8px;background:var(--accent,#1f6feb);color:#fff;font-size:11px;line-height:16px;text-align:center}
+.sales-bag-row{position:relative;display:inline-flex;margin-left:4px}
+.sales-bag-popover{position:absolute;z-index:20;top:100%;right:0;display:grid;gap:6px;min-width:190px;padding:10px;border:1px solid var(--line,#d0d7de);border-radius:6px;background:var(--surface,#fff);box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.sales-bag-popover input{width:100%}
+.sales-bag-table input{width:110px;text-align:right}
+.sales-bag-table tr.is-inactive td{color:var(--muted,#6e7781)}

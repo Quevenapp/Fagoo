@@ -1,0 +1,56 @@
+/* Cadastros > Contas Financeiras e Categorias Financeiras (Origin). */
+.finance-institution { display: inline-flex; align-items: center; gap: 6px; }
+.finance-pill { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 10px; background: #e7eaee; color: #4a5560; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.finance-boleto { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+.finance-boleto.default { background: #dceafe; color: #1d4f91; }
+.finance-boleto.active { background: #dcf4e4; color: #1f6b3a; }
+.finance-boleto.none { background: #eceff1; color: #5d6870; }
+.finance-account-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 20px; align-items: start; }
+.finance-account-steps { position: sticky; top: 12px; border: 1px solid var(--border); border-radius: 6px; padding: 12px; background: var(--surface); }
+.finance-account-steps h2 { margin: 0 0 8px; font-size: 14px; }
+.finance-account-steps ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.finance-account-steps button { width: 100%; text-align: left; border: 0; border-left: 3px solid transparent; background: transparent; padding: 6px 8px; color: var(--muted); font-weight: 600; }
+.finance-account-steps button[aria-current="step"] { border-color: var(--accent, #087f8c); color: var(--text); background: var(--bg); }
+.finance-account-form { display: grid; gap: 16px; min-width: 0; }
+.finance-account-fieldset { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; gap: 16px; }
+.finance-account-section { border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; background: var(--surface); scroll-margin-top: 12px; }
+.finance-account-section h2 { margin: 0 0 12px; font-size: 16px; }
+.finance-account-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-bottom: 12px; }
+.finance-account-card { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 6px; padding: 12px; cursor: pointer; font-size: 13px; font-weight: 600; }
+.finance-account-card.selected { border-color: var(--accent, #087f8c); box-shadow: 0 0 0 1px var(--accent, #087f8c) inset; }
+.finance-institution-results { display: grid; gap: 2px; max-height: 220px; overflow: auto; margin-top: 6px; border: 1px solid var(--border); border-radius: 5px; }
+.finance-institution-results button { text-align: left; border: 0; background: transparent; padding: 7px 10px; }
+.finance-institution-results button:hover { background: var(--bg); }
+@media (max-width: 860px) { .finance-account-layout { grid-template-columns: 1fr; } .finance-account-steps { position: static; } }
+/* Árvore de categorias. */
+.finance-category-root td { background: var(--bg); }
+.finance-category-cell { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+.finance-category-row.level-2 td:nth-last-child(2), .finance-category-row.level-3 td:nth-last-child(2) { box-shadow: inset 3px 0 0 #49b776; }
+.finance-category-row.inactive .finance-category-name { color: var(--muted); }
+.finance-tree-toggle { border: 0; background: transparent; padding: 2px 4px; color: var(--muted); }
+.finance-tree-spacer { display: inline-block; width: 18px; }
+.finance-tree-list { list-style: none; margin: 0; padding: 0; }
+.finance-tree-item { display: flex; align-items: center; gap: 2px; }
+.finance-tree-item.level-2 { padding-left: 18px; }
+.finance-tree-item.level-3 { padding-left: 36px; }
+.finance-tree-item.inactive { color: var(--muted); }
+.finance-tree-picker { position: relative; }
+.finance-tree-picker-value { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left; border: 1px solid var(--border); border-radius: 4px; background: var(--surface); padding: 7px 10px; }
+.finance-tree-panel { position: absolute; z-index: 70; left: 0; right: 0; top: calc(100% + 2px); max-height: 300px; overflow: auto; border: 1px solid var(--border); border-radius: 5px; background: var(--surface); box-shadow: 0 8px 24px #0002; padding: 8px; display: grid; gap: 4px; }
+.finance-tree-choice { border: 0; background: transparent; text-align: left; padding: 5px 8px; border-radius: 4px; flex: 1; }
+.finance-tree-choice:hover, .finance-tree-choice.selected { background: var(--bg); font-weight: 600; }
+.finance-dropzone { display: flex; align-items: center; gap: 10px; justify-content: center; border: 2px dashed var(--border); border-radius: 6px; padding: 22px 14px; color: var(--muted); cursor: pointer; text-align: center; }
+.finance-dropzone.disabled { cursor: not-allowed; opacity: .6; }
+.finance-import-preview { display: grid; gap: 6px; }
+.finance-import-rows { margin: 0; padding-left: 18px; max-height: 220px; overflow: auto; font-size: 13px; }
+/* Contas recorrentes (SQL 138): bolinha de situação and the schedule under the cells. */
+.finance-recurrence-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #8a8f98; }
+.finance-recurrence-dot.is-active { background: #4f9a2b; }
+.finance-recurrence-detail { display: block; margin-top: 2px; }
+/* Importação de registros financeiros (SQL 138). */
+.finance-import { display: grid; gap: 12px; max-width: 980px; }
+.finance-import > .form-field { max-width: 320px; }
+.finance-import-file { justify-self: start; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+.finance-import-file.is-disabled { opacity: .6; cursor: not-allowed; }
+.finance-import-title { margin: 8px 0 0; font-size: 15px; overflow-wrap: anywhere; }
+.finance-import-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }

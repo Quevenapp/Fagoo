@@ -1,0 +1,87 @@
+.product-basic-fields { margin-bottom: 22px; }
+.product-basic-fields > legend { font-size: 14px; font-weight: 600; margin-bottom: 16px; }
+.product-editor-fields .form-field { min-width: 0; }
+.product-editor-fields .form-field small { color: var(--muted); line-height: 1.5; }
+.product-editor-fields select { width: 100%; min-width: 0; text-overflow: ellipsis; }
+.catalog-editor [aria-invalid="true"] { border-color: var(--danger); }
+.product-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+.product-tabs button { flex-shrink: 0; border: 0; border-bottom: 3px solid transparent; background: transparent; color: var(--muted); padding: 14px 18px 12px; font-size: 14px; font-weight: 600; }
+.product-tabs button[aria-selected="true"] { color: var(--text); border-color: var(--accent, #087f8c); }
+.product-tab-panel { padding-top: 20px; }
+.product-tab-panel[hidden] { display: none; }
+.product-tab-panel > .real-help { margin: 0 0 20px; }
+.product-tab-panel .form-field:has(#catalog-origin) { grid-column: 1 / -1; }
+@media (max-width: 600px) {
+  .product-tabs button { padding: 12px 10px; font-size: 13px; }
+  .product-tab-panel .real-editor-fields, .product-basic-fields { grid-template-columns: 1fr; }
+}
+
+/* Origin layout for Produtos, Clientes e Fornecedores and Depósitos (docs/references/origin-interface.md). */
+.catalog-heading-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.catalog-heading-actions .primary-button { min-width: 150px; justify-content: center; }
+.catalog-list-controls { display: flex; align-items: center; gap: 6px; }
+.catalog-list-controls .real-result-status { flex: 1; min-width: 0; }
+.catalog-list-controls .origin-refresh:disabled { opacity: .5; }
+.real-editor-heading.catalog-editor-heading { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 6px 20px; }
+.catalog-editor-title { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; min-width: 0; }
+.catalog-editor-heading .catalog-editor-title h2 { margin: 0; overflow-wrap: anywhere; }
+.catalog-editor-buttons { display: flex; gap: 14px; }
+.catalog-editor-buttons > button { min-width: 140px; justify-content: center; }
+.catalog-editor-heading .catalog-required { grid-column: 2; margin: 0; color: var(--heading); font-size: 11px; text-align: right; }
+.catalog-editor-heading .catalog-required span { color: var(--danger); }
+.catalog-form-group { display: contents; }
+.catalog-group-title { grid-column: 1 / -1; margin: 10px 0 -4px; padding-bottom: 6px; border-bottom: 1px solid var(--border); color: var(--heading); font-size: 16px; font-weight: 700; }
+.catalog-form-group:first-of-type .catalog-group-title { margin-top: 0; }
+@media (min-width: 761px) {
+  .real-editor-heading.catalog-editor-heading { position: sticky; top: var(--topbar-height); z-index: 3; margin: -22px -22px 20px; padding: 16px 22px 12px; background: var(--surface); border-bottom: 1px solid var(--border); border-radius: 6px 6px 0 0; }
+}
+@media (max-width: 760px) {
+  .real-heading.catalog-heading { flex-direction: row; align-items: center; flex-wrap: wrap; }
+  .real-editor-heading.catalog-editor-heading { grid-template-columns: 1fr; }
+  .catalog-editor-buttons > button { min-width: 0; flex: 1; }
+  .catalog-editor-heading .catalog-required { grid-column: 1; text-align: left; }
+}
+@media print { .catalog-heading-actions, .catalog-editor-buttons, .catalog-list-controls .origin-refresh { display: none; } .real-editor-heading.catalog-editor-heading { position: static; } }
+
+/* Listagem com seleção, menu ⋮, preço na linha e estoque (docs/integrations/catalog-list-origin.md). */
+.catalog-title { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 14px; min-width: 0; }
+.catalog-title h1 { margin: 0; }
+.catalog-list-controls .origin-list-controls { padding-left: 0; }
+/* Screen-reader labels stay inside the scrolling table instead of widening the page. */
+.catalog-table th, .catalog-table td { position: relative; }
+.catalog-table td.checkbox-cell, .catalog-table th.checkbox-cell { width: 28px; padding-right: 0; }
+.catalog-table td.row-actions, .catalog-table th.row-actions { width: 32px; text-align: right; }
+.catalog-table .catalog-sort svg { color: var(--accent); }
+.catalog-price-value { display: inline-flex; align-items: center; justify-content: flex-end; gap: 6px; color: var(--accent-strong); white-space: nowrap; }
+.catalog-price-pencil { display: inline-flex; padding: 2px; border: 0; border-radius: 4px; color: var(--accent); background: transparent; }
+.catalog-price-pencil:hover:not(:disabled) { background: var(--accent-soft); }
+.catalog-price-pencil:disabled { opacity: .4; }
+.catalog-price-edit { display: inline-flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 4px; max-width: 260px; }
+.catalog-price-edit input { width: 120px; min-width: 0; padding: 3px 6px; text-align: right; }
+.catalog-price-edit .icon-button { width: 26px; height: 26px; padding: 0; }
+.catalog-price-edit small { flex-basis: 100%; color: var(--danger); text-align: right; white-space: normal; }
+.catalog-stock { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.catalog-stock.is-no_movements, .catalog-stock.is-review_required { color: var(--muted); font-size: 11px; }
+.catalog-stock.is-review_required { color: var(--danger); }
+.catalog-contact-types { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); }
+.catalog-contact-types svg { width: 12px; height: 12px; }
+.catalog-contact-types.is-empty { color: var(--subtle); }
+.catalog-warnings { margin: 0 0 16px; padding: 12px 14px; border: 1px solid var(--warning-bg); border-left: 4px solid #e8b10c; border-radius: var(--radius); background: var(--warning-bg); color: var(--warning); }
+.catalog-warnings h3 { margin: 0 0 6px; font-size: 14px; }
+.catalog-warnings ul { margin: 0 0 8px; padding-left: 18px; }
+.catalog-warnings li + li { margin-top: 4px; }
+.catalog-warnings p { margin: 0 0 10px; font-size: 12px; }
+.catalog-batch-target { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 12px; padding: 0; border: 0; }
+.catalog-batch-target legend { margin-bottom: 6px; font-weight: 600; }
+.catalog-batch-target label { display: inline-flex; align-items: center; gap: 6px; }
+.data-table.catalog-stock-table { width: 100%; min-width: 0; margin-bottom: 12px; }
+@media (max-width: 760px) { .catalog-price-edit input { width: 96px; } }
+@media print { .catalog-table .checkbox-cell, .catalog-table .row-actions, .catalog-price-pencil { display: none; } }
+/* 202610220008: Estoque with two labelled origins (Origin físico observado | Brufap nativo), never added. */
+.catalog-stock.is-dual { white-space: normal; min-width: 150px; }
+.catalog-stock-line { display: block; white-space: nowrap; }
+.catalog-stock-line small { display: block; color: var(--muted); font-size: 11px; }
+.catalog-stock-origin { color: var(--muted); font-size: 11px; margin-right: 4px; }
+.catalog-stock-line.is-native { color: var(--muted); font-size: 11px; }
+.catalog-stock-line.is-origin:not(.is-observed) strong, .catalog-stock-line.is-native.is-no_movements { font-weight: 400; color: var(--muted); }
+.catalog-stock-line.is-native.is-review_required { color: var(--danger); }

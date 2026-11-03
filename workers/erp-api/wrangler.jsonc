@@ -1,0 +1,24 @@
+// Distribution template: configure this installation explicitly; no schedules or customer destinations.
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "fagoo-erp-api",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-10-15",
+  "compatibility_flags": [
+    "enable_request_signal"
+  ],
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": {
+    "enabled": false
+  },
+  "vars": {
+    "BACKUP_IMPORT_ENABLED": "false",
+    "SUPABASE_URL": "",
+    "ALLOWED_ORIGINS": "",
+    "SUPABASE_DEPLOYMENT": "self-hosted",
+    "ERP_SCHEDULED_TASKS_ENABLED": "false",
+    "ORIGIN_ENABLED": "false",
+    "ORIGIN_TWO_WAY_ENABLED": "false"
+  }
+}

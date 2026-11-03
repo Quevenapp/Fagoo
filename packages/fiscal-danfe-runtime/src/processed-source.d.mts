@@ -1,0 +1,11 @@
+import type {ProcessedReceiptQuerySource} from './processed-receipt-query-source.mjs';
+import type {ProcessedMetadata} from './processed-dto.mjs';
+declare const brand:unique symbol;
+export type ProcessedLegacySource=Readonly<{[brand]:true;profile:'processed-document-source-v1'}>;
+export type ProcessedSource=ProcessedLegacySource|ProcessedReceiptQuerySource;
+export type Options={signal?:AbortSignal;deadline?:number};
+export type Rpc=(action:'command',args:Readonly<{p_user_id:string;p_command_id:string}>,options:Options)=>Promise<unknown>;
+export function createProcessedSource(config:{authorizationRpc:Rpc;revalidationRpc:Rpc;storage:{read:(input:{bucket:'brufap-fiscal-artifacts';key:string;signal:AbortSignal;deadline:number})=>Promise<Response|null>}}):(input:{actor:string;sourceKind:'authorization'|'revalidation';commandId:string},options?:Options)=>Promise<ProcessedLegacySource>;
+export function processedSource(handle:ProcessedSource):Readonly<{metadata:ProcessedMetadata;signedBytes:Uint8Array;processedBytes:Uint8Array}>;
+export function disposeProcessedSource(handle:ProcessedSource):void;
+export function reauthorizeProcessedSource(handle:ProcessedSource,options?:Options):Promise<void>;

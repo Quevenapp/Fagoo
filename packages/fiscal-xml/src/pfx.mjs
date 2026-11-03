@@ -4,7 +4,7 @@ import { AuthenticatedSafe, Certificate, CryptoEngine, EncryptedData, PFX, PBES2
 import { boundedAsn1, createSigner } from './certificate.mjs';
 import { need, safeError } from './common.mjs';
 
-const engine = new CryptoEngine({name:'fagoo-node',crypto:webcrypto,subtle:webcrypto.subtle});
+const engine = new CryptoEngine({name:'brufap-node',crypto:webcrypto,subtle:webcrypto.subtle});
 const DATA = '1.2.840.113549.1.7.1', ENCRYPTED = '1.2.840.113549.1.7.6';
 function encryptionPolicy(algorithm) {
   need(algorithm.algorithmId === '1.2.840.113549.1.5.13','PFX_ENCRYPTION_UNSUPPORTED');

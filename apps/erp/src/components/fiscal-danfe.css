@@ -1,0 +1,68 @@
+/* DANFE do Brufap (retrato A4, Simplificado - Etiqueta e NFC-e 80 mm): sempre preto no branco, também no tema escuro. */
+.danfe-dialog{max-width:1100px}
+.danfe-sheets{display:flex;flex-direction:column;align-items:center;gap:16px;background:#e9e9e9;padding:12px;overflow:auto}
+.danfe-page,.danfe-label-page,.danfe-nfce{position:relative;background:#fff;color:#000;font-family:Arial,Helvetica,sans-serif;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.danfe-page{width:200mm;min-height:281mm;padding:3mm;box-sizing:border-box;font-size:7.5px;line-height:1.2;page:danfe-a4;break-after:page}
+.danfe-label-page{width:100mm;min-height:150mm;padding:3mm;box-sizing:border-box;font-size:8px;line-height:1.25;page:danfe-label;break-after:page;display:flex;flex-direction:column;gap:2px}
+.danfe-nfce{width:72mm;padding:2mm;box-sizing:border-box;font-size:8px;line-height:1.3;page:danfe-nfce;break-after:page}
+.danfe-row{display:flex;gap:0;width:100%}
+.danfe-wrap{flex-wrap:wrap}
+.danfe-box{border:1px solid #000;margin:0 -1px -1px 0;padding:1px 3px;min-height:7mm;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;break-inside:avoid}
+.danfe-label{font-size:6px;font-weight:700;text-transform:uppercase;letter-spacing:.01em}
+.danfe-value{font-size:8.5px;display:flex;flex-direction:column;word-break:break-word}
+.danfe-grow{flex:1 1 0;min-width:0}
+.danfe-w5{flex:0 0 5%}.danfe-w10{flex:0 0 10%}.danfe-w15{flex:0 0 15%}.danfe-w20{flex:0 0 20%}.danfe-w25{flex:0 0 25%}.danfe-w30{flex:0 0 30%}.danfe-w40{flex:0 0 40%}
+.danfe-numbers .danfe-value{text-align:right;align-items:flex-end}
+.danfe-section{font-size:7px;font-weight:700;margin:3px 0 1px;text-transform:uppercase}
+.danfe-canhoto{display:flex;border:1px solid #000;border-bottom:1px dashed #000;margin-bottom:3mm;padding-bottom:2mm}
+.danfe-canhoto-text{flex:1;display:flex;flex-direction:column;gap:2px;padding:2px}
+.danfe-canhoto-number{flex:0 0 22%;display:flex;flex-direction:column;align-items:center;justify-content:center;border-left:1px solid #000;font-size:9px}
+.danfe-header{display:grid;grid-template-columns:38% 20% 42%;border:1px solid #000}
+.danfe-issuer{display:flex;flex-direction:column;gap:2px;padding:3px;border-right:1px solid #000}
+.danfe-issuer strong{font-size:10px}
+.danfe-title{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:3px;border-right:1px solid #000;text-align:center}
+.danfe-big{font-size:16px;letter-spacing:.05em}
+.danfe-operation{display:flex;align-items:center;gap:6px;font-size:7px}
+.danfe-operation b{border:1px solid #000;padding:2px 6px;font-size:12px}
+.danfe-keybox{display:flex;flex-direction:column;gap:2px;padding:3px}
+.danfe-barcode{width:100%;height:12mm;display:block}
+.danfe-barcode rect,.danfe-qr rect{fill:#000}
+.danfe-qr rect:first-child{fill:#fff}
+.danfe-key{font-family:"Courier New",monospace;font-size:8px;font-weight:700;letter-spacing:.02em}
+.danfe-small{font-size:6.5px;margin:0}
+.danfe-items{width:100%;border-collapse:collapse;font-size:7px}
+.danfe-items th{border:1px solid #000;font-size:5.8px;padding:1px;text-align:left}
+.danfe-items td{border-left:1px solid #000;border-right:1px solid #000;border-bottom:1px dotted #999;padding:1px 2px;vertical-align:top}
+.danfe-items .numeric{text-align:right;white-space:nowrap}
+.danfe-items thead{display:table-header-group}
+.danfe-item-info{display:block;font-size:6.5px}
+.danfe-additional .danfe-box{min-height:28mm}
+.danfe-paragraph{display:block;white-space:pre-wrap;margin-bottom:2px}
+.danfe-watermark{position:absolute;inset:30% 0 auto 0;text-align:center;font-size:42px;font-weight:700;color:rgba(0,0,0,.12);transform:rotate(-24deg);pointer-events:none;z-index:1}
+.danfe-homologation{text-align:center;font-weight:700;font-size:8px;margin:0 0 2px}
+.danfe-label-title{font-size:11px;margin:0;text-align:center}
+.danfe-label-items{font-size:7px}
+.danfe-nfce-center{text-align:center;display:flex;flex-direction:column;align-items:center;margin:4px 0;word-break:break-word}
+.danfe-nfce-items{width:100%;border-collapse:collapse;font-size:7px;margin:4px 0}
+.danfe-nfce-items th{border-bottom:1px solid #000;text-align:left}
+.danfe-nfce-items .numeric{text-align:right}
+.danfe-nfce-totals{margin:4px 0;display:flex;flex-direction:column;gap:1px}
+.danfe-nfce-totals div{display:flex;justify-content:space-between;gap:4px}
+.danfe-nfce-totals dt,.danfe-nfce-totals dd{margin:0}
+.danfe-nfce-strong{font-weight:700}
+.danfe-nfce-head{border-top:1px dashed #000;padding-top:2px;font-weight:700}
+.danfe-nfce-mark{text-align:center;font-weight:700;font-size:10px;margin:0 0 4px}
+.danfe-nfce-info{font-size:7px;white-space:pre-wrap;border-top:1px dashed #000;padding-top:2px}
+.danfe-qr{width:30mm;height:30mm}
+@page danfe-a4{size:A4 portrait;margin:5mm}
+@page danfe-label{size:100mm 150mm;margin:0}
+@page danfe-nfce{size:80mm 297mm;margin:3mm}
+@media print{
+  body.fiscal-print-open>*:not(.fiscal-print-root){display:none!important}
+  .danfe-root{position:static!important;background:#fff!important;overflow:visible!important}
+  .danfe-dialog{margin:0!important;padding:0!important;max-width:none!important}
+  .danfe-dialog>.fiscal-print-controls,.danfe-dialog>.real-alert{display:none!important}
+  .danfe-sheets{display:block;background:none;padding:0;gap:0}
+  .danfe-page,.danfe-label-page,.danfe-nfce{box-shadow:none;margin:0}
+  .danfe-page:last-child,.danfe-label-page:last-child,.danfe-nfce:last-child{break-after:auto}
+}

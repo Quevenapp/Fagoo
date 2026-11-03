@@ -1,5 +1,5 @@
 import {normalizeDocument} from '../../erp-domain/src/index.mjs';
-const FISCAL_DRAFT_PENDING=['TAX_REVIEW_REQUIRED','CATALOG_SNAPSHOTS_REQUIRE_REVIEW','RECIPIENT_FISCAL_MAPPING_REQUIRED','ITEM_FISCAL_MAPPING_REQUIRED','PAYMENT_FISCAL_MAPPING_REQUIRED','FISCAL_XML_NOT_BUILT','XSD_NOT_VALIDATED','SIGNATURE_NOT_CREATED','TRANSPORT_UNAVAILABLE','HOMOLOGATION_NOT_PERFORMED'];
+import {FISCAL_DRAFT_PENDING} from '../../../workers/erp-api/src/fiscal-drafts.mjs';
 export const reviewIds={draft:'a0000000-0000-4000-8000-000000000001',order:'b0000000-0000-4000-8000-000000000001',contact:'c0000000-0000-4000-8000-000000000001',product:'d0000000-0000-4000-8000-000000000001',item:'e0000000-0000-4000-8000-000000000001'};
 export function reviewBasis({model='55',item={},product={},free=false,itemCount=1}={}){
  const p={id:reviewIds.product,version:1,name:'Produto sintético',code:'FICT-1',unit:'UN',kind:'P',format:'S',ncm:'00000000',gtin:'SEM GTIN',...product};

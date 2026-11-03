@@ -1,0 +1,20 @@
+{
+  "name": "@brufap/fiscal-danfe",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.mjs",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@xmldom/xmldom": "0.9.12",
+    "qrcode-generator": "2.0.4"
+  },
+  "devDependencies": {
+    "jsqr": "1.4.0"
+  }
+}

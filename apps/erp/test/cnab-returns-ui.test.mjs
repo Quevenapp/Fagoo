@@ -1,0 +1,101 @@
+import {parseCnabRoute} from '../../../workers/erp-api/src/cnab.mjs';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mountComponent,AccessError} from './helpers/component-recovery-harness.mjs';
+import {OPERATIONAL_FLAGS as FLAGS} from '../src/lib/cnab-operational-model.ts';
+import {RETURN_ISSUES,returnFiles,returnEvents,returnDetail,returnCommand,returnSettlementAck,returnReadback} from '../src/lib/cnab-returns-model.ts';
+import {CNAB_RETURN_ISSUES} from '../../../workers/erp-api/src/cnab-returns.mjs';
+import {returnFile} from '../../../packages/cnab-core/test/fixtures.mjs';
+import {cnabHash} from '../src/lib/real-cnab-model.ts';
+const clone=x=>structuredClone(x),text=v=>Array.isArray(v)?v.map(text).join(''):v&&typeof v==='object'?text(v.props?.children):v===null||v===undefined||typeof v==='boolean'?'':String(v);
+const uid=n=>`${String(n).padStart(8,'0')}-0000-4000-8000-000000000001`,day='2026-10-16',stamp=day+'T12:00:00.123456Z';
+const profile={id:uid(1),account_id:uid(2),account_name:'CONTA FICTICIA',bank:'341',wallet:'109',account_mask:'***000',company_name:'EMPRESA FICTICIA',version:2,contract_verified:true,policy_verified:true,next_sequence:'2'};
+const approval={profile_id:profile.id,approval_version:1,enabled:true,effective_enabled:true,profile_version:2,identity_version:1,reference:'CONFERENCIA FICTICIA',confirmed_on:day,reviewed_at:stamp,issues:[]};
+const data=returnFile(),fileHash=await cnabHash(data),file={id:uid(3),profile_id:profile.id,kind:'return',state:'ready',generated_on:day,created_at:stamp,file_hash:fileHash,byte_size:data.length,titles:1,filename:`RETORNO_${uid(3)}.RET`};
+const selection={event_id:uid(4),file_id:file.id,line:2};
+function detail(bank='341'){
+ const inter=bank==='077';return{...FLAGS,event_id:selection.event_id,context_hash:'a'.repeat(64),bytes_verified:false,context:{version:1,as_of:day,event:{id:selection.event_id,hash:'b'.repeat(64),bank,wallet:inter?'112':'109',control:'FICTICIO-001',document_number:'TESTE001',our_number:inter?'00000000001':'000000019',occurrence:inter?'02':'06',kind:inter?'REGISTERED':'PAID',amount_cents:'12345',paid_cents:inter?'0':'12345',due_on:day,occurred_on:day,credited_on:day,adjustments:inter?null:{fee:'0',iof:'0',abatement:'0',discount:'0',interest:'0',otherCredits:'0'},warnings:inter?['BANK_ASSIGNED_NUMBER_NO_DOCUMENTED_LOCAL_DIGIT_ALGORITHM']:[]},file:{id:file.id,hash:fileHash,line:2,line_hash:'c'.repeat(64),duplicate:false,generated_on:day,declared_bank_origin:true,reference_id:'SYNTHETIC_DOWNLOAD',warnings:[]},profile:{id:profile.id,version:2,approval_version:1,effective_enabled:true,account_id:profile.account_id},account:{id:profile.account_id,version:1,name:profile.account_name,active:true,kind:'bank',opening_on:null},billing:{id:uid(5),remittance_id:uid(6),our_number:inter?null:'000000019',control:'FICTICIO-001',document_number:'TESTE001'},title:{id:uid(7),version:1,kind:'receivable',description:'TITULO FICTICIO',amount_cents:'12345',settled_cents:'0',balance_cents:'12345',issued_on:day,due_on:day,cancelled:false},binding:{allowed:inter,issues:inter?[]:['INTER112_REGISTRATION_REQUIRED','BANK_NUMBER_ALREADY_BOUND']},settlement:{allowed:!inter,issues:inter?['EXACT_PAYMENT_06_REQUIRED','BANK_NUMBER_NOT_MATCHED','PAYMENT_AMOUNT_DIFFERS']:[]},applied_command_id:null}};
+}
+const page=(items=[file],limit=25)=>({...FLAGS,items:clone(items),limit,has_more:false,next_cursor:null});
+const row=d=>({line:2,duplicate:false,event_id:d.event_id,kind:d.context.event.kind,occurrence:d.context.event.occurrence,control:d.context.event.control,document_number:d.context.event.document_number,amount_cents:d.context.event.amount_cents,paid_cents:d.context.event.paid_cents,binding_command_id:null,settlement_command_id:d.context.applied_command_id});
+function receipt(d,b){const c=d.context;return{command_id:b.command_id,event_id:d.event_id,event_hash:c.event.hash,file_id:c.file.id,file_hash:c.file.hash,line:c.file.line,profile_id:c.profile.id,approval_version:b.expected_approval_version,context_hash:b.context_hash,billing_title_id:c.billing.id,title_id:c.title.id,account_id:c.account.id,settlement_id:uid(8),posted_on:c.event.credited_on,principal_cents:c.event.paid_cents,net_cash_cents:c.event.paid_cents,created_at:stamp};}
+function readback(r,{reversed=false}={}){return{purpose:'operational',read_only:true,financialMutationPerformed:false,originAuthenticated:false,bankTransmissionPerformed:false,receipt:clone(r),current_title:{id:r.title_id,version:reversed?3:2,description:'DESCRICAO ATUAL FICTICIA',due_on:'2100-12-31',amount_cents:r.principal_cents,settled_cents:reversed?'0':r.principal_cents,balance_cents:reversed?r.principal_cents:'0',status:reversed?'open':'paid',cancelled:false},current_account:{id:r.account_id,version:reversed?3:2,name:'CONTA FICTICIA',active:true,balance_cents:reversed?'0':r.principal_cents},current_settlement:{id:r.settlement_id,title_id:r.title_id,account_id:r.account_id,kind:'payment',posted_on:r.posted_on,principal_cents:r.principal_cents,net_cash_cents:r.principal_cents,reversed}};}
+function service({bank='341',before=()=>{},after=()=>{},write=true,files=[file]}={}){
+ const state={detail:detail(bank),files:clone(files),receipts:new Map(),commands:new Map()},calls=[],counts={};
+ const controller={async itauNetCredit(){throw new AccessError(404);},async cnab(path){assert.equal((await parseCnabRoute(new Request('https://synthetic.invalid'+path))).kind,'access');return{read:true,write,configure:write,purpose:'homologation',productionReady:false,financialMutationPerformed:false};},async cnabOperational(){return{...FLAGS,items:[{profile:clone(profile),approval:clone(approval)}]};},async cnabReturnsDownload(){return new Blob([data]);},async cnabReturns(path,options={}){
+  const url=new URL(path,'https://synthetic.invalid'),p=url.pathname,op=options.method==='POST'?(p.endsWith('/preview')?'preview':p.endsWith('/settle')?'settle':p.endsWith('/bind')?'bind':'import'):p.includes('/settlements/')?'receipt':p.endsWith('/events')?'events':p.endsWith('/files')?'files':'detail';
+  const call={op,path,body:clone(options.body),signal:options.signal};calls.push(call);counts[op]=(counts[op]||0)+1;await before(call,{state,calls,counts});let value;
+  if(op==='files'){const limit=Number(url.searchParams.get('limit')||25),rows=state.files.filter(f=>f.id>(url.searchParams.get('after')||'')).slice(0,limit);value=page(rows,limit);}
+  else if(op==='events')value={...FLAGS,file_id:file.id,items:[row(state.detail)],limit:Number(url.searchParams.get('limit')||25),has_more:false,next_cursor:null};
+  else if(op==='detail')value=clone(state.detail);
+  else if(op==='preview')value={...clone(state.detail),bytes_verified:true};
+  else if(op==='receipt'){value=state.receipts.get(p.split('/').at(-1));if(!value)throw new AccessError(404);}
+  else{value=state.commands.get(options.body.command_id);if(value)value={...clone(value),replayed:true};else{
+   if(op==='import'){if(!state.files.some(f=>f.id===file.id))state.files.push(clone(file));value={...FLAGS,id:file.id,profile_id:profile.id,file_hash:fileHash,duplicate_file:false,replayed:false,new_events:1,duplicate_events:0,canSettle:false};}
+   else if(op==='bind'){value={...FLAGS,event_id:selection.event_id,command_id:options.body.command_id,billing_title_id:state.detail.context.billing.id,our_number:state.detail.context.event.our_number,bound:true,replayed:false};state.detail.context.billing.our_number=value.our_number;state.detail.context.binding={allowed:false,issues:['BANK_NUMBER_ALREADY_BOUND']};state.detail.context_hash='d'.repeat(64);}
+   else{const r=receipt(state.detail,options.body);value={purpose:'operational',originAuthenticated:false,bankTransmissionPerformed:false,financialMutationPerformed:true,replayed:false,receipt:r};state.receipts.set(r.command_id,readback(r));state.detail.context.applied_command_id=r.command_id;state.detail.context.title={...state.detail.context.title,version:2,settled_cents:'12345',balance_cents:'0'};state.detail.context.settlement={allowed:false,issues:['TITLE_NOT_FULLY_OPEN','PRIOR_SETTLEMENT_HISTORY','OPERATIONAL_PAYMENT_ALREADY_APPLIED']};state.detail.context_hash='e'.repeat(64);}
+   state.commands.set(options.body.command_id,clone(value));
+  }}await after(call,{state,calls,counts});return clone(value);
+ }};return{controller,state,calls,counts};
+}
+async function mount(s,componentName='ReturnEventEditor'){
+ const saved=[],closed=[],view=await mountComponent('RealCnabOperationalReturns.tsx',{controller:s.controller,profiles:[{profile:clone(profile),approval:clone(approval)}],selection:clone(selection),writeAllowed:true,onSaved:file=>saved.push(file),onClose:()=>closed.push(true)},{componentName,expandChildren:true});return{view,saved,closed};
+}
+const posts=s=>s.calls.filter(x=>['import','bind','settle'].includes(x.op));
+function input(view,label){const l=view.find(n=>n.type==='label'&&text(n)===label);return view.input(l.props.htmlFor);}
+async function check(view){const n=view.find(n=>n.type==='input'&&n.props.type==='checkbox');assert.equal(n.disabled,false);n.props.onChange({target:{checked:true}});await view.flush();}
+async function prepare(view){await view.click('Conferir arquivo e situação atual');await check(view);}
+async function importForm(view){await view.change(input(view,'Banco e conta do retorno *').props.id,profile.id);await view.change(input(view,'Referência da obtenção *').props.id,'SYNTHETIC_DOWNLOAD');const f=input(view,'Arquivo de retorno *');f.props.onChange({target:{files:[new File([data],'RETORNO_FICTICIO.RET',{lastModified:1})]}});await view.flush();await check(view);}
+
+test('043 model uses the backend issue allowlist, strict purpose, exact cents and projected data',()=>{
+ assert.deepEqual(Object.keys(RETURN_ISSUES).sort(),[...CNAB_RETURN_ISSUES].sort());const d=detail();d.context.account.agency='PRIVATE';d.context.title.raw='PRIVATE';const parsed=returnDetail(d,selection);assert.equal(parsed.context.account.agency,undefined);assert.equal(parsed.context.title.raw,undefined);
+ for(const change of [x=>x.purpose='homologation',x=>x.financialMutationPerformed=true,x=>x.context.event.paid_cents=123.45,x=>x.context.file.id=uid(99),x=>x.context.title.balance_cents='1',x=>x.context.settlement.issues=['UNKNOWN'],x=>x.context.profile.effective_enabled=false,x=>x.context.event.adjustments.fee='1',x=>x.context.event.credited_on='2026-02-30']){const bad=detail();change(bad);assert.throws(()=>returnDetail(bad,selection));}
+ const large=detail();for(const field of['amount_cents','paid_cents'])large.context.event[field]='999999999999999';large.context.title.amount_cents=large.context.title.balance_cents='999999999999999';assert.equal(returnDetail(large,selection).context.event.paid_cents,'999999999999999');
+});
+test('043 model validates pagination and empty list identity and refuses an unconfirmed action',()=>{
+ assert.equal(returnFiles(page()).items[0].file_hash,fileHash);assert.throws(()=>returnFiles({...page(),has_more:true,next_cursor:file.id}));
+ const events={...FLAGS,file_id:file.id,items:[],limit:25,has_more:false,next_cursor:null};assert.deepEqual(returnEvents(events,file.id).items,[]);assert.throws(()=>returnEvents({...events,file_id:uid(99)},file.id));
+ assert.throws(()=>returnCommand(detail(),'settle',true));assert.throws(()=>returnCommand({...detail(),bytes_verified:true},'settle',false));assert.throws(()=>returnCommand({...detail('077'),bytes_verified:true},'settle',true));
+});
+test('043 receipt keeps historical application distinct from later reversal and rejects substituted identities',()=>{
+ const d={...detail(),bytes_verified:true},b=returnCommand(d,'settle',true),r=receipt(d,b),ack={purpose:'operational',originAuthenticated:false,bankTransmissionPerformed:false,financialMutationPerformed:true,replayed:false,receipt:r};
+ assert.equal(returnSettlementAck(ack,b,d).principal_cents,'12345');const value=returnReadback(readback(r,{reversed:true}),b.command_id,r);assert.equal(value.current_title.status,'open');assert.equal(value.current_settlement.reversed,true);assert.equal(value.receipt.principal_cents,'12345');
+ for(const patch of[{account_id:uid(99)},{title_id:uid(99)},{file_hash:'f'.repeat(64)},{principal_cents:'12346',net_cash_cents:'12346'}])assert.throws(()=>returnSettlementAck({...ack,receipt:{...r,...patch}},b,d));
+ assert.throws(()=>returnReadback({...readback(r),current_account:{...readback(r).current_account,balance_cents:123.45}},b.command_id));
+});
+test('043 opening and preview never apply; settlement needs explicit checkbox and fresh current GET',async()=>{
+ const s=service(),{view}=await mount(s);assert.equal(posts(s).length,0);await view.click('Conferir arquivo e situação atual');assert.equal(posts(s).length,0);assert.equal(view.button('Confirmar baixa integral').disabled,true);assert.match(view.text(),/R\$ 123,45/);await check(view);await view.click('Confirmar baixa integral');assert.equal(s.counts.settle,1);assert.equal(s.counts.receipt,1);assert.match(view.text(),/Recibo da aplicação/);assert.match(view.text(),/DESCRICAO ATUAL FICTICIA/);assert.equal(view.guard().changed,false);assert.equal(view.guard().busy,false);view.unmount();
+});
+test('043 uncertain settlement keeps command/body after503 then403/409 and ACK changes retry to GET only',async()=>{
+ for(const laterStatus of[403,409]){
+  const s=service({before(call,{counts}){if(call.op==='settle'&&counts.settle===2)throw new AccessError(laterStatus);if(call.op==='receipt'&&counts.receipt===1)throw new AccessError(503);},after(call,{counts}){if(call.op==='settle'&&counts.settle===1)throw new AccessError(503);}}),{view}=await mount(s);
+  await prepare(view);const oldDiscard=view.button('Descartar conferência').props.onClick,oldCheck=view.find(n=>n.type==='input'&&n.props.type==='checkbox').props.onChange;await view.click('Confirmar baixa integral');oldDiscard();oldCheck({target:{checked:false}});await view.flush();assert.equal(view.button('Descartar conferência').disabled,true);assert.equal(view.guard().busy,true);
+  await view.click('Repetir a mesma confirmação');assert.equal(view.guard().busy,true);await view.click('Repetir a mesma confirmação');assert.match(view.text(),/Consultar resultado registrado/);assert.equal(s.counts.settle,3);await view.click('Consultar resultado registrado');assert.equal(s.counts.settle,3);assert.equal(s.counts.receipt,2);assert.deepEqual(posts(s)[0].body,posts(s)[1].body);assert.deepEqual(posts(s)[1].body,posts(s)[2].body);assert.equal(s.state.commands.size,1);view.unmount();
+ }
+});
+test('043 a definitive first conflict discards stale confirmation and requires a new preview',async()=>{
+ const s=service({before(call){if(call.op==='settle')throw new AccessError(409);}}),{view}=await mount(s);await prepare(view);await view.click('Confirmar baixa integral');assert.doesNotMatch(view.text(),/Repetir a mesma confirmação/);assert.doesNotMatch(view.text(),/Confirmar baixa integral/);assert.equal(view.button('Conferir arquivo e situação atual').disabled,false);assert.equal(view.guard().busy,false);view.unmount();
+});
+test('043 Inter112 binding recovery is not a payment and verifies current number before unlocking',async()=>{
+ const s=service({bank:'077',before(call,{counts}){if(call.op==='detail'&&counts.detail===2)throw new AccessError(503);},after(call,{counts}){if(call.op==='bind'&&counts.bind===1)throw new AccessError(503);}}),{view}=await mount(s);await prepare(view);assert.doesNotMatch(view.text(),/Confirmar baixa integral/);await view.click('Confirmar vínculo do nosso número');await view.click('Repetir a mesma confirmação');assert.match(view.text(),/Consultar resultado registrado/);await view.click('Consultar resultado registrado');assert.equal(s.counts.bind,2);assert.equal(s.counts.settle,undefined);assert.match(view.text(),/Nosso número vinculado. Nenhuma baixa/);assert.equal(view.guard().busy,false);view.unmount();
+});
+test('043 import preserves file/hash/profile/command through uncertain retry and reads the stored file before opening',async()=>{
+ const s=service({files:[],before(call,{counts}){if(call.op==='import'&&counts.import===2)throw new AccessError(409);if(call.op==='files'&&counts.files===1)throw new AccessError(503);},after(call,{counts}){if(call.op==='import'&&counts.import===1)throw new AccessError(503);}}),{view,saved}=await mount(s,'ReturnImportEditor');await importForm(view);const stale=input(view,'Banco e conta do retorno *').props.onChange;await view.submit();stale({target:{value:uid(99)}});await view.flush();assert.equal(input(view,'Banco e conta do retorno *').props.value,profile.id);assert.equal(input(view,'Arquivo de retorno *').disabled,true);assert.equal(saved.length,0);
+ await view.click('Repetir a mesma confirmação');assert.equal(view.guard().busy,true);await view.click('Repetir a mesma confirmação');assert.equal(saved.length,0);await view.click('Consultar resultado registrado');assert.equal(saved[0].file_hash,fileHash);assert.equal(s.counts.import,3);assert.equal(s.state.files.length,1);assert.equal(s.counts.files,2);assert.deepEqual(posts(s)[0].body,posts(s)[2].body);view.unmount();
+});
+test('043 bad import and missing declaration remain editable with no file submission',async()=>{
+ const s=service({before(call){if(call.op==='import')throw new AccessError(400);}}),{view}=await mount(s,'ReturnImportEditor');await view.submit();assert.equal(posts(s).length,0);await importForm(view);await view.submit();assert.equal(input(view,'Arquivo de retorno *').disabled,false);assert.doesNotMatch(view.text(),/Repetir a mesma confirmação/);view.unmount();
+});
+test('043 late ACK after unmount cannot trigger a current GET; an old back handler cannot bypass an active request',async()=>{
+ let release;const gate=new Promise(r=>release=r),s=service({after:async call=>{if(call.op==='settle')await gate;}}),{view,closed}=await mount(s);const oldBack=view.button('Voltar às ocorrências').props.onClick;await prepare(view);await view.click('Confirmar baixa integral');oldBack();await view.flush();assert.equal(closed.length,0);assert.equal(view.button('Voltar às ocorrências').disabled,true);view.unmount();release();await new Promise(r=>setTimeout(r,20));assert.equal(s.counts.receipt,undefined);
+});
+test('043 a mismatched current receipt stays locked and retries only GET after a valid acknowledgement',async()=>{
+ const s=service({before(call,{state,counts}){if(call.op==='receipt'){const r=state.receipts.values().next().value;r.current_title.id=counts.receipt===1?uid(99):r.receipt.title_id;}}}),{view}=await mount(s);await prepare(view);await view.click('Confirmar baixa integral');assert.equal(view.guard().busy,true);assert.equal(s.counts.settle,1);await view.click('Consultar resultado registrado');assert.equal(s.counts.settle,1);assert.equal(view.guard().busy,false);view.unmount();
+});
+test('043 read-only role opens files and occurrences without write controls or POST and table scroll is keyboard focusable',async()=>{
+ const s=service({write:false}),view=await mountComponent('RealCnabOperationalReturns.tsx',{controller:s.controller},{expandChildren:true});assert.doesNotMatch(view.text(),/Importar retorno operacional/);assert.equal(view.find(n=>n.props.role==='region').props.tabIndex,0);await view.click('Abrir ocorrências');await view.click('Abrir ocorrência 2');assert.doesNotMatch(view.text(),/Conferir arquivo e situação atual/);assert.equal(s.calls.filter(x=>x.body).length,0);view.unmount();
+});
+test('043 existing application exposes the immutable receipt and a later reversal without another action',async()=>{
+ const s=service(),d=clone(s.state.detail),b=returnCommand({...d,bytes_verified:true},'settle',true),r=receipt(d,b);s.state.receipts.set(r.command_id,readback(r,{reversed:true}));s.state.detail.context.applied_command_id=r.command_id;s.state.detail.context.settlement={allowed:false,issues:['OPERATIONAL_PAYMENT_ALREADY_APPLIED','PRIOR_SETTLEMENT_HISTORY']};
+ const{view}=await mount(s);await view.click('Ver recibo e situação atual');assert.match(view.text(),/A baixa foi estornada posteriormente/);assert.match(view.text(),/Em aberto/);assert.doesNotMatch(view.text(),/Confirmar baixa integral/);assert.equal(posts(s).length,0);view.unmount();
+});

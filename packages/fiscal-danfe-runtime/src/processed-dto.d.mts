@@ -1,0 +1,18 @@
+export type ProcessedSourceKind='authorization'|'revalidation'|'receipt_query';
+type ProcessedBaseMetadata=Readonly<{source_command_id:string;authorization_command_id:string;attempt_id:string;candidate_id:string;candidate_version:number;signed_hash:string;signed_size:number;model:'55'|'65';environment:'2';processed_hash:string;processed_size:number;protocol:Readonly<{cstat:'100'|'150';number:string;received_at:string}>}>;
+export type ProcessedLegacyMetadata=ProcessedBaseMetadata&Readonly<{source_kind:'authorization'|'revalidation'}>;
+export type ProcessedReceiptQueryMetadata=ProcessedBaseMetadata&Readonly<{source_kind:'receipt_query';resolution_hash:string}>;
+export type ProcessedMetadata=ProcessedLegacyMetadata|ProcessedReceiptQueryMetadata;
+export type ProcessedFlags=Readonly<{data_mode:'fiscal_processed_document';read_only:true;environment:'2';authorized_in_homologation:true;production_authorized:false;legal_fiscal_value:false;tax_rules_validated:false;can_emit:false;can_transmit:false}>;
+export type ProcessedXml=ProcessedFlags&Readonly<{action:'xml';source:ProcessedMetadata;xml_base64:string;filename:string}>;
+export type ProcessedPrint=ProcessedFlags&Readonly<{action:'print';source:ProcessedMetadata;html:string;html_sha256:string;html_size_bytes:number;profile:'processed-danfe55-moc7-v1'|'processed-danfe65-manual6-v1';page_count:number|null}>;
+export type ProcessedBinding=Readonly<{sourceKind:ProcessedSourceKind;commandId:string;action:'xml'|'print'}>;
+export const FLAGS:ProcessedFlags;
+export const HTML_CSP:string;
+export const METADATA_KEYS:readonly string[];
+export function processedMetadata(raw:unknown):ProcessedMetadata;
+export function downloadFilename(metadata:ProcessedMetadata):string;
+export function decodeProcessedXml(base64:unknown):Uint8Array;
+export function publicProcessedResult(raw:unknown,binding:ProcessedBinding&{action:'xml'}):Promise<ProcessedXml>;
+export function publicProcessedResult(raw:unknown,binding:ProcessedBinding&{action:'print'}):Promise<ProcessedPrint>;
+export function publicProcessedResult(raw:unknown,binding:ProcessedBinding):Promise<ProcessedXml|ProcessedPrint>;

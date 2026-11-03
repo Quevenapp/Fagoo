@@ -1,0 +1,23 @@
+export const WAREHOUSE_IMPORT_MAX_BYTES:131072;export const WAREHOUSE_IMPORT_BODY_BYTES:4096;
+export class WarehouseImportError extends Error{status:number;code:string;constructor(status:number,code:string)}
+export function warehouseSourceId(value:unknown):value is string;export function warehouseCommandId(value:unknown):value is string;
+export type WarehousePreviewInput=Readonly<{expected_source_hash:string;expected_source_version:string}>;
+export type WarehouseImportInput=WarehousePreviewInput&Readonly<{command_id:string;preview_hash:string;confirmed:true}>;
+export type WarehouseFilters=Readonly<{limit:number;after:string|null;q:string|null}>;
+export type WarehouseIssue='SOURCE_INVALID'|'NAME_INVALID'|'STATUS_INVALID'|'DEFAULT_INVALID'|'BALANCE_SETTING_INVALID';
+export type WarehouseSource=Readonly<{source_id:string;source_hash:string;source_version:string;last_seen_at:string;name:string|null;status:0|1|null;is_default:boolean|null;exclude_balance:boolean|null;valid:boolean;issues:readonly WarehouseIssue[]}>;
+export type WarehouseRecord=Readonly<{id:string;entity:'warehouses';version:number;name:string;code:string|null;description:string|null;active:boolean;human_edited:boolean}>;
+export type WarehouseBinding=Readonly<{source:WarehouseSource;record:WarehouseRecord;imported_at:string}>;
+export type WarehouseFlags=Readonly<{profile:'origin-warehouse-import-v1';read_only:boolean;stock_effects:false;financial_effects:false;can_import_balance:false;observed_at:string}>;
+export type WarehouseRow=Readonly<{source_id:string;source:WarehouseSource|null;binding:WarehouseBinding|null}>;
+export type WarehousePage=WarehouseFlags&Readonly<{items:readonly WarehouseRow[];limit:number;has_more:boolean;next_cursor:string|null}>;
+export type WarehouseCurrent=Readonly<{source:WarehouseSource|null;source_state:'same'|'changed'|'missing';record:WarehouseRecord;record_state:'same'|'changed'}>;
+export type WarehousePreview=WarehouseFlags&Readonly<{source_id:string;source:WarehouseSource|null;existing:WarehouseBinding|null;current:WarehouseCurrent|null;can_create:boolean;planned:Readonly<{name:string;code:null;description:null;active:boolean}>|null;preview_hash:string|null}>;
+export type WarehouseReceipt=Readonly<{command_id:string;outcome:'created'|'already_linked';source_id:string;binding:WarehouseBinding;completed_at:string}>;
+export type WarehouseResult=WarehouseFlags&Readonly<{receipt:WarehouseReceipt;current:WarehouseCurrent;replayed:boolean}>;
+export function captureWarehouseInput(raw:unknown,mutation?:false):WarehousePreviewInput;
+export function captureWarehouseInput(raw:unknown,mutation:true):WarehouseImportInput;
+export function captureWarehouseFilters(raw?:Partial<WarehouseFilters>):WarehouseFilters;
+export function parseWarehousePage(raw:unknown,query?:Partial<WarehouseFilters>):WarehousePage;
+export function parseWarehousePreview(raw:unknown,expected:{sourceId:string;input?:WarehousePreviewInput}):WarehousePreview;
+export function parseWarehouseResult(raw:unknown,expected:{commandId:string;sourceId?:string;input?:WarehouseImportInput;readOnly?:boolean}):WarehouseResult;

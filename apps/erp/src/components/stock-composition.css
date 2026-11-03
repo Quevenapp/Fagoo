@@ -1,0 +1,13 @@
+/* Estoque lane (222): aba Estrutura do produto e quadro da composição no extrato. */
+.product-structure .product-grid table { min-width: 860px; }
+.product-structure-totals { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 12px 0 4px; }
+.product-structure-totals div { display: flex; gap: 8px; align-items: baseline; }
+.product-structure-totals dt { font-weight: 600; }
+.product-structure-totals dd { margin: 0; }
+.product-component-search { min-width: 180px; }
+.product-component-search small { display: block; }
+.product-structure .is-error, .product-component-search .is-error { color: var(--danger, #b42318); display: block; }
+.stock-composition { margin-top: 12px; }
+.stock-composition table { width: 100%; }
+.stock-composition h3 { margin: 0 0 6px; font-size: 1rem; }
+.stock-composition-lines { margin: 8px 0 0; padding-left: 18px; }

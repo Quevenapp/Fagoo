@@ -1,0 +1,75 @@
+/* Notas fiscais (saída, NFC-e, entrada), formulário "Nota fiscal", naturezas, impostos e consultas de eventos no padrão Origin. */
+.fiscal-invoices,.fiscal-invoice-form,.fiscal-invoice-view,.fiscal-natures,.fiscal-nature-form,.fiscal-tax-settings,.fiscal-events{display:grid;gap:12px;min-width:0}
+.fiscal-entry-tabs{margin-bottom:4px}
+.fiscal-homologation-notice{margin:0}
+.fiscal-homologation-tag{margin-left:6px;font-size:10px}
+.fiscal-toolbar{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px}
+.fiscal-toolbar .form-field{position:relative;flex:1 1 260px;min-width:0}
+.fiscal-toolbar .form-field .icon-button{position:absolute;right:4px;bottom:4px}
+.fiscal-table .fiscal-row,.fiscal-natures .fiscal-row,.fiscal-nature-form .fiscal-row{cursor:pointer}
+.fiscal-table th .documents-sort{display:inline-flex;align-items:center;gap:4px;border:0;background:none;color:inherit;font:inherit;font-weight:inherit;padding:0;cursor:pointer}
+.fiscal-plain-status{font-size:12px}
+.fiscal-custom-search{display:grid;gap:8px;margin:8px 0}
+.fiscal-more{display:grid;gap:4px;margin-bottom:12px}
+.fiscal-more button{border:0;background:none;color:var(--link-info,inherit);text-align:left;font:inherit;font-size:12px;padding:4px;cursor:pointer}
+.fiscal-more button:disabled{opacity:.5;cursor:default}
+.fiscal-more h4{margin:6px 0 0;padding:0 4px;font-size:12px;font-weight:600}
+.fiscal-installment-detail{min-width:min(640px,100%)}
+.document-tax-estimate .real-help{margin:4px 0 0}
+.fiscal-delete{display:grid;gap:10px;margin-bottom:12px}
+.fiscal-other-options{display:grid;gap:8px}
+.fiscal-xml-view{max-height:60vh;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;background:var(--surface-alt,#f5f7f9);padding:8px;border-radius:var(--radius-small,4px)}
+.fiscal-form-tabs,.fiscal-item-tabs{display:flex;flex-wrap:wrap;gap:2px;overflow-x:auto}
+.fiscal-tab{display:grid;gap:12px;min-width:0}
+.fiscal-wide{grid-column:1/-1}
+.fiscal-group{border:1px solid var(--border,#d8dee4);border-radius:var(--radius,6px);padding:8px 12px;min-width:0}
+.fiscal-group legend{font-weight:700;font-size:12px;padding:0 4px}
+.fiscal-picker{list-style:none;margin:4px 0 0;padding:0;max-height:220px;overflow:auto;border:1px solid var(--border,#d8dee4);border-radius:var(--radius-small,4px);background:var(--surface,#fff)}
+.fiscal-picker button{display:block;width:100%;border:0;background:none;text-align:left;font:inherit;font-size:12px;padding:6px 8px;cursor:pointer}
+.fiscal-picker button:hover:not(:disabled){background:var(--surface-alt,#f0f3f7)}
+.fiscal-inline-actions,.fiscal-contact-search{display:flex;flex-wrap:wrap;align-items:center;gap:6px;position:relative}
+.fiscal-items input{width:100%;min-width:60px}
+.fiscal-item-icons{white-space:nowrap}
+.fiscal-auto{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.fiscal-toggle{border:1px solid var(--border-strong,#b8c2cc);border-radius:999px;padding:4px 12px;background:var(--surface,#fff);font:inherit;font-size:12px;cursor:pointer}
+.fiscal-toggle.is-on{background:var(--accent-soft,#e6f4ea);border-color:var(--accent,#2e7d32);color:var(--accent-strong,#1b5e20)}
+.fiscal-totals{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin:0}
+.fiscal-item-dialog{display:grid;gap:10px;min-width:min(860px,82vw);max-width:100%}
+.fiscal-view-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px 16px;margin:0}
+.fiscal-view-grid dt{font-size:11px;color:var(--muted,#607268)}
+.fiscal-view-grid dd{margin:0;overflow-wrap:anywhere}
+.fiscal-key{font-family:monospace;font-size:12px}
+.fiscal-pre{white-space:pre-wrap;overflow-wrap:anywhere}
+.fiscal-counter{font-size:11px;color:var(--muted,#607268)}
+.fiscal-counter.is-short{color:var(--danger,#b3261e)}
+.fiscal-natures-layout{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:16px}
+.fiscal-natures-panel{display:grid;gap:6px;align-content:start}
+.fiscal-states{display:grid;grid-template-columns:repeat(auto-fill,minmax(56px,1fr));gap:4px;margin-top:6px}
+.fiscal-states label{display:flex;align-items:center;gap:4px;font-size:12px}
+.fiscal-variables{font-family:monospace;font-size:11px;overflow-wrap:anywhere}
+.fiscal-difal{max-width:520px}
+.fiscal-mirror-mark{font-weight:700;letter-spacing:.08em;border:2px solid currentColor;display:inline-block;padding:2px 8px}
+.fiscal-mirror-totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 16px}
+.fiscal-mirror-totals dd{margin:0;text-align:right}
+.fiscal-print-root{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.4);overflow:auto}
+.fiscal-print-dialog{background:var(--surface,#fff);color:var(--text,#111);max-width:960px;margin:24px auto;padding:16px;border-radius:var(--radius,6px)}
+.fiscal-print-controls{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center;margin-bottom:12px}
+.fiscal-print-sheet table{width:100%;border-collapse:collapse;font-size:11px}
+.fiscal-print-sheet th,.fiscal-print-sheet td{border-bottom:1px solid #ccc;padding:3px 4px;text-align:left}
+.fiscal-print-sheet .numeric{text-align:right}
+@media(max-width:760px){.fiscal-natures-layout{grid-template-columns:minmax(0,1fr)}.fiscal-item-dialog{min-width:0}.fiscal-print-dialog{margin:0;border-radius:0}}
+@media print{
+  @page{size:A4 portrait;margin:12mm}
+  body.fiscal-print-open>*:not(.fiscal-print-root){display:none!important}
+  body.fiscal-print-open .fiscal-print-root{position:static!important;background:#fff!important;overflow:visible!important}
+  .fiscal-print-dialog{margin:0!important;padding:0!important;max-width:none!important;color:#000!important}
+  .fiscal-print-controls{display:none!important}
+  .fiscal-print-sheet thead{display:table-header-group}
+}
+/* Notas lane (wave F): Validar / Gerar XML (suporte) and the background PDF DANFE task. */
+.fiscal-native-xml section { margin: 0.5rem 0; }
+.fiscal-native-xml h3 { font-size: 0.95rem; margin: 0 0 0.25rem; }
+.fiscal-native-xml ul { margin: 0; padding-left: 1.25rem; }
+.fiscal-pdf-job { margin: 0.5rem 0; }
+.fiscal-pdf-job .button-group { margin-top: 0.5rem; }
+.fiscal-source-line{display:block;margin-top:5px;color:var(--muted,#667785);font-size:11px;line-height:1.4}.fiscal-origin-tag{background:#e9f5e9;color:#27663a}.fiscal-mirror-coverage{margin:16px 0 20px;padding:18px;border:1px solid #d8e4dd;border-radius:8px;background:#f8fbf9}.fiscal-mirror-coverage h2{font-size:15px;margin:0 0 14px}.fiscal-mirror-coverage dl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:0 0 14px}.fiscal-mirror-coverage dt{font-size:12px;color:var(--muted,#667785)}.fiscal-mirror-coverage dd{font-size:22px;font-weight:600;margin:6px 0 0}.fiscal-mirror-coverage .real-help{margin:8px 0 0}@media(max-width:700px){.fiscal-mirror-coverage dl{grid-template-columns:repeat(2,minmax(0,1fr))}}

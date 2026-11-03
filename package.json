@@ -1,38 +1,41 @@
 {
   "name": "fagoo",
-  "version": "0.1.0-alpha.1",
+  "version": "0.2.0-dev.0",
   "private": true,
   "type": "module",
-  "license": "AGPL-3.0-only",
   "engines": {
-    "node": ">=24 <25"
+    "node": ">=22"
   },
-  "workspaces": [
-    "apps/web",
-    "apps/site"
-  ],
   "scripts": {
-    "start": "node apps/api/src/server.mjs",
-    "dev:api": "node --watch apps/api/src/server.mjs",
-    "migrate": "node apps/api/src/migrate.mjs",
-    "bootstrap": "node apps/api/src/bootstrap.mjs",
-    "jobs": "node apps/api/src/jobs.mjs",
-    "test": "node scripts/test.mjs",
-    "build": "npm run build --workspace apps/web && npm run build --workspace apps/site",
-    "check": "node scripts/check.mjs",
-    "release:prepare": "node scripts/release.mjs"
-  },
-  "dependencies": {
-    "@aws-sdk/client-s3": "3.1161.0",
-    "@better-auth/oauth-provider": "1.7.15",
-    "@xmldom/xmldom": "0.9.12",
-    "asn1js": "3.0.10",
-    "better-auth": "1.7.15",
-    "pg": "8.23.1",
-    "pkijs": "3.4.1",
-    "xml-crypto": "6.4.0"
+    "test": "node --test workers/origin-sync/test/*.test.mjs",
+    "dev:erp": "vite --config apps/erp/vite.config.ts",
+    "typecheck:erp": "tsc --noEmit -p apps/erp/tsconfig.json",
+    "test:erp": "node --test apps/erp/test/*.test.mjs",
+    "build:erp": "npm run typecheck:erp && node tools/deployment/build-erp.mjs",
+    "build:erp:worker": "npm run build:erp && wrangler deploy --dry-run --config workers/erp-preview/wrangler.jsonc",
+    "deploy:erp": "npm run build:erp && npm run check:erp:build && wrangler deploy --config workers/erp-preview/wrangler.jsonc",
+    "preview:erp": "vite preview --config apps/erp/vite.config.ts",
+    "test:migration": "python3 -m unittest discover -s tools/migration -p 'test_*.py'",
+    "build:sync": "wrangler deploy --dry-run --config workers/origin-sync/wrangler.jsonc",
+    "deploy:sync": "wrangler deploy --config workers/origin-sync/wrangler.jsonc",
+    "check:erp:build": "node tools/qa/check-erp-build.mjs",
+    "test:backend": "node --test packages/backend-config/test/*.test.mjs",
+    "test:portability": "node --test tools/portability/portability.test.mjs",
+    "check:reference": "node tools/reference/check.mjs"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "0.5.14"
+    "@electric-sql/pglite": "0.5.10",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.4",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "wrangler": "4.156.2"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.118.0"
   }
 }

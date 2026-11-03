@@ -1,0 +1,10 @@
+/* Caixas e bancos (extrato) e Ficha financeira. */
+.finance-statement-balance td { text-align: right; color: var(--muted); font-size: 12px; background: var(--bg); padding-top: 4px; padding-bottom: 4px; }
+.finance-statement-balance strong { color: var(--text); }
+.finance-negative { color: #c0392b; }
+.finance-positive { color: #1f8a4c; }
+.finance-receipt h3 { margin: 0 0 10px; }
+.finance-ledger-totals { display: flex; flex-wrap: wrap; gap: 18px; justify-content: flex-end; padding: 10px 4px; font-weight: 600; }
+.finance-ledger-empty { text-align: center; padding: 28px 12px; color: var(--muted); }
+@media print { .native-list-filters, .native-list-actions, .native-list-toolbar, .finance-tabs, .origin-row-menu, .checkbox-cell { display: none !important; } }
+.finance-reconciled { display: inline-flex; align-items: center; gap: 4px; color: #1f8a4c; font-size: 12px; font-weight: 600; }

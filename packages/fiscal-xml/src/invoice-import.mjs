@@ -1,5 +1,5 @@
 /**
- * "Importar XML NF-e" (External Mais ações › Importar) and, from wave F (202610200274), "Importar XML" of the NFC-e (model 65, only as an exit
+ * "Importar XML NF-e" (Origin Mais ações › Importar) and, from wave F (202610200274), "Importar XML" of the NFC-e (model 65, only as an exit
  * note of the company): reads an authorized NF-e / NFC-e 4.00 (nfeProc, model 55 or 65) and returns the two
  * candidate notes of the field contract (packages/erp-domain/src/fiscal-invoice-dto.mjs): one for when the company is the
  * emitter, one for when it is the recipient. The database picks the candidate by the company CNPJ.

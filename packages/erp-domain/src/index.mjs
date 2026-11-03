@@ -8,12 +8,12 @@ const need = (test, code) => { if (!test) throw new DocumentError(code); };
 export const KINDS = Object.freeze(['sales_proposals', 'sales_orders', 'purchase_orders', 'service_orders']);
 export const STATES = Object.freeze({
   sales_proposals: { draft: 'Rascunho', open: 'Em aberto', pending: 'Pendente', waiting: 'Aguardando', approved: 'Aprovado', rejected: 'Não aprovado', completed: 'Concluído', cancelled: 'Cancelado' },
-  // 202610200245: External "Venda Agenciada" and "Faturado parcialmente"; 202610200291: "Checkout parcial" (Checkout de pedidos).
+  // 202610200245: Origin "Venda Agenciada" and "Faturado parcialmente"; 202610200291: "Checkout parcial" (Checkout de pedidos).
   sales_orders: { draft: 'Em digitação', open: 'Em aberto', verified: 'Verificado', in_progress: 'Em andamento', agency_sale: 'Venda Agenciada', checkout_partial: 'Checkout parcial', partially_fulfilled: 'Atendido parcialmente', partially_invoiced: 'Faturado parcialmente', fulfilled: 'Atendido', cancelled: 'Cancelado' },
   purchase_orders: { open: 'Em aberto', in_progress: 'Em andamento', partially_fulfilled: 'Atendido parcialmente', fulfilled: 'Atendido', cancelled: 'Cancelado' },
   service_orders: { open: 'Em aberto', quoted: 'Orçada', approved: 'Aprovada', rejected: 'Não aprovada', in_progress: 'Em andamento', waiting_parts: 'Aguardando componentes', service_done: 'Serviço concluído', finalized: 'Finalizada', no_repair: 'Finalizada sem conserto', cancelled: 'Cancelado' },
 });
-// 202610200129: the new pedido de venda is born "Em aberto", as in External (before it was Em digitação).
+// 202610200129: the new pedido de venda is born "Em aberto", as in Origin (before it was Em digitação).
 export const INITIAL_STATE = Object.freeze({ sales_proposals: 'draft', sales_orders: 'open', purchase_orders: 'open', service_orders: 'open' });
 // 008 transitions, kept as the baseline of the reason rule (202610200103).
 export const LEGACY_TRANSITIONS = Object.freeze({
@@ -22,12 +22,12 @@ export const LEGACY_TRANSITIONS = Object.freeze({
   purchase_orders: { open: ['in_progress', 'cancelled'], in_progress: ['partially_fulfilled', 'fulfilled', 'cancelled'], partially_fulfilled: ['in_progress', 'fulfilled', 'cancelled'], fulfilled: ['open'], cancelled: ['open'] },
   service_orders: { open: ['quoted', 'no_repair', 'cancelled'], quoted: ['approved', 'rejected', 'cancelled'], approved: ['in_progress', 'cancelled'], rejected: ['quoted', 'no_repair'], in_progress: ['waiting_parts', 'service_done', 'no_repair', 'cancelled'], waiting_parts: ['in_progress', 'no_repair', 'cancelled'], service_done: ['in_progress', 'finalized'], finalized: ['open'], no_repair: ['open'], cancelled: ['open'] },
 });
-// 202610200103: External "todas para todas" for propostas (Concluído only through conversion), pedidos (Atendido parcialmente keeps 008) and OS;
+// 202610200103: Origin "todas para todas" for propostas (Concluído only through conversion), pedidos (Atendido parcialmente keeps 008) and OS;
 // 202610200129: also pedidos de compra (Em aberto, Em andamento, Atendido e Cancelado; Atendido parcialmente keeps 008).
 export const TRANSITIONS = Object.freeze({
   sales_proposals: { draft: ['open', 'pending', 'waiting', 'approved', 'rejected', 'cancelled'], open: ['draft', 'pending', 'waiting', 'approved', 'rejected', 'cancelled'], pending: ['draft', 'open', 'waiting', 'approved', 'rejected', 'cancelled'], waiting: ['draft', 'open', 'pending', 'approved', 'rejected', 'cancelled'], approved: ['draft', 'open', 'pending', 'waiting', 'rejected', 'cancelled'], rejected: ['draft', 'open', 'pending', 'waiting', 'approved', 'cancelled'], cancelled: ['draft', 'open', 'pending', 'waiting', 'approved', 'rejected'], completed: [] },
   // 202610200245: Venda Agenciada goes to and from every situação of the "todas para todas" group; Faturado parcialmente comes from
-  // Atendido parcialmente and goes only to Atendido parcialmente and Cancelado (External).
+  // Atendido parcialmente and goes only to Atendido parcialmente and Cancelado (Origin).
   // 202610200291: Checkout parcial is reached only by the Checkout de pedidos (the SQL map has Em aberto → Checkout parcial for it, the
   // menu never offers it) and goes on to Em aberto, Verificado, Em andamento or Cancelado.
   sales_orders: { draft: ['open', 'verified', 'in_progress', 'agency_sale', 'fulfilled', 'cancelled'], open: ['draft', 'verified', 'in_progress', 'agency_sale', 'fulfilled', 'cancelled'], checkout_partial: ['open', 'verified', 'in_progress', 'cancelled'], verified: ['draft', 'open', 'in_progress', 'agency_sale', 'fulfilled', 'cancelled'], in_progress: ['draft', 'open', 'verified', 'agency_sale', 'partially_fulfilled', 'fulfilled', 'cancelled'], agency_sale: ['draft', 'open', 'verified', 'in_progress', 'fulfilled', 'cancelled'], partially_fulfilled: ['in_progress', 'partially_invoiced', 'fulfilled', 'cancelled'], partially_invoiced: ['partially_fulfilled', 'cancelled'], fulfilled: ['draft', 'open', 'verified', 'in_progress', 'agency_sale', 'cancelled'], cancelled: ['draft', 'open', 'verified', 'in_progress', 'agency_sale', 'fulfilled'] },
@@ -88,7 +88,7 @@ function date(value, required = false) {
   need(month >= 1 && month <= 12 && day >= 1 && day <= new Date(Date.UTC(year, month, 0)).getUTCDate(), 'DOCUMENT_DATE_INVALID');
   return value;
 }
-// 202610200268: Equipamento is a textarea of up to 4,000 characters (External), like Problema.
+// 202610200268: Equipamento is a textarea of up to 4,000 characters (Origin), like Problema.
 const TEXT_FIELDS = Object.freeze({ notes: 4000, internal_notes: 4000, payment_terms: 4000, delivery_terms: 2000, equipment: 4000, serial_number: 100, technician: 200, defect: 4000, solution: 4000 });
 const MULTILINE_FIELDS = Object.freeze(['notes', 'internal_notes', 'payment_terms', 'delivery_terms', 'equipment', 'defect', 'solution']);
 const COMMERCIAL_FIELDS = ['introduction','attention_to','seller_reference','store_reference','business_unit_reference','transport'];
@@ -108,8 +108,8 @@ function commercialText(value, maximum, multiline = false) {
 export function normalizeCommercialReference(value) {
   if (value === null) return null;
   completeKeys(value, ['system','source_id','label']);
-  need(value.system === 'external' && typeof value.source_id === 'string' && /^[1-9][0-9]{0,39}$/.test(value.source_id), 'DOCUMENT_REFERENCE_INVALID');
-  return {system:'external',source_id:value.source_id,label:commercialText(value.label,200)};
+  need(value.system === 'origin' && typeof value.source_id === 'string' && /^[1-9][0-9]{0,39}$/.test(value.source_id), 'DOCUMENT_REFERENCE_INVALID');
+  return {system:'origin',source_id:value.source_id,label:commercialText(value.label,200)};
 }
 export function normalizeCommercial(value) {
   if (value === null) return null;
@@ -128,14 +128,14 @@ export function normalizeCommercial(value) {
     seller_reference:normalizeCommercialReference(value.seller_reference),store_reference:normalizeCommercialReference(value.store_reference),
     business_unit_reference:normalizeCommercialReference(value.business_unit_reference),transport};
 }
-// 202610200102: optional External fields, accepted on every document kind and kept only when sent (like 054).
-// 202610200129: order_reference (External "Ordem de compra" of the pedido de compra, up to 100 characters).
+// 202610200102: optional Origin fields, accepted on every document kind and kept only when sent (like 054).
+// 202610200129: order_reference (Origin "Ordem de compra" of the pedido de compra, up to 100 characters).
 // 202610200164: seller_id (native vendedor of Cadastros › Vendedores; the server checks it exists and the kind takes it).
 // 202610200168: category_id (categoria financeira; not in propostas) and carrier_id (transportador of Clientes e fornecedores).
 // 202610200196: price_list_id (Lista de preço of pedidos and propostas), payment_account_id (Destino: the conta financeira of the
 // contas; null = Contas a receber/pagar), payment_means and payment_indicator (Detalhes de pagamento of the pedido de venda: tPag
 // and indPag of the NF-e, null = padrão da empresa).
-// 202610200270: other_items (External "Outros itens ou serviços": texto rico and "Total outros itens") and commercial_conditions
+// 202610200270: other_items (Origin "Outros itens ou serviços": texto rico and "Total outros itens") and commercial_conditions
 // ("Condições comerciais" Nenhum | Parcela | Texto), propostas only.
 export const EXTENSION_FIELDS = Object.freeze(['ship_date','finish_date','start_time','end_time','customer_po_number','quote_requested','quoted','warranty_days','warranty_months','warranty_info','reception_notes','template_name','delivery_address','order_reference','seller_id','category_id','carrier_id','price_list_id','payment_account_id','payment_means','payment_indicator','other_items','commercial_conditions']);
 export const COMMERCIAL_CONDITION_MODES = Object.freeze(['none', 'installments', 'text']);

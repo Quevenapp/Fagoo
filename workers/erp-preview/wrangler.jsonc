@@ -1,0 +1,15 @@
+// Distribution template: configure this installation explicitly; no schedules or customer destinations.
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "fagoo-erp-preview",
+  "compatibility_date": "2026-10-15",
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "directory": "../../apps/erp/dist",
+    "not_found_handling": "single-page-application"
+  },
+  "observability": {
+    "enabled": false
+  }
+}

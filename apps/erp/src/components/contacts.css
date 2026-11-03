@@ -1,0 +1,106 @@
+/* Clientes e fornecedores, vendedores, formas de pagamento, funcionários e importação (lane contatos). */
+.contact-table .contact-name-cell { white-space: nowrap; }
+.contact-excluded { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; margin-right: 6px; border-radius: 50%; color: #fff; background: var(--danger); vertical-align: middle; }
+.contact-table tr.is-excluded td { color: var(--muted); }
+.contact-trash.is-armed .origin-tool-square { color: #fff; background: var(--danger); border-color: var(--danger); }
+@media (max-width: 760px) { .contact-col-optional { display: none; } }
+.contact-sale-statuses { display: grid; gap: 4px; margin: 0; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-small); }
+.contact-sale-statuses label { display: flex; gap: 6px; align-items: center; font-size: 12px; }
+.contact-more, .contact-tools { display: grid; gap: 4px; margin: 10px 0; }
+.contact-more h3, .contact-tools h3 { margin: 0; font-size: 13px; color: var(--heading); }
+.contact-more h4 { margin: 2px 0; font-size: 12px; color: var(--muted); }
+.contact-more .text-button, .contact-tools a { justify-self: start; font-size: 13px; }
+.contact-period-tabs { display: flex; gap: 4px; margin-bottom: 8px; border-bottom: 1px solid var(--border); }
+.contact-period-tabs button { padding: 6px 10px; border: 0; border-bottom: 2px solid transparent; background: none; color: var(--text); cursor: pointer; }
+.contact-period-tabs button.active { border-bottom-color: var(--accent); color: var(--accent-strong); font-weight: 600; }
+.contact-picker { position: relative; }
+.contact-picker-options { position: absolute; z-index: 30; left: 0; right: 0; top: 100%; max-height: 240px; margin: 2px 0 0; padding: 4px 0; overflow: auto; list-style: none; border: 1px solid var(--border); border-radius: var(--radius-small); background: var(--surface); box-shadow: var(--shadow); }
+.contact-picker-options button { display: block; width: 100%; padding: 6px 10px; border: 0; background: none; color: var(--text); text-align: left; cursor: pointer; }
+.contact-picker-options button:hover, .contact-picker-options button:focus-visible { background: var(--accent-soft); }
+.contact-picker-empty { padding: 6px 10px; color: var(--muted); font-size: 12px; }
+.contact-chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-alt); font-size: 12px; }
+.contact-chip button { display: inline-flex; padding: 0; border: 0; background: none; color: var(--muted); cursor: pointer; }
+.contact-comments { display: grid; gap: 10px; min-width: min(520px, 80vw); }
+.contact-comment-input { display: flex; gap: 8px; align-items: flex-end; }
+.contact-comment-input textarea { flex: 1; }
+.contact-comment-list { display: grid; gap: 8px; max-height: 320px; margin: 0; padding: 0; overflow: auto; list-style: none; }
+.contact-comment-list li { padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-small); }
+.contact-comment-list p { margin: 0 0 4px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.contact-comment-list small { color: var(--muted); }
+.contact-export { display: grid; gap: 10px; }
+.contact-export fieldset { display: flex; flex-wrap: wrap; gap: 14px; margin: 0; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-small); }
+.contact-print-actions { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; }
+.contact-print-actions label { display: grid; gap: 2px; font-size: 12px; }
+/* Formulário */
+.contact-editor .contact-form { display: grid; gap: 18px; border: 0; padding: 0; margin: 0; }
+.contact-section { display: grid; gap: 10px; }
+.contact-section-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; }
+.contact-changed { color: var(--muted); font-size: 12px; }
+.contact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px 14px; }
+.contact-grid .real-field-wide { grid-column: 1 / -1; }
+.contact-hint { display: inline-flex; margin-left: 4px; color: var(--muted); cursor: help; vertical-align: middle; }
+.contact-counter { justify-self: end; color: var(--muted); font-size: 11px; }
+.contact-check label { display: flex; gap: 6px; align-items: center; margin-top: 22px; }
+.contact-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); }
+.contact-tabs button { padding: 6px 12px; border: 0; border-bottom: 2px solid transparent; background: none; color: var(--text); cursor: pointer; }
+.contact-tabs button[aria-selected='true'] { border-bottom-color: var(--accent); color: var(--accent-strong); font-weight: 600; }
+.contact-collapse { display: flex; align-items: center; gap: 6px; padding: 0; border: 0; background: none; color: var(--heading); cursor: pointer; text-align: left; }
+.contact-collapse h3 { margin: 0; }
+.contact-type-tags { grid-column: 1 / -1; display: grid; gap: 6px; margin: 0; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-small); }
+.contact-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.contact-tags label { display: inline-flex; gap: 4px; align-items: center; padding: 3px 9px; border: 1px solid var(--border); border-radius: 14px; font-size: 12px; cursor: pointer; }
+.contact-tags label.is-on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-strong); }
+.contact-tags input { margin: 0; }
+.contact-tag-missing { padding: 3px 9px; border: 1px dashed var(--border); border-radius: 14px; color: var(--muted); font-size: 12px; }
+.contact-type-tags .text-button { justify-self: start; }
+.contact-persons { position: relative; }
+.contact-person-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.contact-person-search { display: flex; gap: 8px; }
+.contact-person-search input { flex: 1; }
+.contact-credit { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px; margin: 0; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-small); }
+.contact-switch { display: inline-flex; gap: 6px; align-items: center; }
+.contact-label { font-weight: 600; font-size: 13px; }
+.contact-history { position: relative; display: inline-flex; margin-left: 6px; vertical-align: middle; }
+.contact-history .icon-button { min-height: 20px; padding: 0 4px; }
+.contact-history-popover { position: absolute; z-index: 40; top: 100%; left: 0; width: min(420px, 86vw); padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-small); background: var(--surface); box-shadow: var(--shadow); font-weight: normal; }
+.contact-history-popover h3 { margin: 0 0 6px; font-size: 13px; }
+.contact-type-modal { display: grid; gap: 10px; min-width: min(420px, 80vw); }
+.contact-radio { display: flex; flex-wrap: wrap; gap: 12px; margin: 0; padding: 0; border: 0; }
+.contact-drawer-backdrop { position: fixed; inset: 0; z-index: 60; display: flex; justify-content: flex-end; background: rgba(15, 23, 42, .35); }
+.contact-drawer { display: flex; flex-direction: column; gap: 10px; width: min(460px, 100vw); height: 100%; padding: 16px; overflow: auto; background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.contact-drawer header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.contact-drawer header div { display: flex; gap: 8px; align-items: center; }
+.contact-drawer h2 { margin: 0; font-size: 16px; color: var(--heading); }
+.contact-drawer h3 { margin: 6px 0 0; font-size: 13px; color: var(--heading); }
+.contact-drawer-body { display: grid; gap: 8px; margin: 0; padding: 0; border: 0; }
+/* Telas auxiliares (vendedores, formas de pagamento, funcionários, tipos, importação, numeração) */
+.contact-aux { display: grid; gap: 12px; }
+.contact-aux-table td.numeric, .contact-history-popover td.numeric { text-align: right; }
+.contact-badges { display: inline-flex; gap: 6px; align-items: center; }
+.contact-dollar-pay { color: var(--danger); }
+.contact-dollar-receive { color: #1f9d55; }
+.contact-module-box { display: grid; gap: 4px; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-small); }
+.contact-module-box > label { font-weight: 600; }
+.contact-module-box .contact-sub { display: grid; gap: 2px; padding-left: 20px; font-size: 12px; }
+.contact-module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; }
+.contact-windows { width: 100%; border-collapse: collapse; }
+.contact-windows th, .contact-windows td { padding: 4px; border-bottom: 1px solid var(--border); text-align: center; }
+.contact-not-applied { color: var(--muted); font-size: 12px; }
+.contact-import-steps { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.contact-import-steps li { padding: 4px 10px; border: 1px solid var(--border); border-radius: 14px; font-size: 12px; }
+.contact-import-steps li.is-current { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-strong); }
+.contact-import-table tr.is-invalid td { color: var(--danger); }
+/* Contatos onda C: ferramentas do campo de contato dos documentos e do financeiro. */
+.contact-picker-tools { position: relative; display: grid; gap: 6px; }
+.contact-picker-icons { display: flex; flex-wrap: wrap; gap: 4px; }
+.contact-picker-icons .icon-button { display: inline-grid; place-items: center; width: 26px; height: 26px; }
+.contact-picker-popover { position: absolute; z-index: 30; top: 30px; left: 0; min-width: min(360px, 100%); max-width: 100%; max-height: 280px; overflow: auto; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-small); background: var(--surface); box-shadow: 0 6px 18px rgba(0, 0, 0, .12); }
+.contact-picker-popover h4 { margin: 0 0 6px; font-size: 13px; }
+.contact-picker-popover ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.contact-picker-popover li { display: grid; gap: 2px; font-size: 12px; }
+.contact-picker-popover table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.contact-picker-popover th, .contact-picker-popover td { padding: 3px 4px; border-bottom: 1px solid var(--border); text-align: left; }
+.contact-notes-card { padding: 8px 10px; border: 1px solid #b6d4fe; border-radius: var(--radius-small); background: #e7f1ff; color: #084298; font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.contact-search-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; align-items: end; }
+.contact-search-results td { overflow-wrap: anywhere; }
+[data-theme="dark"] .contact-notes-card { border-color: #1c4a80; background: #0d2440; color: #b9d6ff; }

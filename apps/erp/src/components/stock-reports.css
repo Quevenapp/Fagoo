@@ -1,0 +1,12 @@
+/* Relatórios de suprimentos no padrão do Origin: catálogo por grupo, filtros e tabela com TOTAL. */
+.stock-reports{display:grid;gap:14px}
+.stock-report-group{padding:12px 14px;border-radius:var(--radius);background:var(--surface)}
+.stock-report-group h2{margin:0 0 8px;color:var(--heading);font-size:15px}
+.stock-report-group ul{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px 16px;margin:0;padding:0;list-style:none}
+.stock-report-group a{color:var(--accent-strong)}
+.stock-report-group .is-disabled{display:grid;color:var(--muted);cursor:not-allowed}.stock-report-group .is-disabled small{font-size:11px}
+.stock-report-product{min-width:260px}
+.stock-report-table tfoot th{font-weight:700}
+.stock-report-chart{margin:0;padding:12px;border-radius:var(--radius);background:var(--surface);color:var(--accent)}
+.stock-report-chart svg{width:100%;max-width:640px;height:auto}.stock-report-chart figcaption{color:var(--muted);font-size:12px}
+.stock-report-pages{display:flex;flex-wrap:wrap;align-items:center;gap:12px}

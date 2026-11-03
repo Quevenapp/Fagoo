@@ -1,0 +1,8 @@
+.contact-files{display:grid;gap:10px;min-width:0}.contact-files p{margin:0}
+.contact-files-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.contact-files-actions label.secondary-button{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.contact-files-actions input[type=file]:focus-visible+*{outline:2px solid currentColor}
+.contact-photo{display:grid;gap:6px;min-width:0}
+.contact-photo-preview{width:120px;height:120px;object-fit:cover;border:1px solid var(--border,#dce3df);border-radius:8px;background:var(--surface-soft,#f0f6f2)}
+.contact-files .table-scroll td:nth-child(2){max-width:280px;overflow-wrap:anywhere}
+@media(max-width:600px){.contact-files-actions{align-items:stretch;flex-direction:column}}

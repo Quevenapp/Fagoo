@@ -131,8 +131,8 @@ export async function parseDistributionResponse(bytes,{request:input,deadline=Da
 /** Configuration is a readiness check, never an authorization to use A1 or SEFAZ. */
 export function inspectDistributionCoordination(input){
  exact(input,['coordinator','checkpointConfirmed','lastNsu','otherConsumersReviewed']);
- need(['unconfirmed','external','fagoo'].includes(input.coordinator)&&typeof input.checkpointConfirmed==='boolean'&&typeof input.otherConsumersReviewed==='boolean'&&(input.lastNsu===null||nsu(input.lastNsu)),'DFE_COORDINATION_INVALID');
- const issues=[];if(input.coordinator!=='fagoo')issues.push('CONSULTATION_COORDINATOR_UNCONFIRMED');if(!input.otherConsumersReviewed)issues.push('OTHER_CONSUMERS_NOT_REVIEWED');if(!input.checkpointConfirmed||input.lastNsu===null)issues.push('NSU_CHECKPOINT_UNCONFIRMED');
+ need(['unconfirmed','external','brufap'].includes(input.coordinator)&&typeof input.checkpointConfirmed==='boolean'&&typeof input.otherConsumersReviewed==='boolean'&&(input.lastNsu===null||nsu(input.lastNsu)),'DFE_COORDINATION_INVALID');
+ const issues=[];if(input.coordinator!=='brufap')issues.push('CONSULTATION_COORDINATOR_UNCONFIRMED');if(!input.otherConsumersReviewed)issues.push('OTHER_CONSUMERS_NOT_REVIEWED');if(!input.checkpointConfirmed||input.lastNsu===null)issues.push('NSU_CHECKPOINT_UNCONFIRMED');
  return Object.freeze({ready:issues.length===0,issues:Object.freeze(issues),lastNsu:input.lastNsu,...NO_TRUST});
 }
 

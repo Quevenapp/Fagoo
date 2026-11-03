@@ -1,0 +1,56 @@
+// Distribution template: configure this installation explicitly; no schedules or customer destinations.
+{
+  "name": "fagoo-fiscal-executor",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-10-16",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": {
+    "enabled": false
+  },
+  "containers": [
+    {
+      "class_name": "A1Custody",
+      "scheduling_policy": "durable_object",
+      "ssh": {
+        "enabled": false
+      },
+      "observability": {
+        "logs": {
+          "enabled": false
+        }
+      },
+      "images": {
+        "base": {
+          "dockerfile": "../../packages/fiscal-runtime/Dockerfile",
+          "build_context": "../.."
+        }
+      }
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "A1_CONTAINER",
+        "class_name": "A1Custody"
+      }
+    ]
+  },
+  "exports": {
+    "A1Custody": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    }
+  },
+  "vars": {
+    "SUPABASE_URL": "",
+    "A1_TRANSPORT_KEY_ID": "",
+    "A1_AUDIENCE": "",
+    "A1_CURRENT_KEK_ID": "",
+    "A1_ALLOW_LEGACY_PFX": "false",
+    "FISCAL_PROTOCOL_ENABLED": "false",
+    "FISCAL_AUTHORIZATION_REVIEWED_ENABLED": "false",
+    "FISCAL_RECEIPT_QUERY_ENABLED": "false",
+    "SUPABASE_DEPLOYMENT": "self-hosted"
+  }
+}

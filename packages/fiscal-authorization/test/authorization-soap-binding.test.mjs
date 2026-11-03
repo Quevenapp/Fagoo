@@ -1,4 +1,3 @@
-import {fiscalPythonPath} from '../../fiscal-engine/python.mjs';
 import test,{before,after} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -135,7 +134,7 @@ test('SOAP55/65 accepts UTF-8 name casing without changing the original envelope
 
 test('lowercase-declared signed NFe55 and QR-bearing65 prepare a batch without nested declarations; real XSD remains pinned',async()=>{
  const signer=createSigner({...fixture.credential,expectedHolderCnpj:HOLDER,purpose:'offline-homologation',now:NOW});
- const validate=createAuthorizationValidator({pythonPath:fiscalPythonPath(),validatorPath:fileURLToPath(new URL('../validator.py',import.meta.url))});
+ const validate=createAuthorizationValidator({pythonPath:process.env.BRUFAP_TEST_PYTHON??'/Users/bruno/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3',validatorPath:fileURLToPath(new URL('../validator.py',import.meta.url))});
  try{for(const model of ['55','65']){
   const declaration='<?xml version="1.0" encoding="utf-8"?>',unsigned=declaration+buildBusinessXml(businessFixture({model})).unsignedXml;
   //55 signs the declaration-bearing input.65's already-signed QR subtree is
@@ -199,7 +198,7 @@ test('the512000 limit includes the envelope; a maximum core payload cannot silen
 });
 
 test('extracted fiscal payload still requires the real pinned XSD validator',async()=>{
- const validate=createAuthorizationValidator({pythonPath:fiscalPythonPath(),validatorPath:fileURLToPath(new URL('../validator.py',import.meta.url))});
+ const validate=createAuthorizationValidator({pythonPath:process.env.BRUFAP_TEST_PYTHON??'/Users/bruno/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3',validatorPath:fileURLToPath(new URL('../validator.py',import.meta.url))});
  for(const model of ['55','65']){const f=prepared(model);
  const requestReport=await validate({request:f.source,xmlBytes:authorizationRequestBytes(f.source),kind:'request'});assert.equal(requestReport.ok,true);assert.equal(requestReport.canTransmit,false);
  for(const invalid of [false,true]){
@@ -214,7 +213,7 @@ test('extracted fiscal payload still requires the real pinned XSD validator',asy
  }}
 });
 
-test('the observed local WSDL matches every pinned wrapper/action/address and rejects any byte change',{skip:process.env.FAGOO_TEST_LOCAL_AUTHORIZATION_WSDL!=='1'},()=>{
+test('the observed local WSDL matches every pinned wrapper/action/address and rejects any byte change',{skip:process.env.BRUFAP_TEST_LOCAL_AUTHORIZATION_WSDL!=='1'},()=>{
  for(const model of ['55','65']){
  const raw=readFileSync(new URL(`../../../private/fiscal/wsdl/model-${model}-authorization-20261016.xml`,import.meta.url));
  // Both the pin and parser inspect the original bytes, including the declaration.

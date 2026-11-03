@@ -9,7 +9,6 @@ from pathlib import Path
 import re
 import sys
 from urllib.parse import unquote, urlparse
-from urllib.request import url2pathname
 
 from lxml import etree
 
@@ -41,7 +40,7 @@ class _PinnedResolver(etree.Resolver):
         parsed = urlparse(url)
         if parsed.scheme not in ("", "file") or parsed.netloc or parsed.query or parsed.fragment:
             raise FiscalSchemaError("SCHEMA_EXTERNAL_RESOURCE_FORBIDDEN")
-        path = Path(url2pathname(parsed.path))
+        path = Path(unquote(parsed.path))
         path = path if path.is_absolute() else self.root / path
         if path.resolve().parent != self.root or path.name not in self.files:
             raise FiscalSchemaError("SCHEMA_EXTERNAL_RESOURCE_FORBIDDEN")

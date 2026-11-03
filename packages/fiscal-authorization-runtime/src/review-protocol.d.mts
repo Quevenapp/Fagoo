@@ -1,0 +1,13 @@
+import type {ReviewChoices,ReviewSaveInput,ReviewBinding} from './review-dto.mjs';
+export const MAX_REVIEW_REQUEST_BYTES:147456;
+export const MAX_REVIEW_RESPONSE_BYTES:1048576;
+export const REVIEW_PROFILE:'sp-crt1-internal-sale-homologation-20261017-v2';
+export const REVIEW_PROFILE_HASH:string;
+export type ReviewRoute=Readonly<{action:'reviewContext'|'reviewSave'|'reviewCommand';path:string;method:'GET'|'POST';review:true;candidateId?:string;commandId?:string;limit:number;responseLimit:1048576}>;
+export function reviewChoices(input:unknown):ReviewChoices;
+export function reviewRoute(path:string,method:string,prefix:string):ReviewRoute|null;
+export function captureReviewInput(input:unknown):ReviewSaveInput;
+export function parseReviewPayload(bytes:Uint8Array,selected:ReviewRoute):ReviewSaveInput|Readonly<Record<string,never>>;
+export function reviewBinding(selected:ReviewRoute,payload:ReviewSaveInput|Readonly<Record<string,never>>):ReviewBinding;
+export function isMutationAction(action:string):boolean;
+export function mutationPath(path:string,method:string):boolean;

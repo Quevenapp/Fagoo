@@ -1,0 +1,5 @@
+.cnab-return-amounts { margin: 1rem 0; padding: 1rem; border: 1px solid var(--border, #dce4e8); border-radius: .5rem; }
+.cnab-return-amounts h4 { margin: 0 0 .5rem; }
+.cnab-return-amounts dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: .75rem 1rem; margin: 1rem 0; }
+.cnab-return-amounts dt { font-size: .85rem; color: var(--muted, #596a76); }
+.cnab-return-amounts dd { margin: .2rem 0 0; font-weight: 600; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }

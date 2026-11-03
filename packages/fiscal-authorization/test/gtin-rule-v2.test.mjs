@@ -42,7 +42,7 @@ test('DV/pair/absence/human review and temporal boundary remain conservative',as
  const late=v2.evaluateSpCrt1Rules({candidate:numeric.c2,reviewEvidence:await evidence(v2,numeric.c2),now:new Date('2026-10-26T03:00:00Z')});assert.ok(late.unsupportedScope.some(x=>x.code==='PROFILE_REVIEW_DATE_OUTSIDE_WINDOW'));
 });
 test('corrupted table or manifest cannot load the v2 fixed backend helper',async()=>{
- const dir=await mkdtemp(join(tmpdir(),'fagoo-077-pin-'));try{
+ const dir=await mkdtemp(join(tmpdir(),'brufap-077-pin-'));try{
   const pin=await readFile(new URL('../src/gtin-prefix-pinned.mjs',import.meta.url),'utf8');
   const actual=await import('../src/gtin-prefix-profile.mjs');for(const mode of ['table','manifest']){const table=structuredClone(actual.GTIN_PREFIX_TABLE),manifest=structuredClone(actual.GTIN_PREFIX_MANIFEST);if(mode==='table')table[0].to='009';else manifest.source.sha256='f'.repeat(64);await writeFile(join(dir,'stub-'+mode+'.mjs'),`export const GTIN_PREFIX_TABLE=${JSON.stringify(table)};export const GTIN_PREFIX_MANIFEST=${JSON.stringify(manifest)};export const GTIN_PREFIX_MANIFEST_HASH=${JSON.stringify(actual.GTIN_PREFIX_MANIFEST_HASH)};export function inspectGtinPrefix(){throw Error('NEVER')}\n`);await writeFile(join(dir,'pin-'+mode+'.mjs'),pin.replace('./gtin-prefix-profile.mjs','./stub-'+mode+'.mjs'));await assert.rejects(import(pathToFileURL(join(dir,'pin-'+mode+'.mjs'))),e=>e.code==='GS1_PREFIX_TABLE_NOT_PINNED');}
  }finally{await rm(dir,{recursive:true,force:true});}

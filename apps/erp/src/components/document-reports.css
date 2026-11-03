@@ -1,0 +1,49 @@
+/* Relatórios de vendas e de serviço (202610200130), in the Origin layout: cards by group, parameters, result table. */
+.document-reports-catalog{display:grid;gap:16px}
+.document-reports-tabs{display:flex;gap:4px;border-bottom:1px solid var(--border,#d6dde3)}
+.document-reports-tabs button{border:0;background:none;padding:8px 12px;cursor:pointer;color:var(--muted,#607268)}
+.document-reports-tabs button.is-active{color:var(--text,#1f2933);border-bottom:2px solid var(--primary,#3fb57a);font-weight:600}
+.document-reports-group h2{font-size:1rem;margin:0 0 8px}
+.document-reports-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.document-report-card{display:grid;gap:4px;text-align:left;padding:12px;border:1px solid var(--border,#d6dde3);border-radius:6px;background:var(--surface,#fff);cursor:pointer;color:inherit;font:inherit}
+.document-report-card:hover,.document-report-card:focus-visible{border-color:var(--primary,#3fb57a)}
+.document-report-card span{color:var(--muted,#607268);font-size:.875rem}
+.document-report-card.is-unavailable{cursor:default;opacity:.7}
+.document-report-card small{color:var(--muted,#607268)}
+.document-reports-tips{padding:12px;border:1px solid var(--border,#d6dde3);border-radius:6px;max-width:320px}
+.document-report-params{display:grid;gap:12px;margin-bottom:12px}
+.document-report-period{display:flex;flex-wrap:wrap;gap:12px}
+.document-report-month{display:flex;align-items:center;gap:8px;margin-top:8px}
+.document-report-conditions{grid-template-columns:repeat(auto-fit,minmax(160px,max-content));align-items:end}
+.document-report-panel{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.document-report-table .document-report-group td{font-weight:600}
+.document-report-table .document-report-sub td:first-child{padding-left:24px}
+.document-report-table tfoot th{text-align:left}
+.document-report-table .numeric{text-align:right}
+.document-abc-a td:last-child{color:var(--success,#1a7f4b);font-weight:600}
+.document-abc-b td:last-child{color:var(--warning,#9a6700);font-weight:600}
+.document-abc-c td:last-child{color:var(--muted,#607268);font-weight:600}
+.document-reports-links{display:grid;gap:4px}
+/* 202610200271: Origin checkbox lists (Tipo de contato, Tags, Categorias) and the Relatório de Romaneio. */
+.document-report-checklist{display:grid;gap:6px;min-width:0;border:1px solid var(--border,#d6dde3);border-radius:6px;padding:8px 12px}
+.document-report-checklist-tools{display:flex;flex-wrap:wrap;gap:12px}
+.document-report-checklist-items{display:grid;gap:4px;max-height:200px;overflow:auto}
+.document-report-checklist small{color:var(--muted,#607268)}
+.document-romaneio{display:grid;gap:16px}
+.document-romaneio-order{border:1px solid var(--border,#d6dde3);border-radius:6px;padding:12px;break-inside:avoid}
+.document-romaneio-order h3{font-size:1rem;margin:0 0 8px}
+.document-romaneio-facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px 16px;margin:0 0 8px}
+.document-romaneio-facts dt{color:var(--muted,#607268);font-size:.8125rem}
+.document-romaneio-facts dd{margin:0;overflow-wrap:anywhere}
+.document-romaneio-totals{margin:0}
+@media(max-width:600px){.document-reports-cards{grid-template-columns:1fr}.document-report-conditions{grid-template-columns:1fr}.document-romaneio-facts{grid-template-columns:1fr}}
+/* Leva H (362): Relatórios de Notas Fiscais, coverage panel and the Evolução do Faturamento bars (plain CSS). */
+.fiscal-report-info{display:grid;gap:4px;align-items:start}
+.fiscal-report-info p{margin:0}
+.fiscal-report-missing{color:var(--muted,#607268);font-style:italic}
+.fiscal-report-chart{display:flex;align-items:flex-end;gap:6px;height:220px;padding:8px 0;margin-bottom:12px;overflow-x:auto;border-bottom:1px solid var(--border,#d6dde3)}
+.fiscal-report-bar{display:grid;grid-template-rows:auto 1fr auto;justify-items:center;min-width:56px;height:100%;font-size:.75rem}
+.fiscal-report-bar-value{color:var(--muted,#607268);white-space:nowrap}
+.fiscal-report-bar-fill{align-self:end;width:28px;min-height:1px;background:var(--primary,#3fb57a);border-radius:3px 3px 0 0}
+.fiscal-report-bar-fill.is-missing{background:repeating-linear-gradient(45deg,var(--border,#d6dde3) 0 4px,transparent 4px 8px);height:100%!important;opacity:.6}
+.fiscal-report-bar-label{white-space:nowrap}

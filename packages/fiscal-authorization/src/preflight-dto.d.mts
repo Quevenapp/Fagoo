@@ -1,0 +1,17 @@
+import type {FLAGS} from '../../fiscal-authorization-http/src/dto.mjs';
+import type {NfceEmissionWindow} from './emission-window.mjs';
+export const PREFLIGHT_PROFILE:'authorization-reviewed-preflight-v1';
+export const PREFLIGHT_V2_PROFILE:'authorization-reviewed-preflight-v2';
+export const PREFLIGHT_MAX_BYTES:32768;
+export const EMISSION_WINDOW_BLOCKERS:Readonly<{expired:'AUTHORIZATION_NFCE_EMISSION_EXPIRED';future:'AUTHORIZATION_NFCE_EMISSION_FUTURE';too_short:'AUTHORIZATION_NFCE_EMISSION_WINDOW_TOO_SHORT'}>;
+export type PreflightInput=Readonly<{candidate_id:string;signed_hash:string}>;
+export type PreflightPolicy=Readonly<{authorization_profile:'legacy_v1'|'reviewed_subset_v1';origin:'synthetic'|'operational';enabled:boolean;binding_profile:string|null;rule_profile:string|null;binding_reviewed:boolean;tax_rules_reviewed:boolean;source_manifest_hash:string|null;valid_from:string;valid_until:string}>;
+export type PreflightReview=Readonly<{review_id:string;review_version:number;review_hash:string;candidate_version:number;signed_hash:string;facts_hash:string;profile_hash:string;reviewed_by:string;reviewed_at:string;valid_until:string}>;
+export type PreflightChecks=Readonly<Record<'artifact_current'|'identity_matches'|'a1_usable'|'policy_matches'|'policy_enabled'|'policy_within_validity'|'profile_within_validity'|'review_matches'|'reviewer_active'|'review_within_validity'|'submission_consumed'|'attempt_in_progress',boolean>>;
+export type PreflightSnapshot=Readonly<typeof FLAGS&{tax_rules_validated:false;preflight_profile:'authorization-reviewed-preflight-v1'|'authorization-reviewed-preflight-v2';read_only:true;candidate:Readonly<{candidate_id:string;candidate_version:number;model:'55'|'65';signed_hash:string}>;versions:Readonly<{identity:number|null;a1:number|null;policy:number|null}>;policy:PreflightPolicy|null;review:PreflightReview|null;checks:PreflightChecks;blockers:readonly string[];observed_at:string}>;
+export type PreflightSelection=Readonly<{candidate_id:string;signed_hash:string;expected_candidate_version:number;expected_identity_version:number;expected_a1_version:number;expected_policy_version:number;expected_review_id:string;expected_review_version:number;expected_review_hash:string;expected_facts_hash:string;expected_profile_hash:string}>;
+export type PreflightResult=PreflightSnapshot&Readonly<{evaluation:Readonly<{status:'invalid_combinations'|'unsupported_scope'|'pending_classification'|'reviewed_subset';invalid_count:number;unsupported_count:number;pending_count:number}>;selection:PreflightSelection|null;emission_window:NfceEmissionWindow|null;runtime_enabled:boolean;can_run:boolean}>;
+export function capturePreflightInput(raw:unknown):PreflightInput;
+export function projectPreflightSnapshot(raw:unknown,input:PreflightInput):PreflightSnapshot;
+export function preflightSelection(value:PreflightSnapshot):PreflightSelection|null;
+export function projectPreflightPublic(raw:unknown,input:PreflightInput):PreflightResult;

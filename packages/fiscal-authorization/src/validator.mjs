@@ -5,9 +5,9 @@ import {createHash} from 'node:crypto';
 import {authorizationRequestBytes,FiscalAuthorizationError,MAX_AUTHORIZATION_BYTES} from './index.mjs';
 
 export const AUTHORIZATION_VALIDATOR_PROFILE=Object.freeze({
-  profile:'fagoo-authorization-pl010f-v1.04',
-  validatorHash:'55fa80c35bc18f3340ac9cdb7be339205c491f54ba12ce465a890acb8e8d5a02',
-  manifestHash:'4870615c92cc8425a15ff5b1fe764d3c896c458cdbe46f9d550e18fb608c8605',
+  profile:'brufap-authorization-pl010f-v1.04',
+  validatorHash:'98453faa968544a8a19d9ae10a29dbbed3015f7e8898062be33bed37b21ad612',
+  manifestHash:'6248c0e9f23720a306df93e4c2e067f0b52a37ae6980e50846b2b4ff11334fda',
 });
 const XML_CODES=Object.freeze(['AUTHORIZATION_INPUT_INVALID','AUTHORIZATION_ENCODING_INVALID','AUTHORIZATION_SIZE_LIMIT',
   'AUTHORIZATION_XML_DECLARATION_UNSUPPORTED','AUTHORIZATION_XML_INVALID','AUTHORIZATION_ROOT_INVALID','AUTHORIZATION_TREE_LIMIT',

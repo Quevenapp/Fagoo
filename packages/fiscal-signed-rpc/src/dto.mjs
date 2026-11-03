@@ -11,7 +11,7 @@ export const integer=(v,max=2147483647,min=1)=>Number.isInteger(v)&&v>=min&&v<=m
 export const FAILURES=new Set(['XML_INPUT_INVALID','SIGNATURE_INVALID','XSD_INVALID','QR_INVALID','XML_SIZE_LIMIT','CERTIFICATE_INVALID']);
 const PROFILE=Object.freeze({candidate_profile:'signed-homologation-sp-v1',signature_profile:'nfe400-rsa-sha1-c14n-v1',schema_profile:'pl010f-v1.04',
  schema_manifest_hash:'6099e1ce8a90a079609f986ab0b9783744d2fbb10151fab0b5e7a3549c82d9a0',validator_version:'fiscal-schema-runner-v1',
- validator_hash:'7c546683d6ca94d124b60a32ca9f6bf8f731533455af634326a10ae078ea5cec',nfce_qr_profile:'sp-homologation-online-qr-v3'});
+ validator_hash:'1da9dba6f75bca015fd7bd114a9fa030e57bb11d46a8f4b248cc3214dcbc53c6',nfce_qr_profile:'sp-homologation-online-qr-v3'});
 const FLAGS=Object.freeze({data_mode:'fiscal_signed_candidate',environment:'2',purpose:'offline-homologation',candidate_profile:PROFILE.candidate_profile,
  tax_rules_validated:false,icp_brasil_chain_validated:false,revocation_checked:false,authorized:false,can_emit:false,can_transmit:false,financial_mutation_performed:false,stock_mutation_performed:false});
 const FLAG_KEYS=[...Object.keys(FLAGS),'signed','signature_verified','xsd_validated'];
@@ -79,8 +79,8 @@ function privateUse(v,args){
   &&['not_before','not_after','validated_at'].every(k=>typeof m[k]==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(m[k])&&timestamp(m[k]))
   &&m.not_before<=m.validated_at&&m.validated_at<=m.not_after&&Array.isArray(m.presented_chain)&&m.presented_chain.length>=1&&m.presented_chain.length<=10&&m.presented_chain.every(sha)&&new Set(m.presented_chain).size===m.presented_chain.length&&m.presented_chain[0]===m.fingerprint_sha256
   &&m.key_matches_certificate===true&&m.presented_chain_links_checked===true&&['icp_brasil_chain_validated','revocation_checked','a1_policy_verified','client_auth_eku_verified','can_transmit'].every(k=>m[k]===false));
- exact(u,['bucket','path','hash','size']);need(u.bucket==='fagoo-fiscal-artifacts'&&u.hash===r.unsigned_hash&&u.size===r.unsigned_size&&u.path===`jobs/${r.unsigned_job_id}/${r.unsigned_hash}.xml`);
- exact(o,['bucket','path','hash','size','key_id']);need(o.bucket==='fagoo-a1-vault'&&sha(o.hash)&&integer(o.size,1500000)&&typeof o.key_id==='string'&&/^[A-Za-z0-9_-]{1,64}$/.test(o.key_id)&&o.path===`credentials/${r.credential_id}/${o.hash}.json`);
+ exact(u,['bucket','path','hash','size']);need(u.bucket==='brufap-fiscal-artifacts'&&u.hash===r.unsigned_hash&&u.size===r.unsigned_size&&u.path===`jobs/${r.unsigned_job_id}/${r.unsigned_hash}.xml`);
+ exact(o,['bucket','path','hash','size','key_id']);need(o.bucket==='brufap-a1-vault'&&sha(o.hash)&&integer(o.size,1500000)&&typeof o.key_id==='string'&&/^[A-Za-z0-9_-]{1,64}$/.test(o.key_id)&&o.path===`credentials/${r.credential_id}/${o.hash}.json`);
  return{...flag(v,false),private_executor_only:true,receipt:r,lease_id:v.lease_id,lease_until:v.lease_until,used_at:v.used_at,identity:{...i},access_key:v.access_key,
   unsigned_object:{...u},credential_context:{...ctx},credential_metadata:{...pick(m,metaKeys),presented_chain:[...m.presented_chain]},credential_object:{...o}};
 }

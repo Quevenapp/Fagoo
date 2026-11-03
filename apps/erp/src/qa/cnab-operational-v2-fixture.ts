@@ -1,0 +1,31 @@
+/** DEV-only UI fixture. No socket, database, bank, file generation or persistent write. */
+import {CNAB_V2_FLAGS as FLAGS,CNAB_ENCODINGS as E,CNAB_V2_BASE as BASE,v2Preview,type V2Body} from '../lib/cnab-operational-v2-model.ts';
+import {todaySP} from '../lib/real-finance-model.ts';
+const id=(n:number)=>`67000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
+export function createCnabOperationalV2QaFixture({empty=false,readonly=false}={}){
+ const day=todaySP(),stamp=new Date().toISOString(),due=new Date(Date.parse(day+'T00:00:00Z')+30*86400000).toISOString().slice(0,10);
+ const profile={id:id(1),account_id:id(2),account_name:'Conta de demonstração · Itaú',bank:'341',wallet:'109',account_mask:'Agência **** · conta *****-*',company_name:'EMPRESA FICTÍCIA',version:1,contract_verified:true,policy_verified:true,next_sequence:'4'};
+ const approval={profile_id:profile.id,approval_version:1,enabled:true,effective_enabled:true,profile_version:1,identity_version:1,reference:'Conferência sintética para revisão da interface',confirmed_on:day,reviewed_at:stamp,issues:[],allowed_encoding_profiles:[...E],encoding_policy:{policy_hash:'d'.repeat(64),compatibility_confirmed:true,permanent_instructions_acknowledged:true}};
+ const titles=[{id:id(10),description:'Pedido de demonstração',amount_cents:'123456',contact_name:'Cliente fictício da prévia'},{id:id(11),description:'Título de demonstração · juro diário zero',amount_cents:'100',contact_name:'Cliente fictício do campo zero'}].map(t=>({...t,version:1,kind:'receivable',settled_cents:'0',cancelled:false,issued_on:day,due_on:due}));
+ const files=[E[1],E[0],null].map((encoding,i)=>({id:id(20+i),profile_id:profile.id,kind:'remittance',state:'ready',sequence:String(i+1),generated_on:day,created_at:stamp,file_hash:'a'.repeat(64),byte_size:1206,titles:1,filename:`ITAU_COBRANCA_000000${i+1}.REM`,encoding_profile:encoding}));
+ let previews=0,blockedWrites=0;
+ return{counts:()=>({previews,blockedWrites}),async fetch(url:string,init:RequestInit={}):Promise<Response>{
+  if(init.signal?.aborted)throw new DOMException('Synthetic request cancelled','AbortError');const parsed=new URL(url),path=parsed.pathname,method=init.method??'GET';
+  if(parsed.origin!=='http://127.0.0.1:9011')return Response.json({error:'QA_ORIGIN_REFUSED'},{status:403});
+  if(method==='GET'&&path==='/v1/me')return Response.json({user_id:'e0000000-0000-4000-8000-000000000001',role:readonly?'consulta':'admin',resources:[],data_mode:'staging_readonly'});
+  if(method==='GET'&&path===BASE+'/profiles')return Response.json({...FLAGS,items:empty?[]:[{profile,approval}]});
+  if(method==='GET'&&path===BASE+'/remittances'){const limit=Number(parsed.searchParams.get('limit')??25),after=parsed.searchParams.get('after')??'',rows=empty?[]:files.filter(x=>x.id>after).slice(0,limit);return Response.json({...FLAGS,items:rows,limit,has_more:false,next_cursor:null});}
+  if(method==='GET'&&path==='/v1/financeiro/titles')return Response.json({data_mode:'erp_native',entity:'titles',items:titles,limit:15,has_more:false,next_cursor:null});
+  // SQL 372 (leva H): the contas a receber a new remessa may include, with the extras of the filters.
+  if(method==='GET'&&path==='/v1/financeiro/remessa-candidatos')return Response.json({data_mode:'erp_native',entity:'titles',operational_effects:false,items:titles.map(t=>({...t,payer_ready:true,account_id:null,account_name:null,payment_method_id:null,payment_method_name:null})),has_more:false,next_cursor:null,
+   eligible_total:titles.length,remittance_limit:30,filters:{payment_method_id:parsed.searchParams.get('forma'),account_id:parsed.searchParams.get('conta'),without_account:parsed.searchParams.get('sem_conta')!=='false'},payment_methods:[]});
+  if(method==='POST'&&path===BASE+'/remittances/preview'){
+   try{if(readonly||typeof init.body!=='string')throw Error();const b=JSON.parse(init.body) as V2Body;if(b.profile_id!==profile.id||!E.includes(b.encoding_profile)||b.confirm_operational!==false||b.confirm_encoding_profile!==false||!Array.isArray(b.titles)||b.titles.length<1||b.titles.length>2)throw Error();const pending:{code:'ZERO_DAILY_FIELD_UNCONFIRMED';title_id:string}[]=[],items=b.titles.map(w=>{const t=titles.find(t=>t.id===w.title_id);if(!t)throw Error();const daily=((BigInt(t.amount_cents)+1500n)/3000n).toString(),confirmed=b.zero_daily_title_ids.includes(t.id);if(b.encoding_profile===E[1]&&daily==='0'&&!confirmed)pending.push({code:'ZERO_DAILY_FIELD_UNCONFIRMED',title_id:t.id});return{title_id:t.id,title_version:1,contact_version:1,document_number:w.document_number,amount_cents:t.amount_cents,issued_on:day,due_on:due,payer:{name:t.contact_name,document_mask:'*******0000',address:'RUA DE DEMONSTRACAO 100',neighborhood:'CENTRO',city:'PIRACICABA',state:'SP',postal_code:'13400000'},...b.encoding_profile===E[1]?{encoding_terms:{profile:E[1],version:1,dailyInterestCents:daily,interestDateField:due,penaltyPercentHundredths:'200',penaltyDateField:new Date(Date.parse(due+'T00:00:00Z')+86400000).toISOString().slice(0,10),zeroDailyInterestConfirmed:confirmed}}:{}};});
+    const common=['FILE_DOES_NOT_ENCODE_TEST_ENVIRONMENT','NO_BANK_TRANSMISSION_PERFORMED'],warnings=b.encoding_profile===E[0]?['BANK_CLEARANCE_DECLARED_BY_OPERATOR',...common]:['ACCOUNT_PERMANENT_INSTRUCTIONS_UNKNOWN','INTEREST_DATE_EFFECT_UNKNOWN','PENALTY_DATE_EFFECT_UNKNOWN','NO_PROTEST_INSTRUCTION_DOES_NOT_DISABLE_PERMANENT_PROTEST','BANK_HOMOLOGATION_NOT_VERIFIED',...common,...items.some(i=>i.encoding_terms?.dailyInterestCents==='0')?['ZERO_DAILY_FIELD_BANK_EFFECT_UNKNOWN']:[]];
+    const value={...FLAGS,preview:true,persisted:false,preview_hash:'b'.repeat(64),profile_id:profile.id,profile_version:1,approval_version:1,encoding_profile:b.encoding_profile,encoding_policy_hash:'d'.repeat(64),sequence:'4',total_cents:items.reduce((n,i)=>n+BigInt(i.amount_cents),0n).toString(),titles:items.length,items,warnings,can_reserve:pending.length===0,pending};v2Preview(value,b);previews++;return Response.json(value);
+   }catch{return Response.json({error:'QA_PREVIEW_INVALID'},{status:400});}
+  }
+  if(method==='POST')blockedWrites++;
+  return Response.json({error:method==='POST'?'QA_PERSISTENCE_DISABLED':'QA_RESOURCE_UNAVAILABLE'},{status:method==='POST'?403:404});
+ }};
+}

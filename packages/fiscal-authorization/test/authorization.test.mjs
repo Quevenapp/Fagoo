@@ -1,4 +1,3 @@
-import {fiscalPythonPath} from '../../fiscal-engine/python.mjs';
 import test,{before,after} from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -95,7 +94,7 @@ test('without authorization WSDL evidence binding stays closed; this module has 
  for(const model of ['55','65']){const b=authorizationBindingStatus(model);assert.equal(b.status,'reviewed_wsdl_required');assert.equal(b.canTransmit,false);assert.equal(b.bindingReviewed,false);assert.equal('endpoint'in b,false);assert.equal('soapAction'in b,false);}
 });
 
-const PYTHON=fiscalPythonPath();
+const PYTHON=process.env.BRUFAP_TEST_PYTHON??'/Users/bruno/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3';
 const validator=fileURLToPath(new URL('../validator.py',import.meta.url));
 function xsd(f,xml,kind){
  const r=spawnSync(PYTHON,['-I','-B',validator],{input:JSON.stringify({xml,kind,expectedModel:f.request.model,expectedAccessKey:f.request.accessKey,expectedReferenceDigest:f.request.referenceDigest,expectedBatchId:f.request.batchId}),encoding:'utf8',timeout:15000,maxBuffer:16384,env:{PATH:'/usr/bin:/bin',LANG:'C.UTF-8'}});

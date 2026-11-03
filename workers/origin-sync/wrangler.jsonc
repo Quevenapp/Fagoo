@@ -1,0 +1,36 @@
+// Distribution template: configure this installation explicitly; no schedules or customer destinations.
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "fagoo-origin-sync",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-10-15",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": {
+    "enabled": false
+  },
+  "vars": {
+    "PUBLIC_BASE_URL": "",
+    "SUPABASE_URL": "",
+    "SYNC_ENABLED": "false",
+    "XML_SYNC_ENABLED": "false",
+    "XML_RESIDUAL_ENABLED": "false",
+    "FINANCE_REFRESH_ENABLED": "false",
+    "REFERENCE_FETCH_ENABLED": "false",
+    "PRICE_CAPTURE_ENABLED": "false",
+    "PURCHASE_PRICE_CAPTURE_ENABLED": "false",
+    "SALES_PRICE_CAPTURE_ENABLED": "false",
+    "SALES_PRICE_REFRESH_ENABLED": "false",
+    "PRICE_REFRESH_ENABLED": "false",
+    "EXTRA_RESOURCES_ENABLED": "false",
+    "STOCK_PRIORITY_ENABLED": "false",
+    "FINANCE_REFRESH_STALE_SECONDS": "3600",
+    "SYNC_TIME_ZONE": "America/Sao_Paulo",
+    "MAX_API_REQUESTS": "120",
+    "SUPABASE_DEPLOYMENT": "self-hosted",
+    "ORIGIN_ENABLED": "false",
+    "ORIGIN_API_ORIGIN": "",
+    "ORIGIN_AUTHORIZATION_ENDPOINT": "",
+    "ORIGIN_TOKEN_ENDPOINT": ""
+  }
+}

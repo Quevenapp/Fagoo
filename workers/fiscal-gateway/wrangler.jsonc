@@ -1,0 +1,26 @@
+// Distribution template: configure this installation explicitly; no schedules or customer destinations.
+{
+  "name": "fagoo-fiscal-gateway",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-10-16",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": {
+    "enabled": false
+  },
+  "services": [
+    {
+      "binding": "A1_RUNTIME",
+      "service": "fagoo-fiscal-executor"
+    }
+  ],
+  "vars": {
+    "SUPABASE_URL": "",
+    "A1_TRANSPORT_KEY_ID": "",
+    "A1_AUDIENCE": "",
+    "ALLOWED_ORIGINS": "",
+    "FISCAL_AUTHORIZATION_REVIEWED_ENABLED": "false",
+    "FISCAL_RECEIPT_QUERY_ENABLED": "false",
+    "SUPABASE_DEPLOYMENT": "self-hosted"
+  }
+}

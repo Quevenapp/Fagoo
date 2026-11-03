@@ -1,0 +1,23 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {mountComponent} from './helpers/component-recovery-harness.mjs';import {backupFixture} from './helpers/backup-import-fixture.mjs';
+function setup({enabled=true,role='admin',lost=false,hold}={}){const f=backupFixture(),listeners=new Set();let state={phase:'ready',membership:{user_id:'synthetic-admin',role}},fail=lost;
+ const controller={getSnapshot:()=>state,subscribe:fn=>(listeners.add(fn),()=>listeners.delete(fn)),backupImport:async(path,o)=>{if(path.endsWith('/capabilities')&&!enabled)return{profile:'origin-backup-import-capabilities-v1',enabled:false};if(path.endsWith('/finish')){if(hold)await hold(o);if(fail){fail=false;throw Error('Unknown ACK');}}return f.request(path,o);}};
+ return{...f,controller,demote(){state={...state,membership:{...state.membership,role:'consulta'}};listeners.forEach(fn=>fn());}};
+}
+async function select(v,f){v.input('backup-preservation-file').props.onChange({target:{files:[new File([f.zip],'prepared-backup.zip',{type:'application/zip'})]}});await v.flush();}
+test('preservation panel is absent unless admin and server capability is enabled',async()=>{
+ for(const options of [{enabled:false},{role:'consulta'}]){const f=setup(options),v=await mountComponent('BackupPreservation.tsx',{controller:f.controller,onComplete(){} });try{assert.equal(v.text(),'');assert.equal(f.calls.some(c=>!c.path.endsWith('/capabilities')),false);}finally{v.unmount();}}
+});
+test('UI validates before begin, retains exact selection after unknown finish, then confirms readback result',async()=>{
+ const f=setup({lost:true});let completed=0;const v=await mountComponent('BackupPreservation.tsx',{controller:f.controller,onComplete(){completed++;}});
+ try{await select(v,f);assert.match(v.text(),/Arquivo conferido/);assert.ok(f.calls.every(c=>c.path.endsWith('/capabilities')));await v.click('Preservar backup');assert.match(v.text(),/A confirmação não terminou/);assert.doesNotMatch(v.text(),/Backup preservado e conferido/);assert.equal(completed,0);assert.equal(v.input('backup-preservation-file').disabled,true);await v.click('Retomar preservação');assert.match(v.text(),/Backup preservado e conferido/);assert.equal(completed,1);assert.equal(v.guard().busy,false);assert.equal(v.guard().changed,false);}finally{v.unmount();}
+});
+test('stopping follow-up or losing admin during finish cannot show a late success or claim server cancellation',async()=>{
+ for(const kind of ['cancel','demote']){let release,signal;const gate=new Promise(r=>release=r),f=setup({hold:async o=>{signal=o.signal;o.onProgress?.({phase:'verifying_objects',completed:0,total:6});await gate;}});let completed=0;const v=await mountComponent('BackupPreservation.tsx',{controller:f.controller,onComplete(){completed++;}});
+  try{await select(v,f);await v.click('Preservar backup');assert.equal(v.guard().busy,true);assert.match(v.text(),/Parar acompanhamento/);if(kind==='cancel'){await v.click('Parar acompanhamento');assert.match(v.text(),/O acompanhamento parou\. A conferência já iniciada pode continuar\./);assert.match(v.text(),/Retome este mesmo pacote para confirmar o resultado\./);}else{f.demote();await v.flush();}assert.equal(signal.aborted,true);release();await v.flush();assert.equal(completed,0);assert.doesNotMatch(v.text(),/Backup preservado e conferido/);if(kind==='cancel'){assert.match(v.text(),/A conferência já iniciada pode continuar/);assert.equal(v.input('backup-preservation-file').disabled,true);assert.match(v.text(),/Retomar preservação/);}}finally{release();v.unmount();}}
+});
+test('upload interruption uses a distinct label and keeps the same package available for confirmation',async()=>{
+ let release,signal;const gate=new Promise(r=>release=r),f=setup(),original=f.controller.backupImport;
+ f.controller.backupImport=async(path,o)=>{if(path.includes('/objects/')){signal=o.signal;await gate;}return original(path,o);};
+ let completed=0;const v=await mountComponent('BackupPreservation.tsx',{controller:f.controller,onComplete(){completed++;}});
+ try{await select(v,f);await v.click('Preservar backup');assert.equal(v.guard().busy,true);assert.match(v.text(),/Interromper envio/);assert.doesNotMatch(v.text(),/Parar acompanhamento/);await v.click('Interromper envio');assert.equal(signal.aborted,true);assert.match(v.text(),/Retome este mesmo pacote para confirmar o resultado/);release();await v.flush();assert.equal(completed,0);assert.equal(v.guard().busy,false);assert.match(v.text(),/Retomar preservação/);assert.doesNotMatch(v.text(),/Backup preservado e conferido/);}finally{release();v.unmount();}
+});

@@ -1,0 +1,23 @@
+.fiscal-numbering-page {display:grid;gap:16px;min-width:0}
+.numbering-toolbar {display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.numbering-toolbar .form-field {min-width:210px;max-width:340px;flex:1}
+.numbering-company {display:flex;flex-wrap:wrap;gap:8px 16px;margin:0;overflow-wrap:anywhere}
+.numbering-company span {color:var(--muted)}
+.numbering-table {overflow-x:auto;max-width:100%;outline-offset:3px}
+.numbering-table table {min-width:910px}
+.numbering-table td small {display:block;margin-top:4px;color:var(--muted)}
+.numbering-table .numeric {font-variant-numeric:tabular-nums}
+.numbering-details {max-width:440px;overflow-wrap:anywhere}
+.numbering-details summary {cursor:pointer;color:var(--accent);padding:4px 0}
+.numbering-details p {white-space:pre-wrap;margin:10px 0}
+.numbering-details dl {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0}
+.numbering-details dt {font-size:12px;color:var(--muted)}
+.numbering-details dd {margin:3px 0 0;font-size:13px}
+.numbering-editor {display:grid;gap:16px;min-width:0}
+.numbering-editor fieldset {display:grid;gap:16px;min-width:0}
+.numbering-form-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.numbering-form-grid input[readonly] {background:var(--surface-alt);color:var(--muted)}
+.numbering-check {display:flex;align-items:flex-start;gap:10px;line-height:1.5;cursor:pointer}
+.numbering-check input {flex:none;margin-top:4px;width:16px;height:16px;accent-color:var(--accent)}
+.numbering-editor .real-notice button {margin-top:8px}
+@media(max-width:650px){.numbering-toolbar{align-items:stretch}.numbering-toolbar .form-field{max-width:none;flex-basis:100%}.numbering-toolbar .button-group{flex-wrap:wrap}.numbering-form-grid{grid-template-columns:1fr}.numbering-editor .real-editor-heading{gap:12px;align-items:flex-start}.numbering-details dl{grid-template-columns:1fr}.numbering-company{display:grid}}

@@ -16,7 +16,7 @@ export async function credentials({cnpj = HOLDER,notBefore = '2026-01-01T00:00:0
   const privateCrypto = await webcrypto.subtle.importKey('pkcs8',der,{name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'},true,['sign']);
   const publicCrypto = await webcrypto.subtle.importKey('spki',publicKey.export({format:'der',type:'spki'}),{name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'},true,['verify']);
   const cert = new Certificate(); cert.version = 2; cert.serialNumber = new asn1js.Integer({value:1});
-  const name = new RelativeDistinguishedNames({typesAndValues:[new AttributeTypeAndValue({type:'2.5.4.3',value:new asn1js.Utf8String({value:'CERTIFICADO FICTICIO FAGOO'})})]});
+  const name = new RelativeDistinguishedNames({typesAndValues:[new AttributeTypeAndValue({type:'2.5.4.3',value:new asn1js.Utf8String({value:'CERTIFICADO FICTICIO BRUFAP'})})]});
   cert.subject = name; cert.issuer = name; cert.notBefore.value = new Date(notBefore); cert.notAfter.value = new Date(notAfter);
   await cert.subjectPublicKeyInfo.importKey(publicCrypto,engine);
   const cnpjName = () => new asn1js.Constructed({idBlock:{tagClass:3,tagNumber:0},value:[

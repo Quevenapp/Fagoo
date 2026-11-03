@@ -1,0 +1,15 @@
+import{readFile}from'node:fs/promises';import{randomUUID}from'node:crypto';
+import{purchaseFixture}from'./purchase-readiness-fixture.mjs';
+import{parseSalesPriceJson,salesPriceCapture}from'../../../origin-sync/src/sales-price-json.mjs';
+export async function salesFixture(){const f=await purchaseFixture();try{
+ await f.db.exec(await readFile(new URL('../../../../supabase/migrations/202610160078_origin_sales_price_capture.sql',import.meta.url),'utf8'));
+ const catalogSnapshot=()=>f.scalar("select jsonb_build_object('tables',(select jsonb_agg(to_jsonb(c)order by oid)from pg_class c where relnamespace in(select oid from pg_namespace where nspname like 'erp_%' or nspname in('origin_sync','origin_backup','auth','storage'))),'constraints',(select jsonb_agg(to_jsonb(c)order by oid)from pg_constraint c where connamespace in(select oid from pg_namespace where nspname like 'erp_%' or nspname in('origin_sync','origin_backup','auth','storage'))),'policies',(select jsonb_agg(to_jsonb(p)order by oid)from pg_policy p),'defaults',(select jsonb_agg(to_jsonb(d)order by oid)from pg_default_acl d))v");
+ const beforeCatalog=await catalogSnapshot(),beforeMigration=await f.fingerprint();
+ const oldFunctions=await f.scalar("select jsonb_agg(to_jsonb(p)order by oid)v from pg_proc p where pronamespace in(select oid from pg_namespace where nspname in('public','erp_cutover','origin_sync'))");
+ await f.db.exec(await readFile(new URL('../../../../supabase/migrations/202610160081_origin_sales_readiness.sql',import.meta.url),'utf8'));
+ const payload=id=>({id,numero:1,data:'2026-10-17',situacao:{id:9,valor:999},contato:{id:21},notaFiscal:{id:0},itens:[{id:999,codigo:'SOURCE-CODE',produto:{id:22,codigo:'NOT-THE-CODE'},descricao:'Peça sintética',unidade:'UN',quantidade:1,valor:1.23,valorLista:2,desconto:7,aliquotaIPI:0,notaFiscal:{id:88}}],total:3,totalProdutos:4,outrasDespesas:2,desconto:{valor:5,unidade:'PERCENTUAL'},transporte:{frete:1},parcelas:[]});
+ const recapture=async id=>{const raw=await f.scalar("select payload::text v from origin_sync.raw_record where entity='sales_orders' and source_id=$1",[id]),wire=`{"data":${raw}}`,parsed=await parseSalesPriceJson(wire,new TextEncoder().encode(wire),'sales_detail');const c=salesPriceCapture(parsed.data);await f.db.query("update origin_sync.raw_record set price_capture=$2::jsonb||jsonb_build_object('source_hash',version_hash,'source_version',version::text,'capture_id',$3::text,'observed_at',clock_timestamp())where entity='sales_orders' and source_id=$1",[id,JSON.stringify(c),randomUUID()]);};
+ const sale=async(id='31',edit=()=>{},capture=true)=>{const p=payload(id);edit(p);await f.stage('sales_orders',id,p);if(capture)await recapture(id);return id;};
+ const detail=id=>f.rpc('erp_origin_sales_readiness_detail',{p_user_id:f.users.admin,p_source_id:id});const page=(extra={})=>f.rpc('erp_origin_sales_readiness_sources',{p_user_id:f.users.admin,p_limit:25,p_after:null,p_query:null,...extra});
+ return{...f,beforeCatalog,catalogSnapshot,beforeMigration,oldFunctions,payload,recapture,sale,detail,page};
+ }catch(e){await f.close();throw e;}}

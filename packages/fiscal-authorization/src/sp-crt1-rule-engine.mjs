@@ -145,12 +145,12 @@ function evaluateSpCrt1Rules(input){
  let review=null;if(v.reviewEvidence!==null){const r=reviews.get(v.reviewEvidence);need(r&&r.candidate===v.candidate,'RULE_REVIEW_UNATTESTED');review=r.record;}
  const invalid=[],unsupported=[],pending=[];
  const bad=(code,source,position=null)=>issue(invalid,code,'deterministic_rule',source,position);
- const outside=(code,source='scope',position=null)=>issue(unsupported,code,'fagoo_supported_scope',source,position);
+ const outside=(code,source='scope',position=null)=>issue(unsupported,code,'brufap_supported_scope',source,position);
  const wait=(code,source='classification',position=null)=>issue(pending,code,'classification_or_evidence_pending',source,position);
  const start=Date.parse(MANIFEST.timePolicy.validFrom),end=Date.parse(MANIFEST.timePolicy.reviewBefore);
- if(clock<start||clock>=end)issue(unsupported,'PROFILE_REVIEW_DATE_OUTSIDE_WINDOW','fagoo_temporal_policy','time');
+ if(clock<start||clock>=end)issue(unsupported,'PROFILE_REVIEW_DATE_OUTSIDE_WINDOW','brufap_temporal_policy','time');
  const emitted=Date.parse(f.ide.dhEmi);
- if(!Number.isFinite(emitted)||emitted<start||emitted>=end||emitted>clock)issue(unsupported,'EMISSION_DATE_OUTSIDE_REVIEW_WINDOW','fagoo_temporal_policy','time');
+ if(!Number.isFinite(emitted)||emitted<start||emitted>=end||emitted>clock)issue(unsupported,'EMISSION_DATE_OUTSIDE_REVIEW_WINDOW','brufap_temporal_policy','time');
  if(review&&(stamp(review.reviewed_at)>clock||stamp(review.valid_until)<=clock)){wait('BACKEND_REVIEW_EXPIRED');review=null;}
  if(f.crt!=='1'||f.issuerUf!=='SP'||f.recipient.uf!=='SP'||f.environment!=='2'||Object.entries({cUF:'35',tpNF:'1',idDest:'1',finNFe:'1',tpEmis:'1',indPres:'1'}).some(([k,x])=>f.ide[k]!==x))outside('OPERATION_OUTSIDE_PROFILE');
  if(!['0','1'].includes(f.ide.indFinal)||f.model==='65'&&(f.ide.indFinal!=='1'||f.recipient.indIEDest!=='9'))outside('RECIPIENT_OUTSIDE_PROFILE');

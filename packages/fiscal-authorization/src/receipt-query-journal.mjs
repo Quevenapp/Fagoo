@@ -10,11 +10,11 @@ export function receiptQuerySidecar(raw,c,responseHash,responseSize){
 export function createReceiptQueryJournal(storage){
  const p=data(storage,['read','putImmutable']);need(typeof p.read==='function'&&typeof p.putImmutable==='function');const read=p.read,put=p.putImmutable;
  async function readObject(key,s,expected={}){
-  let response;const pending=Promise.resolve().then(()=>{s.check();return read({bucket:'fagoo-fiscal-artifacts',key,signal:s.signal,deadline:s.deadline});});
+  let response;const pending=Promise.resolve().then(()=>{s.check();return read({bucket:'brufap-fiscal-artifacts',key,signal:s.signal,deadline:s.deadline});});
   try{try{response=await s.bounded(()=>pending);}catch(e){void pending.then(v=>cancel(v?.body)).catch(()=>{});throw e;}s.check();if(response===null)return null;return await readBody(response,s,expected);}finally{cancel(response?.body);}
  }
  async function persist(key,bytes,s){
-  const tag=hash(bytes),owned=Buffer.from(bytes);try{const raw=await s.bounded(()=>put({bucket:'fagoo-fiscal-artifacts',key,bytes:owned,sha256:tag,contentType:'application/octet-stream',upsert:false,ifNoneMatch:'*',signal:s.signal,deadline:s.deadline}));const ack=data(raw,['status','requires_readback']);need([200,201,409].includes(ack.status)&&ack.requires_readback===true&&hash(owned)===tag,'RECEIPT_QUERY_STORAGE_INVALID');}
+  const tag=hash(bytes),owned=Buffer.from(bytes);try{const raw=await s.bounded(()=>put({bucket:'brufap-fiscal-artifacts',key,bytes:owned,sha256:tag,contentType:'application/octet-stream',upsert:false,ifNoneMatch:'*',signal:s.signal,deadline:s.deadline}));const ack=data(raw,['status','requires_readback']);need([200,201,409].includes(ack.status)&&ack.requires_readback===true&&hash(owned)===tag,'RECEIPT_QUERY_STORAGE_INVALID');}
   catch(e){if(e?.code==='42501')throw e;/* An immutable PUT is resolved only through an exact readback. */}finally{owned.fill(0);}
   s.check();const checked=await readObject(key,s,{expectedHash:tag,expectedSize:bytes.length});need(checked!==null,'RECEIPT_QUERY_JOURNAL_MISSING');checked.fill(0);return tag;
  }

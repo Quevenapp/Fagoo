@@ -1,0 +1,18 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {createAccessController} from '../src/lib/real-access.ts';
+import {publicSelection,publicResult,uuid} from '../../../packages/fiscal-authorization/test/receipt-query-public-fixture.mjs';
+import {deferred} from './helpers/fiscal-receipt-query-fixtures.mjs';
+const B='/v1/fiscal-authorization/reviewed',actor=uuid(900),token='synthetic-receipt-token',fresh='synthetic-receipt-fresh',member=(role='fiscal')=>({user_id:actor,role,resources:['nfe','nfce'],data_mode:'staging_readonly'}),input=()=>({...publicSelection(),command_id:uuid(11),confirmed:true});
+const tick=()=>new Promise(r=>setImmediate(r));async function until(p){for(let i=0;i<200&&!p();i++)await tick();assert.ok(p(),'bounded fixture wait');}
+test('real controller freezes query command and source before refresh, dispatches with refreshed bearer and checks current role',async()=>{
+ for(const role of ['fiscal','consulta']){let emit,me=0;const wait=deferred(),calls=[],auth={getSession:async()=>({data:{session:{access_token:token,user:{id:actor}}},error:null}),onAuthStateChange(fn){emit=fn;return{data:{subscription:{unsubscribe(){}}}};}};
+  const controller=createAccessController(auth,'https://erp.invalid',async(url,o)=>{if(url.endsWith('/v1/me'))return ++me===2?wait.promise:Response.json(member());calls.push({url,...o});return Response.json(publicResult({queryId:JSON.parse(o.body).command_id,state:'receipt_pending',readOnly:false}));},{a1ApiUrl:'https://gateway.invalid'}),stop=controller.start();
+  try{await until(()=>controller.getSnapshot().phase==='ready');emit('TOKEN_REFRESHED',{access_token:fresh,user:{id:actor}});await until(()=>me===2);const o={method:'POST',body:input()},promise=controller.fiscalReceiptQuery(B+'/receipt-queries',o).then(value=>({value}),error=>({error}));o.body.command_id=uuid(999);o.body.expected_source_binding_hash='f'.repeat(64);o.method='GET';await tick();assert.equal(calls.length,0);wait.resolve(Response.json(member(role)));const out=await promise;if(role==='fiscal'){assert.equal(out.value.command_id,uuid(11));assert.deepEqual(JSON.parse(calls[0].body),input());assert.equal(calls[0].headers.Authorization,'Bearer '+fresh);}else{assert.ok(out.error);assert.equal(calls.length,0);}}
+  finally{wait.resolve(Response.json(member()));stop();}
+ }
+});
+test('uncertain403 revalidates membership while preserving query UUID, and explicit next call is GET only',async()=>{
+ let me=0;const wait=deferred(),calls=[],auth={getSession:async()=>({data:{session:{access_token:token,user:{id:actor}}},error:null}),onAuthStateChange(){return{data:{subscription:{unsubscribe(){}}}};}};
+ const controller=createAccessController(auth,'https://erp.invalid',async(url,o)=>{if(url.endsWith('/v1/me'))return ++me===2?wait.promise:Response.json(member());calls.push({url,...o});return o.method==='POST'?Response.json({error:'AUTHORIZATION_FORBIDDEN',recovery_required:true,command_id:uuid(11)},{status:403}):Response.json(publicResult({state:'receipt_pending'}));},{a1ApiUrl:'https://gateway.invalid'}),stop=controller.start();
+ try{await until(()=>controller.getSnapshot().phase==='ready');await assert.rejects(controller.fiscalReceiptQuery(B+'/receipt-queries',{method:'POST',body:input()}),e=>e.recovery_required&&e.upstream_status===403);await until(()=>me===2);wait.resolve(Response.json(member()));await tick();const row=await controller.fiscalReceiptQuery(B+'/receipt-query-commands/'+uuid(11));assert.equal(row.command_id,uuid(11));assert.deepEqual(calls.map(c=>c.method),['POST','GET']);assert.equal(controller.getSnapshot().phase,'ready');}finally{wait.resolve(Response.json(member()));stop();}
+});

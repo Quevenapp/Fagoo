@@ -2,7 +2,7 @@
 import {pinnedCandidateCertificate} from './pinned-certificate.mjs';
 import {need,data,id,sha,integer,freeze,scope,readBody,cancel} from './service-common.mjs';
 import {FLAGS,projectResponse,result,same} from './service-dto.mjs';
-const PREFIX='erp_fiscal_authorization_',BUCKET='fagoo-fiscal-artifacts';
+const PREFIX='erp_fiscal_authorization_',BUCKET='brufap-fiscal-artifacts';
 export function createAuthorizationReadPorts(rpcPort,readPort){
  const rpc=async(name,args,s)=>{const value=await s.bounded(()=>rpcPort(name,args,{signal:s.signal,deadline:s.deadline}));s.check();return projectResponse(name,value,args);};
  async function read(key,s,expected={}){let response;try{const pending=Promise.resolve().then(()=>{s.check();return readPort({bucket:BUCKET,key,signal:s.signal,deadline:s.deadline});});try{response=await s.bounded(()=>pending);}catch(e){void pending.then(r=>cancel(r?.body)).catch(()=>{});throw e;}if(response===null)return null;return await readBody(response,s,expected);}finally{cancel(response?.body);}}

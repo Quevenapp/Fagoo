@@ -1,6 +1,6 @@
 /**
- * Field contract of Fagoo's own invoices (notas fiscais), operation natures and global tax settings.
- * These descriptors define the portable fiscal input contract; persistence adapters must validate the same fields.
+ * Field contract of Brufap's own invoices (notas fiscais), operation natures and global tax settings.
+ * The same descriptors are hard-coded in supabase/migrations/202610200111/112; a PGlite test compares both.
  * Descriptor syntax (every value may be null, which means "not informed"):
  *  e:a|b      one of the codes        d:S:I  decimal string, up to S decimals and I integer digits (stored with S decimals)
  *  t:N / m:N  single/multi-line text  x:RE   string matching the regular expression
@@ -42,7 +42,7 @@ export const NATURE_RETENTIONS = Object.freeze({ csrf: 'b', csrf_rate: RATE, ir:
 export const DIFAL_MODES = Object.freeze(['inside', 'goods', 'none', 'validated']);
 export const TAX_SETTINGS_SPEC = Object.freeze({ exclude_icms_pis_cofins: 'b', exclude_icms_st_pis_cofins: 'b', st_contributor_differentiated: 'b',
   st_retained_from_sale: 'b', difal_default: `e:${DIFAL_MODES.join('|')}`, ipi_in_icms_import: 'b' });
-// External allows the two "exclusão do ICMS" bases only in these states.
+// Origin allows the two "exclusão do ICMS" bases only in these states.
 export const DIFAL_STATE_MODES = Object.freeze({ default: UFS, inside: UFS, goods: UFS, none: UFS, validated: UFS, double_base: ['MT','PA','PB'], single_base: ['PB'] });
 
 export const RECIPIENT_SPEC = Object.freeze({ contact_id: 'u', name: 't:60', person_type: 'e:J|F|E', document: CPF_CNPJ, foreign_id: 'x:^[A-Za-z0-9.:/-]{0,20}$',
@@ -105,14 +105,14 @@ export const ITEM_GROUPS = Object.freeze({
     capacity: 'x:^[0-9]{1,3}$', restriction: 'e:0|1|2|3|4|9' }),
 });
 
-// External web codes (capture of 19/10/2026). 2 = Em contingência is Fagoo's choice: the capture lists the badge but omits its code.
+// Origin web codes (capture of 19/10/2026). 2 = Em contingência is Brufap's choice: the capture lists the badge but omits its code.
 export const INVOICE_STATUS = Object.freeze({ 1: 'Pendente', 2: 'Em contingência', 3: 'Cancelada', 4: 'Aguardando recibo', 5: 'Rejeitada', 6: 'Autorizada',
   7: 'Emitida DANFE', 8: 'Registrada', 9: 'Aguardando protocolo', 10: 'Denegada', 11: 'Consulta situação', 12: 'Bloqueada',
   14: 'Enviando Carta de correção', 15: 'Enviando Cancelamento', 16: 'Enviando Autorização' });
 export const EDITABLE_STATUS = Object.freeze([1, 5, 8, 12]);
 export const ISSUE_TYPES = Object.freeze({ '1': { N: 'Emissão Própria', D: 'NF-e com DANFE Simplificado Tipo 2', E: 'Exportação', T: 'Emitida por Terceiros', S: 'Importação de XML de saída', C: 'NFCe' },
   '0': { N: 'Emissão Própria', I: 'Importação', T: 'Emitida por Terceiros', X: 'Importação de XML de entrada' } });
-// Notes Fagoo transmits itself are always homologation (environment 2); registered third-party notes have no environment.
+// Notes Brufap transmits itself are always homologation (environment 2); registered third-party notes have no environment.
 export const REGISTERED_TYPES = Object.freeze(['T', 'S', 'X']);
 export const XML_IMPORT_TYPES = Object.freeze(['S', 'X']);
 

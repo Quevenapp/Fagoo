@@ -1,4 +1,0 @@
-validator.py -text
-receipt-validator.py -text
-schema/** -text -whitespace
-receipt-schema/** -text -whitespace

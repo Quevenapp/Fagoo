@@ -1,5 +1,5 @@
 /**
- * Unsigned XML of the fiscal events queued in Fagoo (migration 202610200114): cancelamento (110111), carta de correção (110110)
+ * Unsigned XML of the fiscal events queued in Brufap (migration 202610200114): cancelamento (110111), carta de correção (110110)
  * and inutilização de numeração (inutNFe 4.00). Homologation only: any other environment is refused, so these builders can never
  * produce a production request. They do not sign, transmit or store anything; the screen shows the XML for support.
  * Pure JavaScript (no Node built-ins), usable in the browser and in the Worker.

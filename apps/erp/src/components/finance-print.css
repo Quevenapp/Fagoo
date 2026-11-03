@@ -1,0 +1,21 @@
+/* Recibos, comprovantes and listagens of contas (finance print preview). */
+.finance-receipt-text { font-size: 13px; line-height: 1.6; margin: 18px 0 12px; }
+.finance-receipt table, .finance-listing table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 8px 0 14px; }
+.finance-receipt th, .finance-receipt td, .finance-listing th, .finance-listing td { border-bottom: 1px solid #cad2d6; padding: 4px 6px; text-align: left; }
+.finance-receipt-place { margin: 22px 0 36px; text-align: right; }
+.finance-receipt-sign { text-align: center; line-height: 1.5; }
+.finance-listing h3 { font-size: 13px; margin: 14px 0 4px; }
+.finance-listing-subtotal th, .finance-listing-subtotal td { font-weight: 600; }
+.finance-listing-total { text-align: right; margin-top: 10px; }
+.finance-listing-note, .finance-listing-note td { font-size: 11px; color: #5b6770; white-space: pre-line; overflow-wrap: anywhere; }
+.finance-print-menu { position: relative; display: inline-flex; }
+.finance-print-menu .origin-dropdown { position: absolute; right: 0; top: 100%; z-index: 30; display: grid; min-width: 240px; }
+.finance-print-menu .origin-dropdown label { display: flex; gap: 6px; align-items: center; padding: 6px 10px; font-size: 12px; color: var(--muted); }
+@media print { .finance-receipt { break-after: page; page-break-after: always; } .finance-receipt:last-child { break-after: auto; page-break-after: auto; } }
+/* Duplicata and nota promissória (Preferências > Finanças > título de crédito). */
+.finance-credit-label { font-size: 13px; margin: 14px 0 4px; }
+.finance-credit-party { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 16px; margin: 0 0 10px; font-size: 12px; }
+.finance-credit-party dt { color: #5b6770; font-size: 11px; }
+.finance-credit-party dd { margin: 0; overflow-wrap: anywhere; }
+/* 202610200262: logo of Empresa › Sua marca in the header of the recibos. */
+.finance-print-logo { display: block; max-width: 220px; max-height: 80px; object-fit: contain; margin: 0 0 8px; }

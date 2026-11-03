@@ -8,13 +8,12 @@ import re
 import sys
 from datetime import datetime
 from urllib.parse import unquote, urlparse
-from urllib.request import url2pathname
 from lxml import etree
 
-PROFILE = "fagoo-authorization-pl010f-v1.04"
+PROFILE = "brufap-authorization-pl010f-v1.04"
 ROOT = Path(__file__).resolve().parent / "schema"
 DEPENDENCY = Path(__file__).resolve().parent.parent / "fiscal-schema/schemas/pl010f-v1.04"
-MANIFEST_HASH = "4870615c92cc8425a15ff5b1fe764d3c896c458cdbe46f9d550e18fb608c8605"
+MANIFEST_HASH = "6248c0e9f23720a306df93e4c2e067f0b52a37ae6980e50846b2b4ff11334fda"
 MAX_BYTES = 512000
 NS = "{http://www.portalfiscal.inf.br/nfe}"
 SHA = "{http://www.w3.org/2000/09/xmldsig#}"
@@ -50,7 +49,7 @@ class Resolver(etree.Resolver):
         p = urlparse(url)
         need(p.scheme in ("", "file") and not p.netloc and not p.query and not p.fragment,
              "AUTHORIZATION_SCHEMA_EXTERNAL_RESOURCE")
-        path = Path(url2pathname(p.path))
+        path = Path(unquote(p.path))
         path = path if path.is_absolute() else ROOT / path
         need(path.resolve().parent == ROOT.resolve() and path.name in self.files,
              "AUTHORIZATION_SCHEMA_EXTERNAL_RESOURCE")

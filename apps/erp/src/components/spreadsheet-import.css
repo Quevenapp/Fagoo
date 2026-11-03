@@ -1,0 +1,18 @@
+/* Importações de Dados e Consultar gestão de ações (migration 228). */
+.spreadsheet-import { display: grid; gap: 14px; min-width: 0; }
+.spreadsheet-import .real-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.import-steps { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.import-steps li { padding: 4px 10px; border: 1px solid var(--border); border-radius: 14px; font-size: 12px; }
+.import-steps li.is-current { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-strong); }
+.import-steps li.is-done { color: var(--muted); }
+.import-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+.import-card { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; background: var(--surface); min-width: 0; }
+.import-card h2 { margin: 0 0 8px; font-size: 15px; }
+.import-mapping select { min-width: 220px; max-width: 100%; }
+.import-rows tr.is-invalid td { color: var(--danger); }
+.import-tabs { display: flex; gap: 6px; }
+.import-tabs a { padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; text-decoration: none; }
+.import-tabs a.is-active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
+.import-filters { display: flex; align-items: center; gap: 8px; }
+.import-jobs progress { width: 90px; vertical-align: middle; }
+@media (max-width: 720px) { .import-grid { grid-template-columns: minmax(0, 1fr); } .import-mapping select { min-width: 0; width: 100%; } }

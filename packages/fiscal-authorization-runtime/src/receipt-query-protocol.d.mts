@@ -1,0 +1,11 @@
+import type {ReceiptQueryContextInput,ReceiptQueryHistoryInput,ReceiptQueryRunInput,ReceiptQueryRecoverInput,ReceiptQueryPublicBinding,ReceiptQueryPublicContext,ReceiptQueryPublicHistory,ReceiptQueryPublicResult} from '../../fiscal-authorization/src/receipt-query-public-dto.mjs';
+export const MAX_RECEIPT_QUERY_REQUEST_BYTES:16384,MAX_RECEIPT_QUERY_RESPONSE_BYTES:262144;
+export type ReceiptQueryAction='receiptQueryContext'|'receiptQueryHistory'|'receiptQueryRun'|'receiptQueryCommand'|'receiptQueryRecover';
+export type ReceiptQueryRoute=Readonly<{action:ReceiptQueryAction;path:string;method:'GET'|'POST';receiptQuery:true;commandId?:string;limit:0|16384;responseLimit:262144}>;
+export type ReceiptQueryPayload=ReceiptQueryContextInput|ReceiptQueryHistoryInput|ReceiptQueryRunInput|ReceiptQueryRecoverInput|Readonly<Record<string,never>>;
+export function receiptQueryRoute(path:string,method:string,prefix:string):ReceiptQueryRoute|null;
+export function parseReceiptQueryPayload(bytes:Uint8Array,selected:ReceiptQueryRoute):ReceiptQueryPayload;
+export function receiptQueryBinding(selected:ReceiptQueryRoute,payload:ReceiptQueryPayload):ReceiptQueryPublicBinding;
+export function isReceiptQueryMutation(action:unknown):boolean;
+export function receiptQueryMutationPath(path:string,method:string):boolean;
+export function projectReceiptQueryResult(value:unknown,binding:ReceiptQueryPublicBinding):ReceiptQueryPublicContext|ReceiptQueryPublicHistory|ReceiptQueryPublicResult;

@@ -1,0 +1,156 @@
+/* Estoque > Lançamentos de estoque no padrão do Origin: título verde do produto, aba "Lançamentos" e coluna direita "Saldos por depósito". */
+.stock-workspace{display:grid;grid-template-columns:minmax(0,1fr) 200px;gap:14px;align-items:start}
+.stock-main{display:grid;gap:14px;min-width:0}
+.stock-product-heading{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap}
+.stock-product-heading h2{margin:0;color:var(--accent-strong);font-family:var(--font-heading);font-size:16px;font-weight:700;overflow-wrap:anywhere}
+.stock-product-heading .real-editor-actions{margin:0}
+.stock-product-location{display:block;margin-top:2px;color:var(--muted);font-family:inherit;font-size:13px;font-weight:400}
+.stock-product-heading .primary-button svg{margin-right:2px}
+.stock-product>.real-help{margin:10px 0 0;padding:0}
+.stock-tabs{display:flex;gap:18px;margin:0 0 8px;border-bottom:1px solid var(--border)}
+.stock-tabs h2{margin:0;padding:7px 2px;color:var(--accent);font-family:var(--font-heading);font-size:13px;font-weight:700;box-shadow:inset 0 -2px var(--accent)}
+.stock-launches-table th{position:relative}
+.stock-launches-table td{vertical-align:top}
+.stock-launches-table .stock-line{min-height:20px;line-height:20px;white-space:nowrap}
+.stock-launches-table .stock-line small{color:var(--muted);font-size:11px}
+.stock-launches .empty-state{margin:0}
+.stock-reference{display:block;color:var(--muted);margin-top:5px}
+.stock-aside{position:sticky;top:calc(var(--topbar-height) + 8px);display:grid;gap:8px;padding:10px 12px;border-radius:var(--radius);background:var(--surface)}
+.stock-aside .action-button{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:6px 4px;border:0;border-bottom:1px solid var(--border);border-radius:0;color:var(--heading);background:transparent;font-size:12px;font-weight:400;text-align:left}
+.stock-aside .action-button:hover:not(:disabled){color:var(--accent-strong)}
+.stock-aside .action-button svg{color:var(--muted)}
+.stock-aside h3{margin:6px 0 0;color:var(--heading);font-size:14px;font-weight:700}
+.stock-aside .real-help{margin:0}
+.stock-balances{width:100%;border-collapse:collapse;font-size:12px}
+.stock-balances th{padding:4px 0;color:var(--muted);font-weight:400;text-align:left;border-bottom:1px solid var(--border)}
+.stock-balances td{padding:6px 0;color:var(--heading);border-bottom:1px solid var(--border);vertical-align:top;overflow-wrap:anywhere}
+.stock-balances .numeric{padding-left:8px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stock-balances td small{display:block;color:var(--muted);font-size:11px;font-weight:400}
+.stock-balances td small.stock-unit{display:inline}
+/* Extrato no padrão do Origin: seletor de depósito no título, funil/período, chips, Origem com link e totalizador. */
+.stock-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}.stock-title h1{margin:0}
+.stock-inline-fieldset{display:inline-flex;min-width:0;margin:0;padding:0;border:0}
+.stock-ledger-controls{display:grid;gap:8px;min-width:0;margin:0 0 8px;padding:0;border:0}
+.stock-ledger-controls .origin-filter-panel{position:static;max-width:420px;max-height:none;border:1px solid var(--border)}
+.stock-launches-table .stock-date{white-space:nowrap}
+.stock-recorded{display:block;margin-top:3px;color:var(--muted);font-size:11px;white-space:normal}
+.stock-origin a{color:var(--accent-strong);font-weight:600}.stock-origin-none{color:var(--muted)}
+.stock-backdated-help{margin:0 0 8px}
+.stock-pagination{display:block;margin-top:8px}
+.stock-totals{display:grid;gap:0;margin:0;font-size:12px}
+.stock-totals div{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)}
+.stock-totals dt{display:inline-flex;align-items:center;gap:4px;color:var(--muted)}
+.stock-totals dd{margin:0;color:var(--heading);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stock-totals dd small{color:var(--muted);font-weight:400}
+.stock-total-entries dd{color:var(--accent-strong)}
+.stock-review{padding:8px 0}.stock-review dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.stock-review dt{font-size:12px;color:var(--muted)}.stock-review dd{margin:5px 0;overflow-wrap:anywhere}.stock-review h3{margin-top:5px}
+@media(max-width:1100px){.stock-workspace{grid-template-columns:minmax(0,1fr)}.stock-aside{position:static;order:-1}}
+@media(max-width:700px){.stock-review dl{grid-template-columns:1fr}.stock-product-heading .real-editor-actions{width:100%;flex-wrap:wrap}}
+@media print{.stock-aside .action-button,.stock-product-heading .real-editor-actions,.stock-ledger-controls .origin-toolbar,.stock-ledger-controls .origin-filter-panel,.stock-pagination{display:none}.stock-workspace{display:block}}
+/* Negative balances (policy "Permitir estoque negativo") stay visible. */
+.stock-launches-table .is-negative,.stock-balances .is-negative{color:var(--danger)}
+/* 105: busca de produto, extrato com preços, Balanço em negrito, painéis laterais e totalizador do Origin. */
+.stock-ledger-toolbar{flex-wrap:wrap}
+.stock-product-search{position:relative;flex:1 1 320px;min-width:0;max-width:560px}
+.stock-product-search input{width:100%;min-height:34px;padding:6px 58px 6px 10px;border:1px solid var(--input-border);border-radius:var(--radius-small);background:var(--input-bg);color:var(--heading)}
+.stock-product-search-icon{position:absolute;top:0;right:0;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:0 var(--radius-small) var(--radius-small) 0;color:var(--accent-text);background:var(--accent)}
+.stock-product-clear{position:absolute;top:5px;right:38px;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border:0;border-radius:50%;color:var(--muted);background:transparent}
+.stock-product-suggestions{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:30;max-height:320px;margin:0;padding:4px 0;overflow-y:auto;list-style:none;border:1px solid var(--border);border-radius:var(--radius-small);background:var(--surface);box-shadow:var(--shadow)}
+.stock-product-suggestions button{display:grid;gap:2px;width:100%;padding:7px 12px;border:0;color:var(--heading);background:transparent;text-align:left}
+.stock-product-suggestions button:hover,.stock-product-suggestions button:focus-visible{background:var(--surface-hover)}
+.stock-product-suggestions small{color:var(--muted);font-size:11px}
+.stock-product-status{padding:8px 12px;color:var(--muted)}
+.stock-empty .origin-empty{padding:36px 12px}
+.stock-row{cursor:pointer}.stock-row:hover td,.stock-row:focus-visible td{background:var(--surface-hover)}.stock-row:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+.stock-row.is-balance td{font-weight:700}
+.stock-origin svg{margin-right:5px;color:var(--muted);vertical-align:-1px}
+.stock-info{display:inline-flex;color:var(--link-info);cursor:help;vertical-align:middle}
+.stock-include{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%}
+.stock-aside a.action-button{text-decoration:none}
+.stock-level{display:inline-flex;margin-right:4px}.stock-level.is-normal{color:var(--accent)}.stock-level.is-low{color:#d39e00}.stock-level.is-negative{color:var(--danger)}
+.stock-reserved-toggle{display:inline-flex;align-items:center;gap:3px;margin-left:4px;padding:0;font-size:11px}
+.stock-reservations{padding:6px 0;font-size:12px}
+.stock-balances tr.is-ignored td{color:var(--muted)}.stock-balances tr.is-ignored td small{font-weight:400}
+.stock-balances tr.stock-balances-all td{font-weight:700;border-bottom:0}
+.stock-panel-layer{position:fixed;inset:0;z-index:80}
+.stock-panel-backdrop{position:absolute;inset:0;padding:0;border:0;background:#00000040}
+.stock-panel{position:absolute;top:0;right:0;bottom:0;display:flex;flex-direction:column;width:min(460px,100vw);background:var(--surface);box-shadow:var(--shadow-modal)}
+.stock-panel.is-wide{width:min(640px,100vw)}
+.stock-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)}
+.stock-panel-head h2{margin:0;color:var(--heading);font-family:var(--font-heading);font-size:16px}
+.stock-panel-body{flex:1;display:grid;align-content:start;gap:12px;padding:16px 20px;overflow-y:auto}
+.stock-panel-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid var(--border)}
+.stock-panel-reverse{margin-right:auto}
+.stock-panel-form fieldset{display:grid;gap:12px;margin:0;padding:0;border:0;min-width:0}
+.stock-panel-context{display:grid;gap:2px;margin:0;padding:8px 10px;border-radius:var(--radius-small);background:var(--surface-alt)}
+.stock-panel-context span{color:var(--muted);font-size:11px}.stock-panel-context small{color:var(--muted)}
+.stock-edit-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 16px;margin:0}
+.stock-edit-facts dt{color:var(--muted);font-size:11px}.stock-edit-facts dd{margin:3px 0 0;color:var(--heading);font-weight:600;overflow-wrap:anywhere}
+.stock-edit-notice p{margin:4px 0 0}
+@media(max-width:700px){.stock-edit-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.stock-product-search{flex-basis:100%}}
+/* Preferências > Suprimentos > Depósitos (105). */
+.stock-crumbs{display:flex;align-items:center;gap:6px;margin:0 0 4px;color:var(--muted);font-size:12px}.stock-crumbs a{color:var(--link)}
+.stock-warehouses-layout{display:grid;grid-template-columns:minmax(0,1fr) var(--actions-width);gap:14px;align-items:start}
+.stock-warehouses-main{display:grid;gap:10px;min-width:0}
+.stock-warehouses-table td:nth-child(2){width:160px;white-space:nowrap}.stock-warehouses-table td:last-child{width:44px;text-align:right}
+.stock-default{color:var(--accent-strong);font-size:12px}
+.stock-toggle-field label{display:flex;align-items:center;gap:8px;font-weight:600}.stock-toggle-field input[type=checkbox]{width:34px;height:18px;accent-color:var(--accent)}
+@media(max-width:900px){.stock-warehouses-layout{grid-template-columns:minmax(0,1fr)}}
+/* Estoque > Conferência de estoque (106). */
+.stock-count{display:grid;gap:12px}
+.stock-count-heading .real-editor-actions{margin:0}
+.stock-count-reading fieldset{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 16px;margin:0;padding:12px;border:0;border-radius:var(--radius);background:var(--surface)}
+.stock-count-code span{display:flex;gap:6px}.stock-count-code input{flex:1;min-width:0}
+.stock-count-reading textarea{font-family:ui-monospace,Consolas,monospace;font-size:12px}
+.stock-count-subtitle{margin:0 0 8px;font-size:14px}
+.stock-radio{display:flex;align-items:center;gap:8px;font-weight:400}
+.stock-camera{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;background:#000000a0}
+.stock-camera-box{display:grid;gap:10px;width:min(480px,94vw);padding:14px;border-radius:var(--radius);background:var(--surface)}
+.stock-camera-box header{display:flex;align-items:center;justify-content:space-between}.stock-camera-box h2{margin:0;font-size:15px}
+.stock-camera-box video{width:100%;border-radius:var(--radius-small);background:#000}
+@media(max-width:700px){.stock-count-reading fieldset{grid-template-columns:1fr}.stock-count-location{display:none}}
+/* Dashboards de produtos (107). */
+.stock-dashboards{display:grid;grid-template-columns:200px minmax(0,1fr);gap:16px;align-items:start}
+.stock-dash-nav{position:sticky;top:calc(var(--topbar-height) + 8px);padding:10px 12px;border-radius:var(--radius);background:var(--surface)}
+.stock-dash-nav h2{margin:0 0 6px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.stock-dash-nav ul{display:grid;gap:2px;margin:0;padding:0;list-style:none}.stock-dash-nav a{display:block;padding:7px 8px;border-radius:var(--radius-small);color:var(--heading);text-decoration:none}
+.stock-dash-nav a[aria-current=page]{color:var(--accent-strong);background:var(--accent-soft);font-weight:700}
+.stock-dash-main,.stock-dash-panel{display:grid;gap:12px;min-width:0}.stock-dash-panel h1{margin:0}
+.stock-dash-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.stock-dash-filters{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 14px;padding:12px;border-radius:var(--radius);background:var(--surface)}
+.stock-dash-filters .form-field{min-width:150px}.stock-dash-range{display:flex;gap:6px}
+.stock-dash-statuses{display:flex;flex-wrap:wrap;gap:4px 12px;margin:0;padding:0;border:0}.stock-dash-statuses legend{font-weight:600;font-size:12px;margin-bottom:4px}
+.stock-dash-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.stock-dash-tools button svg{margin-right:4px}
+.stock-dash-local{display:inline-flex;align-items:center;gap:6px;margin-left:auto}
+.stock-dash-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px;align-items:start}.stock-dash-grid h2{margin:0 0 8px;font-size:14px}
+.stock-sort{display:inline-flex;align-items:center;gap:4px;padding:0;border:0;color:inherit;background:transparent;font:inherit;font-weight:700}
+.stock-suggestion-table tfoot th,.stock-dash-grid tfoot th{border-top:2px solid var(--border-strong)}
+@media(max-width:1000px){.stock-dashboards,.stock-dash-grid{grid-template-columns:minmax(0,1fr)}.stock-dash-nav{position:static}}
+/* 181/183: imagem da conferência, filtro Fornecedor, seleção da sugestão e transferência em lote. */
+.stock-count-image{width:52px}.stock-count-thumb{display:block;padding:0;border:1px solid var(--border);border-radius:4px;background:var(--surface);cursor:zoom-in}
+.stock-count-thumb img{display:block;width:44px;height:44px;object-fit:contain}.stock-thumb-empty{width:44px;height:44px;display:grid;place-items:center;color:var(--muted);border:1px dashed var(--border);border-radius:4px}
+.stock-count-zoom{display:block;max-width:100%;max-height:70vh;margin:0 auto;object-fit:contain}
+.stock-supplier-picker{position:relative;min-width:200px}.stock-supplier-picker input{width:100%;padding-right:30px}.stock-supplier-picker .stock-product-clear{right:4px}
+.stock-dash-hint{display:flex;align-items:center;gap:6px;margin:0}.stock-select{width:32px;text-align:center}
+.stock-transfer-grid input{width:100%;min-width:80px}.stock-transfer-grid td.is-ineligible{color:var(--muted)}
+@media(max-width:700px){.stock-count-image{display:none}}
+/* 258: Controle de lotes (aba Lotes e validades, Detalhes de lotes, grade de lotes do produto). */
+.stock-ledger-tabs{border-bottom:0;margin:0}.stock-ledger-tabs button{font-size:13px}
+.stock-lots-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0 0 8px}.stock-lots-toolbar label{display:flex;align-items:center;gap:6px}
+.stock-lots-table tr.is-inactive td{color:var(--muted)}.stock-lots-table tr.stock-balances-all td{font-weight:700}.stock-lots-table .is-negative{color:var(--danger)}
+.stock-lot-expiry{margin-left:6px}
+.stock-product-lots{display:grid;gap:8px}.stock-product-lot-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px 12px;border:1px solid var(--border);border-radius:4px;padding:10px}
+.stock-product-lot-form legend{font-weight:700;padding:0 4px}.stock-product-lot-form .real-editor-actions{grid-column:1/-1;justify-content:flex-end}
+/* 278: Informar lotes de produtos and Informações de lote lançado. */
+.stock-lot-rows{display:grid;gap:12px;border:0;padding:0;margin:12px 0 0}
+.stock-lot-rows legend{font-weight:600;margin-bottom:4px}
+.stock-lot-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;align-items:end;padding:8px;border:1px solid var(--border);border-radius:6px}
+.stock-lot-row-actions{display:flex;flex-wrap:wrap;gap:8px;grid-column:1/-1}
+.stock-lot-unassigned{margin:6px 0}
+.stock-lot-source{border-top:1px solid var(--border);padding-top:8px;margin-top:8px}
+.stock-lot-source h3{font-size:.95rem;margin:0 0 6px}
+.stock-lot-link{margin:8px 0}
+/* 295: Conversão de unidades of the Lançar estoque of an entry note. */
+.stock-unit-conversions{border-top:1px solid var(--border);padding-top:8px;margin:12px 0;min-width:0}
+.stock-unit-conversions h3{font-size:.95rem;margin:0 0 6px}
+.stock-unit-conversions .form-field input{max-width:10rem}

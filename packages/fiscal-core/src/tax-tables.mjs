@@ -1,4 +1,4 @@
-/** Labels of the External invoice form and item tax tabs (capture of 19/10/2026). Codes are the NF-e 4.00 layout values. */
+/** Labels of the Origin invoice form and item tax tabs (capture of 19/10/2026). Codes are the NF-e 4.00 layout values. */
 export const ICMS_CST = Object.freeze([
   ['00', '00 Tributada integralmente'], ['02', '02 Monofásica própria sobre combustíveis'], ['10', '10 Tributada e com cobrança do ICMS por ST'],
   ['15', '15 Monofásica própria e com responsabilidade pela retenção'], ['20', '20 Com redução de base de cálculo'], ['30', '30 Isenta ou não tributada e com cobrança por ST'],
@@ -75,7 +75,7 @@ export const DIFAL_STATE_MODE = Object.freeze([['default', 'Utilizar padrão do 
   ['validated', 'Calcular apenas campos validados'], ['double_base', 'Base dupla com exclusão do ICMS'], ['single_base', 'Base única com exclusão do ICMS']]);
 export const DEFAULT_LABELS = Object.freeze({ S: 'Padrão venda', E: 'Padrão compra', VF: 'Padrão venda física', VJ: 'Padrão venda jurídica', CF: 'Padrão compra física',
   CJ: 'Padrão compra jurídica', C: 'Padrão venda cupom', DE: 'Padrão devolução (entrada)', DS: 'Padrão devolução (saída)' });
-// External "Variáveis das informações complementares" (captured list). Fagoo fills the ones it can compute; the others become empty.
+// Origin "Variáveis das informações complementares" (captured list). Brufap fills the ones it can compute; the others become empty.
 export const INFO_VARIABLES = Object.freeze({
   impostos: ['VALOR_BASE_ICMS', 'VALOR_ICMS', 'VALOR_BASE_DIFERIMENTO', 'VALOR_DIFERIMENTO', 'ICMS_PRESUMIDO', 'VALOR_CREDITO_ICMS', 'ALIQUOTA_CREDITO_ICMS', 'VALOR_ICMS_ST', 'VALOR_ICMS_RETIDO',
     'ALIQUOTA_ICMS_RETIDO', 'VALOR_BASE_ICMS_RETENCAO', 'VALOR_IPI_DEVOLVIDO', 'APROX_TRIB', 'VALOR_PIS', 'VALOR_COFINS', 'VALOR_FCP', 'VALOR_RET_IR', 'VALOR_RET_CSLL', 'VALOR_RET_PIS',

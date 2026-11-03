@@ -1,7 +1,7 @@
 export const BUSINESS_PROFILE:'sn-sp-internal-business-v1';
 export const BUSINESS_SCHEMA:'pl010f-v1.04';
-export const BUSINESS_BUILDER:'fagoo-business-builder-v1';
-export const BUSINESS_CONTENT_FINGERPRINT_PROFILE:'fagoo-business-content-basis-v1';
+export const BUSINESS_BUILDER:'brufap-business-builder-v1';
+export const BUSINESS_CONTENT_FINGERPRINT_PROFILE:'brufap-business-content-basis-v1';
 export const HOMOLOGATION_RECIPIENT:string;
 export const HOMOLOGATION_PRODUCT:string;
 export const BUSINESS_FLAGS:Readonly<Record<'operational_effects'|'numbering_reserved'|'tax_rules_validated'|'xsd_validated'|'signature_verified'|'authorized'|'can_emit'|'can_transmit',false>>;

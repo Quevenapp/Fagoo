@@ -1,0 +1,68 @@
+import type { CnabProfile, CnabFile, CnabPage } from './real-cnab-model';
+export const OPERATIONAL_PREFIX='/v1/cobranca-operacional';
+export const OPERATIONAL_FLAGS={purpose:'operational',productionReady:false,bankTransmissionPerformed:false,financialMutationPerformed:false,originAuthenticated:false} as const;
+export const OPERATIONAL_ISSUES:Record<string,string>={OPERATIONAL_APPROVAL_MISSING:'Declaração operacional ainda não registrada.',OPERATIONAL_APPROVAL_DISABLED:'Uso operacional desabilitado pelo administrador.',COMPANY_IDENTITY_MISSING:'Cadastre a identidade da empresa.',BENEFICIARY_CNPJ_MISMATCH:'O beneficiário do perfil difere da empresa.',BANK_ACCOUNT_INACTIVE:'A conta deve estar ativa e ser do tipo banco.',BANK_CONTRACT_OR_POLICY_PENDING:'Confira contrato, política simples e faixa reservada, quando aplicável.',OPERATIONAL_APPROVAL_STALE:'Empresa ou configuração mudou; revise a declaração.'};
+export interface OperationalApproval {profile_id:string;approval_version:number;enabled:boolean;effective_enabled:boolean;profile_version:number;identity_version:number|null;reference:string|null;confirmed_on:string|null;reviewed_at:string|null;issues:string[]}
+export interface OperationalProfile {profile:CnabProfile;approval:OperationalApproval}
+export interface OperationalTitle {id:string;version:number;kind:'receivable';description:string;contact_name:string;amount_cents:string;settled_cents:string;issued_on:string;due_on:string;cancelled:boolean}
+export interface OperationalBody {command_id:string;profile_id:string;expected_version:number;expected_approval_version:number;generated_on:string;confirm_operational:boolean;preview_hash?:string;titles:{title_id:string;expected_version:number;document_number:string;payment_limit_days?:number}[]}
+export interface OperationalPreview {preview:true;persisted:false;preview_hash:string;profile_id:string;profile_version:number;approval_version:number;sequence:string;total_cents:string;titles:number;items:{title_id:string;title_version:number;contact_version:number;document_number:string;amount_cents:string;issued_on:string;due_on:string;payer:{name:string;document_mask:string;address:string;neighborhood:string;city:string;state:string;postal_code:string}}[];warnings:string[]}
+export interface OperationalAck {id:string;profile_id:string;state:'ready';sequence:string;file_hash:string;byte_size:number;replayed:boolean;filename:string;warnings:string[]}
+export interface ApprovalBody {command_id:string;expected_approval_version:number;expected_profile_version:number;expected_identity_version:number|null;enabled:boolean;confirmed_on:string;reference:string}
+type Any=Record<string,unknown>;
+const obj=(v:unknown):v is Any=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+export const operationalId=(v:unknown):v is string=>typeof v==='string'&&/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(v);
+const hash=(v:unknown):v is string=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
+const integer=(v:unknown,min=1,max=2147483647):v is number=>Number.isInteger(v)&&Number(v)>=min&&Number(v)<=max;
+const text=(v:unknown,max:number):v is string=>typeof v==='string'&&[...v].length<=max&&!/[\u0000-\u001f\u007f]/.test(v);
+const date=(v:unknown):v is string=>typeof v==='string'&&/^(19|20)\d{2}-\d{2}-\d{2}$/.test(v)&&Number.isFinite(Date.parse(v+'T00:00:00Z'))&&new Date(v+'T00:00:00Z').toISOString().slice(0,10)===v;
+const time=(v:unknown):v is string=>typeof v==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$/.test(v)&&Number.isFinite(Date.parse(v));
+const money=(v:unknown,max=13):v is string=>typeof v==='string'&&new RegExp(`^[1-9]\\d{0,${max-1}}$`).test(v);
+const sequence=(v:unknown):v is string=>typeof v==='string'&&/^[1-9]\d{0,6}$/.test(v);
+const invalid=()=>{throw new Error('Os dados da cobrança não puderam ser conferidos. Atualize a tela.');};
+function safe(v:unknown):Any{if(!obj(v)||Object.entries(OPERATIONAL_FLAGS).some(([k,x])=>v[k]!==x))invalid();return v as Any;}
+const pick=(v:Any,keys:string[])=>Object.fromEntries(keys.map(k=>[k,v[k]]));
+const warningList=(v:unknown)=>{const allowed=['BANK_CLEARANCE_DECLARED_BY_OPERATOR','FILE_DOES_NOT_ENCODE_TEST_ENVIRONMENT','NO_BANK_TRANSMISSION_PERFORMED'];if(!Array.isArray(v)||v.length!==3||new Set(v).size!==3||v.some(x=>!allowed.includes(x)))invalid();return[...(v as string[])];};
+export function operationalApproval(v:unknown):OperationalApproval{
+ if(!obj(v)||!operationalId(v.profile_id)||!integer(v.approval_version,0)||!integer(v.profile_version)||(v.identity_version!==null&&!integer(v.identity_version))||typeof v.enabled!=='boolean'||typeof v.effective_enabled!=='boolean'||!Array.isArray(v.issues)||v.issues.length>7||new Set(v.issues).size!==v.issues.length||v.issues.some(x=>typeof x!=='string'||!Object.hasOwn(OPERATIONAL_ISSUES,x))||v.effective_enabled!==(v.issues.length===0))invalid();
+ const a=v as Any;if(a.approval_version===0?(a.enabled||a.reference!==null||a.confirmed_on!==null||a.reviewed_at!==null):(!text(a.reference,200)||!date(a.confirmed_on)||!time(a.reviewed_at)))invalid();
+ return structuredClone(pick(a,['profile_id','approval_version','enabled','effective_enabled','profile_version','identity_version','reference','confirmed_on','reviewed_at','issues'])) as unknown as OperationalApproval;
+}
+export function operationalProfiles(value:unknown):OperationalProfile[]{
+ const v=safe(value);if(!Array.isArray(v.items)||v.items.length>100)invalid();const seen=new Set<string>();
+ return(v.items as unknown[]).map(item=>{if(!obj(item)||!obj(item.profile))invalid();const {profile:p}=item as {profile:Any},a=operationalApproval((item as Any).approval);
+ if(!operationalId(p.id)||seen.has(p.id)||!operationalId(p.account_id)||!['341','077'].includes(String(p.bank))||!text(p.account_name,120)||!text(p.account_mask,80)||!text(p.company_name,100)||!['109','110','112'].includes(String(p.wallet))||p.bank==='341'&&p.wallet!=='109'||p.bank==='077'&&p.wallet==='109'||!integer(p.version)||typeof p.contract_verified!=='boolean'||typeof p.policy_verified!=='boolean'||typeof p.next_sequence!=='string'||!/^[1-9]\d{0,7}$/.test(p.next_sequence)||a.profile_id!==p.id||a.profile_version!==p.version)invalid();seen.add(p.id as string);
+ return{profile:pick(p,['id','account_id','account_name','bank','wallet','account_mask','company_name','version','contract_verified','policy_verified','next_sequence']) as unknown as CnabProfile,approval:a};});
+}
+export function operationalPage(value:unknown,limit=25,after:string|null=null):CnabPage<CnabFile>{
+ const v=safe(value);if(!Array.isArray(v.items)||v.items.length>limit||v.limit!==limit||typeof v.has_more!=='boolean'||v.has_more!==(v.next_cursor!==null)||(v.next_cursor!==null&&!operationalId(v.next_cursor)))invalid();let prev=after;
+ const items=(v.items as unknown[]).map(row=>{if(!obj(row)||!operationalId(row.id)||!operationalId(row.profile_id)||(prev!==null&&row.id<=prev)||row.kind!=='remittance'||!['reserved','ready'].includes(String(row.state))||!sequence(row.sequence)||!date(row.generated_on)||!time(row.created_at)||!integer(row.titles,1,30)||typeof row.filename!=='string'||!/^(ITAU_COBRANCA_|CI400_001_)\d{7}\.REM$/.test(row.filename)||(row.state==='ready'?(!hash(row.file_hash)||!integer(row.byte_size,1,4020000)):(row.file_hash!==null||row.byte_size!==null)))invalid();prev=(row as Any).id as string;return pick(row as Any,['id','profile_id','kind','state','sequence','generated_on','created_at','file_hash','byte_size','titles','filename']) as unknown as CnabFile;});
+ if(v.next_cursor!==null&&v.next_cursor!==items.at(-1)?.id)invalid();return{items,limit,has_more:v.has_more as boolean,next_cursor:v.next_cursor as string|null};
+}
+export function operationalPreview(value:unknown,body:OperationalBody):OperationalPreview{
+ const v=safe(value);if(v.preview!==true||v.persisted!==false||!hash(v.preview_hash)||v.profile_id!==body.profile_id||v.profile_version!==body.expected_version||v.approval_version!==body.expected_approval_version||!sequence(v.sequence)||!money(v.total_cents,15)||v.titles!==body.titles.length||!Array.isArray(v.items)||v.items.length!==body.titles.length)invalid();
+ const items=(v.items as unknown[]).map((row,i)=>{const wanted=body.titles[i];if(!obj(row)||row.title_id!==wanted.title_id||row.title_version!==wanted.expected_version||!integer(row.contact_version)||row.document_number!==wanted.document_number||!money(row.amount_cents)||!date(row.issued_on)||!date(row.due_on)||row.issued_on>body.generated_on||row.due_on<body.generated_on||!obj(row.payer))invalid();const r=row as Any,p=r.payer as Any;
+ if(!text(p.name,40)||!text(p.address,40)||!text(p.neighborhood,100)||!text(p.city,100)||!text(p.state,2)||typeof p.document_mask!=='string'||!/^\*{7,10}\d{4}$/.test(p.document_mask)||typeof p.postal_code!=='string'||!/^\d{8}$/.test(p.postal_code))invalid();
+ return{...pick(r,['title_id','title_version','contact_version','document_number','amount_cents','issued_on','due_on']),payer:pick(p,['name','document_mask','address','neighborhood','city','state','postal_code'])} as unknown as OperationalPreview['items'][number];});
+ if(items.reduce((sum,item)=>sum+BigInt(item.amount_cents),0n).toString()!==v.total_cents)invalid();
+ return{...pick(v,['preview','persisted','preview_hash','profile_id','profile_version','approval_version','sequence','total_cents','titles']),items,warnings:warningList(v.warnings)} as unknown as OperationalPreview;
+}
+export function operationalAck(value:unknown,expected:{id?:string;profileId:string}):OperationalAck{
+ const v=safe(value);if(!operationalId(v.id)||(expected.id!==undefined&&v.id!==expected.id)||v.profile_id!==expected.profileId||v.state!=='ready'||!sequence(v.sequence)||!hash(v.file_hash)||!integer(v.byte_size,1,4020000)||typeof v.replayed!=='boolean'||typeof v.filename!=='string'||!/^(ITAU_COBRANCA_|CI400_001_)\d{7}\.REM$/.test(v.filename))invalid();return{...pick(v,['id','profile_id','state','sequence','file_hash','byte_size','replayed','filename']),warnings:warningList(v.warnings)} as unknown as OperationalAck;
+}
+export function operationalApprovalAck(value:unknown,profileId:string,body:ApprovalBody){const v=safe(value),a=operationalApproval(v.approval);if(typeof v.replayed!=='boolean'||a.profile_id!==profileId||a.approval_version!==body.expected_approval_version+1||a.profile_version!==body.expected_profile_version||a.identity_version!==body.expected_identity_version||a.enabled!==body.enabled||a.confirmed_on!==body.confirmed_on||a.reference!==body.reference.replace(/^ +| +$/g,''))invalid();return a;}
+export function operationalApprovalBody(entry:OperationalProfile,enabled:boolean,dateValue:string,reference:string,today:string,confirmed:boolean):ApprovalBody{
+ if(!confirmed)throw new Error('Confirme expressamente a declaração antes de registrar.');if(!date(dateValue)||dateValue<'2000-01-01'||dateValue>today)throw new Error('Informe a data da conferência, sem data futura.');if(!text(reference,200)||reference.replace(/^ +| +$/g,'').length<3||!reference.trim())throw new Error('Informe uma referência legível da conferência, com 3 a 200 caracteres.');
+ return{command_id:crypto.randomUUID(),expected_approval_version:entry.approval.approval_version,expected_profile_version:entry.profile.version,expected_identity_version:entry.approval.identity_version,enabled,confirmed_on:dateValue,reference};
+}
+export function precedingUuid(id:string):string|null{if(!operationalId(id))invalid();const n=BigInt('0x'+id.replaceAll('-',''));if(n===0n)return null;const s=(n-1n).toString(16).padStart(32,'0');return`${s.slice(0,8)}-${s.slice(8,12)}-${s.slice(12,16)}-${s.slice(16,20)}-${s.slice(20)}`;}
+/** FIN-054: one conta read by GET /v1/financeiro/titles/{id} (the contas chosen in the listagem for Incluir Remessa). */
+export function operationalTitleRecord(value:unknown,id:string):OperationalTitle{
+ if(!obj(value)||value.data_mode!=='erp_native'||value.entity!=='titles'||!obj(value.record))invalid();const row=(value as Any).record as Any;
+ if(row.id!==id||!integer(row.version)||row.kind!=='receivable'||!text(row.description,500)||!text(row.contact_name,200)||!money(row.amount_cents,15)||typeof row.settled_cents!=='string'||!/^(0|[1-9]\d{0,14})$/.test(row.settled_cents)||BigInt(row.settled_cents)>BigInt(row.amount_cents)||!date(row.issued_on)||!date(row.due_on)||typeof row.cancelled!=='boolean')invalid();
+ return pick(row,['id','version','kind','description','contact_name','amount_cents','settled_cents','issued_on','due_on','cancelled']) as unknown as OperationalTitle;
+}
+export function operationalTitles(value:unknown):CnabPage<OperationalTitle>{
+ if(!obj(value)||value.data_mode!=='erp_native'||value.entity!=='titles'||!Array.isArray(value.items)||value.items.length>15||typeof value.has_more!=='boolean'||(value.next_cursor!==null&&!operationalId(value.next_cursor))||value.has_more!==(value.next_cursor!==null))invalid();const v=value as Any,seen=new Set();
+ const items=(v.items as unknown[]).map(row=>{if(!obj(row)||!operationalId(row.id)||seen.has(row.id)||!integer(row.version)||row.kind!=='receivable'||!text(row.description,500)||!text(row.contact_name,200)||!money(row.amount_cents,15)||typeof row.settled_cents!=='string'||!/^(0|[1-9]\d{0,14})$/.test(row.settled_cents)||BigInt(row.settled_cents)>BigInt(row.amount_cents)||!date(row.issued_on)||!date(row.due_on)||typeof row.cancelled!=='boolean')invalid();seen.add((row as Any).id);return pick(row as Any,['id','version','kind','description','contact_name','amount_cents','settled_cents','issued_on','due_on','cancelled']) as unknown as OperationalTitle;});return{items,limit:15,has_more:v.has_more as boolean,next_cursor:v.next_cursor as string|null};
+}

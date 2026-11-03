@@ -1,0 +1,11 @@
+.real-activity, .real-files { margin: 0 14px 24px; }
+.real-activity-filters { margin: 10px 0 14px; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-small); background: var(--surface); }
+.real-activity-filters h2 { margin: 0 0 10px; color: var(--heading); font-size: 15px; }
+.real-activity-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px 14px; margin-bottom: 12px; }
+.real-activity-period { display: inline-flex; flex-wrap: wrap; gap: 8px; font-size: 12px; }
+.real-activity-period label { display: inline-flex; align-items: center; gap: 6px; }
+.real-files-lock { color: var(--muted); }
+/* 263: Miniatura of the images (PNG/JPEG up to 2 MB). */
+.real-files-thumb { display: block; width: 44px; height: 44px; object-fit: contain; border: 1px solid var(--border, #d6dde1); border-radius: 4px; background: #fff; }
+.real-activity .table-scroll, .real-files .table-scroll { position: relative; }
+.real-activity .activity-detail tr.is-changed th,.real-activity .activity-detail tr.is-changed td{background:var(--surface-alt);font-weight:600}.activity-detail td{white-space:pre-wrap;overflow-wrap:anywhere;max-width:280px}

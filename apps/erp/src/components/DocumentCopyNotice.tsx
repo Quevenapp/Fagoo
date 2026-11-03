@@ -1,0 +1,6 @@
+import type { DocumentCopyPreview } from '../lib/document-copy-model';
+import { DOCUMENT_LABELS } from '../lib/real-documents-model';
+
+export default function DocumentCopyNotice({preview}:{preview:DocumentCopyPreview}){
+ return <section className="document-section" aria-label="Conferência da cópia"><h3>Duplicar como novo</h3><p>Origem: {DOCUMENT_LABELS[preview.source.kind]} · número {preview.source.number} · versão {preview.source.version}.</p><p>Confira e altere os campos abaixo antes de salvar. O documento de origem permanece inalterado; o novo número será atribuído ao salvar.</p><ul><li>Data sugerida: hoje em São Paulo. A data exibida no formulário pode ser alterada.</li><li>Datas prevista, de validade e de próximo contato foram limpas, assim como as parcelas planejadas e a opção de modelo.</li>{preview.source.kind==='service_orders'&&<li>Equipamento, série, técnico, defeito e diagnóstico foram limpos para o novo atendimento.</li>}</ul><p className="real-help">Cliente, itens, preços, descontos, frete, condições e observações foram aproveitados para conferência. Ao salvar, os cadastros referenciados são conferidos novamente; os preços digitados são preservados. Anexos, diário de atendimento, estoque, contas, boletos e notas fiscais não são copiados.</p></section>;
+}

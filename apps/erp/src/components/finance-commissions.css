@@ -1,0 +1,21 @@
+/* Financeiro > Comissões, Controle de caixa e Faturamento agrupado (onda C). */
+.finance-month-nav { display: inline-flex; align-items: center; gap: 6px; }
+.finance-month-nav strong { min-width: 68px; text-align: center; font-variant-numeric: tabular-nums; }
+.finance-field-label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+.finance-commission-toolbar { flex-wrap: wrap; gap: 8px; }
+.finance-commission-rules { border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; margin: 12px 0; background: var(--panel); }
+.finance-commission-rules h3, .finance-commission-section h3, .finance-commission-summary h3 { margin: 0 0 8px; font-size: 14px; }
+.finance-commission-rules ul { margin: 0; padding-left: 18px; display: grid; gap: 2px; }
+.finance-commission-section { margin: 16px 0; }
+.finance-commission-section tfoot td, .finance-table tfoot td { font-weight: 600; border-top: 2px solid var(--border); }
+.finance-commission-summary { border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; max-width: 420px; margin-left: auto; }
+.finance-commission-summary dl { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; margin: 0; }
+.finance-commission-summary dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.finance-cash-control-head { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px 16px; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; margin: 12px 0; }
+.finance-cash-control-head dt { font-size: 12px; color: var(--muted); }
+.finance-cash-control-head dd { margin: 0; font-weight: 600; }
+.finance-cash-control-cards { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0; }
+.finance-cash-control-cards section { border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; min-width: 220px; }
+.finance-grouped-condition { width: 120px; }
+.finance-cash-control-value { display: grid; grid-template-columns: minmax(0, 1fr) 140px auto; gap: 8px; align-items: center; margin-bottom: 6px; }
+@media print { .finance-commission-toolbar, .finance-brufap-actions { display: none !important; } }

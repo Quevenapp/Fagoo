@@ -8,7 +8,7 @@ import {buildDistributionRequest,parseDistributionResponse,inspectDistributionCo
 const NS='http://www.portalfiscal.inf.br/nfe',SOAP='http://schemas.xmlsoap.org/soap/envelope/',SERVICE=NS+'/wsdl/NFeDistribuicaoDFe';
 const cnpj='12345678000195',other='11222333000181',request={environment:'2',authorUf:'35',interestedCnpj:cnpj,lastNsu:'000000000000000'};
 const key=buildAccessKey({cUF:'35',cnpj:other,model:'55',environment:'2',series:'1',number:'1',issuedAt:'2026-10-16T10:00:00-03:00',cNF:'12345678',tpEmis:'1'});
-const coord={coordinator:'fagoo',checkpointConfirmed:true,lastNsu:request.lastNsu,otherConsumersReviewed:true};
+const coord={coordinator:'brufap',checkpointConfirmed:true,lastNsu:request.lastNsu,otherConsumersReviewed:true};
 const summary=(k=key)=>`<resNFe xmlns="${NS}" versao="1.01"><chNFe>${k}</chNFe><CNPJ>${other}</CNPJ><xNome>EMPRESA FICTICIA</xNome><IE>ISENTO</IE><dhEmi>2026-10-16T10:00:00-03:00</dhEmi><tpNF>1</tpNF><vNF>25.70</vNF><digVal>AAAAAAAAAAAAAAAAAAAAAAAAAAA=</digVal><dhRecbto>2026-10-16T10:01:00-03:00</dhRecbto><nProt>135260000000001</nProt><cSitNFe>1</cSitNFe></resNFe>`;
 const invoice=(recipient=cnpj,k=key)=>`<nfeProc xmlns="${NS}" versao="4.00"><NFe><infNFe Id="NFe${k}" versao="4.00"><ide><tpAmb>2</tpAmb></ide><dest><CNPJ>${recipient}</CNPJ></dest></infNFe></NFe><protNFe><infProt><tpAmb>2</tpAmb><chNFe>${k}</chNFe></infProt></protNFe></nfeProc>`;
 const zip=(xml=summary(),nsu='000000000000001',schema='resNFe_v1.01.xsd')=>`<docZip${nsu===null?'':` NSU="${nsu}"`} schema="${schema}">${gzipSync(xml).toString('base64')}</docZip>`;

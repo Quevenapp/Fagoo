@@ -68,7 +68,7 @@ test('parser rejects wrong namespaces/attrs, DTD/wrapping, shared/oversized byte
  const x=f.create(),q=await x.query(),xml=response(x,q).toString();for(const changed of [xml.replace('<infProt>','<infProt xmlns="urn:wrong">'),xml.replace('<protNFe ','<protNFe untrusted="x" '),xml.replace('<retConsReciNFe ','<retConsReciNFe extra="1" '),'<!DOCTYPE x>'+xml,'<wrapper>'+xml+'</wrapper>',xml.replace('<cStat>104','<cStat>104</cStat><cStat>104')])assert.throws(()=>parseReceiptResponse({request:q,responseBytes:Buffer.from(changed)}));
  throws(()=>parseReceiptResponse({request:q,responseBytes:new Uint8Array(new SharedArrayBuffer(10))}),'RECEIPT_BYTES_INVALID');throws(()=>parseReceiptResponse({request:q,responseBytes:Buffer.alloc(512001)}),'RECEIPT_BYTES_INVALID');throws(()=>parseReceiptResponse({request:{...q},responseBytes:Buffer.from(xml)}),'RECEIPT_QUERY_UNATTESTED');
 });
-test('manifest pins exact independently observed55/65 WSDL bytes; never authorization65 inferred',{skip:process.env.FAGOO_TEST_LOCAL_RECEIPT_WSDL!=='1'},async()=>{
+test('manifest pins exact independently observed55/65 WSDL bytes; never authorization65 inferred',{skip:process.env.BRUFAP_TEST_LOCAL_RECEIPT_WSDL!=='1'},async()=>{
  for(const b of RECEIPT_MANIFEST.bindings){const path=fileURLToPath(new URL(`../../../private/fiscal/wsdl/model-${b.model}-receipt-20261016.xml`,import.meta.url));const bytes=await readFile(path);assert.equal(bytes.length,b.wsdl.sizeBytes);assert.equal(hash(bytes),b.wsdl.sha256);const s=bytes.toString();assert.ok(s.includes(b.endpoint)&&s.includes(b.soapAction));}assert.ok(Object.isFrozen(RECEIPT_MANIFEST.bindings[0]));
 });
 test('deadline is rechecked after parsing/hash work and port errors never expose private text',async()=>{

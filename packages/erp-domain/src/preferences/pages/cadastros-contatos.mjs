@@ -1,0 +1,24 @@
+// Preferências > Cadastros > Configurações de clientes e fornecedores (Origin preferencias.php#cadastro/cadastros-configuracoes-contatos).
+import{definePage,PREFERENCE_READERS}from'../core.mjs';
+import{applied,choice,multi,toggle}from'../fields.mjs';
+const S='contatos';
+// The 44 options of "Campos obrigatórios para clientes e fornecedores", in Origin order.
+export const CONTACT_REQUIRED_FIELDS=[['carga_media','% carga média'],['bairro','Bairro'],['bairro_cobranca','Bairro - Cobrança'],['celular','Celular'],['cep','CEP'],
+ ['cep_cobranca','CEP - Cobrança'],['cidade','Cidade'],['cidade_cobranca','Cidade - Cobrança'],['cliente_desde','Cliente desde'],['cnpj','CNPJ'],['complemento','Complemento'],
+ ['complemento_cobranca','Complemento - Cobrança'],['condicao_pagamento','Condição de pagamento'],['informacoes_contato','Informações do contato'],['cpf_mae','CPF da Mãe'],
+ ['cpf_pai','CPF do Pai'],['data_nascimento','Data Nascimento'],['email','E-Mail'],['email_nfe','E-Mail para envio da NFe'],['endereco','Endereço'],['endereco_cobranca','Endereço - Cobrança'],
+ ['numero','Número'],['numero_cobranca','Número - Cobrança'],['fantasia','Fantasia'],['fax','Fax'],['fone','Fone'],['natureza_operacao','Natureza de Operação Padrão'],
+ ['inscricao_estadual','Inscrição Estadual'],['inscricao_municipal','Inscrição Municipal'],['inscricao_suframa','Inscrição Suframa'],['limite_credito','Limite de crédito'],
+ ['naturalidade','Naturalidade'],['nome_mae','Nome da Mãe'],['nome_pai','Nome do Pai'],['pais','País'],['observacoes','Observações'],['orgao_emissor','Órgão Emissor'],
+ ['profissao','Profissão'],['proxima_visita','Próxima visita'],['rg','RG'],['website','WebSite'],['skype','Skype'],['uf_exterior_cobranca','UF (Exterior) - Cobrança'],['uf_exterior','UF (Exterior)']];
+export default definePage({id:'cadastros-contatos',category:'cadastros',path:'clientes-fornecedores',title:'Configurações de clientes e fornecedores',scope:'company',readRoles:PREFERENCE_READERS.all,subsections:false,
+ sections:[{id:S,title:'Configurações de clientes e fornecedores'}],
+ fields:[
+  // Contatos lane (migrações 124-128 e 158): as quatro opções valem no formulário de Clientes e fornecedores, em Vendedores,
+  // na importação de contatos e, desde a onda C, no Contato rápido dos documentos, das notas e do financeiro.
+  toggle('contatos.acesso_vendedor',S,'Contato acessível somente ao vendedor vinculado',false,{status:'applied',note:'Aplicada para quem não é administrador e está vinculado a um vendedor (Cadastros › Vendedores › Usuário do sistema): a listagem, o formulário, a exportação, os comentários e o histórico de Clientes e fornecedores mostram só os contatos desse vendedor, e um contato que ele inclui com o Vendedor vazio fica vinculado a ele. Em Vendedores, ele não vê os outros vendedores. Os seletores de contato de pedidos, propostas, ordens de serviço, notas, contas a pagar e a receber, extrato, ficha financeira, relatórios e produtos também seguem a carteira, assim como as etiquetas e o contato rápido. Desde a migração 238, as listagens, a leitura, a planilha e os históricos de pedidos de venda, propostas, ordens de serviço e pedidos de compra também mostram só os documentos desses contatos, e a gravação recusa um contato que ele não vê (o consumidor padrão da Frente de caixa continua aceito). Ainda somam todos: os relatórios de vendas e de serviço e os resumos da Página inicial.'}),
+  toggle('contatos.permite_documento_duplicado',S,'Permite CPF / CNPJ duplicado',true,{status:'applied',note:'Aplicada: desligada, um CPF/CNPJ novo ou alterado que já esteja em outro contato não excluído é recusado; ligada, o formulário avisa e pede confirmação (o contato rápido grava sem perguntar). Cadastros antigos duplicados continuam editáveis enquanto o documento não muda.'}),
+  choice('contatos.codigo',S,'Código do Contato',[['manual','Manual'],['sequencial','Sequencial']],'manual',{status:'applied',note:'Aplicada: com Sequencial, um contato incluído sem código (no formulário, no contato rápido ou na importação) recebe o próximo número; números já usados como código são pulados.'}),
+  applied('contatos.proximo_numero',S,'Próximo número','Mostrado e editado em Código do contato, com o lápis “Editar próximo número”. Nunca volta para um código já usado.',{link:{label:'Editar próximo número',to:'/numeracao-contatos',roles:['admin']}}),
+  multi('contatos.campos_obrigatorios',S,'Campos obrigatórios para clientes e fornecedores',CONTACT_REQUIRED_FIELDS,[],{widget:'chips',status:'applied',note:'Aplicada: os campos marcados ficam com * e são exigidos ao salvar o contato, no contato rápido (que avisa qual campo falta) e na importação, cada um só no Tipo da Pessoa em que aparece no formulário (por exemplo, RG só para Pessoa Física). Em Vendedores valem só os campos desse formulário; Vincular a vendedor, Tornar vendedor e a mudança de situação não os exigem.'}),
+ ]});

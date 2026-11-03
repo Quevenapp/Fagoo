@@ -1,0 +1,17 @@
+/* 202610200287-291 (Documentos, onda G): Informar lotes, Comissões dos itens, Campos Customizados da OS, aviso de efeitos ativos,
+   Busca customizada da listagem e Checkout de pedidos. Only theme tokens with light fallbacks. */
+.document-item-lots{min-width:520px}.document-item-lots input{width:100%;max-width:140px;box-sizing:border-box}
+.document-item-lots td,.document-item-commissions td{vertical-align:middle}
+.document-item-commissions{min-width:560px}.document-item-commissions .numeric,.document-item-lots .numeric{text-align:right;font-variant-numeric:tabular-nums}
+.document-custom-fields textarea{width:100%;box-sizing:border-box;resize:vertical}
+.document-custom-fields-admin .document-custom-option{display:flex;gap:8px;align-items:center;margin:4px 0}.document-custom-fields-admin .document-custom-option input{flex:1;min-width:0}
+.document-effects-notice ul{margin:6px 0 6px 18px;padding:0}.document-effects-notice li{margin:2px 0}.document-effects-notice p{margin:0}
+.documents-custom-search{display:grid;gap:6px;margin:0 0 12px;padding:0;border:0;min-width:0}
+.documents-custom-search legend{font-size:12px;font-weight:700;margin-bottom:4px;padding:0}
+.documents-custom-search-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) auto;gap:4px;align-items:center}
+.documents-custom-search-row select,.documents-custom-search-row input{min-width:0;width:100%;box-sizing:border-box}
+.documents-custom-search .text-button{justify-self:start;display:inline-flex;gap:4px;align-items:center}
+.sales-checkout .sales-checkout-read input{min-width:260px}.sales-checkout .numeric{text-align:right;font-variant-numeric:tabular-nums}
+.sales-checkout tr.is-current{background:var(--surface-soft,#f0f6f2)}.sales-checkout tr.is-complete{color:var(--muted,#607268)}
+.sales-checkout-next{font-weight:600}
+@media(max-width:600px){.documents-custom-search-row{grid-template-columns:1fr auto}.documents-custom-search-row select:first-child{grid-column:1/-1}.sales-checkout .sales-checkout-read input{min-width:0;width:100%}}
