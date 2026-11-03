@@ -34,11 +34,11 @@ Use Ubuntu 24.04, acesso administrativo, uma conta Cloudflare com a zona do dom�
 sudo apt-get update
 sudo apt-get install -y git ca-certificates
 sudo install -d -m 755 -o "$(id -un)" -g "$(id -gn)" /opt/fagoo
-git clone --branch v0.2.0 --single-branch https://github.com/Quevenapp/Fagoo.git /opt/fagoo
+git clone --branch v0.2.1 --single-branch https://github.com/Quevenapp/Fagoo.git /opt/fagoo
 cd /opt/fagoo
 ```
 
-O clone público não requer token GitHub. O comando seleciona a tag `v0.2.0`, que inclui o atualizador pelo painel. Confira as [releases](https://github.com/Quevenapp/Fagoo/releases) ao instalar; não use uma branch de desenvolvimento para uma instalação operacional. A pasta de destino deve estar vazia ao executar `git clone`.
+O clone público não requer token GitHub. O comando seleciona a tag `v0.2.1`, que inclui o atualizador pelo painel. Confira as [releases](https://github.com/Quevenapp/Fagoo/releases) ao instalar; não use uma branch de desenvolvimento para uma instalação operacional. A pasta de destino deve estar vazia ao executar `git clone`.
 
 A partir da raiz do código, execute:
 

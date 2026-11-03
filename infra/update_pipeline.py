@@ -165,7 +165,8 @@ class Pipeline:
         for origin, path in ((self.values['FAGOO_WEB_ORIGIN'], '/fagoo-version.json'), (self.values['FAGOO_API_ORIGIN'], '/v1/system/version')):
             for attempt in range(30):
                 try:
-                    request = urllib.request.Request(origin + path + '?verification=' + manifest['source_commit'], headers={'Cache-Control': 'no-cache'})
+                    request = urllib.request.Request(origin + path + '?verification=' + manifest['source_commit'],
+                        headers={'Cache-Control': 'no-cache', 'User-Agent': 'FAGOO-updater/1', 'Accept': 'application/json'})
                     with urllib.request.urlopen(request, timeout=10) as response:
                         value = json.loads(response.read(4097))
                     if value.get('revision') == manifest['source_commit'] and value.get('version') == manifest['version']:
@@ -178,7 +179,8 @@ class Pipeline:
 
     def check_health(self):
         request = urllib.request.Request(self.values['FAGOO_BACKEND_ORIGIN'] + '/auth/v1/health',
-                                         headers={'Origin': self.values['FAGOO_WEB_ORIGIN']})
+                                         headers={'Origin': self.values['FAGOO_WEB_ORIGIN'],
+                                                  'User-Agent': 'FAGOO-updater/1', 'Accept': 'application/json'})
         with urllib.request.urlopen(request, timeout=15) as response:
             if response.status != 200 or response.headers.get('Access-Control-Allow-Origin') != self.values['FAGOO_WEB_ORIGIN']:
                 raise ValueError('APPLICATION_HEALTH_FAILED')

@@ -146,6 +146,24 @@ class UpdateTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'INVALID_RELEASE_SIGNATURE'):service.check()
         self.assertFalse(service.snapshot()['can_apply'])
 
+    def test_public_checks_identify_the_updater_and_validate_versions_and_cors(self):
+        pipeline=Pipeline(self.service());requests=[]
+        class Reply:
+            status=200
+            headers={'Access-Control-Allow-Origin':'https://erp.example.test'}
+            def __enter__(self):return self
+            def __exit__(self,*args):pass
+            def read(self,limit):return json.dumps({'revision':'b'*40,'version':'v0.2.0'}).encode()
+        def respond(request,**kwargs):
+            requests.append(request)
+            self.assertEqual(request.get_header('User-agent'),'FAGOO-updater/1')
+            self.assertEqual(request.get_header('Accept'),'application/json')
+            return Reply()
+        with patch('update_pipeline.urllib.request.urlopen',side_effect=respond):
+            pipeline.check_public_version(self.manifest);pipeline.check_health()
+        self.assertEqual(len(requests),3)
+        self.assertEqual(requests[-1].get_header('Origin'),'https://erp.example.test')
+
     def pipeline_fixture(self,service,fail=None):
         calls=[];outer=self
         class Fixture(Pipeline):
