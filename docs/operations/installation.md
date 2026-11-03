@@ -84,7 +84,7 @@ O helper de publicação da etapa 7 gera a configuração pública do build a pa
 
 ## 5. Conectar o túnel e publicar o hostname de serviços
 
-No painel Cloudflare, abra a área de Cloudflare Tunnel, crie um túnel do tipo `cloudflared` e escolha um nome para esta instalação. Anote o UUID do túnel. Na tela de instalação do conector Linux, use o botão para copiar o comando de instalação; ele contém uma credencial e não deve ser colado diretamente na linha de comandos durante a gravação.
+No painel Cloudflare, abra **Networking → Tunnels → Create Tunnel**, informe um nome para esta instalação e crie o túnel. Anote seu UUID. Na tela de instalação do conector Linux, use o botão para copiar o comando de instalação; ele contém uma credencial e não deve ser colado diretamente na linha de comandos durante a gravação.
 
 No console da VPS, substitua `TUNNEL_UUID` pelo identificador do painel e execute:
 
@@ -96,16 +96,20 @@ Quando surgir o prompt oculto, cole o comando completo copiado do painel ou some
 
 O token fica em `/etc/fagoo/cloudflared/token`, com permissão `0600`, e o serviço `fagoo-cloudflared.service` passa apenas o caminho desse arquivo ao conector. Nenhum token entra na linha de comandos, na unit ou nos logs. O helper não sobrescreve configuração existente; se uma tentativa falhar, preserve os arquivos e confira o estado antes de recuperar.
 
-Depois que o conector aparecer como saudável no painel, avance e configure o hostname público de serviços:
+Depois que o conector aparecer como **Healthy**, clique em **Continue**. Na interface observada, esse botão retorna à lista de túneis; a rota é criada em uma etapa separada:
+
+1. Abra o túnel pelo nome na lista.
+2. Entre em **Routes → Add route → Published application**.
+3. Preencha o formulário abaixo e salve a rota.
 
 | Campo | Exemplo para esta etapa |
 | --- | --- |
-| Hostname público | `fagoo-services.example.com` |
-| Tipo do serviço | `HTTP` |
-| Serviço de origem | `localhost:8081` |
-| Caminho | Vazio, para encaminhar todos os caminhos |
+| Subdomain | `fagoo-services` |
+| Domain | `example.com`, a zona do seu domínio |
+| Path | Deixe vazio, para encaminhar todos os caminhos |
+| Service URL | `http://localhost:8081`, incluindo `http://` |
 
-O endereço público precisa ser exatamente o `FAGOO_BACKEND_ORIGIN` escolhido na instalação. O helper atual verifica o gateway local na porta padrão `8081`. Salve a rota do túnel pelo painel e valide:
+O formulário atual recebe o protocolo no próprio **Service URL**; não há um seletor separado de tipo HTTP. A combinação de **Subdomain** e **Domain** deve formar exatamente o hostname de `FAGOO_BACKEND_ORIGIN` escolhido na instalação. Ao salvar, o painel cria o registro DNS automaticamente; não crie um segundo registro manual para o mesmo hostname. O helper atual verifica o gateway local na porta padrão `8081`. Valide:
 
 ```sh
 sudo systemctl is-active fagoo-cloudflared.service
@@ -117,10 +121,22 @@ Substitua o domínio de exemplo pelo hostname real. Espere `active` e respostas 
 
 ## 6. Preparar a conta Cloudflare para publicar web e API
 
-Obtenha o **Account ID** da conta e o **Zone ID** da zona no painel. Esses identificadores não são senhas e serão argumentos do helper. Crie um token de API restrito somente à conta e à zona desta instalação, com as permissões:
+Obtenha o **Account ID** da conta e o **Zone ID** da zona no painel. Esses identificadores não são senhas e serão argumentos do helper. Para criar o token de publicação:
 
-- Conta: `Workers Scripts — Edit`.
-- Zona: `Workers Routes — Edit`, `Zone — Read` e `DNS — Read`.
+1. Abra **Profile → API Tokens → Create Token**.
+2. Em **Custom token**, clique em **Get started** e dê um nome ao token, por exemplo `FAGOO publicação`.
+3. Em **Permissions**, adicione estas quatro linhas:
+
+| Escopo | Permissão | Acesso |
+| --- | --- | --- |
+| Account | Workers Scripts | Edit |
+| Zone | Workers Routes | Edit |
+| Zone | Zone | Read |
+| Zone | DNS | Read |
+
+4. Em **Account Resources**, restrinja o token à conta específica da instalação. Em **Zone Resources**, selecione **Specific zone** e o domínio dessa instalação.
+5. Defina uma validade; **30 dias** é uma sugestão para concluir a instalação. Clique em **Continue to summary**, confira as quatro permissões e os dois escopos e clique em **Create Token**.
+6. Copie o token sem exibi-lo na gravação, em capturas de tela ou em mensagens. Use-o no prompt oculto da etapa 7.
 
 O token de publicação será solicitado em um prompt oculto e não será salvo pelo helper. Não use o token do túnel nesse prompt. Os passos detalhados e os requisitos de publicação estão em [Publicação da interface e da API](application-deployment.md).
 
