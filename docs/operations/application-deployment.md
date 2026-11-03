@@ -25,6 +25,8 @@ O instalador executa `npm ci` nas quatro árvores necessárias: raiz, `workers/e
 
 Obtenha o Account ID e o Zone ID no painel Cloudflare. O token para esta publicação precisa acessar somente a conta e a zona escolhidas, com `Workers Scripts — Edit`, `Workers Routes — Edit`, `Zone — Read` e `DNS — Read` (ou `DNS — Edit` quando o mesmo token também configurar DNS). Ele será solicitado sem eco pelo comando e não será salvo. Não coloque token em argumentos, no Git, no frontend ou em gravações de tela.
 
+O Cloudflare mostra o valor completo uma única vez. Pause a gravação antes de gerar ou revelar o segredo e salve-o no seu gerenciador de senhas, junto da identificação da conta, domínio e validade, antes de clicar em **Done**. O helper não guarda uma cópia para a próxima publicação. Se perder um token ainda válido, use **Profile → API Tokens → Actions → View summary** para conferir o escopo e a validade; volte com **Back**, escolha **Actions → Roll** e pause a gravação antes de confirmar. **Roll invalida o valor antigo e mantém as permissões, os recursos e a expiração**. Se expirou, crie um novo token com as permissões e os escopos acima. Veja o [passo a passo para perda ou expiração](installation.md#se-perder-o-token-ou-ele-expirar). Esse token é diferente da credencial do Cloudflare Tunnel.
+
 ## Ensaio sem publicação
 
 Substitua os identificadores abaixo pelos valores do painel:

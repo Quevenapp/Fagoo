@@ -137,14 +137,26 @@ Obtenha o **Account ID** da conta e o **Zone ID** da zona no painel. Esses ident
 | Zone | DNS | Read |
 
 4. Em **Account Resources**, restrinja o token à conta específica da instalação. Em **Zone Resources**, selecione **Specific zone** e o domínio dessa instalação.
-5. Defina uma validade; **30 dias** é uma sugestão para concluir a instalação. Clique em **Continue to summary**, confira as quatro permissões e os dois escopos e clique em **Create Token**.
-6. Copie o token sem exibi-lo na gravação, em capturas de tela ou em mensagens. Use-o no prompt oculto da etapa 7.
+5. Defina uma validade; **30 dias** é uma sugestão para concluir a instalação. Clique em **Continue to summary** e confira as quatro permissões, os dois escopos e a validade. **Pause a gravação antes de clicar em Create Token**, pois a próxima tela mostra o segredo.
+6. Clique em **Create Token**. O valor completo é mostrado **uma única vez**: copie e salve-o no seu gerenciador de senhas, com um nome como `FAGOO publicação`, a conta, o domínio e a data de expiração. Faça isso antes de clicar em **Done** e retomar a gravação. Use esse valor no prompt oculto da etapa 7, sem enviá-lo em mensagens ou capturas de tela.
 
-O token de publicação será solicitado em um prompt oculto e não será salvo pelo helper. Não use o token do túnel nesse prompt. Os passos detalhados e os requisitos de publicação estão em [Publicação da interface e da API](application-deployment.md).
+O token de publicação será solicitado em um prompt oculto e **não será salvo pelo helper**. Não há comando adicional para guardá-lo no servidor: a cópia para futuras publicações fica no gerenciador de senhas do usuário. Não use o token do túnel nesse prompt. Os passos detalhados e os requisitos de publicação estão em [Publicação da interface e da API](application-deployment.md).
 
 Verifique o DNS de **somente dois hostnames**: web e API, por exemplo `fagoo.example.com` e `fagoo-api.example.com`. Se houver registros A/CNAME provisórios que entrem em conflito com esses destinos, remova apenas esses registros pelo painel antes do deploy. Preserve o domínio principal, os registros de e-mail, os demais serviços e o hostname `fagoo-services.example.com` do túnel. Se um hostname já pertencer a outro Worker, resolva sua atribuição antes de prosseguir.
 
 O helper verifica esses conflitos e recusa a publicação quando encontra uma atribuição incompatível. Os domínios personalizados dos Workers criarão seus próprios registros gerenciados; não use opção de força para substituir outro serviço.
+
+### Se perder o token ou ele expirar
+
+O painel permite conferir os dados do token, mas não recuperar seu valor completo depois de fechar a tela de criação. Se você perdeu o valor e o token **ainda está válido**, substitua-o pelo fluxo abaixo:
+
+1. Abra **Profile → API Tokens**. Na linha do token de publicação, clique em **Actions → View summary**.
+2. Confira as quatro permissões, a conta, a zona e a data de expiração (**Expiration**). Se estiver expirado, siga a orientação de criação de um novo token abaixo.
+3. Clique em **Back** e, na mesma linha, em **Actions → Roll**. Será exibida uma janela de confirmação.
+4. **Pause a gravação antes de confirmar Roll**. Ao confirmar, o Cloudflare invalida o valor antigo e mostra o novo valor uma única vez.
+5. Atualize a entrada no seu gerenciador de senhas com o novo valor. Somente depois clique em **Done** e retome a gravação. Use o novo valor na próxima publicação; qualquer outra ferramenta que usava o antigo também precisará dele.
+
+**Roll preserva as permissões, os recursos autorizados e a validade: não prorroga a expiração.** Se o token expirou ou você precisa de uma nova validade, crie outro em **Profile → API Tokens → Create Token**, seguindo os passos desta seção com as mesmas quatro permissões e a conta/zona da instalação. Pause a gravação antes de gerar o segredo e guarde-o no gerenciador de senhas antes de fechar a tela. Esse procedimento é para o token de publicação; não substitui a credencial do túnel.
 
 ## 7. Compilar e publicar a interface e a API
 
