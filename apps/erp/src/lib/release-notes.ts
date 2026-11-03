@@ -6,7 +6,7 @@ export interface ReleaseNote { version: string; date: string; title: string; ite
 export const RELEASE_NOTES: readonly ReleaseNote[] = [
   { version: '2026.11.03', date: '2026-11-03', title: 'FAGOO com instalação própria e início sem dados', items: [
     'Instalação própria com administrador, autenticação, banco e arquivos da empresa.',
-    'Cadastros, vendas, compras, estoque e financeiro disponíveis na interface original.',
+    'Cadastros, vendas, compras, estoque e financeiro disponíveis na interface web do FAGOO.',
     'Visão geral preparada para uma empresa nova, com indicadores preenchidos pelos seus registros.',
     'Ferramentas de integrações opcionais aparecem quando habilitadas para a instalação.',
   ] },

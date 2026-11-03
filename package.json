@@ -13,6 +13,7 @@
     "typecheck:erp": "tsc --noEmit -p apps/erp/tsconfig.json",
     "test:erp": "node --test apps/erp/test/*.test.mjs",
     "build:erp": "npm run typecheck:erp && node tools/deployment/build-erp.mjs",
+    "build:erp:release": "npm run typecheck:erp && node tools/deployment/build-erp.mjs --release",
     "build:erp:worker": "npm run build:erp && wrangler deploy --dry-run --config workers/erp-preview/wrangler.jsonc",
     "deploy:erp": "npm run build:erp && npm run check:erp:build && wrangler deploy --config workers/erp-preview/wrangler.jsonc",
     "preview:erp": "vite preview --config apps/erp/vite.config.ts",

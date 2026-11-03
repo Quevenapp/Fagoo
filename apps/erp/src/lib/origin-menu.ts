@@ -1,9 +1,5 @@
 import { originHistoryAvailable, isOriginIntegrationRoute } from './integration-capabilities.ts';
-// Navigation that mirrors the Origin top menu (captured on 19/10/2026, docs/references/origin-interface.md).
-// Labels, grouping, column titles and order follow Origin exactly. Items that Brufap will never offer
-// (marketplaces, loja virtual, logística, CT-e, NFS-e, DAS MEI, GNRE, Origin Conta, multiempresa and ordens de
-// produção, per docs/product-scope.md) are left out; items that
-// exist in Origin and are planned for Brufap stay in place, disabled, so positions remain familiar.
+// Access-controlled destinations consumed by the FAGOO workspace navigation.
 
 import { preferencePage, preferencePageHref } from '../../../../packages/erp-domain/src/preferences/catalog.mjs';
 
@@ -11,7 +7,7 @@ export type MenuGroupName = 'Meu Negócio' | 'Cadastros' | 'Vendas' | 'Estoque' 
 export type CompanyRole = 'admin' | 'consulta' | 'financeiro' | 'vendas' | 'estoque' | 'fiscal';
 
 export interface RealTarget { to: string; roles?: readonly CompanyRole[]; resource?: string }
-export interface MenuItemDefinition { label: string; demo?: string; real?: RealTarget }
+export interface MenuItemDefinition { label: string; real?: RealTarget }
 export interface MenuColumnDefinition { title: string; items: readonly MenuItemDefinition[] }
 export interface MenuGroupDefinition { name: MenuGroupName; columns: readonly MenuColumnDefinition[]; footer?: MenuItemDefinition }
 
@@ -20,7 +16,7 @@ const FISCAL_READ: readonly CompanyRole[] = ['admin', 'consulta', 'fiscal'];
 
 export const ORIGIN_MENU: readonly MenuGroupDefinition[] = [
   { name: 'Meu Negócio', columns: [{ title: 'Dashboards', items: [
-    { label: 'Dashboard geral', demo: '/inicio', real: { to: '/acesso' } },
+    { label: 'Dashboard geral', real: { to: '/acesso' } },
     // Preferências lane (migration 150): Meu Negócio dashboards on /meu-negocio; cost needs purchase orders (margem).
     { label: 'Dashboard vendas', real: { to: '/meu-negocio?painel=mensal', roles: ['admin', 'consulta', 'vendas', 'financeiro', 'estoque', 'fiscal'] } },
     { label: 'Dashboard margem por pedido', real: { to: '/meu-negocio?painel=margem-pedido', roles: ['admin', 'consulta', 'financeiro', 'estoque', 'fiscal'] } },
@@ -31,62 +27,62 @@ export const ORIGIN_MENU: readonly MenuGroupDefinition[] = [
   ] }] },
   { name: 'Cadastros', columns: [
     { title: 'Cadastros', items: [
-      { label: 'Produtos', demo: '/produtos', real: { to: '/cadastros-reais?cadastro=products', resource: 'products' } },
-      { label: 'Clientes e fornecedores', demo: '/contatos', real: { to: '/cadastros-reais?cadastro=contacts', resource: 'contacts' } },
-      { label: 'Vendedores', demo: '/vendedores', real: { to: '/vendedores-empresa', roles: ['admin', 'consulta', 'vendas', 'financeiro'] } },
+      { label: 'Produtos', real: { to: '/cadastros-reais?cadastro=products', resource: 'products' } },
+      { label: 'Clientes e fornecedores', real: { to: '/cadastros-reais?cadastro=contacts', resource: 'contacts' } },
+      { label: 'Vendedores', real: { to: '/vendedores-empresa', roles: ['admin', 'consulta', 'vendas', 'financeiro'] } },
       { label: 'Funcionários', real: { to: '/funcionarios-empresa', roles: ['admin'] } },
-      { label: 'Contas Financeiras', demo: '/contas-financeiras', real: { to: '/financeiro-empresa?area=contas-financeiras', roles: FINANCE } },
-      { label: 'Categorias Financeiras', demo: '/categorias-financeiras', real: { to: '/financeiro-empresa?area=categories', roles: FINANCE } },
-      { label: 'Formas de pagamento', demo: '/formas-pagamento', real: { to: '/formas-pagamento-empresa', roles: ['admin', 'consulta', 'financeiro', 'vendas'] } },
+      { label: 'Contas Financeiras', real: { to: '/financeiro-empresa?area=contas-financeiras', roles: FINANCE } },
+      { label: 'Categorias Financeiras', real: { to: '/financeiro-empresa?area=categories', roles: FINANCE } },
+      { label: 'Formas de pagamento', real: { to: '/formas-pagamento-empresa', roles: ['admin', 'consulta', 'financeiro', 'vendas'] } },
     ] },
     { title: 'Ferramentas', items: [
-      { label: 'Categorias de produtos', demo: '/categorias-produtos', real: { to: '/categorias-produtos', resource: 'products' } },
-      { label: 'Listas de preços', demo: '/listas-precos', real: { to: '/listas-precos', resource: 'products' } },
+      { label: 'Categorias de produtos', real: { to: '/categorias-produtos', resource: 'products' } },
+      { label: 'Listas de preços', real: { to: '/listas-precos', resource: 'products' } },
     ] },
-  ], footer: { label: 'Ver relatórios de cadastros', demo: '/relatorios?filter.area=Cadastros' } },
+  ], footer: { label: 'Ver relatórios de cadastros' } },
   { name: 'Vendas', columns: [
     { title: 'Gestão', items: [
-      { label: 'Pedidos de venda', demo: '/vendas', real: { to: '/documentos-empresa?tipo=sales_orders', roles: ['admin', 'consulta', 'financeiro', 'vendas', 'estoque', 'fiscal'] } },
-      { label: 'Notas fiscais de saída', demo: '/notas-saida', real: { to: '/historico-fiscal?modelo=55', roles: FISCAL_READ } },
-      { label: 'NFC-e', demo: '/nfce', real: { to: '/historico-fiscal?modelo=65', roles: FISCAL_READ } },
-      { label: 'Frente de caixa', demo: '/frente-caixa', real: { to: '/frente-caixa-empresa', roles: ['admin', 'consulta', 'vendas', 'financeiro'] } },
-      { label: 'Propostas comerciais', demo: '/propostas', real: { to: '/documentos-empresa?tipo=sales_proposals', roles: ['admin', 'consulta', 'financeiro', 'vendas'] } },
+      { label: 'Pedidos de venda', real: { to: '/documentos-empresa?tipo=sales_orders', roles: ['admin', 'consulta', 'financeiro', 'vendas', 'estoque', 'fiscal'] } },
+      { label: 'Notas fiscais de saída', real: { to: '/historico-fiscal?modelo=55', roles: FISCAL_READ } },
+      { label: 'NFC-e', real: { to: '/historico-fiscal?modelo=65', roles: FISCAL_READ } },
+      { label: 'Frente de caixa', real: { to: '/frente-caixa-empresa', roles: ['admin', 'consulta', 'vendas', 'financeiro'] } },
+      { label: 'Propostas comerciais', real: { to: '/documentos-empresa?tipo=sales_proposals', roles: ['admin', 'consulta', 'financeiro', 'vendas'] } },
     ] },
     { title: 'Serviços', items: [
-      { label: 'Ordens de serviço', demo: '/ordens-servico', real: { to: '/documentos-empresa?tipo=service_orders', roles: ['admin', 'consulta', 'financeiro', 'vendas'] } },
-      { label: 'Relatórios de serviço', demo: '/relatorios?filter.area=Serviços', real: { to: '/documentos-empresa?tipo=service_orders&acao=relatorios', roles: ['admin', 'consulta', 'financeiro', 'vendas'] } },
+      { label: 'Ordens de serviço', real: { to: '/documentos-empresa?tipo=service_orders', roles: ['admin', 'consulta', 'financeiro', 'vendas'] } },
+      { label: 'Relatórios de serviço', real: { to: '/documentos-empresa?tipo=service_orders&acao=relatorios', roles: ['admin', 'consulta', 'financeiro', 'vendas'] } },
     ] },
     // Logística: only Checkout de pedidos is in scope (objetos de postagem, logística reversa and Origin Envios are out).
     { title: 'Logística', items: [
       { label: 'Checkout de pedidos', real: { to: '/documentos-empresa?tipo=sales_orders&acao=checkout', roles: ['admin', 'vendas'] } },
     ] },
-  ], footer: { label: 'Ver relatórios de vendas', demo: '/relatorios?filter.area=Vendas', real: { to: '/documentos-empresa?tipo=sales_orders&acao=relatorios', roles: ['admin', 'consulta', 'financeiro', 'vendas', 'estoque', 'fiscal'] } } },
+  ], footer: { label: 'Ver relatórios de vendas', real: { to: '/documentos-empresa?tipo=sales_orders&acao=relatorios', roles: ['admin', 'consulta', 'financeiro', 'vendas', 'estoque', 'fiscal'] } } },
   { name: 'Estoque', columns: [
     { title: 'Compras', items: [
-      { label: 'Pedidos de compra', demo: '/compras', real: { to: '/documentos-empresa?tipo=purchase_orders', roles: ['admin', 'consulta', 'financeiro', 'estoque', 'fiscal'] } },
-      { label: 'Notas fiscais de entrada', demo: '/notas-entrada', real: { to: '/notas-entrada', roles: ['admin', 'fiscal', 'consulta'] } },
-      { label: 'Fornecedores', demo: '/contatos?filter.role=Fornecedor', real: { to: '/cadastros-reais?cadastro=contacts&contato=fornecedor', resource: 'contacts' } },
+      { label: 'Pedidos de compra', real: { to: '/documentos-empresa?tipo=purchase_orders', roles: ['admin', 'consulta', 'financeiro', 'estoque', 'fiscal'] } },
+      { label: 'Notas fiscais de entrada', real: { to: '/notas-entrada', roles: ['admin', 'fiscal', 'consulta'] } },
+      { label: 'Fornecedores', real: { to: '/cadastros-reais?cadastro=contacts&contato=fornecedor', resource: 'contacts' } },
       { label: 'Sugestão de Compras', real: { to: '/painel-produtos-empresa?painel=sugestao', roles: ['admin', 'consulta', 'estoque', 'fiscal'] } },
       { label: 'Check-in de Recebimentos', real: { to: '/checkin-recebimentos', roles: ['admin', 'estoque', 'fiscal'] } },
     ] },
     { title: 'Estoque', items: [
-      { label: 'Lançamentos de estoque', demo: '/estoque', real: { to: '/estoque-empresa', roles: ['admin', 'consulta', 'vendas', 'estoque', 'fiscal'] } },
-      { label: 'Conferência de estoque', demo: '/conferencia-estoque', real: { to: '/conferencia-estoque-empresa', roles: ['admin', 'estoque'] } },
-      { label: 'Depósitos', demo: '/depositos', real: { to: '/cadastros-reais?cadastro=warehouses', roles: ['admin', 'consulta', 'estoque'] } },
+      { label: 'Lançamentos de estoque', real: { to: '/estoque-empresa', roles: ['admin', 'consulta', 'vendas', 'estoque', 'fiscal'] } },
+      { label: 'Conferência de estoque', real: { to: '/conferencia-estoque-empresa', roles: ['admin', 'estoque'] } },
+      { label: 'Depósitos', real: { to: '/cadastros-reais?cadastro=warehouses', roles: ['admin', 'consulta', 'estoque'] } },
     ] },
-  ], footer: { label: 'Ver relatórios de compras e estoque', demo: '/relatorios?filter.area=Estoque', real: { to: '/relatorios-estoque', roles: ['admin', 'consulta', 'vendas', 'estoque', 'fiscal'] } } },
+  ], footer: { label: 'Ver relatórios de compras e estoque', real: { to: '/relatorios-estoque', roles: ['admin', 'consulta', 'vendas', 'estoque', 'fiscal'] } } },
   { name: 'Financeiro', columns: [
     { title: 'Gestão financeira', items: [
-      { label: 'Caixas e bancos', demo: '/caixas-bancos', real: { to: '/financeiro-empresa?area=accounts', roles: FINANCE } },
-      { label: 'Contas a pagar', demo: '/contas-pagar', real: { to: '/financeiro-empresa?area=payable', roles: FINANCE } },
-      { label: 'Contas a receber', demo: '/contas-receber', real: { to: '/financeiro-empresa?area=receivable', roles: FINANCE } },
-      { label: 'Remessas e retornos', demo: '/remessas-retornos', real: { to: '/financeiro-empresa?area=remessas', roles: FINANCE } },
-      { label: 'Ficha Financeira', demo: '/ficha-financeira', real: { to: '/financeiro-empresa?area=ficha', roles: FINANCE } },
-      { label: 'Comissões', demo: '/comissoes', real: { to: '/financeiro-empresa?area=comissoes', roles: FINANCE } },
-      { label: 'Controle de caixa', demo: '/controle-caixa', real: { to: '/financeiro-empresa?area=controle-caixa', roles: FINANCE } },
-      { label: 'Faturamento agrupado', demo: '/faturamento-agrupado', real: { to: '/financeiro-empresa?area=faturamento-agrupado', roles: FINANCE } },
+      { label: 'Caixas e bancos', real: { to: '/financeiro-empresa?area=accounts', roles: FINANCE } },
+      { label: 'Contas a pagar', real: { to: '/financeiro-empresa?area=payable', roles: FINANCE } },
+      { label: 'Contas a receber', real: { to: '/financeiro-empresa?area=receivable', roles: FINANCE } },
+      { label: 'Remessas e retornos', real: { to: '/financeiro-empresa?area=remessas', roles: FINANCE } },
+      { label: 'Ficha Financeira', real: { to: '/financeiro-empresa?area=ficha', roles: FINANCE } },
+      { label: 'Comissões', real: { to: '/financeiro-empresa?area=comissoes', roles: FINANCE } },
+      { label: 'Controle de caixa', real: { to: '/financeiro-empresa?area=controle-caixa', roles: FINANCE } },
+      { label: 'Faturamento agrupado', real: { to: '/financeiro-empresa?area=faturamento-agrupado', roles: FINANCE } },
     ] },
-  ], footer: { label: 'Ver relatórios financeiros', demo: '/relatorios?filter.area=Financeiro', real: { to: '/financeiro-empresa?area=relatorios', roles: FINANCE } } },
+  ], footer: { label: 'Ver relatórios financeiros', real: { to: '/financeiro-empresa?area=relatorios', roles: FINANCE } } },
 ];
 
 // Preferências, as in Origin (gear → Preferências): categories in Origin order with Origin's groups ("Configurações de …",
@@ -230,10 +226,10 @@ export type ResolvedItem = { label: string; to?: string; disabled: boolean };
 export type ResolvedColumn = { title: string; items: ResolvedItem[] };
 export type ResolvedGroup = { name: MenuGroupName; columns: ResolvedColumn[]; footer?: ResolvedItem };
 
-// Disabled items keep Origin positions visible; a group or column with no enabled item is hidden.
-export function resolveMenu(area: 'demo' | 'real', access: CompanyAccess = {}): ResolvedGroup[] {
+// Groups and columns without accessible destinations are hidden.
+export function resolveMenu(area: 'real', access: CompanyAccess = {}): ResolvedGroup[] {
   const resolve = (item: MenuItemDefinition): ResolvedItem => {
-    const to = area === 'demo' ? item.demo : realTargetAllowed(item.real, access) ? item.real.to : undefined;
+    const to = realTargetAllowed(item.real, access) ? item.real.to : undefined;
     return { label: item.label, to, disabled: !to };
   };
   return ORIGIN_MENU.map(group => {
@@ -246,7 +242,7 @@ export function resolveMenu(area: 'demo' | 'real', access: CompanyAccess = {}): 
 export type ResolvedPreferenceCategory = { id: string; label: string; icon: string; notice?: { title: string; text: string }; sections: { title: string; entries: PreferenceEntry[] }[]; entries: LinkedPreferenceEntry[] };
 export type LinkedPreferenceEntry = PreferenceEntry & { to: string };
 // Entries for other roles are hidden (enabled or not); a category with nothing left is hidden. "entries" lists only the
-// enabled ones (search links and breadcrumbs), "sections" keeps Origin's groups with the disabled items in place.
+// enabled ones (search links and breadcrumbs); sections also describe unavailable tools.
 export function resolvePreferences(access: CompanyAccess): ResolvedPreferenceCategory[] {
   if (!access.role) return [];
   const mine = (entry: PreferenceEntry) => (!entry.to || !isOriginIntegrationRoute(entry.to) || originHistoryAvailable(access)) && (!entry.roles || entry.roles.includes(access.role as CompanyRole));
@@ -266,24 +262,3 @@ export function matchesLocation(to: string, pathname: string, search: string) {
 export function activeGroupFor(groups: readonly ResolvedGroup[], pathname: string, search: string): ResolvedGroup | undefined {
   return groups.find(group => group.columns.some(column => column.items.some(item => item.to && matchesLocation(item.to, pathname, search))));
 }
-
-// Demo "Preferências" page: the 14 Origin categories with their sections, in Origin order. Entries with a
-// demo screen link to it; the rest stay listed and disabled so the layout matches what the team knows.
-export interface DemoPreferenceSection { title: string; entries: readonly { label: string; to?: string }[] }
-export interface DemoPreferenceCategory { id: string; label: string; icon: string; sections: readonly DemoPreferenceSection[] }
-const items = (...labels: string[]) => labels.map(label => ({ label }));
-export const DEMO_PREFERENCES: readonly DemoPreferenceCategory[] = [
-  { id: 'empresa', label: 'Empresa', icon: 'building', sections: [{ title: 'Configurações da empresa', entries: items('Geral') }, { title: 'Tabelas e configurações adicionais', entries: items('Alterar dados da empresa') }] },
-  { id: 'sistema', label: 'Sistema', icon: 'desktop', sections: [{ title: 'Configurações do sistema', entries: items('Interface') }, { title: 'Tabelas e configurações adicionais', entries: items('Consulta de exclusões realizadas', 'Gerenciador de arquivos', 'Relatórios customizados', 'Etiquetas customizadas', 'Registro de atividades', 'Usuários', 'Gerenciador de transições', 'Campos customizados') }] },
-  { id: 'cadastros', label: 'Cadastros', icon: 'address-book', sections: [{ title: 'Configurações de cadastros', entries: [{ label: 'Configurações de clientes e fornecedores' }, { label: 'Controle de lotes' }, { label: 'Configurações de produtos' }, { label: 'Categorias de produtos', to: '/categorias-produtos' }, { label: 'Gerenciar tipos de contatos' }] }] },
-  { id: 'suprimentos', label: 'Suprimentos', icon: 'boxes-stacked', sections: [{ title: 'Configurações de suprimentos', entries: items('Estoque', 'Configurações de pedidos de compras') }, { title: 'Tabelas e configurações adicionais', entries: [{ label: 'Gerenciar grupos de tags' }, { label: 'Gerenciar tags' }, { label: 'Depósitos de estoque', to: '/depositos' }, { label: 'Grupos de produtos' }] }] },
-  { id: 'vendas', label: 'Vendas', icon: 'users', sections: [{ title: 'Configurações de vendas', entries: [{ label: 'Frente de caixa', to: '/frente-caixa' }, { label: 'Propostas comerciais' }, { label: 'Vendas' }] }] },
-  { id: 'notas-fiscais', label: 'Notas Fiscais', icon: 'file-invoice', sections: [{ title: 'Configurações de notas fiscais', entries: items('Configurações de NFC-e', 'Configurações de NF-e') }, { title: 'Tabelas e configurações adicionais', entries: items('Consulta de inutilizações de NF-es', 'Consulta de correções de NF-es', 'Naturezas de operação') }] },
-  { id: 'certificado', label: 'Certificado Digital', icon: 'certificate', sections: [{ title: 'Configurações do certificado digital', entries: items('Configurações de certificado digital') }] },
-  { id: 'financas', label: 'Finanças', icon: 'dollar-sign', sections: [{ title: 'Configurações de finanças', entries: items('Contas a pagar', 'Contas a receber') }, { title: 'Tabelas e configurações adicionais', entries: [{ label: 'Importação de registros financeiros' }, { label: 'Gerenciar categorias de receita e despesa', to: '/categorias-financeiras' }, { label: 'Gerenciar contas financeiras', to: '/contas-financeiras' }, { label: 'Gerenciar formas de pagamento', to: '/formas-pagamento' }, { label: 'Controle de caixa', to: '/controle-caixa' }] }] },
-  { id: 'servicos', label: 'Serviços', icon: 'screwdriver-wrench', sections: [{ title: 'Configurações de serviços', entries: items('Ordens de serviço') }] },
-  { id: 'integracoes', label: 'Integrações', icon: 'plug', sections: [{ title: 'Configurações de integrações', entries: items('API Para Web Services') }] },
-  { id: 'contabilidade', label: 'Contabilidade', icon: 'calculator', sections: [{ title: 'Configurações de contabilidade', entries: items('Espaço Meu Contador') }] },
-  { id: 'importacoes', label: 'Importações de Dados', icon: 'file-import', sections: [{ title: 'Planilhas modelo', entries: items('Importar e atualizar produtos', 'Importar e atualizar contatos', 'Importar pedidos de compra', 'Importar movimentações de estoque em massa', 'Importar notas fiscais em Lote', 'Importar contas a receber/pagar', 'Importar vendas') }] },
-  { id: 'backup', label: 'Backup e Exportação de Dados', icon: 'database', sections: [{ title: 'Backup e exportação', entries: items('Backup', 'Gerar arquivo auxiliar do SPED PIS/COFINS (Contribuições)', 'Gerar arquivo auxiliar do SPED ICMS/IPI (Fiscal)', 'Exportar dados para Sintegra') }] },
-];

@@ -1,4 +1,4 @@
-/* Frente de caixa real (tela cheia, padrão Origin): complementos do layout da demonstração (demo-pdv.css). */
+/* Estados operacionais da frente de caixa. */
 .real-main.real-main-pdv { max-width: none; padding: 0; }
 .real-pdv .pdv-body { grid-template-columns: minmax(0, 1fr) 280px; }
 .real-pdv .pdv-body.is-collapsed { grid-template-columns: minmax(0, 1fr) 46px; }

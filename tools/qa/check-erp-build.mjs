@@ -12,9 +12,10 @@ export function privateValues(value,key=''){
 }
 export function inspectBuildFile(name,bytes,secrets=[]){
  const failures=[];
- if(/\.map$|(?:^|\/)\.env(?:\.|$)|\.(?:pem|key)$|(?:^|\/)qa\.html$/i.test(name))failures.push('forbidden_file');
+ if(/\.map$|(?:^|[\\/])\.env(?:\.|$)|\.(?:pem|key)$|(?:^|[\\/])(?:qa|review)\.html$/i.test(name))failures.push('forbidden_file');
  const contents=Buffer.from(bytes).toString('utf8');
  if(markers.some(marker=>contents.includes(marker)))failures.push('qa_marker');
+ if(['brufap.erp.demo.','Restaurar dados de demonstração','Prévia de layout · dados de demonstração','Conhecer a prévia com dados fictícios','Demonstração do layout'].some(marker=>contents.includes(marker)))failures.push('unsupported_entry');
  if(secrets.some(secret=>typeof secret==='string'&&secret.length>=12&&contents.includes(secret)))failures.push('private_value');
  return{file:name,failures};
 }

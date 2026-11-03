@@ -1,6 +1,6 @@
 # Publicação da interface e da API
 
-O comando `infra/deploy-application.py` compila e publica a interface original e a API completa do ERP em dois Workers da conta Cloudflare desta instalação. Ele usa o núcleo local e as três origens já geradas por `infra/configure.py`; não cria outro banco, usuário ou conjunto de dados.
+O comando `infra/deploy-application.py` compila e publica a interface web do FAGOO e a API completa do ERP em dois Workers da conta Cloudflare desta instalação. Ele usa o núcleo local e as três origens já geradas por `infra/configure.py`; não cria outro banco, usuário ou conjunto de dados.
 
 ## Preparação
 

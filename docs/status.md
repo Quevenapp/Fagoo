@@ -1,6 +1,6 @@
 # Estado do FAGOO
 
-A versão de desenvolvimento é `0.2.0-dev.0`. O FAGOO reúne interface web, API, módulos comerciais, estoque, PDV, financeiro, CNAB, fiscal, preferências e permissões, mantendo o template atual.
+A versão de desenvolvimento é `0.2.0-dev.0`. O FAGOO reúne interface web, API, módulos comerciais, estoque, PDV, financeiro, CNAB, fiscal, preferências e permissões.
 
 ## Disponível no código
 
@@ -29,7 +29,7 @@ O bootstrap de produção cria uma instalação própria, sem dados comerciais d
 
 Todas as instalações recebem a mesma distribuição e seguem o mesmo contrato de atualização. O sistema preserva os dados e configurações locais enquanto aplica mudanças compatíveis e versionadas do banco. As releases não dependem de uma edição específica por cliente.
 
-O novo template visual é uma etapa posterior. Alterações de infraestrutura ou aparência devem preservar os módulos, os campos e os fluxos do ERP.
+Alterações de infraestrutura ou aparência devem preservar os módulos, os campos e os fluxos do ERP.
 
 ## Limite das verificações
 

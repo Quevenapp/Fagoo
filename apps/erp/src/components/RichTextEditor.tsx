@@ -79,7 +79,7 @@ export function RichTextEditor({ id, label, value, onChange, disabled = false }:
     if (point) { const selection = document.getSelection(); selection?.removeAllRanges(); selection?.addRange(point); }
     document.execCommand('insertText', false, text); };
   if (disabled) return <div className="rich-text-editor is-disabled"><span className="rich-text-label" id={`${id}-label`}>{label}</span><RichTextView value={value} label={label} /></div>;
-  // The Font Awesome set of the ERP has no text-editor glyphs: the tools show short marks with the Origin title.
+  // Text formatting tools use compact labels with accessible titles.
   const button = (title: string, glyph: ReactNode, run: () => void) => <button type="button" className="rich-text-tool" title={title} aria-label={title} onMouseDown={keep} onClick={run}>{glyph}</button>;
   const ALIGN: [RichAlign, string, string][] = [['left', 'Alinhar à esquerda', 'Esq.'], ['center', 'Centralizar', 'Centro'], ['right', 'Alinhar à direita', 'Dir.'], ['justify', 'Justificar', 'Just.']];
   return <div className="rich-text-editor">

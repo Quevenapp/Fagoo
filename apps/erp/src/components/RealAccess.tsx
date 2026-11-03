@@ -73,7 +73,6 @@ function Login({ controller, state }: { controller: AccessController; state: Acc
     </form>}
     <ForgotPassword email={email} />
     <p className="real-help">O acesso é liberado pelo administrador da empresa.</p>
-    <Link className="text-button" to="/inicio">Conhecer a prévia com dados fictícios</Link>
   </section>;
 }
 
@@ -219,6 +218,6 @@ function ConnectedArea() {
 }
 
 export default function RealAccess() {
-  if (!configuration || !supabase) return <main id="main-content" className="real-main"><section className="real-state-panel"><h1>Acesso da empresa em preparação</h1><p>A configuração de autenticação e consulta ainda não foi disponibilizada neste ambiente.</p><Link className="primary-button" to="/inicio">Voltar à prévia fictícia</Link></section></main>;
+  if (!configuration || !supabase) return <main id="main-content" className="real-main"><section className="real-state-panel"><h1>Acesso da empresa em preparação</h1><p>A configuração de autenticação e consulta ainda não foi disponibilizada neste ambiente.</p><p>Solicite ao administrador a conclusão da instalação.</p></section></main>;
   return <ConnectedArea />;
 }

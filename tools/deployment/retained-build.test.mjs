@@ -23,6 +23,41 @@ test('retains exactly two distinct prior builds, never old HTML/headers or accum
 test('identical rebuild does not evict an older useful chunk; retained snapshots expire after seven days',async()=>{
  const f=await setup();try{await f.run(1);await f.run(2);await f.run(3);await f.run(3,{now:1000100});assert.deepEqual((await assets(f.dist)).sort(),[name(1),name(2),name(3)]);await f.run(4,{now:1000101+RETENTION.maxAgeMs});assert.deepEqual(await assets(f.dist),[name(4)]);}finally{await f.cleanup();}
 });
+
+test('release build contains only current assets and resets history for subsequent updates',async()=>{
+ const f=await setup();try{
+  await f.run(1);await f.run(2);await f.run(3);
+  const result=await f.run(4,{retainPrevious:false});
+  assert.deepEqual(result,{passed:true,current_assets:1,retained_assets:0,previous_builds:0});
+  assert.deepEqual(await assets(f.dist),[name(4)]);
+  const manifest=JSON.parse(await readFile(join(f.cache,'manifest.json'),'utf8'));
+  assert.equal(manifest.builds.length,1);
+  assert.deepEqual(manifest.builds[0].files.map(f=>f.name),[name(4)]);
+  assert.equal((await readdir(join(f.cache,'objects'))).length,1);
+  await f.run(5);assert.deepEqual((await assets(f.dist)).sort(),[name(4),name(5)]);
+ }finally{await f.cleanup();}
+});
+
+test('release failure preserves prior directories; success never reads or republishes their contents',async()=>{
+ const f=await setup();try{
+  await f.run(1);
+  await writeFile(join(f.dist,'assets',name(1)),'brufap.erp.demo.list.');
+  await writeFile(join(f.cache,'manifest.json'),'invalid cached manifest');
+  const original=await readFile(join(f.dist,'assets',name(1)));
+  for(const build of [
+   async p=>{await tree(p,2);throw new Error('synthetic build failure');},
+   async p=>{await tree(p,2);await writeFile(join(p,'assets',name(2)),'private-test-value-123456');}
+  ]){
+   await assert.rejects(f.run(2,{retainPrevious:false,build}));
+   assert.deepEqual(await readFile(join(f.dist,'assets',name(1))),original);
+   assert.equal(await readFile(join(f.cache,'manifest.json'),'utf8'),'invalid cached manifest');
+   assert.deepEqual((await readdir(join(f.root,'.cache'))).sort(),['erp-assets']);
+  }
+  await f.run(2,{retainPrevious:false});
+  assert.deepEqual(await assets(f.dist),[name(2)]);
+  assert.equal(JSON.parse(await readFile(join(f.cache,'manifest.json'),'utf8')).builds.length,1);
+ }finally{await f.cleanup();}
+});
 test('failed build or validation preserves original dist and cache byte for byte',async()=>{
  const f=await setup();try{
   await f.run(1);const before=await readFile(join(f.cache,'manifest.json'));
@@ -35,7 +70,7 @@ test('failed build or validation preserves original dist and cache byte for byte
 test('source maps, unversioned files, HTML disguised as JS and symlinks cannot be retained',async()=>{
  for(const mode of ['map','plain','html','symlink','directory']){const f=await setup();try{
   await f.run(1);
-  const build=async p=>{await tree(p,2);const dir=join(p,'assets');if(mode==='map')await writeFile(join(dir,'module-12345678.js.map'),'{}');if(mode==='plain')await writeFile(join(dir,'config.js'),'{}');if(mode==='html')await writeFile(join(dir,name(2)),'<!doctype html><html>fallback</html>');if(mode==='symlink')await symlink(join(f.dist,'assets',name(1)),join(dir,'linked-12345678.js'));if(mode==='directory')await mkdir(join(dir,'nested'));};
+  const build=async p=>{await tree(p,2);const dir=join(p,'assets');if(mode==='map')await writeFile(join(dir,'module-12345678.js.map'),'{}');if(mode==='plain')await writeFile(join(dir,'config.js'),'{}');if(mode==='html')await writeFile(join(dir,name(2)),'<!doctype html><html>fallback</html>');if(mode==='symlink')await symlink(process.platform==='win32'?f.dist:join(f.dist,'assets',name(1)),join(dir,'linked-12345678.js'),process.platform==='win32'?'junction':'file');if(mode==='directory')await mkdir(join(dir,'nested'));};
   await assert.rejects(f.run(2,{build}),/RETENTION_/);assert.deepEqual(await assets(f.dist),[name(1)]);
  }finally{await f.cleanup();}}
 });

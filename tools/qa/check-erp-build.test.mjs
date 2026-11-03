@@ -7,9 +7,14 @@ test('build guard rejects QA payloads, maps, local tokens and exact private valu
   const result=inspectBuildFile(name,body,[secret]);assert.ok(result.failures.includes(reason));assert.doesNotMatch(JSON.stringify(result),new RegExp(secret));
  }
 });
-test('build guard allows public configuration and demo presentation without weakening secret checks',()=>{
- assert.deepEqual(inspectBuildFile('assets/index.js','const api="https://brufap-erp-api.brunovnq.workers.dev"; const title="Demonstração";'),{file:'assets/index.js',failures:[]});
+test('build guard allows public configuration without weakening secret checks',()=>{
+ assert.deepEqual(inspectBuildFile('assets/index.js','const api="https://api.example.com"; const title="FAGOO";'),{file:'assets/index.js',failures:[]});
  assert.deepEqual(privateValues({SUPABASE_URL:'https://example.supabase.co',nested:{client_secret:'synthetic-client-secret-value',access_token:'synthetic-access-token-value'},publicKey:'public-config-value'}),['synthetic-client-secret-value','synthetic-access-token-value']);
+});
+
+test('only supported application entries can enter a browser artifact',()=>{
+ for(const name of ['review.html','nested/review.html','nested\\review.html'])assert.deepEqual(inspectBuildFile(name,'hello').failures,['forbidden_file']);
+ for(const marker of ['brufap.erp.demo.list.','Restaurar dados de demonstração','Prévia de layout · dados de demonstração','Conhecer a prévia com dados fictícios','Demonstração do layout'])assert.deepEqual(inspectBuildFile('assets/entry.js',marker).failures,['unsupported_entry']);
 });
 
 test('A1 deployment keys and synthetic certificate markers cannot enter a browser artifact',()=>{

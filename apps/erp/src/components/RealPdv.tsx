@@ -29,7 +29,7 @@ import FinanceContactOpenTitles from './FinanceContactOpenTitles';
 import PdvReceiptPrint, { type PdvPrintJob } from './PdvReceiptPrint';
 import { PdvCancelDialog, PdvCloseDialog, PdvGtinDialog, PdvMoveDialog, PdvPixDialog, PdvReturnDialog, PdvSettingsDialog, PdvShortcutsDialog, PdvStoreDialog, PdvTableDialog } from './PdvDialogs';
 import { Icon } from './Icon';
-import './demo-pdv.css';
+import './pdv.css';
 import './real-pdv.css';
 
 type Tab = 'produto' | 'cliente' | 'pagamento';
@@ -376,7 +376,7 @@ export default function RealPdv({ controller }: { controller: AccessController }
   const salesState = sales?.key === salesKey ? sales : null;
   const detail = selected?.record ?? null;
   const tabButton = (id: Tab, label: string, action: PdvAction) => <button type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'active' : ''} onClick={() => setTab(id)}>{label} ({hint(action)})</button>;
-  return <div className="demo-pdv real-pdv">
+  return <div className="pdv-workspace real-pdv">
     <header className="pdv-topbar">
       <button type="button" className="pdv-menu-button" aria-label="Abrir menu" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><Icon name="bars" size={15} /></button>
       <span className="pdv-store"><span className="pdv-store-avatar" aria-hidden="true">{(store?.store.name ?? 'B').slice(0, 1).toUpperCase()}</span>{store?.store.name ?? 'Frente de caixa'}</span>

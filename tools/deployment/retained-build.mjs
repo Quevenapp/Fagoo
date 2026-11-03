@@ -71,8 +71,8 @@ export async function publishDirectories(pairs,move=rename){
 }
 
 /** build(output) must write only to output; check(output) scans the complete public bundle. */
-export async function retainedBuild({dist,cache,build,check,now=Date.now()}={}){
- if(typeof dist!=='string'||typeof cache!=='string'||typeof build!=='function'||typeof check!=='function'||!Number.isSafeInteger(now)||now<0)fail('RETENTION_OPTIONS_INVALID');
+export async function retainedBuild({dist,cache,build,check,retainPrevious=true,now=Date.now()}={}){
+ if(typeof dist!=='string'||typeof cache!=='string'||typeof build!=='function'||typeof check!=='function'||typeof retainPrevious!=='boolean'||!Number.isSafeInteger(now)||now<0)fail('RETENTION_OPTIONS_INVALID');
  dist=resolve(dist);cache=resolve(cache);if(dist===cache||cache.startsWith(dist+'/')||dist.startsWith(cache+'/'))fail('RETENTION_PATH_INVALID');
  // All mutable temporary/cache paths are ignored local build artifacts.
  await mkdir(dirname(cache),{recursive:true});await directory(dirname(cache));await directory(dirname(dist));
@@ -81,8 +81,10 @@ export async function retainedBuild({dist,cache,build,check,now=Date.now()}={}){
  let preserveRecovery=false;
  try{
   await mkdir(work);await mkdir(output);await mkdir(nextCache);await mkdir(join(nextCache,'objects'));
-  const history=await load(cache,now),hasDist=await directory(dist,false);
-  if(hasDist){
+  // A release starts a new cache after validation, without importing prior artifact bytes.
+  await directory(cache,false);
+  const history=retainPrevious?await load(cache,now):[],hasDist=await directory(dist,false);
+  if(hasDist&&retainPrevious){
    await verify(check,dist);
    if(!history.length)history.push(await capture(dist,now));
    else{

@@ -4,7 +4,7 @@ import { ORIGIN_MENU, COMPANY_PREFERENCES, activeGroupFor, matchesLocation, reso
 
 const labels = group => group.columns.map(column => `${column.title}: ${column.items.map(item => item.label).join(', ')}`);
 
-test('menu keeps the Origin top-level order, column titles and item order', () => {
+test('access catalog groups the available resources and operations', () => {
   assert.deepEqual(ORIGIN_MENU.map(group => group.name), ['Meu Negócio', 'Cadastros', 'Vendas', 'Estoque', 'Financeiro']);
   const byName = Object.fromEntries(ORIGIN_MENU.map(group => [group.name, group]));
   assert.deepEqual(labels(byName.Cadastros), [
@@ -24,19 +24,9 @@ test('menu keeps the Origin top-level order, column titles and item order', () =
   assert.deepEqual(['Cadastros', 'Vendas', 'Estoque', 'Financeiro'].map(name => byName[name].footer.label), ['Ver relatórios de cadastros', 'Ver relatórios de vendas', 'Ver relatórios de compras e estoque', 'Ver relatórios financeiros']);
 });
 
-test('out-of-scope Origin entries never appear', () => {
+test('unsupported services are absent from the access catalog', () => {
   const all = ORIGIN_MENU.flatMap(group => group.columns.flatMap(column => column.items.map(item => item.label)));
   for (const label of ['Gestão de anúncios', 'Loja Virtual', 'Importar pedidos manualmente', 'Objetos de postagem', 'Origin Envios', 'CT-e', 'Notas de serviço', 'DAS MEI', 'GNRE e DARE-SP', 'Origin Conta Digital', 'Multiempresa', 'Ordens de produção']) assert.equal(all.includes(label), false, label);
-});
-
-test('demo area enables every item with a demo screen and keeps planned items disabled in place', () => {
-  const menu = resolveMenu('demo');
-  const cadastros = menu.find(group => group.name === 'Cadastros');
-  const items = cadastros.columns[0].items;
-  assert.deepEqual(items.map(item => item.label).slice(0, 4), ['Produtos', 'Clientes e fornecedores', 'Vendedores', 'Funcionários']);
-  assert.equal(items.find(item => item.label === 'Funcionários').disabled, true);
-  assert.equal(items.find(item => item.label === 'Produtos').to, '/produtos');
-  assert.equal(cadastros.footer.to, '/relatorios?filter.area=Cadastros');
 });
 
 test('real area respects roles and resources and hides groups with nothing enabled', () => {
@@ -65,12 +55,12 @@ test('location matching compares path and every query value of the target', () =
   assert.equal(activeGroupFor(menu, '/certificado-a1', ''), undefined);
 });
 
-test('preferences expose FAGOO-only pages by role, keeping every previous navigation entry reachable', () => {
+test('preferences expose FAGOO-only pages by role, with the configured integration destinations', () => {
   assert.deepEqual(resolvePreferences({}), []);
   const admin = resolvePreferences({ role: 'admin', capabilities: { originHistory: true } }).flatMap(category => category.entries.map(entry => entry.to));
   for (const to of ['/empresa-configuracoes', '/dados-origin', '/certificado-a1', '/conexao-sefaz', '/numeracao-fiscal', '/importar-cadastros', '/importar-orcamentos', '/conferir-compras-origin', '/conferir-vendas-origin', '/preparacao-virada', '/integracao-origin', '/historico-vendas-origin', '/emissor-fiscal?modelo=55', '/emissor-fiscal?modelo=65', '/xmls-sincronizados', '/cobranca-empresa', '/retornos-operacionais', '/relatorio-vencimentos', '/cobrancas-legadas-itau']) assert.ok(admin.includes(to), to);
   const sales = resolvePreferences({ role: 'vendas', capabilities: { originHistory: true } });
-  // Origin categories in Origin order; a role sees a category only when it reads at least one of its pages or tools.
+  // A role sees a category only when it can read one of its pages or tools.
   assert.deepEqual(sales.map(category => category.id), ['empresa', 'sistema', 'cadastros', 'suprimentos', 'vendas', 'servicos', 'integracoes']);
   assert.equal(sales.some(category => category.entries.some(entry => ['/preferencias/notas-fiscais/nfe', '/preferencias/financas/contas-receber', '/estoque-abertura'].includes(entry.to))), false);
   assert.deepEqual(COMPANY_PREFERENCES.map(category => category.label), ['Empresa', 'Sistema', 'Cadastros', 'Suprimentos', 'Vendas', 'Notas Fiscais', 'Certificado Digital', 'Finanças', 'Serviços', 'Integrações', 'Contabilidade', 'Importações de Dados', 'Backup e Exportação de Dados']);

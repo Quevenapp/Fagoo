@@ -5,9 +5,9 @@ import {createWarehouseImportFixture,warehouseQaResult} from '../src/qa/warehous
 import {stockObservationsListPath,stockObservationsHref,stockObservationsRouteSource} from '../src/lib/origin-stock-observations-request.ts';
 const ACTOR='87000000-0000-4000-8000-000000000001',OTHER='87000000-0000-4000-8000-000000000002',tick=()=>new Promise(r=>setTimeout(r,0));
 const deferred=()=>{let resolve;const promise=new Promise(r=>resolve=r);return{resolve,promise};};
-function setup({role='admin',before=()=>{}}={}){const f=createStockObservationsFixture();let currentRole=role,actor=ACTOR,emit,meGate;const calls=[];
+function setup({role='admin',history=true,before=()=>{}}={}){const f=createStockObservationsFixture();let currentRole=role,actor=ACTOR,emit,meGate;const calls=[];
  const auth={getSession:async()=>({data:{session:{access_token:'synthetic087',user:{id:ACTOR}}},error:null}),onAuthStateChange:fn=>(emit=fn,{data:{subscription:{unsubscribe(){}}}}),signOut:async()=>({error:null})};
- const controller=access.createAccessController(auth,'https://api.synthetic.test',async(url,o)=>{if(url.endsWith('/me')){if(meGate)await meGate.promise;return Response.json({user_id:actor,role:currentRole,resources:[],data_mode:'staging_readonly'});}const path=new URL(url).pathname+new URL(url).search,call={path,...o};calls.push(call);await before(call);return Response.json(await f.controller.stockObservations(path,{method:o.method,signal:o.signal}));});
+ const controller=access.createAccessController(auth,'https://api.synthetic.test',async(url,o)=>{if(url.endsWith('/me')){if(meGate)await meGate.promise;return Response.json({user_id:actor,role:currentRole,resources:[],data_mode:'staging_readonly',capabilities:{originHistory:history}});}const path=new URL(url).pathname+new URL(url).search,call={path,...o};calls.push(call);await before(call);return Response.json(await f.controller.stockObservations(path,{method:o.method,signal:o.signal}));});
  return{controller,calls,refresh(r,gate){currentRole=r;meGate=gate;emit('TOKEN_REFRESHED',{access_token:'renewed087',user:{id:actor}});},changeActor(){actor=OTHER;emit('SIGNED_IN',{access_token:'other087',user:{id:actor}});}};
 }
 test('087 current controller captures GET before refresh and refuses a role lost during refresh',async()=>{
@@ -40,8 +40,10 @@ test('087 pending warehouse import never offers a stock shortcut; receipt readba
 test('086/087 breadcrumbs retain preparation/warehouse route without adding a daily menu item',async()=>{
  const old=globalThis.window;globalThis.window={addEventListener(){},removeEventListener(){}};
  try{for(const [path,label]of[['/preparacao-virada/depositos','Depósitos do Origin'],[stockObservationsHref('007'),'Estoque informado pelo Origin']]){
-  const f=createStockObservationsFixture(),v=await mountComponent('CompanyNavigation.tsx',{state:f.controller.getSnapshot(),onLogout(){}},{location:path,ports:{access},modules:{'../lib/real-access':'export const {ROLE_LABELS}=r.access;'}});
+  const f=createStockObservationsFixture(),v=await mountComponent('CompanyNavigation.tsx',{state:{...f.controller.getSnapshot(),membership:{...f.controller.getSnapshot().membership,capabilities:{originHistory:true}}},onLogout(){}},{location:path,ports:{access},modules:{'../lib/real-access':'export const {ROLE_LABELS}=r.access;'}});
   try{assert.match(v.text(),/Preparação da virada/);const current=v.nodes().find(n=>n.props['aria-current']==='page');assert.equal(current.props.children,label);assert.ok(v.nodes().some(n=>n.props.to==='/preparacao-virada'));if(path.includes('/estoque'))assert.ok(v.nodes().some(n=>n.props.to==='/preparacao-virada/depositos'));}finally{v.unmount();}
  }}finally{globalThis.window=old;}
  const app=await readFile(new URL('../src/App.tsx',import.meta.url),'utf8');assert.ok(app.includes("'/preparacao-virada/depositos/estoque'"));
 });
+
+test('stock history is hidden when its capability is disabled',async()=>{const f=setup({history:false}),v=await mountRoute(f.controller);try{assert.equal(f.calls.length,0);assert.doesNotMatch(v.text(),/Estoque informado pelo Origin/);}finally{v.unmount();}});

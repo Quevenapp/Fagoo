@@ -32,17 +32,10 @@ for(const lockfile of locks){
 const assetPaths=files.filter(p=>/\.(?:woff2?|ttf|otf|png|jpe?g|webp|gif|svg|ico|xsd|wsdl|pem|pdf)$/i.test(p));
 const assets=[];
 for(const path of assetPaths){const bytes=await readFile(resolve(root,path));assets.push({path,bytes:bytes.length,sha256:sha(bytes),group:path.includes('/fonts/')?'font':/\.(xsd|wsdl)$/.test(path)?'fiscal-schema':path.includes('/trust/')?'public-trust-anchor':'image-or-document'});}
-const evidence=[];
-for(const path of files.filter(p=>/\.(?:tsx?|jsx?|mjs|css|md)$/.test(p)&&!p.startsWith('docs/legal/'))){
- const source=await readFile(resolve(root,path),'utf8');
- const counts={copyright:(source.match(/copyright/gi)||[]).length,license:(source.match(/\blicen[cs]e\b/gi)||[]).length,generated:(source.match(/generated|gerado por|AI-generated/gi)||[]).length,reference:(source.match(/igual ao|follow.+exactly|mirrors|padrão do Origin|Origin-like/gi)||[]).length};
- if(Object.values(counts).some(Boolean))evidence.push({path,sha256:sha(source),markers:counts});
-}
 await mkdir(out,{recursive:true});
 const byLicense={};for(const p of packages)byLicense[typeof p.license==='string'?p.license:JSON.stringify(p.license)]=(byLicense[typeof p.license==='string'?p.license:JSON.stringify(p.license)]??0)+1;
 const inventory={format:1,method:'All lockfile entries, including build tools and optional packages. License fields are declared metadata, not a compatibility opinion.',lockfiles:locks,packages,summary:{entries:packages.length,uniquePackages:new Set(packages.map(p=>p.name+'@'+p.version)).size,byLicense,unknown:packages.filter(p=>p.license==='UNKNOWN').map(p=>({name:p.name,version:p.version,lockfile:p.lockfile})),missingTexts}};
 await writeFile(resolve(out,'dependency-inventory.json'),JSON.stringify(inventory,null,2)+'\n');
 await writeFile(resolve(out,'asset-inventory.json'),JSON.stringify({format:1,assets},null,2)+'\n');
-await writeFile(resolve(out,'source-evidence.json'),JSON.stringify({format:1,method:'Marker scan of tracked source and staged/new distributable files. A marker is a review lead, not a provenance finding. No claim of exhaustive human review.',files:evidence},null,2)+'\n');
 await writeFile(resolve(out,'npm-license-texts.txt'),notices.join('\n'));
-console.log(JSON.stringify({lockfiles:locks,entries:packages.length,uniquePackages:inventory.summary.uniquePackages,byLicense,unknown:inventory.summary.unknown,missingNoticeTexts:missingTexts.length,assets:assets.length,sourceFilesWithMarkers:evidence.length}));
+console.log(JSON.stringify({lockfiles:locks,entries:packages.length,uniquePackages:inventory.summary.uniquePackages,byLicense,unknown:inventory.summary.unknown,missingNoticeTexts:missingTexts.length,assets:assets.length}));

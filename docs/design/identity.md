@@ -1,10 +1,8 @@
-# Identidade FAGOO · versão 1
+# Interface do FAGOO
 
-Status: proposta implementada em branch de revisão. Base: `1509174fb4007539fec9816760de9960271d0c09`. Este documento registra decisões de design, não uma publicação em produção.
+FAGOO é uma área de trabalho para administrar a operação da empresa. A identidade combina grafite e violeta, superfícies claras, títulos em Manrope, dados em Source Sans 3 e ícones de traço.
 
-## Direção
-
-FAGOO é uma área de trabalho para administrar a operação da empresa. A identidade combina grafite, violeta, superfícies claras, tipografia com maior diferenciação entre títulos e dados e ícones de traço. O redesenho altera composição, navegação e hierarquia, mantendo as regras de negócio.
+## Cores
 
 | Uso | Claro | Escuro |
 | --- | --- | --- |
@@ -18,48 +16,27 @@ FAGOO é uma área de trabalho para administrar a operação da empresa. A ident
 | Destaque suave | #EFE8FC | #342647 |
 | Navegação lateral | #252131 | #252131 |
 
-Verde é reservado para estados semânticos de sucesso. Gráficos usam violeta, azul petróleo e terracota; rótulos e tabelas continuam disponíveis para que a leitura não dependa apenas de cor.
+Verde sinaliza sucesso. Os gráficos usam violeta, azul petróleo e terracota, acompanhados por rótulos e tabelas. Os pares de texto medidos estão em [contrast.json](contrast.json); essa medição não representa uma avaliação completa de acessibilidade.
 
 ## Tipografia, marca e ícones
 
-- Títulos e marca tipográfica: Manrope variável, pesos 200–800.
+- Títulos: Manrope variável, pesos 200–800.
 - Texto, formulários e tabelas: Source Sans 3 variável, pesos 200–900.
-- As fontes são servidas pela própria instalação, sem requisições a serviços de fontes.
-- Símbolo: dois percursos deslocados formando um F aberto e um ponto separado. Vetor criado diretamente para o projeto em `FagooBrand.tsx` e `public/fagoo-mark.svg`.
-- FAGOO Line: caminhos geométricos originais em uma malha de 24 unidades, traço de 1,7 e terminações arredondadas. Os nomes antigos continuam como aliases para preservar os módulos.
-- Ícones históricos de terceiros e fontes anteriores mantêm seus avisos no código e no histórico. O novo componente Icon não importa os caminhos históricos.
+- Fontes servidas pela própria instalação, com licenças e origens em [atribuições](../../THIRD_PARTY_NOTICES.md).
+- Marca vetorial em `FagooBrand.tsx` e `public/fagoo-mark.svg`.
+- Ícones FAGOO Line: malha de 24 unidades, traço de 1,7, terminações arredondadas e aliases semânticos em `fagoo-icons.ts`.
 
-Fontes não são autoria do FAGOO. Autores, origem e licenças estão em [atribuições](../../THIRD_PARTY_NOTICES.md).
+## Áreas de trabalho
 
-## Composição
-
-| Família | Decisão |
+| Família | Organização |
 | --- | --- |
-| Navegação | Barra lateral grafite; módulos reorganizados em Resultados, Comercial, Compras, Catálogo, Estoque, Financeiro, Fiscal e Pessoas; busca e ferramentas no cabeçalho |
-| Dashboard | Cabeçalho editorial; três indicadores do período quando autorizados; gráfico principal; detalhamento expansível; acompanhamento e favoritos à direita |
-| Listagens | Registros ocupam a largura disponível; filtros e operações abrem acima da tabela; chips aplicados permanecem visíveis; seleção, exportação e ações em lote preservadas |
-| Cadastro de produto | Dados principais em bloco próprio; navegação vertical por assunto; painéis de características, imagens, estoque, fornecedores e tributação |
-| Cadastro de contato | Índice lateral com acesso às sete seções; identificação em bloco próprio; campos distribuídos em duas colunas; foco transferido à seção escolhida |
-| Configurações | Busca em destaque; categorias em cartões acima dos destinos agrupados; subseções das regras em navegação horizontal |
-| Documentos | Resumo com total calculado e navegação por identificação, itens, pagamento e operações; formulário em área própria; ações de gravação e validações preservadas |
-| Mobile | Navegação lateral recolhida; ferramentas acessíveis no cabeçalho; painéis empilhados; tabelas largas mantêm rolagem dentro de sua região |
-| Tema escuro | Tokens independentes para superfície, texto, ações, bordas e foco |
+| Navegação | Menu lateral com Resultados, Comercial, Compras, Catálogo, Estoque, Financeiro, Fiscal e Pessoas; busca no cabeçalho |
+| Dashboard | Indicadores do período, gráfico principal, detalhamento expansível, acompanhamento e favoritos |
+| Listagens | Filtros e operações acima da tabela; chips, seleção, exportação e ações em lote |
+| Produtos | Dados principais e navegação vertical por assunto |
+| Contatos | Índice lateral com sete seções, transferência de foco e campos em duas colunas |
+| Configurações | Busca, categorias em cartões e destinos agrupados |
+| Documentos | Resumo, total calculado e navegação por identificação, itens, pagamento e operações |
+| Mobile | Menu recolhível, painéis empilhados e rolagem de tabelas dentro de sua região |
 
-As permissões são resolvidas antes da composição do menu. `workspaceMenu` recebe somente os destinos autorizados. Testes com os seis perfis comparam os conjuntos de rotas antes e depois.
-
-## Componentes e limites
-
-`OriginTopBar` mantém o nome de arquivo para compatibilidade de imports; sua composição visual foi substituída. `NativeListLayout` mantém os contratos de filtros, ações e conteúdo. A camada `fagoo-system.css` fornece o acabamento comum; componentes específicos continuam responsáveis por estados de erro, validação e regras de negócio.
-
-O redesenho não modifica schema, contratos de API, autenticação, integrações, cálculos monetários ou confirmações operacionais. Isso deve continuar sendo verificado por testes de regressão; uma captura de tela não prova equivalência funcional.
-
-## Revisão reproduzível
-
-1. Instale as dependências conforme o manual.
-2. Execute `npm run dev:erp`.
-3. Abra `http://127.0.0.1:5173/review.html`.
-4. Use `?screen=products` para produtos, `?screen=contact` para o cadastro de contato, `?screen=order` para o pedido e `?screen=settings` para configurações.
-5. Compare com a mesma fixture aplicada à base 1509174, sem alterar seus componentes visuais.
-6. Confira desktop, mobile, tema escuro, foco, Escape, menus, filtros e navegação por teclado.
-
-Essa entrada usa componentes nativos e dados fictícios. Não possui conexão de rede com a API, não grava dados e não faz parte dos arquivos de entrada do build de produção. Consultas adicionais não simuladas podem mostrar estados de indisponibilidade. Ela cobre as telas principais da revisão e não substitui a homologação operacional de todos os módulos.
+O menu recebe os destinos já filtrados pelas permissões. Componentes compartilhados atendem aos temas claro e escuro; cada módulo mantém suas validações, mensagens, confirmações e operações. Interações devem continuar acessíveis por teclado, com foco visível e rótulos que não dependam apenas de ícones ou cores.

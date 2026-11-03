@@ -10,30 +10,33 @@ const withWindow = async run => {
 };
 const links = view => view.nodes().filter(node => node.props?.to).map(node => node.props.to);
 
-test('top bar opens the Origin mega-menu with column titles, disabled planned items and the reports footer', () => withWindow(async () => {
-  const view = await mountComponent('OriginTopBar.tsx', { groups: resolveMenu('demo'), homeTo: '/inicio', preferencesTo: '/configuracoes', user: { name: 'Demonstração', company: 'Empresa' }, theme: 'dark', onTheme() {} }, { location: '/vendas' });
+test('sidebar groups company destinations and toggles the selected section', () => withWindow(async () => {
+  const view = await mountComponent('OriginTopBar.tsx', { groups: resolveMenu('real', {role:'admin',resources:['products','contacts']}), homeTo: '/acesso', preferencesTo: '/preferencias', user: { name: 'Administrador', company: 'Empresa' }, theme: 'dark', onTheme() {} }, { location: '/acesso' });
   try {
-    assert.match(view.text(), /Meu Negócio.*Cadastros.*Vendas.*Estoque.*Financeiro/s);
-    assert.equal(links(view).includes('/produtos'), false, 'menus stay closed until clicked');
-    await view.click('Cadastros');
-    assert.match(view.text(), /Cadastros.*Produtos.*Clientes e fornecedores.*Ferramentas.*Categorias de produtos.*Ver relatórios de cadastros/s);
-    assert.ok(links(view).includes('/produtos'));
-    const disabled = view.nodes().filter(node => node.props?.['aria-disabled'] === 'true').map(node => node.props.children);
-    assert.deepEqual(disabled, ['Funcionários']);
-    await view.click('Cadastros');
-    assert.equal(links(view).includes('/produtos'), false, 'second click closes the menu');
+    assert.ok(view.find(node => node.type === 'aside' && node.props['aria-label'] === 'Navegação do FAGOO'));
+    assert.match(view.text(), /Resultados.*Comercial.*Compras.*Catálogo.*Estoque.*Financeiro.*Fiscal.*Pessoas/s);
+    const panel = () => view.find(node => node.props.id === view.button('Catálogo').props['aria-controls']);
+    assert.equal(panel().props.hidden, true);
+    await view.click('Catálogo');
+    assert.equal(panel().props.hidden, false);
+    assert.equal(view.button('Catálogo').props['aria-expanded'], true);
+    assert.ok(links(view).includes('/cadastros-reais?cadastro=products'));
+    await view.click('Catálogo');
+    assert.equal(panel().props.hidden, true);
+    assert.equal(view.button('Catálogo').props['aria-expanded'], false);
   } finally { view.unmount(); }
 }));
 
 test('global search lists matching screens and Enter opens the first one', () => withWindow(async () => {
-  const view = await mountComponent('OriginTopBar.tsx', { groups: resolveMenu('demo'), homeTo: '/inicio', preferencesTo: '/configuracoes', user: { name: 'Demo', company: 'Empresa' }, theme: 'light', onTheme() {} }, { location: '/inicio' });
+  const view = await mountComponent('OriginTopBar.tsx', { groups: resolveMenu('real', {role:'admin',resources:['products','contacts']}), homeTo: '/acesso', preferencesTo: '/preferencias', user: { name: 'Administrador', company: 'Empresa' }, theme: 'light', onTheme() {} }, { location: '/acesso' });
   try {
     const input = view.find(node => node.type === 'input' && node.props['aria-label'] === 'Pesquisar');
     input.props.onChange({ target: { value: 'contas a rec' } }); await view.flush();
     assert.match(view.text(), /Contas a receber/);
     const form = view.find(node => node.type === 'form' && node.props.role === 'search');
     form.props.onSubmit({ preventDefault() {} }); await view.flush();
-    assert.equal(view.location().pathname, '/contas-receber');
+    assert.equal(view.location().pathname, '/financeiro-empresa');
+    assert.equal(view.location().search, '?area=receivable');
   } finally { view.unmount(); }
 }));
 
@@ -50,7 +53,7 @@ test('user menu exposes Tema escuro and Sair da conta only when a logout handler
   } finally { view.unmount(); }
 }));
 
-test('period picker applies Origin presets and the typed start date on Enter', async () => {
+test('period picker applies date presets and the typed start date on Enter', async () => {
   const applied = [];
   const view = await mountComponent('OriginList.tsx', { from: '', to: '', today: '2026-10-19', dateType: 'Data do pedido', dateTypes: ['Data do pedido', 'Data prevista'], prefixLabel: true, onApply: range => applied.push(range) }, { componentName: 'PeriodPicker' });
   try {
@@ -63,11 +66,11 @@ test('period picker applies Origin presets and the typed start date on Enter', a
     const start = view.find(node => node.type === 'input' && node.props.placeholder === 'dd/mm/aaaa');
     start.props.onChange({ target: { value: '05/10/2026' } }); await view.flush();
     view.find(node => node.type === 'input' && node.props.placeholder === 'dd/mm/aaaa').props.onKeyDown({ key: 'Enter', preventDefault() {} }); await view.flush();
-    assert.deepEqual(applied.at(-1), { from: '2026-10-05', to: '2026-10-05', dateType: 'Data do pedido' }, 'Enter copies the start date to the end, as Origin does');
+    assert.deepEqual(applied.at(-1), { from: '2026-10-05', to: '2026-10-05', dateType: 'Data do pedido' }, 'Enter applies the typed day as a single-day period');
   } finally { view.unmount(); }
 });
 
-test('row menu shows Origin letters, keeps disabled items inert and runs enabled ones', () => withWindow(async () => {
+test('row menu shows document indicators, keeps disabled items inert and runs enabled ones', () => withWindow(async () => {
   let cloned = 0, toggles = 0;
   const items = [{ label: 'Gerar nota fiscal', letter: { text: 'N', color: 'darkred' }, disabled: true }, { label: 'Clonar venda', icon: 'clone', onClick() { cloned++; } }];
   const view = await mountComponent('OriginList.tsx', { label: 'PV-1', items, open: true, onToggle() { toggles++; } }, { componentName: 'RowMenu', expandChildren: true });
@@ -79,7 +82,7 @@ test('row menu shows Origin letters, keeps disabled items inert and runs enabled
   } finally { view.unmount(); }
 }));
 
-test('pagination shows Primeira/Anterior/pages/Próxima/Última and the Origin range label', async () => {
+test('pagination shows Primeira/Anterior/pages/Próxima/Última and the record range label', async () => {
   const pages = [];
   const view = await mountComponent('OriginList.tsx', { page: 2, pages: 4, size: 100, total: 322, onPage: page => pages.push(page) }, { componentName: 'OriginPagination' });
   try {
@@ -92,10 +95,10 @@ test('pagination shows Primeira/Anterior/pages/Próxima/Última and the Origin r
 test('Preferências lists categories, filters by search and links only allowed pages', async () => {
   const view = await mountComponent('PreferencesPage.tsx', { homeTo: '/acesso', categories: resolvePreferences({ role: 'fiscal' }) });
   try {
-    assert.match(view.text(), /Escolha uma das opções abaixo/);
+    assert.match(view.text(), /Organize as regras e os recursos da sua operação/);
     assert.match(view.text(), /Empresa.*Notas Fiscais.*Certificado Digital/s);
     assert.equal(links(view).includes('/importar-cadastros'), false, 'admin-only import is hidden from fiscal');
-    view.find(node => node.type === 'input' && node.props.placeholder === 'Pesquise aqui...').props.onChange({ target: { value: 'sefaz' } }); await view.flush();
+    view.find(node => node.type === 'input' && node.props['aria-label'] === 'Pesquisar preferências').props.onChange({ target: { value: 'sefaz' } }); await view.flush();
     assert.ok(links(view).includes('/conexao-sefaz'));
     assert.equal(links(view).includes('/empresa-configuracoes'), false);
   } finally { view.unmount(); }

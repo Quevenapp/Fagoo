@@ -35,6 +35,8 @@ npm run build:erp
 npm run check:erp:build
 ```
 
+Para gerar o pacote da interface, consulte o [build de distribuição](docs/operations/release-build.md).
+
 O [guia de verificação](docs/verification.md) descreve o ambiente e os resultados dos testes. A [configuração das conexões](docs/operations/backend-configuration.md) apresenta as variáveis técnicas usadas pelos serviços.
 
 ## Atualizações

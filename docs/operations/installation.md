@@ -178,7 +178,7 @@ sudo python3 infra/deploy-application.py \
   --deploy
 ```
 
-Os identificadores de conta e zona precisam ter os 32 caracteres hexadecimais fornecidos pelo painel. O `sudo` permite ao helper ler a configuração privada criada pelo instalador. O programa compila a interface, verifica os artefatos e empacota os Workers; só então solicita o token Cloudflare sem eco. Ele publica primeiro a API e depois a interface original, com os domínios definidos na instalação. A chave de serviço fica exclusivamente no Worker autorizado da API, como segredo; ela não entra no frontend.
+Os identificadores de conta e zona precisam ter os 32 caracteres hexadecimais fornecidos pelo painel. O `sudo` permite ao helper ler a configuração privada criada pelo instalador. O programa compila a interface, verifica os artefatos e empacota os Workers; só então solicita o token Cloudflare sem eco. Ele publica primeiro a API e depois a interface web do FAGOO, com os domínios definidos na instalação. A chave de serviço fica exclusivamente no Worker autorizado da API, como segredo; ela não entra no frontend.
 
 Se uma fase falhar, confira a fase indicada e o log privado antes de repetir. Uma publicação anterior bem-sucedida não é desfeita automaticamente. Veja os controles de concorrência e os detalhes de recuperação em [Publicação da interface e da API](application-deployment.md).
 
