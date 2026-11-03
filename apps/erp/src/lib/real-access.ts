@@ -28,6 +28,7 @@ import {captureSystemPortRequest,SYSTEM_RESPONSE_BYTES} from './system-request.t
 import {captureReviewedAuthorizationRequest} from './fiscal-reviewed-authorization-model.ts';
 import {captureSubsetReviewRequest} from './fiscal-subset-review-model.ts';
 import {captureReconciliationRequest} from './fiscal-reconciliation-model.ts';
+import type {UpdateAction,UpdateOptions} from './system-updates.ts';
 
 export const RESOURCE_LABELS = {
   contacts: 'Clientes e fornecedores', products: 'Produtos', sales_orders: 'Pedidos de venda',
@@ -616,6 +617,19 @@ export function createAccessController(auth: AuthPort, apiUrl: string, fetcher: 
   };
   return {
     storageOrigin: services.storageOrigin,
+    async updates(action:UpdateAction,options:UpdateOptions={}){
+      if(!['status','check','apply'].includes(action))throw new AccessError(400);
+      const requireAdmin=()=>{if(stopped||signingOut||state.phase!=='ready'||state.membership?.role!=='admin')throw new AccessError(state.phase==='ready'?403:401);};
+      requireAdmin();const current=generation,controller=new AbortController(),body=action==='status'?undefined:action==='check'?{}:structuredClone(options.body);
+      const abort=()=>controller.abort();options.signal?.addEventListener('abort',abort,{once:true});if(options.signal?.aborted)controller.abort();
+      let bearer:string|null=null,credential=credentialEpoch;
+      try{
+        const authorized=authorizedBearer(controller.signal);bearer=typeof authorized==='string'?authorized:await authorized;assertDispatch(current,controller,bearer);requireAdmin();credential=credentialEpoch;
+        const value=await request('/v1/system/updates'+(action==='status'?'':'/'+action),bearer,controller,{method:action==='status'?'GET':'POST',body,responseLimit:32768,timeoutMs:16000});
+        assertDispatch(current,controller,bearer);requireAdmin();return value;
+      }catch(error){throw handleAccessFailure(error,bearer,credential);}
+      finally{options.signal?.removeEventListener('abort',abort);controller.abort();}
+    },
     getSnapshot: () => state,
     backupImport: backupImportRequest,
     subscribe(listener: () => void) { listeners.add(listener); return () => { listeners.delete(listener); }; },

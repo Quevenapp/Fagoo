@@ -34,10 +34,13 @@ def configure(destination, web_origin, backend_origin, api_origin, local_port=80
     values = {'FAGOO_WEB_ORIGIN': origin(web_origin), 'FAGOO_BACKEND_ORIGIN': origin(backend_origin), 'FAGOO_API_ORIGIN': origin(api_origin), 'FAGOO_LOCAL_PORT': str(local_port)}
     values['POSTGRES_PASSWORD'] = secrets.token_hex(32)
     values['JWT_SECRET'] = secrets.token_hex(48)
+    values['FAGOO_UPDATE_AGENT_TOKEN'] = secrets.token_hex(32)
+    values['FAGOO_UPDATE_SOCKET_DIR'] = str(Path(destination).resolve().parents[1] / 'update-service/run')
     values['ANON_KEY'] = token(values['JWT_SECRET'], 'anon')
     values['SERVICE_ROLE_KEY'] = token(values['JWT_SECRET'], 'service_role')
     destination = Path(destination)
     destination.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    Path(values['FAGOO_UPDATE_SOCKET_DIR']).mkdir(parents=True, exist_ok=True, mode=0o700)
     frontend = destination.with_name('frontend.env')
     if frontend == destination:
         raise ValueError('RUNTIME_FILENAME_RESERVED')

@@ -1,41 +1,95 @@
 # Atualizações do FAGOO
 
-Todas as instalações utilizam a mesma distribuição, o mesmo schema e o mesmo caminho de atualização. O nome da empresa e a existência de dados comerciais não selecionam outra edição do produto.
+Administradores atualizam a instalação em **Preferências → Sistema → Atualizações do sistema**. A mesma distribuição atende instalações vazias ou com dados. O download das releases públicas não exige conta nem token do GitHub.
 
-## Atualização local disponível
+## Antes de atualizar
 
-Na versão `0.2.0-dev.0`, `scripts/update-runtime.sh` atualiza o núcleo local após o operador selecionar uma revisão pública compatível do código. Ele não baixa releases, não verifica assinatura de release, não publica Workers/frontend e não implementa o botão de atualização do painel.
+Conclua o [manual de instalação](installation.md), incluindo o serviço `fagoo-updater.service` e a publicação da interface/API. A publicação inicial salva a credencial Cloudflare em `private/install/cloudflare/credentials.json`, com acesso exclusivo de root. Ela permite publicar as próximas versões na conta do próprio cliente. O token do túnel é uma credencial diferente.
 
-Com a revisão desejada já obtida e a configuração privada preservada, execute na raiz da instalação:
+O servidor precisa de acesso ao GitHub, aos registros de pacotes/imagens e à API Cloudflare, Node.js 24, Docker Compose e espaço para a nova aplicação e backups. A verificação de espaço reserva duas vezes o tamanho do banco e dos arquivos, mais 2 GiB. Mantenha também uma cópia de segurança fora da VPS. O atualizador não instala atualizações do Ubuntu ou de outros aplicativos do servidor.
+
+Avise os usuários e escolha um horário adequado: o ERP entra em manutenção durante a troca. A preparação e a compilação acontecem antes de pausar o acesso. O tempo depende da conexão, da quantidade de dados e da capacidade da VPS.
+
+## Usar o botão
+
+1. Entre no FAGOO como administrador. A política de acesso e MFA da instalação continua sendo aplicada.
+2. Abra **Preferências → Sistema → Atualizações do sistema**.
+3. Clique em **Verificar atualizações**. Confira a versão instalada, a disponível e as notas da release.
+4. Clique em **Atualizar agora**. O botão só é habilitado para uma versão posterior, com publicação configurada e sem outra atualização ou recuperação pendente.
+5. Acompanhe as etapas na página de progresso. O processo continua na VPS se o navegador fechar. Na mesma sessão, a página pode ser recarregada; o acompanhamento usa uma autorização temporária somente de leitura, válida por duas horas.
+6. Aguarde **FAGOO atualizado** e clique em **Abrir FAGOO atualizado**. Confira o login e a versão instalada no painel.
+
+O atualizador não solicita token do GitHub nem pede a credencial Cloudflare a cada clique. Se não houver release posterior, **Atualizar agora** permanece desabilitado. Isso é esperado em uma instalação que já está na versão mais recente.
+
+## O que é atualizado e preservado
+
+O serviço coordena o runtime local (PostgreSQL, autenticação, PostgREST, armazenamento e gateway), as alterações versionadas do schema, o Worker da API e o Worker da interface. Antes de concluir, verifica a versão e a revisão publicadas em `/fagoo-version.json` e `/v1/system/version`, além da saúde da autenticação e do CORS público.
+
+Empresa, usuários, permissões, cadastros, documentos, movimentos, saldos, arquivos, metadados e configuração privada permanecem na instalação. O processo não cria outro administrador, não semeia dados de demonstração e não troca as chaves existentes. O runtime fiscal separado, SMTP, bancos, certificados, agentes externos e suas configurações não são implantados por esse fluxo.
+
+Cada pacote é acompanhado de um manifesto assinado com Ed25519 e verificado pela chave pública fixada na instalação. O download tem tamanho limitado; o arquivo precisa corresponder ao SHA-256 assinado e não pode conter links, caminhos externos ou diretórios privados. O serviço aceita apenas releases públicas do repositório FAGOO. Ele recusa downgrade, reinstalação da mesma versão, mudanças de hash em migrações já aplicadas e troca da versão principal do PostgreSQL. Atualizações futuras que exigirem outro protocolo precisam de um procedimento próprio.
+
+O serviço fica em um socket Unix privado. A API exige administrador validado e não aceita comandos, caminhos ou URLs arbitrários. O progresso permanece acessível durante a manutenção; as demais requisições ao núcleo recebem `503`. `/healthz` continua respondendo `200` para indicar que o gateway está vivo, sem significar que o ERP já saiu da manutenção.
+
+## Backups e diretórios
+
+A instalação original continua em `/opt/fagoo`. Novas releases ficam em `private/updates/releases/`. `private/updates/installed.json` indica a versão e o código ativos; o serviço carrega essa versão depois de reiniciar. Não execute o instalador inicial nem faça `git pull` para trocar uma instalação gerenciada pelo painel.
+
+Antes de mudar o runtime, o serviço pausa as escritas externas e grava `private/backups/update-<identificador>/` com:
+
+- `database.dump`: backup lógico completo do banco, incluindo os metadados de autenticação e armazenamento.
+- `storage.tar`: bytes dos arquivos armazenados.
+- `runtime.env`: configuração privada existente.
+- `previous-runtime-images.json`: identidades das imagens que estavam em execução.
+- `recovery.json`: versão anterior, versões publicadas dos Workers, hashes dos backups e estado da operação.
+
+Os logs ficam em `private/updates/<identificador>.log`. Os backups contêm dados e segredos; não os publique nem os anexe integralmente a um chamado. A chave do túnel em `/etc/fagoo/cloudflared/token` e a credencial Cloudflare precisam de cópias privadas próprias. Backups e releases anteriores não são apagados automaticamente: acompanhe o espaço e retenha os materiais necessários à recuperação.
+
+## Recuperação
+
+Se houver falha durante a preparação, os serviços existentes continuam disponíveis. Confira o erro, a conexão, o espaço e as credenciais; depois verifique as atualizações novamente.
+
+Uma falha após o início da manutenção mantém o ERP pausado e informa **Recuperação necessária**, com o identificador do backup. Não remova o marcador de manutenção para forçar a abertura. A restauração não é automática porque pode desfazer alterações do banco e dos arquivos.
+
+No console da VPS, confirme a instalação e o identificador mostrado no painel. Substitua `IDENTIFICADOR` pelo UUID completo:
 
 ```sh
-sudo bash scripts/update-runtime.sh
+cd /opt/fagoo
+sudo python3 infra/recover-update.py --root /opt/fagoo --backup-id update-IDENTIFICADOR --confirm-restore
 ```
 
-O comando entra em manutenção. Ele verifica o histórico `fagoo_system.schema_migration` e a versão principal do PostgreSQL, impede dois processos de atualização simultâneos e interrompe os serviços que recebem escrita. Uma mudança de versão principal do PostgreSQL exige procedimento próprio e é recusada por esse caminho.
+`--confirm-restore` confirma que esta instalação voltará ao seu backup anterior à atualização interrompida. O comando valida os hashes, recupera configuração, banco e arquivos quando necessário, inicia as imagens anteriores e republica as versões anteriores dos dois Workers. Ele verifica versão pública e saúde antes de liberar o acesso. O backup é preservado. O diagnóstico fica em `recovery.log`, dentro do diretório do backup.
 
-Antes da troca, grava um diretório privado em `private/backups/` com:
+Se a falha ocorreu antes de substituir o runtime, o comando apenas retoma os serviços anteriores e verifica a implantação. Se a VPS perdeu o disco ou o backup está inválido, esse procedimento não substitui a recuperação a partir da cópia externa. Se o token Cloudflare expirou, renove-o antes de recuperar.
 
-- `database.dump`: backup lógico completo do banco.
-- `storage.tar`: bytes dos arquivos armazenados.
-- `runtime.env`: configuração e segredos existentes.
-- `previous-runtime-images.json`: identidades reais das imagens dos containers anteriores, capturadas antes da substituição.
-- `target-runtime-manifest.json`: contrato da versão selecionada para atualização.
+## Renovar a credencial Cloudflare
 
-O manifesto de destino não identifica a versão anterior do código. Preserve também a release anterior e sua configuração de publicação para planejar a recuperação dos Workers, da interface e dos serviços. O diretório de backup contém segredos e dados da instalação; mantenha acesso restrito e cópia protegida fora da VPS.
+Crie ou renove o token com as permissões e os escopos descritos no [manual](installation.md#se-perder-o-token-ou-ele-expirar). Na VPS:
 
-Após o backup, o comando obtém as imagens fixadas por digest, inicia os serviços internos, aplica as versões públicas pendentes do schema e reabre o gateway. Ele não regenera chaves, não repete o cadastro inicial e não insere dados de demonstração. Mudanças já aplicadas são verificadas por hash; cada nova versão do schema e sua entrada no histórico são confirmadas na mesma transação.
+```sh
+cd /opt/fagoo
+sudo python3 infra/configure-updates.py --root /opt/fagoo
+```
 
-Se houver falha depois do início da manutenção, o gateway é interrompido e o caminho do backup é informado. Não há rollback destrutivo automático. Investigue a falha e siga um plano de recuperação validado; trocar apenas a imagem da aplicação não desfaz alterações no banco. Se uma interrupção abrupta deixar `private/update-fagoo.lock`, confira os processos e o estado dos serviços antes de remover somente esse diretório de bloqueio vazio.
+Cole o novo token no prompt oculto. O comando reaproveita os IDs salvos, confere conta, zona e domínios, e guarda o valor com permissão `0600`. Não recompila nem publica a aplicação. Na primeira configuração manual, acrescente `--account-id ACCOUNT_ID --zone-id ZONE_ID`. Depois volte ao painel e clique em **Verificar atualizações**.
 
-## Escopo do ensaio local
+## Diagnóstico no servidor
 
-O núcleo foi criado a partir de uma base vazia, atualizado e conferido com administrador e arquivo sintéticos. O ensaio verificou preservação das credenciais, do histórico do schema, das permissões e dos bytes do arquivo. O backup do banco foi restaurado em um segundo banco descartável, com conferência do histórico, do administrador e dos metadados de armazenamento; o tar também continha os bytes exatos do arquivo. Alteração de hash é recusada; uma falha intencional de SQL não confirma nem os objetos dessa transação nem sua entrada no histórico.
+```sh
+sudo systemctl is-active fagoo-updater.service
+sudo journalctl -u fagoo-updater.service -n 30 --no-pager
+```
 
-Esse ensaio não substitui a validação em Ubuntu novo, a recuperação completa da implantação, a atualização entre duas releases distintas nem os testes dos Workers, do runtime fiscal e da interface pela origem pública.
+O primeiro comando deve retornar `active`. Não exponha o socket nem altere as permissões dos arquivos privados. O lock impede duas operações simultâneas. Um bloqueio de processo do painel comprovadamente encerrado pode ser recuperado pelo serviço; um bloqueio desconhecido exige inspeção. Não apague diretórios privados ou volumes para contornar um erro.
 
-## Serviço de atualização pelo painel
+`scripts/update-runtime.sh` permanece como ferramenta técnica do núcleo. Seu uso não publica web/API nem atualiza o registro da release ativa; utilize o painel para a atualização coordenada.
 
-O objetivo do serviço de atualização é obter releases públicas sem exigir token GitHub do cliente. A implementação ainda precisa integrar download, verificação de assinatura e integridade dos artefatos, compatibilidade de versões, manutenção, backup, ativação, verificações de saúde e recuperação.
+## Publicação pelo mantenedor
 
-Cada release deve declarar a versão da aplicação, as versões de schema aceitas e resultante, os serviços necessários e o procedimento de recuperação. O serviço deverá preservar empresa, usuários, permissões, cadastros, documentos, movimentos, saldos, auditoria, arquivos, metadados, certificados, identificadores de armazenamento e credenciais locais. A atualização dos Workers e da interface deverá corresponder à versão do núcleo, sem substituir a configuração da instalação por exemplos da distribuição.
+O mantenedor confirma um commit limpo, atualiza a versão do `package.json` e do lockfile, executa as verificações e prepara os artefatos:
+
+```sh
+python3 scripts/release.py --version vVERSAO --key /CAMINHO-PRIVADO/assinatura.pem --out /CAMINHO-PRIVADO/release --notes-file /CAMINHO/notas.txt
+```
+
+Publique `fagoo-source.tar.gz`, `fagoo-release.json` e `fagoo-release.sig` juntos na release da mesma tag do repositório `Quevenapp/Fagoo`. O painel consulta a release estável marcada como latest. Não substitua artefatos de uma versão já distribuída; publique uma nova versão. A chave privada de assinatura nunca integra o código ou a VPS do cliente. A publicação é manual e não requer habilitar GitHub Actions.

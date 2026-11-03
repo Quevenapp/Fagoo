@@ -59,6 +59,8 @@ coverage/
 /apps/erp/ACCESS.md
 /infra/dns/brufap-existing-records.json
 
+# Public Ed25519 release verification key (never a signing key).
+!/infra/release-root.pem
 # Exact allowlist: public ITI trust anchors, checked against the source manifest.
 # Never add A1 certificates, personal certificates or any private key here.
 !/packages/fiscal-vault/trust/icp-brasil-v4.pem

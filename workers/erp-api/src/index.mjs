@@ -61,6 +61,7 @@ import {platformRoute,platformMethods,parsePlatformRoute,executePlatformRoute,ru
 import {securityRoute,securityMethods,parseSecurityRoute,executeSecurityRoute,SecurityError} from './security.mjs';
 import {originSyncRoute,originSyncMethods,originSyncStatus,runOriginTwoWay,OriginSyncRouteError} from './origin-two-way.mjs';
 import {catalogMirrorRoute,catalogMirrorMethods,parseCatalogMirrorRoute,executeCatalogMirrorRoute,CatalogMirrorError} from './catalog-mirror.mjs';
+import {systemUpdateRoute,handleSystemUpdate} from './system-updates.mjs';
 export const ENTITIES = Object.freeze(['contacts', 'products', 'sales_orders', 'purchase_orders', 'sales_proposals', 'receivables', 'payables', 'nfe', 'nfce']);
 const ROLES = ['admin', 'consulta', 'vendas', 'financeiro', 'estoque', 'fiscal'];
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -255,6 +256,15 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
     try {
       const settings = config(env);
       const url = new URL(request.url);
+      if(systemUpdateRoute(url.pathname))return handleSystemUpdate({request,env,settings,fetchImpl,authenticate:async token=>{
+        const user=await upstream(`${settings.baseUrl}/auth/v1/user`,{method:'GET',headers:{apikey:settings.key,Authorization:`Bearer ${token}`,Accept:'application/json'}},'auth');
+        if(!user||typeof user.id!=='string'||!UUID.test(user.id))throw new ApiError(401,'ERP_UNAUTHENTICATED');
+        if(user.is_anonymous===true)throw new ApiError(403,'ERP_FORBIDDEN');
+        await accessGate(user,settings,token,true);
+        const access=await upstream(`${settings.baseUrl}/rest/v1/rpc/erp_access_me`,{method:'POST',headers:{apikey:settings.key,Authorization:`Bearer ${settings.key}`,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({p_user_id:user.id})},'access');
+        if(access?.user_id!==user.id||access?.role!=='admin')throw new ApiError(403,'ERP_FORBIDDEN');
+        return user.id.toLowerCase();
+      }});
       const backupImport = backupImportRoute(url.pathname);
       const backupAuthDeadline = backupImport ? Date.now()+15000 : undefined;
       const catalog = catalogRoute(url.pathname);

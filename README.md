@@ -8,7 +8,7 @@ O FAGOO utiliza PostgreSQL, serviço de autenticação, API de dados, armazename
 
 A instalação inicial deve criar uma base sem dados comerciais. A empresa e o administrador são cadastrados durante a configuração inicial. Catálogos oficiais e configurações técnicas necessários ao funcionamento fazem parte do sistema; clientes, fornecedores, produtos, documentos, movimentos e saldos de uma empresa não acompanham a distribuição.
 
-O código está na versão de desenvolvimento `0.2.0-dev.0`. O instalador Ubuntu e o fluxo de atualização pelo painel ainda precisam de integração e validação completas antes de uma release instalável. Consulte o [manual de instalação](docs/operations/installation.md) e o [estado do projeto](docs/status.md).
+A distribuição inclui instalador para Ubuntu 24.04, publicação da interface/API na Cloudflare e atualização pelo painel administrativo. Use uma [release pública](https://github.com/Quevenapp/Fagoo/releases) e siga o [manual de instalação](docs/operations/installation.md). O [estado do projeto](docs/status.md) descreve o escopo e as validações operacionais ainda necessárias.
 
 ## Desenvolvimento
 
@@ -43,7 +43,7 @@ O [guia de verificação](docs/verification.md) descreve o ambiente e os resulta
 
 Todas as instalações usam a mesma distribuição e o mesmo contrato de atualização. Uma instalação que já contém dados recebe as releases do FAGOO preservando sua empresa, usuários, arquivos e configurações locais. O histórico versionado do banco acompanha as mudanças necessárias a cada versão.
 
-A distribuição prevista utiliza artefatos públicos, sem token GitHub do cliente, com verificação de assinatura e integridade, compatibilidade de versão, backup e recuperação após falha. O contrato e o estado de implementação estão em [atualizações](docs/operations/updates.md).
+Em **Preferências → Sistema → Atualizações do sistema**, o administrador obtém releases públicas assinadas sem token GitHub. O processo verifica compatibilidade, salva backup e coordena serviços, banco, API e interface. A credencial Cloudflare é configurada uma vez na instalação e renovada quando necessário. Consulte [atualizações e recuperação](docs/operations/updates.md).
 
 ## Integrações e operação
 

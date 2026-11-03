@@ -4,9 +4,9 @@ O FAGOO é distribuído para instalações independentes. Cada cliente configura
 
 ## Estado desta revisão
 
-A versão `0.2.0-dev.0` contém um instalador do **núcleo local**: PostgreSQL 17, autenticação, PostgREST, armazenamento de arquivos, proxy local e aplicação das 311 versões originais do schema. As imagens de execução estão fixadas por digest em `infra/compose.yaml`.
+A distribuição inclui instalador Ubuntu 24.04, serviço de atualização pelo painel, PostgreSQL 17, autenticação, PostgREST, armazenamento de arquivos, proxy local e aplicação das 311 versões originais do schema. As imagens de execução estão fixadas por digest em `infra/compose.yaml`.
 
-Esse núcleo já foi exercitado em Docker com banco vazio, autenticação real, RPC, arquivos e atualização. Os scripts de provisionamento são destinados ao Ubuntu 24.04. A instalação é dividida em fases: núcleo local, administrador, ferramentas de publicação, túnel HTTPS e publicação da interface/API. Este manual apresenta a sequência dos helpers disponíveis; a conclusão depende das verificações finais pela origem pública. SMTP, runtime fiscal, integrações e atualização pelo painel têm configurações e limites próprios.
+Esse núcleo já foi exercitado em Docker com banco vazio, autenticação real, RPC, arquivos e atualização. A instalação é dividida em fases: núcleo local, administrador, ferramentas de publicação, túnel HTTPS, publicação da interface/API e verificação do atualizador. A conclusão depende das verificações finais pela origem pública. SMTP, runtime fiscal e integrações têm configurações próprias.
 
 A sequência também foi exercitada em uma VPS Ubuntu 24.04 recém-instalada: núcleo, túnel, publicação web/API, login do administrador e consultas sem dados comerciais. Os ajustes encontrados nessa instalação foram incorporados ao manual e aos helpers. Esse resultado valida a implantação técnica vazia, sem substituir a validação operacional dos módulos utilizados.
 
@@ -38,7 +38,7 @@ git clone https://github.com/Quevenapp/Fagoo.git /opt/fagoo
 cd /opt/fagoo
 ```
 
-O clone público não requer token GitHub. A branch `main` pode conter desenvolvimento; antes de uma instalação operacional, selecione a release compatível validada. A pasta de destino deve estar vazia ao executar `git clone`.
+O clone público não requer token GitHub. Selecione a tag estável indicada na página de [releases](https://github.com/Quevenapp/Fagoo/releases) antes de executar o instalador; não use uma branch de desenvolvimento para uma instalação operacional. A pasta de destino deve estar vazia ao executar `git clone`. O PDF desta edição fornece o comando com a tag validada.
 
 A partir da raiz do código, execute:
 
@@ -67,6 +67,7 @@ A criação é exclusiva: o gerador recusa sobrescrever arquivos existentes. Pre
 sudo docker compose --project-name fagoo --env-file private/install/.env -f infra/compose.yaml ps
 curl --fail --silent --output /dev/null --write-out '%{http_code}\n' http://127.0.0.1:8081/healthz
 sudo python3 infra/migrate.py --check-only
+sudo systemctl is-active fagoo-updater.service
 ```
 
 A primeira verificação deve mostrar os cinco serviços saudáveis; a segunda deve imprimir `200`; a terceira deve confirmar o histórico do schema. A porta padrão `8081` fica vinculada apenas ao loopback. PostgreSQL, autenticação, PostgREST e armazenamento não têm portas publicadas diretamente no host. O histórico privado `fagoo_system.schema_migration` registra cada versão e seu hash; divergências ou lacunas interrompem a aplicação. Em uma gravação, não mostre o arquivo privado nem use `docker compose config` sem `--quiet`, pois esse comando expande segredos.
@@ -162,10 +163,10 @@ Esses identificadores não são senhas e serão argumentos do helper. Para criar
 | Zona / Zone | DNS | Lido / Read |
 
 4. Em **Account Resources**, restrinja o token à conta específica da instalação. Em **Zone Resources**, selecione **Specific zone** e o domínio dessa instalação.
-5. Defina uma validade; **30 dias** é uma sugestão para concluir a instalação. Clique em **Continue to summary** e confira as quatro permissões, os dois escopos e a validade. **Pause a gravação antes de clicar em Create Token**, pois a próxima tela mostra o segredo.
+5. Defina uma validade e anote a data: as atualizações pelo painel precisam dessa credencial válida. Um token de **30 dias** exige renovação depois desse prazo. Clique em **Continue to summary** e confira as quatro permissões, os escopos e a validade. **Pause a gravação antes de clicar em Create Token**, pois a próxima tela mostra o segredo.
 6. Clique em **Criar token / Create Token**. O valor completo é mostrado **uma única vez**: copie e salve-o no seu gerenciador de senhas, com um nome como `FAGOO publicação`, a conta, o domínio e a data de expiração. Faça isso antes de clicar em **Veja todos os tokens de API** (ou **Done**, em outras versões do painel) e retomar a gravação. Use esse valor no prompt oculto da etapa 7, sem enviá-lo em mensagens ou capturas de tela.
 
-O token de publicação será solicitado em um prompt oculto e **não será salvo pelo helper**. Não há comando adicional para guardá-lo no servidor: a cópia para futuras publicações fica no gerenciador de senhas do usuário. Não use o token do túnel nesse prompt. Os passos detalhados e os requisitos de publicação estão em [Publicação da interface e da API](application-deployment.md).
+O token de publicação será solicitado em um prompt oculto. Após uma publicação concluída, o helper o salva em `private/install/cloudflare/credentials.json`, com acesso exclusivo de root, para permitir atualizações pelo painel. Guarde também uma cópia no gerenciador de senhas. Não use o token do túnel nesse prompt. O cliente não precisa de token GitHub. Os detalhes estão em [Publicação da interface e da API](application-deployment.md).
 
 Verifique o DNS de **somente dois hostnames**: web e API, por exemplo `fagoo.example.com` e `fagoo-api.example.com`. Se houver registros A/CNAME provisórios que entrem em conflito com esses destinos, remova apenas esses registros pelo painel antes do deploy. Preserve o domínio principal, os registros de e-mail, os demais serviços e o hostname `fagoo-services.example.com` do túnel. Se um hostname já pertencer a outro Worker, resolva sua atribuição antes de prosseguir.
 
@@ -232,6 +233,21 @@ O cadastro da empresa pode ser realizado posteriormente, pela interface. Esta va
 
 Antes do uso operacional, valide também MFA, recuperação de acesso, envio e leitura de arquivos, operações da API, módulos fiscais/bancários habilitados, backup, restauração e atualização. O ensaio local do núcleo não valida carga de produção nem dimensionamento da VPS junto de agentes e outros containers.
 
-O backup feito antes de atualizar o núcleo não substitui uma rotina periódica com cópia protegida fora da VPS. Preserve também a configuração de publicação e a credencial do túnel em `/etc/fagoo/cloudflared/token`, que não integra o backup do núcleo. Nesta revisão, a atualização disponível é por linha de comandos: o botão de atualização do painel e a atualização coordenada da interface/API ainda dependem da implementação descrita em [Atualizações](updates.md).
+O backup feito antes de atualizar não substitui uma rotina periódica com cópia protegida fora da VPS. Preserve também a credencial de publicação e a do túnel em `/etc/fagoo/cloudflared/token`, que não integra o backup do núcleo.
 
 Os dados e segredos ficam separados dos artefatos de aplicação. Todas as instalações usam o mesmo [contrato de atualização](updates.md), preservando empresa, usuários, configuração e volumes persistentes.
+
+## 8. Conferir a atualização pelo sistema
+
+Entre como administrador e abra **Preferências → Sistema → Atualizações do sistema**. A versão instalada deve aparecer, sem aviso de publicação não configurada. Clique em **Verificar atualizações**. Se você acabou de instalar a versão mais recente, **Atualizar agora** ficará desabilitado até existir uma release posterior.
+
+Quando houver uma versão nova, confira as notas e clique em **Atualizar agora**. O sistema obtém a release pública assinada, prepara a aplicação, salva um backup, pausa o acesso, atualiza os serviços e o banco e publica a API e a interface na Cloudflare. Aguarde **FAGOO atualizado** antes de voltar ao trabalho. Não é necessário copiar tokens para cada atualização.
+
+Se o token Cloudflare expirar ou for renovado, salve o novo valor sem recompilar:
+
+```sh
+cd /opt/fagoo
+sudo python3 infra/configure-updates.py --root /opt/fagoo
+```
+
+Cole o token no prompt oculto. Os IDs existentes são reaproveitados. Na primeira configuração manual, acrescente `--account-id ACCOUNT_ID --zone-id ZONE_ID`. Confira os detalhes, as limitações e o procedimento de [recuperação](updates.md#recuperação) antes da primeira atualização operacional. O serviço instalado na etapa 1 deve responder `active` à verificação `systemctl is-active`.

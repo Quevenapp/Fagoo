@@ -16,6 +16,7 @@ import urllib.request
 import warnings
 
 from configure import origin
+from update_config import cloudflare_credentials, source_identity
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -72,7 +73,7 @@ def read_token():
     try:
         with warnings.catch_warnings():
             warnings.simplefilter('error', getpass.GetPassWarning)
-            value = getpass.getpass('Cloudflare API token (hidden; not saved): ').strip()
+            value = getpass.getpass('Cloudflare API token (hidden; saved privately for system updates): ').strip()
     except (getpass.GetPassWarning, EOFError):
         raise ValueError('CLOUDFLARE_TOKEN_REQUIRES_PRIVATE_TERMINAL') from None
     if not 20 <= len(value) <= 512 or re.search(r'\s', value):
@@ -97,7 +98,9 @@ def configurations(values, account_id, zone_id):
            'vars': {'BACKUP_IMPORT_ENABLED': 'false', 'SUPABASE_DEPLOYMENT': 'self-hosted',
                     'SUPABASE_URL': values['FAGOO_BACKEND_ORIGIN'], 'ALLOWED_ORIGINS': values['FAGOO_WEB_ORIGIN'],
                     'ERP_SCHEDULED_TASKS_ENABLED': 'false', 'ORIGIN_ENABLED': 'false', 'ORIGIN_TWO_WAY_ENABLED': 'false',
-                    'ORIGIN_HISTORY_ENABLED': history_enabled}}
+                    'ORIGIN_HISTORY_ENABLED': history_enabled,
+                    'FAGOO_VERSION': source_identity(ROOT)['version'],
+                    'FAGOO_REVISION': source_identity(ROOT)['revision'] or 'source'}}
     web = {**common, 'name': 'fagoo-web-' + suffix,
            'routes': [{'pattern': urllib.parse.urlsplit(values['FAGOO_WEB_ORIGIN']).hostname,
                        'custom_domain': True, 'zone_id': zone_id}],
@@ -179,6 +182,22 @@ def inspect_build(directory, secrets):
     return count
 
 
+def build_fingerprint(directory):
+    digest = hashlib.sha256()
+    for path in sorted(Path(directory).rglob('*')):
+        if path.is_symlink():
+            raise ValueError('PUBLIC_BUILD_SYMLINK_REFUSED')
+        if path.is_file():
+            digest.update(path.relative_to(directory).as_posix().encode() + b'\0')
+            digest.update(hashlib.sha256(path.read_bytes()).digest())
+    return digest.hexdigest()
+
+
+def prepared_identity(values, api, web):
+    public = {'source': source_identity(ROOT), 'environment': public_environment(values), 'api': api, 'web': web}
+    return hashlib.sha256(json.dumps(public, sort_keys=True).encode()).hexdigest()
+
+
 def run(command, phase, env, log, secrets, cwd=ROOT):
     print(phase + '...', flush=True)
     result = subprocess.run(command, cwd=cwd, env=env, stdin=subprocess.DEVNULL,
@@ -199,10 +218,14 @@ def main():
     parser.add_argument('--env-file', default='private/install/.env')
     parser.add_argument('--account-id', required=True)
     parser.add_argument('--zone-id', required=True)
+    parser.add_argument('--credentials-file', help='Read the private saved Cloudflare credentials; never prompt.')
+    parser.add_argument('--prepared', action='store_true', help='Publish the exact build prepared by a previous dry run.')
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument('--dry-run', action='store_true')
     mode.add_argument('--deploy', action='store_true')
     args = parser.parse_args()
+    if args.prepared and not args.deploy:
+        raise ValueError('PREPARED_BUILD_REQUIRES_DEPLOY')
     values = configuration(args.env_file)
     api, web = configurations(values, args.account_id, args.zone_id)
     directory = ROOT / 'private/install/cloudflare'
@@ -215,6 +238,10 @@ def main():
     secrets_path = None
     token = ''
     private_values = [values[key] for key in ('SERVICE_ROLE_KEY', 'JWT_SECRET', 'POSTGRES_PASSWORD')]
+    if values.get('FAGOO_UPDATE_AGENT_TOKEN'):
+        if not re.fullmatch('[a-f0-9]{64}', values['FAGOO_UPDATE_AGENT_TOKEN']):
+            raise ValueError('UPDATE_AGENT_TOKEN_INVALID')
+        private_values.append(values['FAGOO_UPDATE_AGENT_TOKEN'])
     log_path = directory / ('deploy-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ') + '.log')
     try:
         api_path, web_path = directory / 'erp-api.json', directory / 'erp-web.json'
@@ -226,29 +253,41 @@ def main():
             raise ValueError('DEPENDENCIES_REQUIRED: run npm run install:deployment in the repository first')
         env = process_environment()
         public = {**env, **public_environment(values)}
+        prepared_path = directory / 'prepared.json'
         with os.fdopen(os.open(log_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600), 'w', encoding='utf-8') as log:
             try:
                 run([node, str(ROOT / 'tools/deployment/install-dependencies.mjs'), '--check'], 'DEPENDENCIES_CHECK', env, log, private_values)
             except ValueError:
                 raise ValueError('DEPENDENCIES_REQUIRED: run npm run install:deployment in the repository first') from None
-            run([npm, 'run', 'build:erp'], 'ERP_BUILD', public, log, private_values)
-            run([npm, 'run', 'check:erp:build'], 'ERP_BUILD_CHECK', env, log, private_values)
+            if args.prepared:
+                prepared = json.loads(prepared_path.read_text(encoding='utf-8'))
+                if prepared.get('inputs') != prepared_identity(values, api, web) or prepared.get('build') != build_fingerprint(ROOT / 'apps/erp/dist'):
+                    raise ValueError('PREPARED_BUILD_CHANGED')
+            else:
+                run([npm, 'run', 'build:erp'], 'ERP_BUILD', public, log, private_values)
+                (ROOT / 'apps/erp/dist/fagoo-version.json').write_text(json.dumps(source_identity(ROOT)) + '\n', encoding='utf-8')
+                run([npm, 'run', 'check:erp:build'], 'ERP_BUILD_CHECK', env, log, private_values)
             count = inspect_build(ROOT / 'apps/erp/dist', private_values)
             print(f'Public build checked: {count} files; no installation secrets found.', flush=True)
-            for path, name in ((api_path, 'API_PACKAGE'), (web_path, 'WEB_PACKAGE')):
-                run([node, str(wrangler), 'deploy', '--config', str(path), '--dry-run', '--outdir', str(directory / name.lower())], name, env, log, private_values)
+            if not args.prepared:
+                for path, name in ((api_path, 'API_PACKAGE'), (web_path, 'WEB_PACKAGE')):
+                    run([node, str(wrangler), 'deploy', '--config', str(path), '--dry-run', '--outdir', str(directory / name.lower())], name, env, log, private_values)
+                write_private(prepared_path, {'inputs': prepared_identity(values, api, web), 'build': build_fingerprint(ROOT / 'apps/erp/dist')})
             if args.deploy:
-                token = read_token()
+                token = cloudflare_credentials(args.credentials_file, args.account_id, args.zone_id)['token'] if args.credentials_file else read_token()
                 private_values.append(token)
                 check_domains((api, web), args.account_id, args.zone_id, token)
                 descriptor, temporary = tempfile.mkstemp(prefix='api-secrets-', suffix='.json', dir=directory)
                 secrets_path = Path(temporary)
                 with os.fdopen(descriptor, 'w', encoding='utf-8') as output:
-                    json.dump({'SUPABASE_SERVICE_ROLE_KEY': values['SERVICE_ROLE_KEY']}, output)
+                    json.dump({'SUPABASE_SERVICE_ROLE_KEY': values['SERVICE_ROLE_KEY'],
+                               **({'FAGOO_UPDATE_AGENT_TOKEN': values['FAGOO_UPDATE_AGENT_TOKEN']} if values.get('FAGOO_UPDATE_AGENT_TOKEN') else {})}, output)
                 deploy_env = {**env, 'CLOUDFLARE_API_TOKEN': token, 'CLOUDFLARE_ACCOUNT_ID': args.account_id}
                 run([node, str(wrangler), 'deploy', '--config', str(api_path), '--secrets-file', str(secrets_path)], 'API_DEPLOY', deploy_env, log, private_values)
                 check_domains((web,), args.account_id, args.zone_id, token)
                 run([node, str(wrangler), 'deploy', '--config', str(web_path)], 'WEB_DEPLOY', deploy_env, log, private_values)
+                if not args.credentials_file:
+                    write_private(directory / 'credentials.json', {'account_id': args.account_id, 'zone_id': args.zone_id, 'token': token})
         print(('Application published.' if args.deploy else 'Dry run passed; nothing was published.') + ' Fiscal runtime and SMTP are separate setup steps.')
         print('Web: ' + values['FAGOO_WEB_ORIGIN'])
         print('API: ' + values['FAGOO_API_ORIGIN'])

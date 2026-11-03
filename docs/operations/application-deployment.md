@@ -23,9 +23,9 @@ python3 -m unittest discover -s infra -p 'test_deploy_application.py'
 
 O instalador executa `npm ci` nas quatro árvores necessárias: raiz, `workers/erp-api`, `packages/fiscal-xml` e `packages/fiscal-danfe`, usando o lockfile de cada uma. Instale com o usuário dono da cópia do código. O deploy verifica as dependências diretas dessas quatro árvores antes de compilar; executar somente `npm ci` na raiz deixa dependências da API ausentes.
 
-Obtenha o Account ID e o Zone ID no painel Cloudflare. O token para esta publicação precisa acessar somente a conta e a zona escolhidas, com `Workers Scripts — Edit`, `Workers Routes — Edit`, `Zone — Read` e `DNS — Read` (ou `DNS — Edit` quando o mesmo token também configurar DNS). Ele será solicitado sem eco pelo comando e não será salvo. Não coloque token em argumentos, no Git, no frontend ou em gravações de tela.
+Obtenha o Account ID e o Zone ID no painel Cloudflare. O token precisa acessar somente a conta e a zona escolhidas, com `Workers Scripts — Edit`, `Workers Routes — Edit`, `Zone — Read` e `DNS — Read` (ou `DNS — Edit` quando o mesmo token também configurar DNS). Ele será solicitado sem eco e, após uma publicação concluída, salvo em `private/install/cloudflare/credentials.json` com permissão `0600`, para atualizações pelo painel. Não coloque token em argumentos, no Git ou no frontend.
 
-O Cloudflare mostra o valor completo uma única vez. Pause a gravação antes de gerar ou revelar o segredo e salve-o no seu gerenciador de senhas, junto da identificação da conta, domínio e validade, antes de clicar em **Veja todos os tokens de API** (ou **Done**, em outras versões do painel). O helper não guarda uma cópia para a próxima publicação. Se perder um token ainda válido, use **Profile → API Tokens → Actions → View summary** para conferir o escopo e a validade; volte com **Back**, escolha **Actions → Roll** e pause a gravação antes de confirmar. **Roll invalida o valor antigo e mantém as permissões, os recursos e a expiração**. Se expirou, crie um novo token com as permissões e os escopos acima. Veja o [passo a passo para perda ou expiração](installation.md#se-perder-o-token-ou-ele-expirar). Esse token é diferente da credencial do Cloudflare Tunnel.
+O Cloudflare mostra o valor completo uma única vez. Pause a gravação antes de gerar ou revelar o segredo e salve-o no seu gerenciador de senhas, junto da identificação da conta, domínio e validade, antes de clicar em **Veja todos os tokens de API** (ou **Done**, em outras versões do painel). A cópia privada na VPS permite as próximas atualizações pelo painel. Se perder um token ainda válido, use **Profile → API Tokens → Actions → View summary** para conferir o escopo e a validade; volte com **Back**, escolha **Actions → Roll** e pause a gravação antes de confirmar. **Roll invalida o valor antigo e mantém as permissões, os recursos e a expiração**. Se expirou, crie um novo token com as permissões e os escopos acima. Veja o [passo a passo para perda ou expiração](installation.md#se-perder-o-token-ou-ele-expirar). Esse token é diferente da credencial do Cloudflare Tunnel.
 
 ## Ensaio sem publicação
 
@@ -55,7 +55,7 @@ sudo python3 infra/deploy-application.py \
   --deploy
 ```
 
-Depois dos testes locais, digite o token no prompt oculto. A chave de serviço do banco é transmitida ao Worker da API como segredo da versão, usando um arquivo JSON temporário protegido que é removido ao terminar. Essa chave nunca entra no Worker da interface nem nas variáveis `VITE_`. O token Cloudflare não é armazenado pelo helper.
+Depois dos testes locais, digite o token no prompt oculto. A chave de serviço do banco e a credencial interna do atualizador são transmitidas ao Worker da API como segredos da versão, usando um arquivo JSON temporário protegido que é removido ao terminar. Elas nunca entram no Worker da interface nem nas variáveis `VITE_`. O token Cloudflare fica no arquivo privado da VPS e não é enviado ao frontend ou ao repositório.
 
 O primeiro Worker publicado é o da API. O frontend só é publicado após o comando da API concluir. Se ocorrer falha parcial, uma publicação anterior bem-sucedida não é desfeita automaticamente; confira a fase informada e o log privado antes de repetir. Um lock local impede dois processos deste helper no mesmo diretório. Se uma interrupção abrupta deixar `private/install/cloudflare/deploy.lock`, confira os processos antes de remover somente esse diretório vazio.
 
@@ -92,7 +92,7 @@ O teste de regressão `infra/test_gateway_cors.py` usa um runtime local descart�
 
 Este comando publica o ERP web e a API. A configuração de SMTP, MFA, certificados, runtime fiscal, integrações e credenciais bancárias segue os próprios fluxos do sistema. O runtime fiscal tem gateway, executor e Container próprios e não é publicado por este helper. Sem essa configuração, não declare a emissão fiscal habilitada.
 
-Agendamentos, conectores externos e importação administrativa de backup permanecem desabilitados por padrão. O helper não muda os dados do banco, não substitui o [atualizador do núcleo](updates.md) e não implementa o botão de atualização do painel. Atualizações do aplicativo devem usar a mesma revisão pública compatível com o núcleo.
+Agendamentos, conectores externos e importação administrativa de backup permanecem desabilitados por padrão. O helper isolado não muda os dados do banco. Após a instalação inicial, use o [atualizador pelo painel](updates.md), que coordena a publicação com os serviços e as migrações do banco. O modo `--prepared` publica exatamente o build verificado no ensaio anterior, sem recompilar; `--credentials-file` lê a credencial privada salva e dispensa entrada interativa.
 
 ### Consulta de histórico existente
 

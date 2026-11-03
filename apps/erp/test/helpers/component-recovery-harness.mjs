@@ -11,7 +11,7 @@ const registry=globalThis.__brufapRecoveryTests??=new Map();
 export async function mountComponent(filename,props,{componentName,expandChildren=false,location:initialLocation='/qa',modules={},ports={}}={}){
  if(componentName&&!/^[A-Za-z_$][\w$]*$/.test(componentName))throw new Error('Invalid component name');
  const key=randomUUID(),frames=new Map(),effects=[];let current,index=0,dirty=true,tree,disposed=false,idCount=0;
- let location;const navigations=[];const navigate=(target,options)=>{const url=new URL(typeof target==='string'?target:`${target.pathname??location.pathname}${target.search??''}`,'https://synthetic.invalid');location={pathname:url.pathname,search:url.search,hash:url.hash,key:randomUUID()};navigations.push({search:url.search,replace:Boolean(options?.replace)});dirty=true;};navigate(initialLocation);
+ let location;const navigations=[];const navigate=(target,options)=>{const url=new URL(typeof target==='string'?target:`${target.pathname??location.pathname}${target.search??''}`,'https://synthetic.invalid');location={pathname:url.pathname,search:url.search,hash:url.hash,key:randomUUID(),...(options?.state!==undefined?{state:options.state}:{})};navigations.push({search:url.search,replace:Boolean(options?.replace)});dirty=true;};navigate(initialLocation);
  const runtime={AccessError,decimalMoney,guard:null,
   useState(initial){const frame=current,slots=frame.slots,i=index++;if(!(i in slots))slots[i]=typeof initial==='function'?initial():initial;return [slots[i],value=>{if(disposed||!frame.alive)return;const next=typeof value==='function'?value(slots[i]):value;if(!Object.is(next,slots[i])){slots[i]=next;dirty=true;}}];},
   useRef(initial){const i=index++;return current.slots[i]??=( {current:initial} );},

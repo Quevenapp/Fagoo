@@ -13,6 +13,18 @@
   }
   @preflight method OPTIONS
   respond @preflight 204
+  route {
+  # Container liveness must remain healthy during an intentional update.
+  respond /healthz 200
+  # The updater stays reachable while application writes are paused.
+  handle_path /_fagoo/system/* {
+    reverse_proxy unix//run/fagoo-updater/agent.sock
+  }
+  @maintenance file {
+    root /run/fagoo-updater
+    try_files maintenance
+  }
+  respond @maintenance "FAGOO is updating. Please retry shortly." 503
   # Upstream Auth/REST may emit wildcard CORS. The gateway owns the single
   # allowed origin above, including on errors and non-preflight responses.
   handle_path /auth/v1/* {
@@ -31,6 +43,6 @@
       header_up X-Forwarded-Path {http.request.orig_uri}
     }
   }
-  respond /healthz 200
   respond 404
+  }
 }
