@@ -7,6 +7,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "install:deployment": "node tools/deployment/install-dependencies.mjs",
     "test": "node --test workers/origin-sync/test/*.test.mjs",
     "dev:erp": "vite --config apps/erp/vite.config.ts",
     "typecheck:erp": "tsc --noEmit -p apps/erp/tsconfig.json",

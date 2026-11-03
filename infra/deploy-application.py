@@ -219,10 +219,14 @@ def main():
         node, npm = 'node', ('npm.cmd' if os.name == 'nt' else 'npm')
         wrangler = ROOT / 'node_modules/wrangler/bin/wrangler.js'
         if not wrangler.is_file():
-            raise ValueError('DEPENDENCIES_REQUIRED: run npm ci in the repository first')
+            raise ValueError('DEPENDENCIES_REQUIRED: run npm run install:deployment in the repository first')
         env = process_environment()
         public = {**env, **public_environment(values)}
         with os.fdopen(os.open(log_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600), 'w', encoding='utf-8') as log:
+            try:
+                run([node, str(ROOT / 'tools/deployment/install-dependencies.mjs'), '--check'], 'DEPENDENCIES_CHECK', env, log, private_values)
+            except ValueError:
+                raise ValueError('DEPENDENCIES_REQUIRED: run npm run install:deployment in the repository first') from None
             run([npm, 'run', 'build:erp'], 'ERP_BUILD', public, log, private_values)
             run([npm, 'run', 'check:erp:build'], 'ERP_BUILD_CHECK', env, log, private_values)
             count = inspect_build(ROOT / 'apps/erp/dist', private_values)
@@ -261,5 +265,5 @@ if __name__ == '__main__':
     except (ValueError, KeyError, OSError, urllib.error.URLError, subprocess.SubprocessError) as error:
         # Standard-library errors may contain input fragments. Only our fixed
         # upper-case diagnostic codes are eligible for display.
-        message = str(error) if isinstance(error, ValueError) and re.fullmatch(r'[A-Z][A-Z0-9_]+(?:: [a-zA-Z0-9 /;,.-]+)?', str(error)) else 'APPLICATION_DEPLOY_FAILED: inspect the private log and configuration'
+        message = str(error) if isinstance(error, ValueError) and re.fullmatch(r'[A-Z][A-Z0-9_]+(?:: [a-zA-Z0-9 /:;,.-]+)?', str(error)) else 'APPLICATION_DEPLOY_FAILED: inspect the private log and configuration'
         raise SystemExit(message)

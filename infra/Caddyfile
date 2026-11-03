@@ -13,14 +13,21 @@
   }
   @preflight method OPTIONS
   respond @preflight 204
+  # Upstream Auth/REST may emit wildcard CORS. The gateway owns the single
+  # allowed origin above, including on errors and non-preflight responses.
   handle_path /auth/v1/* {
-    reverse_proxy auth:9999
+    reverse_proxy auth:9999 {
+      header_down -Access-Control-Allow-Origin
+    }
   }
   handle_path /rest/v1/* {
-    reverse_proxy rest:3000
+    reverse_proxy rest:3000 {
+      header_down -Access-Control-Allow-Origin
+    }
   }
   handle_path /storage/v1/* {
     reverse_proxy storage:5000 {
+      header_down -Access-Control-Allow-Origin
       header_up X-Forwarded-Path {http.request.orig_uri}
     }
   }

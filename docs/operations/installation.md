@@ -73,10 +73,12 @@ Ainda na raiz `/opt/fagoo`, execute:
 
 ```sh
 sudo bash scripts/install-deployment-tools.sh
-npm ci
+npm run install:deployment
 ```
 
-O primeiro comando instala Node.js 24 a partir dos arquivos oficiais com checksum fixado e `cloudflared` pelo repositório APT oficial com verificação da chave e das assinaturas. Ele recusa substituir uma instalação Node de outra versão principal ou arquivos de configuração incompatíveis. O `npm ci` instala as dependências fixadas pelo projeto; execute-o como o usuário dono da pasta do código. Nenhum desses dois comandos solicita token Cloudflare.
+O primeiro comando instala Node.js 24 a partir dos arquivos oficiais com checksum fixado e `cloudflared` pelo repositório APT oficial com verificação da chave e das assinaturas. Ele recusa substituir uma instalação Node de outra versão principal ou arquivos de configuração incompatíveis. Execute `npm run install:deployment` como o usuário dono da pasta do código: ele executa `npm ci` na raiz, em `workers/erp-api`, em `packages/fiscal-xml` e em `packages/fiscal-danfe`, respeitando os quatro lockfiles e incluindo as ferramentas de build. Nenhum desses comandos solicita token Cloudflare.
+
+Executar somente `npm ci` na raiz não prepara os três pacotes independentes: o frontend pode compilar, mas o empacotamento da API falha por falta das dependências XML. A preparação completa é explícita e não depende de um `postinstall` automático. O helper de publicação verifica essas dependências antes do build; se indicar `DEPENDENCIES_REQUIRED`, execute novamente `npm run install:deployment` na revisão selecionada.
 
 O helper de publicação da etapa 7 gera a configuração pública do build a partir da instalação. Não é necessário copiar segredos nem preencher manualmente os arquivos Wrangler de exemplo. Nunca copie `private/install/.env`, a chave de serviço ou o segredo JWT para variáveis `VITE_`.
 
