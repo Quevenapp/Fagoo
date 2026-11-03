@@ -1,6 +1,6 @@
 # Uso privado do A1 para candidatos de homologação
 
-Porta local `createSignedCustodyPort({readObject, loader, keyring, now?})`. Devolve `withAuthorizedSigner(grant, action, {signal?, deadline})`, sem ambiente, rede padrão, HTTP ou acesso ao banco. Não foi publicada nem usada com o certificado instalado.
+Porta local `createSignedCustodyPort({readObject, loader, keyring, now?})`. Devolve `withAuthorizedSigner(grant, action, {signal?, deadline})`, sem ambiente, rede padrão, HTTP ou acesso ao banco. Os testes usam certificados sintéticos e não atestam o certificado de uma instalação.
 
 O chamador deve primeiro executar e validar `erp_fiscal_signed_use` pela sessão/ator autorizado, com a lease e o recibo fixados pela 050. A porta recebe a projeção privada de 13 campos do orquestrador: ator, comando, candidato, versão A1, lease, prazo, instante de uso, identidade, chave de acesso, objeto unsigned, contexto/metadata da credencial e objeto cifrado. Essa estrutura não é um token de autorização autônomo e nunca deve vir de um corpo de navegador.
 

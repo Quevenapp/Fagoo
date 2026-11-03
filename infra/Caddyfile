@@ -1,0 +1,29 @@
+{
+  admin off
+  auto_https off
+}
+:8080 {
+  @allowed_origin header Origin {$FAGOO_WEB_ORIGIN}
+  header @allowed_origin {
+    Access-Control-Allow-Origin "{$FAGOO_WEB_ORIGIN}"
+    Vary Origin
+    Access-Control-Allow-Headers "Authorization, apikey, Content-Type, x-client-info, x-upsert, x-supabase-api-version"
+    Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD"
+    Access-Control-Expose-Headers "Content-Range, Range, X-Total-Count"
+  }
+  @preflight method OPTIONS
+  respond @preflight 204
+  handle_path /auth/v1/* {
+    reverse_proxy auth:9999
+  }
+  handle_path /rest/v1/* {
+    reverse_proxy rest:3000
+  }
+  handle_path /storage/v1/* {
+    reverse_proxy storage:5000 {
+      header_up X-Forwarded-Path {http.request.orig_uri}
+    }
+  }
+  respond /healthz 200
+  respond 404
+}

@@ -1,10 +1,10 @@
 # Composição de leitura da autorização fiscal 064
 
-Composição publicada em 16/10/2026, com a migração 064 aplicada e as duas políticas operacionais desabilitadas. A composição permite consultar a candidata assinada e o histórico do ledger 064. Não oferece autorização de envio, transporte SOAP, novo uso de A1 ou habilitação de política. A existência da migração 064 no destino é pré-requisito das leituras; sua ausência falha fechada, sem fabricar histórico vazio.
+Composição de leitura que exige a estrutura 064 no banco e mantém as políticas operacionais desabilitadas por padrão. A composição permite consultar a candidata assinada e o histórico do ledger 064. Não oferece autorização de envio, transporte SOAP, novo uso de A1 ou habilitação de política. A existência da migração 064 no destino é pré-requisito das leituras; sua ausência falha fechada, sem fabricar histórico vazio.
 
 ## Caminho autenticado
 
-`fiscal-gateway` valida a sessão Supabase (recusa usuário anônimo), a origem HTTPS autorizada e o corpo fechado. Encaminha somente os caminhos conhecidos ao executor privado. O executor/bridge e o servidor Node verificam a assinatura HMAC específica antes de alcançar o serviço. A composição reutiliza `A1_TRANSPORT_SECRET`/`A1_TRANSPORT_KEY_ID`, com domínio `brufap-authorization-request-v1`, esquema `Brufap-Authorization` e audience `${A1_AUDIENCE}-authorization`. A mensagem vincula ator, método, caminho, hash dos bytes, nonce e horário. Assinaturas dos domínios A1, signed, WSDL, reconciliation, DANFE e unsigned não são aceitas aqui.
+`fiscal-gateway` valida a sessão de autenticação (recusa usuário anônimo), a origem HTTPS autorizada e o corpo fechado. Encaminha somente os caminhos conhecidos ao executor privado. O executor/bridge e o servidor Node verificam a assinatura HMAC específica antes de alcançar o serviço. A composição reutiliza `A1_TRANSPORT_SECRET`/`A1_TRANSPORT_KEY_ID`, com domínio `brufap-authorization-request-v1`, esquema `Brufap-Authorization` e audience `${A1_AUDIENCE}-authorization`. A mensagem vincula ator, método, caminho, hash dos bytes, nonce e horário. Assinaturas dos domínios A1, signed, WSDL, reconciliation, DANFE e unsigned não são aceitas aqui.
 
 O ator vem exclusivamente de `/auth/v1/user`, nunca do corpo. A chave service-role permanece no contêiner privado já existente. Não há novo segredo, acesso ao bucket A1, RPC de uso do certificado ou ampliação de grants. As RPCs mantêm a ACL 064: admin/fiscal ativos; leitura de comando exige o ator original, enquanto o histórico público não expõe identidade do ator. `recoverable_by_actor:false` não identifica outro ator: também ocorre em resultados próprios terminados.
 
@@ -43,6 +43,6 @@ As provas cobrem modelos 55/65 com certificado fictício, paridade da extração
 
 ## Extensão local de revisão068
 
-O wiring novo, ainda não publicado neste lote, acrescenta GET/POST `/candidates/:uuid/review` e GET `/review-commands/:uuid`. O ator autenticado alcança apenas signed_get, as três RPCs068 e leitura de Storage, com ACL admin/fiscal real. O domínio HMAC continua o mesmo; as rotas antigas e o bloqueio de `/run` permanecem.
+A composição de revisão acrescenta GET/POST `/candidates/:uuid/review` e GET `/review-commands/:uuid`. O ator autenticado alcança apenas signed_get, as três RPCs068 e leitura de Storage, com ACL admin/fiscal real. O domínio HMAC continua o mesmo; as rotas antigas e o bloqueio de `/run` permanecem.
 
-Somente as rotas de revisão usam144KiB de request/1MiB de response. O DTO browser-safe (`review-dto.mjs` + tipos) não depende de Node e conserva todas as flags operacionais falsas. Uma resposta perdida após POST mantém UUID e recuperação por GET, sem retry automático. Detalhes, projeções e provas: [contrato HTTP068](../../docs/integrations/fiscal-subset-review-http.md).
+Somente as rotas de revisão usam144KiB de request/1MiB de response. O DTO browser-safe (`review-dto.mjs` + tipos) não depende de Node e conserva todas as flags operacionais falsas. Uma resposta perdida após POST mantém UUID e recuperação por GET, sem retry automático. Contrato de entrada e exposição HTTP: [fronteira de revisão 068](../../packages/fiscal-authorization-runtime/src/review-boundary.mjs).

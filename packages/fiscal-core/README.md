@@ -1,4 +1,4 @@
-# Fundação do emissor Brufap
+# Fundação do emissor FAGOO
 
 Biblioteca interna, sem dependências e sem rede, para preparação futura de NF-e 55 e NFC-e 65. **Não é um emissor homologado. Não monta, assina ou transmite XML; não calcula tributos.** Nenhum certificado, senha, CSC, nota real ou dado privado está nas fixtures.
 
@@ -52,11 +52,11 @@ stateDiagram-v2
 
 ## Configuração pendente para a empresa
 
-Regime tributário confirmado e revisão das operações; IE validada cadastralmente; A1 verificado e armazenado em cofre; credenciamento por modelo/ambiente; seleção explícita do perfil QR da NFC-e, com CSC por ambiente no caminho legado; perfil XSD/Notas Técnicas vigente; evidência de testes reais em homologação por modelo. `secretRef` aponta para um cofre futuro e não contém a credencial. O gate A1 é uma escolha técnica desta implementação, não uma afirmação de exclusividade legal de A1. A evidência de homologação antes de habilitar produção também é política de qualidade do Brufap.
+Regime tributário confirmado e revisão das operações; IE validada cadastralmente; A1 verificado e armazenado em cofre; credenciamento por modelo/ambiente; seleção explícita do perfil QR da NFC-e, com CSC por ambiente no caminho legado; perfil XSD/Notas Técnicas vigente; evidência de testes reais em homologação por modelo. `secretRef` aponta para um cofre futuro e não contém a credencial. O gate A1 é uma escolha técnica desta implementação, não uma afirmação de exclusividade legal de A1. A evidência de homologação antes de habilitar produção também é política de qualidade do FAGOO.
 
 Os pacotes irmãos [`fiscal-xml`](../fiscal-xml/README.md) e [`fiscal-schema`](../fiscal-schema/README.md) já fornecem assinatura/verificação offline, suplemento QR v3 online SP/homologação e cinco schemas oficiais com integridade fixada. Ainda não estão conectados a esta máquina de estados por uma orquestração confiável. O gate aceita `config.nfceQrProfile = NFCE_SP_HOMOLOGATION_QR_V3` somente para NFC-e 65, SP, homologação e emissão normal. Esse perfil compartilha as constantes com o suplemento XML e dispensa CSC, de acordo com o formato QR v3. Seleção desconhecida, nula ou fora desse contexto bloqueia; não há fallback silencioso. Sem seleção explícita, a exigência legada de CSC é preservada. Isso não atesta aceitação pela SEFAZ nem credenciamento: certificado, revisão tributária/XSD e credenciamento continuam obrigatórios, e `canTransmit` permanece falso. Produção e contingência não são ampliadas.
 
-O [gerador inicial de negócio](../../docs/integrations/fiscal-business-builder.md) resolve um recorte explícito de itens, totais e pagamentos, ainda sem integração operacional. Faltam determinação tributária completa e revisão de vigência, complementação persistida, TLS mútuo/SOAP operacional, DANFE/representação gráfica do QR, adaptador SEFAZ, persistência transacional fiscal, eventos, contingência e testes efetivos com a SEFAZ. Os testes sintéticos **não** representam homologação fiscal.
+O [gerador inicial de negócio](../../packages/fiscal-xml/src/business-builder.mjs) resolve um recorte explícito de itens, totais e pagamentos, ainda sem integração operacional. Faltam determinação tributária completa e revisão de vigência, complementação persistida, TLS mútuo/SOAP operacional, DANFE/representação gráfica do QR, adaptador SEFAZ, persistência transacional fiscal, eventos, contingência e testes efetivos com a SEFAZ. Os testes sintéticos **não** representam homologação fiscal.
 
 ## Fontes oficiais verificadas em 15/10/2026
 

@@ -1,8 +1,8 @@
 # Serviço privado de XML sem assinatura
 
-Rotas publicadas em 16/10/2026: executor privado `2491db95-3a86-4c6b-b20f-fc7f7b68f5e8` e gateway `29026e8e-5c44-40cb-86e5-0a6b0a1a8915`. Os jobs 048 e o bucket privado `brufap-fiscal-artifacts` estão provisionados. A custódia do A1 existente permanece separada. A verificação remota confirmou preflight 204 para a origem do ERP e recusa 401 sem sessão. A geração autenticada com Storage remoto ainda não foi exercitada.
+Serviço que exige as estruturas de jobs 048 e o bucket privado `brufap-fiscal-artifacts` na instalação. A custódia do A1 permanece separada. Após configurar e implantar gateway e executor, validar CORS, rejeição de sessão ausente e geração autenticada com os serviços privados da instalação. Nenhum identificador de implantação ou dado fiscal acompanha o pacote.
 
-O gateway fiscal verifica a sessão no Supabase Auth e aceita somente origens configuradas. O ator vem dessa resposta, nunca do corpo do navegador. Uma mensagem HMAC com domínio próprio `brufap-unsigned-request-v1` vincula ator, método, caminho, hash do corpo, nonce e instante. Ela usa o segredo de transporte já autorizado, com audiência terminada em `-unsigned`; tokens do protocolo A1 não são intercambiáveis.
+O gateway fiscal verifica a sessão no serviço de autenticação configurado e aceita somente origens configuradas. O ator vem dessa resposta, nunca do corpo do navegador. Uma mensagem HMAC com domínio próprio `brufap-unsigned-request-v1` vincula ator, método, caminho, hash do corpo, nonce e instante. Ela usa o segredo de transporte já autorizado, com audiência terminada em `-unsigned`; tokens do protocolo A1 não são intercambiáveis.
 
 O executor privado executa o builder diretamente no Worker. Não inicia o contêiner A1, não lê KEK ou certificado e não chama a SEFAZ. As portas RPC e Storage usam a chave de serviço já existente no executor; o gateway continua sem essa chave. O bundle usa `node:crypto`, `Buffer` e `xmldom`, exercitados no runtime local workerd com NF-e, NFC-e e 250 itens. A compatibilidade Node é habilitada pela data configurada, conforme a [documentação do Cloudflare](https://developers.cloudflare.com/workers/runtime-apis/nodejs/).
 
@@ -30,7 +30,7 @@ O gateway limita a chamada total a 55 segundos, Auth a 10 segundos e entrada a 1
 
 Após uma resposta incerta, o cliente conserva comando e corpo. Consulta o mesmo comando; se ainda houver execução em andamento, aguarda seu prazo. Uma retomada explícita usa o mesmo comando e a mesma reserva. `xml_generated:null` significa resultado não confirmado; não significa ausência de arquivo. Após ACK, o cliente usa GET para confirmar o estado atual antes de liberar outra edição. Artefatos históricos continuam históricos se as bases mudarem.
 
-Um XML armazenado continua sem assinatura, validação XSD ou autorização de uso. Os indicadores `can_emit` e `can_transmit` permanecem falsos. O fluxo não altera financeiro, estoque, situação do pedido ou NFStock.
+Um XML armazenado continua sem assinatura, validação XSD ou autorização de uso. Os indicadores `can_emit` e `can_transmit` permanecem falsos. O fluxo não altera financeiro, estoque ou situação do pedido.
 
 ## Verificação
 

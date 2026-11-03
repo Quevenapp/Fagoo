@@ -1,8 +1,8 @@
 # Executor fiscal privado
 
-O serviço privado de custódia A1 está publicado como service binding → Durable Object → Container Node. Só usa o DO de nome fixo `a1-custody-v1`. Confere HMAC antes de iniciar o Container; o runtime confere novamente e consome nonce na SQL 041. Segredos são passados por whitelist no início e nunca devolvidos.
+O serviço privado de custódia A1 usa service binding → Durable Object → Container Node. Só usa o DO de nome fixo `a1-custody-v1`. Confere HMAC antes de iniciar o Container; o runtime confere novamente e consome nonce na SQL 041. Segredos são passados por whitelist no início e nunca devolvidos.
 
-A extensão publicada para jobs de XML sem assinatura executa diretamente no Worker, em rotas e protocolo separados, sem iniciar o contêiner ou ler as chaves do cofre. Seu estado de publicação e contrato estão em [fiscal-unsigned-runtime](../../packages/fiscal-unsigned-runtime/README.md).
+A extensão para jobs de XML sem assinatura executa diretamente no Worker, em rotas e protocolo separados, sem iniciar o contêiner ou ler as chaves do cofre. Sua configuração e contrato estão em [fiscal-unsigned-runtime](../../packages/fiscal-unsigned-runtime/README.md).
 
 `ctx.container.start`, `getTcpPort` e variáveis de ambiente seguem a [documentação oficial de Containers](https://developers.cloudflare.com/containers/examples/env-vars-and-secrets/). A imagem usa `linux/amd64`, conforme o [guia oficial](https://developers.cloudflare.com/containers/get-started/). A extensão unsigned reutiliza o serviço existente e não modifica a imagem de custódia.
 

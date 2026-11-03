@@ -36,11 +36,11 @@ O perfil 55 é uma **prévia baseada no MOC 7**, com aviso de não autorização
 
 ```sh
 node --test packages/fiscal-danfe/test/print.test.mjs
-node packages/fiscal-danfe/test/render-fixtures.mjs /Volumes/Dev/tmp/brufap-danfe-qa
+node packages/fiscal-danfe/test/render-fixtures.mjs /caminho/local/novo-diretorio
 ```
 
 As fixtures constroem XML de negócio e assinam com RSA/certificado fictício criados em memória. Não usam o A1 da empresa. O teste valida escape, limites, hash/contexto, separação do histórico, dez casas, 250 itens e leitura do QR por outro decoder. Isso não é teste de autorização, transmissão ou homologação na SEFAZ.
 
 O conversor `test/Dockerfile.print-qa` é somente uma ferramenta local opcional, com WeasyPrint 70.0. Deve rodar com rede desativada, montando apenas a pasta de artefatos fictícios. O fetcher recusa recursos de qualquer URL. Não faz parte da imagem fiscal de produção.
 
-Fontes oficiais, vigência e contrato futuro do histórico: [documento de integração](../../docs/integrations/fiscal-danfe-preview.md).
+Contrato da composição e limites de acesso ao histórico: [runtime DANFE](../../packages/fiscal-danfe-runtime/README.md).

@@ -10,7 +10,7 @@ export function accessConfig(env: Record<string, unknown>): AccessConfig | null 
   const a1ApiUrl = String(env.VITE_A1_API_URL || '').trim();
   const deployment = String(env.VITE_SUPABASE_DEPLOYMENT || 'hosted').trim();
   if (!supabaseUrl && !publicKey && !apiUrl && !a1ApiUrl && !env.VITE_SUPABASE_DEPLOYMENT) return null;
-  const invalid = () => { throw new Error('Configuração pública de acesso inválida. Verifique as URLs e use somente uma chave Supabase publishable ou anon.'); };
+  const invalid = () => { throw new Error('Configuração pública de acesso inválida. Verifique os endereços dos serviços e use somente a chave pública gerada para esta instalação.'); };
   let supabase: URL, api: URL;
   try { supabase = new URL(supabaseUrl); api = new URL(apiUrl); } catch { return invalid(); }
   if (!['hosted', 'self-hosted'].includes(deployment)

@@ -36,7 +36,7 @@ export function saveFailure(status:number|null):{definitive:boolean;message:stri
 export function inviteFailure(status:number|null):{definitive:boolean;message:string}{
  if(status===409)return{definitive:true,message:'Já existe uma conta com este e-mail, há um convite para ele iniciado há menos de 5 minutos, ou o comando já foi usado com outros dados. Nenhum convite novo foi enviado. Procure a conta na lista para liberar o acesso ou tente de novo em alguns minutos.'};
  if(status===400)return{definitive:true,message:'Nenhum convite foi enviado. Confira o nome, o e-mail e o perfil.'};
- if(status===422)return{definitive:true,message:'O Supabase Auth recusou o convite (por exemplo: envio de e-mail do projeto ainda não configurado ou limite de envios atingido). Nenhuma conta foi criada e nenhum e-mail foi enviado. Tente de novo mais tarde.'};
+ if(status===422)return{definitive:true,message:'O serviço de autenticação desta instalação recusou o convite (por exemplo: envio de e-mail ainda não configurado ou limite de envios atingido). Nenhuma conta foi criada e nenhum e-mail foi enviado. Tente de novo mais tarde.'};
  if(status===403)return{definitive:true,message:'Nenhum convite foi enviado. Somente administradores convidam usuários.'};
  return{definitive:false,message:'Não foi possível confirmar o convite. Confira o resultado do mesmo comando; ele nunca envia um segundo convite para o mesmo e-mail.'};
 }

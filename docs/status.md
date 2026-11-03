@@ -1,27 +1,36 @@
-# Estado da reconstrução
+# Estado do FAGOO
 
-O FAGOO desta linha deriva da aplicação completa do Brufap no commit `97be7a7eab5c132e540748757120a55897f1e971`. O template original permanece. A linha do piloto fica identificada pelo histórico e pela versão `v0.1.0-alpha.1`; o número `0.2.0-dev.0` identifica desenvolvimento, sem anunciar release instalável.
+A versão de desenvolvimento é `0.2.0-dev.0`. O FAGOO reúne interface web, API, módulos comerciais, estoque, PDV, financeiro, CNAB, fiscal, preferências e permissões, mantendo o template atual.
 
-## Recuperado e adaptado
+## Disponível no código
 
-- Código original da interface, módulos comerciais, cadastros, estoque, PDV, financeiro, CNAB, fiscal e permissões.
-- Histórico das 311 migrações, com funções e guardas mantidas. Os hashes de guardas afetados pela normalização de nomes foram recalculados somente após comparação com os corpos da fonte.
-- Configuração explícita de backend próprio nos adaptadores e no frontend, preservando o modo hospedado e seus contratos de Auth/Storage/PostgREST.
-- Configurações de exemplo sem destinos de cliente; agendamentos e integrações de efeitos desabilitados até configuração explícita.
-- Inventário somente leitura e comparação offline para preparar a migração do Supabase.
-- Rastreabilidade por arquivo e registro das alterações da referência em `tools/reference`.
+- Interface e módulos completos do ERP.
+- Estrutura versionada do banco, funções, permissões e verificações de integridade.
+- Adaptadores e frontend com configuração explícita de backend próprio.
+- Configurações de exemplo sem destinos de cliente, com agendamentos e integrações de efeitos desabilitados até configuração explícita.
+- Suítes de testes sintéticos, verificação de tipos, build da interface, empacotamento local dos Workers e perfil de testes do container fiscal.
+- Núcleo local em Docker com PostgreSQL 17, autenticação, PostgREST, armazenamento e gateway restrito ao loopback, com imagens fixadas por digest.
+- Script de provisionamento para Ubuntu 24.04, geração privada de credenciais e aplicação das 311 versões do schema com histórico e verificação de hashes.
+- Cadastro inicial pelo serviço real de autenticação, com permissão administrativa e marcador permanente que impede repetir o bootstrap.
+- Atualizador local do núcleo, após seleção manual da revisão pública: verifica compatibilidade, cria backup do banco e dos arquivos, preserva credenciais e aplica somente versões pendentes do schema.
 
-## Ainda necessário para a próxima instalação
+## Entregas necessárias para uma release instalável
 
-1. Montar e validar o stack compatível em Ubuntu: PostgreSQL, PostgREST, Auth, Storage e HTTPS. Confirmar migrações/bootstrap para instalação virgem e restauração para cliente existente.
-2. Integrar o instalador à aplicação original e validar empresa inicial, administrador, e-mail, certificados, armazenamento, backup/restauração e logs.
-3. Adaptar o provisionamento Cloudflare e a atualização pelo painel ao novo conjunto de serviços. Distribuição pública sem token GitHub continua sendo requisito; assinatura dos artefatos e compatibilidade do banco precisam ser verificadas antes da atualização.
-4. Ensaiar a restauração de uma cópia autorizada do Supabase, incluindo Auth, objetos de Storage e material criptográfico privado, com reconciliação de saldos, documentos e movimentos.
-5. Acrescentar os contratos de integração para Hermes/Vinki e descoberta de servidor para Android/iOS sobre as regras originais do ERP. A IA externa interpreta e propõe; permissões, validações, idempotência e registros contábeis/de estoque permanecem no ERP.
-6. Validar capacidade e operação com o container Hermes na VPS de 1 vCPU/4 GB antes de definir esse tamanho como configuração de produção.
+1. Ensaiar o provisionamento em uma VPS Ubuntu nova e integrar HTTPS, frontend, Workers e runtime fiscal ao fluxo completo.
+2. Validar pela interface publicada o cadastro da empresa, login, MFA, recuperação de acesso e permissões.
+3. Validar SMTP, certificados, logs, recuperação completa após falha e atualização entre duas releases distintas. O núcleo local já teve autenticação, arquivos, backup e restauração lógica exercitados com dados sintéticos.
+4. Integrar provisionamento Cloudflare e atualização pelo painel, usando artefatos públicos assinados e contratos de compatibilidade de aplicação e banco.
+5. Ampliar os contratos de integração para agentes externos, gerenciamento de filas e descoberta de servidor para os aplicativos móveis.
+6. Medir capacidade e operação na VPS de referência, considerando os demais serviços executados no mesmo servidor.
 
-O novo template visual é uma etapa posterior. Nenhuma destas pendências autoriza remover módulos ou reduzir o modelo do ERP para acomodar o piloto anterior.
+## Contrato da distribuição
 
-## Limite das evidências
+O bootstrap de produção cria uma instalação própria, sem dados comerciais de demonstração ou de outra empresa. Catálogos oficiais, permissões e padrões técnicos fazem parte da estrutura do sistema.
 
-Compilação, testes sintéticos e comparação estrutural não demonstram que dados de um cliente foram migrados. Nenhum banco de produção foi conectado, restaurado ou alterado durante a recomposição. A publicação de uma branch de código não atualiza a instalação existente nem libera emissão fiscal/bancária em produção.
+Todas as instalações recebem a mesma distribuição e seguem o mesmo contrato de atualização. O sistema preserva os dados e configurações locais enquanto aplica mudanças compatíveis e versionadas do banco. As releases não dependem de uma edição específica por cliente.
+
+O novo template visual é uma etapa posterior. Alterações de infraestrutura ou aparência devem preservar os módulos, os campos e os fluxos do ERP.
+
+## Limite das verificações
+
+Os resultados em [verificação](verification.md) cobrem código, testes sintéticos, builds e serviços reais em Docker local. O atualizador disponível cuida apenas do núcleo local; download de releases e atualização pelo painel continuam pendentes. A release instalável depende do ensaio operacional completo descrito no [manual de instalação](operations/installation.md), incluindo recuperação após falha. As condições de habilitação e homologação de operações fiscais e bancárias permanecem próprias de cada módulo.

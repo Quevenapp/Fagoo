@@ -4,7 +4,7 @@ Validador Python de candidatos `NFe` 4.00 dos modelos 55 e 65, restrito a homolo
 
 O pacote foi obtido em 16/10/2026 na [listagem oficial de esquemas NF-e](https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=BMPFMBoln3w=), pelo [arquivo oficial](https://www.nfe.fazenda.gov.br/portal/exibirArquivo.aspx?conteudo=8ITFuBLltXs=). O ZIP tem SHA-256 `b8589490a58a09a993a80e6ac4d7ed10f20892061ecfc56719337098d4b95998`. A listagem relaciona NT 2025.002 v1.50 e NT 2026.007 v1.00 a este pacote. O manifesto registra a origem, data e hashes individuais.
 
-**Publicação de um XSD não comprova a vigência de todas as regras tributárias nem a aptidão para produção.** O usuário confirmou Simples Nacional; isso não substitui a revisão da tributação de cada operação. CRT, CSOSN, NCM, CFOP e tributos presentes nas fixtures são dados exclusivamente sintéticos de teste, não parâmetros sugeridos para a empresa.
+**Publicação de um XSD não comprova a vigência de todas as regras tributárias nem a aptidão para produção.** O regime tributário da empresa e a tributação de cada operação precisam de revisão específica. CRT, CSOSN, NCM, CFOP e tributos presentes nas fixtures são dados exclusivamente sintéticos de teste, não parâmetros sugeridos para a empresa.
 
 ## Uso
 

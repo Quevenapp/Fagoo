@@ -93,7 +93,7 @@ export function CompanyStorage({controller}:{controller:Pick<SystemController,'s
    {value.groups?<table className="data-table"><thead><tr><th scope="col">Tipo de arquivo</th><th scope="col" className="numeric">Arquivos</th><th scope="col" className="numeric">Espaço</th></tr></thead>
     <tbody>{value.groups.map(g=><tr key={g.group}><td>{STORAGE_LABELS[g.group]}</td><td className="numeric">{g.objects.toLocaleString('pt-BR')}</td><td className="numeric">{bytesText(g.bytes)}</td></tr>)}</tbody></table>
     :<p className="real-help">O detalhe por tipo de arquivo fica disponível para administradores.</p>}
-   <p className="real-help">O FAGOO não tem plano de armazenamento como o Origin: o limite abaixo é o do projeto no Supabase, informado pelo administrador. Não há troca de plano.</p></>}
+   <p className="real-help">O limite de armazenamento desta instalação é informado pelo administrador conforme a capacidade reservada no servidor.</p></>}
   {typeof controller.preferences==='function'&&typeof controller.getSnapshot==='function'&&typeof controller.subscribe==='function'&&<PreferenceSettingsPage key={reload} controller={controller as PreferencesController} page={preferencePage('empresa-armazenamento')!} categoryLabel="Dados da empresa" categoryTo="/empresa-configuracoes?secao=armazenamento" embedded onClose={()=>setReload(n=>n+1)}/>}
  </section>;
 }

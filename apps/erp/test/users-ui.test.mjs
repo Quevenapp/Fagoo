@@ -73,12 +73,12 @@ test('117 only an active administrador sees the screen; other roles send no requ
 test('117 Auth refusing the invite is a definitive message, also when the same command is resumed',async()=>{
  const g=createUsersFixture({before(c){if(c.path==='/v1/usuarios/convites')throw new AccessError(422);}}),w=await mount(g);try{
   await w.click('Incluir usuário');await w.change('invite-name','Sem SMTP');await w.change('invite-email','sem.smtp@sintetico.test');await w.click('Salvar');
-  assert.match(w.text(),/O Supabase Auth recusou o convite.*Nenhuma conta foi criada/s);assert.equal(w.nodes().some(n=>n.type==='button'&&textOf(n)==='Conferir resultado'),false);assert.equal(w.guard().busy,false);
+  assert.match(w.text(),/O serviço de autenticação desta instalação recusou o convite.*Nenhuma conta foi criada/s);assert.equal(w.nodes().some(n=>n.type==='button'&&textOf(n)==='Conferir resultado'),false);assert.equal(w.guard().busy,false);
  }finally{w.unmount();}
  let posts=0;const f=createUsersFixture({inviteCreates:false,before(c){if(c.path==='/v1/usuarios/convites'&&++posts===2)throw new AccessError(422);}}),v=await mount(f);try{
   await v.click('Incluir usuário');await v.change('invite-name','Sem SMTP');await v.change('invite-email','sem.smtp@sintetico.test');await v.click('Salvar');
   assert.match(v.text(),/Não foi possível confirmar o convite/);await v.click('Conferir resultado');assert.match(v.text(),/O convite ainda não foi concluído/);
-  await v.click('Concluir o mesmo convite');assert.equal(posts,2);assert.match(v.text(),/O Supabase Auth recusou o convite/);
+  await v.click('Concluir o mesmo convite');assert.equal(posts,2);assert.match(v.text(),/O serviço de autenticação desta instalação recusou o convite/);
   assert.equal(v.nodes().some(n=>n.type==='button'&&textOf(n)==='Conferir resultado'),false);assert.equal(v.guard().busy,false);
  }finally{v.unmount();}
 });

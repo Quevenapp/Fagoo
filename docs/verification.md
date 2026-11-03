@@ -1,36 +1,26 @@
-# Verificação da recomposição
+# Verificação do FAGOO
 
-Referência: `brunovnq/brufap`, commit `97be7a7eab5c132e540748757120a55897f1e971`. Verificações realizadas em 02/11/2026. Os testes usam cenários sintéticos, sem conexão a dados de produção.
+As verificações descritas nesta página usam cenários sintéticos e builds locais. Elas não acessam os dados de uma instalação de cliente.
 
-## Preservação da referência
+## Resultados da validação ampla
 
-O inventário em `tools/reference/baseline.json` acompanha 3.340 arquivos da fonte, excluindo a documentação operacional histórica com informações específicas de cliente. O verificador exige a presença de todos esses arquivos e confere as alterações registradas em `changes.json`. Os hashes de comparação normalizam apenas finais de linha de texto; os arquivos de schema/certificados públicos verificados por manifests mantêm seus bytes originais.
-
-A interface preserva os 1.270 arquivos originais de `apps/erp`, incluindo 334 arquivos TSX e 114 arquivos CSS. O template e sua estrutura de layout foram mantidos; as diferenças abrangem identidade exibida, configuração de origem, correções de colisões de nomes e estabilização de testes.
-
-As 311 migrações foram aplicadas integralmente em dois bancos PGlite independentes: referência e FAGOO. Os catálogos finais, com 1.327 relações e 2.310 funções, correspondem após a normalização de namespaces. Relações incluem objetos de catálogo além de tabelas; esses números não representam o inventário de um banco de cliente. Os 39 hashes esperados de guardas afetadas foram recalculados em 21 migrações após comprovação do corpo de função correspondente. As guardas continuam ativas.
-
-## Resultados
+Última rodada ampla: 02/11/2026. Os resultados abaixo registram os casos únicos aprovados após correções e repetições pontuais.
 
 | Verificação | Resultado |
 | --- | --- |
 | Interface ERP | 2.625 casos únicos aprovados, zero skips |
 | Pacotes de domínio/fiscal/configuração | 1.591 casos únicos aprovados; 55 casos condicionais não executados na suíte geral |
-| Workers, conectores, API e integração | 169 testes aprovados na frente de infraestrutura |
+| Workers, conectores, API e integração | 169 testes aprovados |
 | Configuração comum de backend | 23 testes aprovados; também incluídos na suíte de pacotes |
-| Portabilidade e adoção | 37 testes aprovados |
-| Recovery de Storage | 34 testes aprovados |
-| Baseline e janela fiscal sintética | 22 testes aprovados |
-| Inventário/comparação em PostgreSQL 17.11 real, Docker | 26 verificações sintéticas aprovadas |
 | TypeScript e build do ERP | Aprovados; build com origens e chave pública fictícias |
-| Inspeção do build público | Sem achados; 325 arquivos examinados na rodada final, incluindo assets locais retidos de builds anteriores |
-| Quatro Workers | Empacotamento `--dry-run` aprovado, sem publicação |
+| Inspeção do build público | Sem achados na rodada final |
+| Quatro Workers | Empacotamento local aprovado |
 | Container fiscal | Build do estágio `test` e testes internos aprovados |
-| Auditoria npm da raiz após atualização compatível do Wrangler | Zero vulnerabilidades reportadas |
+| Auditoria npm da raiz | Zero vulnerabilidades reportadas na rodada registrada |
 
-Os totais por frente se sobrepõem e não devem ser somados. A contagem consolidada considera os casos únicos que passaram após correções e repetições pontuais. Na interface, nove arquivos foram inicialmente impedidos por uma cópia incompleta das dependências do ambiente temporário: seus 52 casos passaram depois de restaurar os módulos. Nos pacotes, 22 falhas foram corrigidas exclusivamente em fixtures/testes e verificadas novamente: datas de cenários históricos e um teste cujo prazo real de 20 ms terminava antes da etapa que pretendia exercitar.
+Os totais por frente se sobrepõem e não devem ser somados. Os 55 casos condicionais da suíte geral permanecem identificados como não executados nessa rodada. O estágio Docker executa seu próprio perfil de testes, incluindo verificações fiscais de processo.
 
-Os 55 casos condicionais da suíte geral permanecem identificados como não executados nessa rodada. O estágio Docker executa seu próprio perfil de testes, incluindo verificações fiscais de processo. Nenhuma dessas evidências representa homologação de emissão real, validação de um banco de cliente ou garantia de capacidade da VPS.
+As suítes verificam contratos de dados e permissões, regras comerciais, recuperação de comandos, integridade de arquivos e limites de execução. Cenários fiscais com validade definida usam relógios sintéticos de teste, preservando as verificações de vencimento e os prazos de produção. Essas evidências não substituem o ensaio completo do instalador ou a homologação de uma operação fiscal/bancária.
 
 ## Reproduzir
 
@@ -43,15 +33,36 @@ export BRUFAP_TEST_OPENSSL_PATH=/usr/bin/openssl
 export BRUFAP_TEST_PYTHON="$PWD/.venv/bin/python3"
 node --test --test-concurrency=4 packages/*/test/*.test.mjs
 npm run test:erp
-npm run test:portability
-npm run check:reference
+npm run test:backend
 docker build --target test -f packages/fiscal-runtime/Dockerfile -t fagoo-fiscal-validation .
 ```
 
-Os nomes históricos das variáveis de teste permanecem compatíveis. Use um diretório no filesystem nativo do Linux para as suítes extensas; misturar dependências nativas Windows/Linux ou executar milhares de leituras através de um volume compartilhado pode invalidar ou tornar lento o ambiente de teste.
+Os nomes das variáveis de teste acima são identificadores técnicos usados pelas suítes. Use um diretório no filesystem nativo do Linux para os testes extensos. Dependências nativas devem ser instaladas no mesmo sistema operacional em que serão executadas.
 
 O build do frontend exige configuração pública válida da instalação. A compilação usada nesta verificação empregou domínios fictícios e não serve como build de produção configurado para um cliente.
 
-## Aceite operacional pendente
+## Aceite de instalação e atualização
 
-A próxima instalação ainda precisa validar o stack completo de Auth, Storage, PostgREST e PostgreSQL, bootstrap do cliente, dados e objetos restaurados, saldos e permissões, certificados e recuperação, atualização assinada e capacidade com Hermes. O [estado da reconstrução](status.md) e o [roteiro de migração](operations/supabase-migration.md) descrevem esse trabalho.
+Na revisão do núcleo local em 02/11/2026, foram usados containers reais com dados exclusivamente sintéticos:
+
+| Verificação do núcleo local | Resultado |
+| --- | --- |
+| PostgreSQL, autenticação, PostgREST, armazenamento e gateway | Inicialização aprovada, com imagens fixadas por digest e acesso externo ao banco desabilitado |
+| Estrutura do ERP | 311 versões aplicadas ao PostgreSQL real, com guardas de integridade preservadas e histórico de hashes |
+| Primeiro administrador | Usuário Auth, permissão ERP e marcador permanente criados; nova inicialização recusada mesmo após remoção da permissão sintética |
+| Login e API de dados | Sessão real e RPC `erp_access_me` aprovadas |
+| Arquivos | Upload e download em bucket privado, com igualdade dos bytes |
+| Atualizador do núcleo | Credenciais, administrador, histórico e arquivo sintéticos preservados; execução concorrente recusada |
+| Backup e restauração lógica | Dump restaurado em segundo banco sintético, preservando histórico, marcador, permissão e metadados de arquivo; tar conferido com bytes idênticos |
+| Proteções do schema | Divergência de hash recusada; falha SQL desfez os objetos e a entrada de histórico da mesma transação |
+| Testes unitários de infraestrutura | 7 aprovados |
+| Shell | Sintaxe dos dois scripts aprovada com `bash -n` |
+| Interface após revisão | TypeScript e build aprovados; 426 arquivos de build inspecionados sem achados |
+
+Reproduza as verificações unitárias com `python3 -m unittest discover -s infra -p 'test_*.py'`. O [manual de instalação](operations/installation.md) apresenta os comandos do núcleo. Não execute procedimentos destrutivos de ensaio sobre volumes de uma instalação em uso.
+
+O script de instalação do sistema operacional não foi executado integralmente em uma VPS Ubuntu nova nessa rodada. A restauração lógica local não constitui recuperação completa da implantação. Também permanecem sem ensaio integrado a publicação HTTPS, SMTP, MFA pela interface publicada, Workers, runtime fiscal, atualização entre duas releases distintas e atualização pelo painel. Não foi medida capacidade de produção na VPS de referência.
+
+Uma release instalável precisa demonstrar o bootstrap de uma base comercial vazia, cadastro inicial, login/MFA, permissões, arquivos, backup e restauração. A atualização deve ser ensaiada separadamente com uma instalação preenchida, preservando os dados e as configurações locais e aplicando as mudanças versionadas de schema.
+
+A recuperação após falha também precisa ser comprovada. O [manual de instalação](operations/installation.md), o [contrato de atualização](operations/updates.md) e o [estado do projeto](status.md) descrevem esses critérios e o que ainda precisa ser implementado.

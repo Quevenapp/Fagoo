@@ -2,7 +2,7 @@
 
 Protótipo Node 24 isolado, sem driver de rede padrão, rota HTTP, scheduler, acesso ao cofre ou configuração de segredos. Os testes usam um driver de eventos e um servidor mTLS temporário em `127.0.0.1`, com certificados criados apenas em memória. Nenhuma consulta fiscal é realizada.
 
-O usuário confirmou que **NFStock já consulta com o A1 do mesmo CNPJ** e escolheu **transferir a coleta ao Brufap após a homologação**. Até a virada coordenada, NFStock continua responsável pela consulta. A sequência de ativação será pausar a consulta no NFStock, obter o último NSU SEFAZ e seu horário, registrar esse checkpoint confirmado no Brufap e somente então ativar a coleta autorizada. O NSU ainda não foi fornecido. Brufap não deve consultar em paralelo nem iniciar no zero por conta própria. Não é necessária integração com a API do NFStock nesta fase; este pacote não executa a transferência.
+A ativação da coleta exige um coordenador único por escopo fiscal, homologação e checkpoint NSU confirmado com horário. Se outro coletor estiver ativo, o administrador deve coordenar sua pausa antes de liberar este serviço. O pacote não presume NSU inicial zero, não consulta em paralelo e não transfere automaticamente a responsabilidade pela coleta.
 
 ## Interface local
 
@@ -43,7 +43,7 @@ O [registro oficial de produção](https://www.nfe.fazenda.gov.br/PORTAl/webServ
 - `https://www1.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx`
 - `https://hom1.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx`
 
-SOAP 1.1 e os wrappers `nfeDistDFeInteresse`/`nfeDadosMsg` seguem o exemplo da [NT 2014.002 v1.40](https://www.nfe.fazenda.gov.br/portal/exibirArquivo.aspx?conteudo=uWO2d%2FgTuWg%3D), já preservada e identificada no [contrato DF-e](../../docs/integrations/sefaz-received-dfe.md). O `SOAPAction` é o candidato correspondente a essa operação/namespace, **ainda não confirmado pelo WSDL**. Uma obtenção pública de `?WSDL` em homologação, sem certificado ou consulta fiscal, retornou HTTP 403 em 16/10/2026. Isso não comprova a causa da recusa. O pacote não muda para SOAP 1.2, outro host ou outro método quando algo falha.
+SOAP 1.1 e os wrappers `nfeDistDFeInteresse`/`nfeDadosMsg` seguem o exemplo da [NT 2014.002 v1.40](https://www.nfe.fazenda.gov.br/portal/exibirArquivo.aspx?conteudo=uWO2d%2FgTuWg%3D), usada pelo [parser de distribuição](../../packages/fiscal-xml/src/distribution.mjs). O `SOAPAction` é o candidato correspondente a essa operação/namespace, **ainda não confirmado pelo WSDL**. Uma obtenção pública de `?WSDL` em homologação, sem certificado ou consulta fiscal, retornou HTTP 403 em 16/10/2026. Isso não comprova a causa da recusa. O pacote não muda para SOAP 1.2, outro host ou outro método quando algo falha.
 
 As respostas mantêm `binding_verified:false`, `operation_authorized:false`, `can_query:false`, `can_manifest:false`, `can_emit:false`, `tls_origin_verified:false` e `sefaz_authorized:false`. O port de teste pode simular eventos TLS; essas flags não promovem a simulação a evidência SEFAZ. O recebimento de um corpo HTTP também não comprova que seja uma resposta DF-e válida.
 
@@ -66,7 +66,7 @@ O runtime atual de custódia não foi alterado. Seu envelope 041 é restrito a `
 
 Para um uso real ainda faltam:
 
-1. Concluir a homologação e a virada escolhida: pausar NFStock, obter o último NSU SEFAZ e horário, registrar checkpoint e confirmação, depois liberar Brufap como coordenador. CNPJ interessado e identidade do certificado precisam estar versionados. A NT permite consulta por estabelecimento de mesma base, mas não vamos escolher outro estabelecimento ou certificado do escritório por inferência.
+1. Concluir a homologação, coordenar a pausa de outro coletor quando existir, obter o último NSU SEFAZ e horário e registrar checkpoint confirmado antes da ativação. CNPJ interessado e identidade do certificado precisam estar versionados. Não escolher outro estabelecimento ou certificado por inferência.
 2. WSDL/binding verificado e política explícita de uso da credencial para distribuição no ambiente escolhido, distinta da preparação offline.
 3. Callback mTLS escopado no runtime, após autorização e CAS atuais: identidade, credencial, associação, cadeia/perfil e revogação sob política de frescor. Os avaliadores trust/CRL existentes são evidências offline e não concedem essa finalidade; CRLs fornecidas não provam última publicação.
 4. Orquestrador interno que reserve pela SQL045, revalide contexto, consuma um ticket único imediatamente antes da consulta e registre toda incerteza. Nenhum SOAP, URL, CA ou opções TLS deve vir do browser. O adaptador não deve devolver chave/PFX/senha.
@@ -81,6 +81,6 @@ node --test packages/fiscal-dfe-transport/test/distribution-transport.test.mjs
 node --test packages/fiscal-dfe-transport/test/loopback-mtls.test.mjs
 ```
 
-O primeiro comando roda inteiramente com eventos sintéticos. O segundo requer permissão local para abrir uma porta efêmera em `127.0.0.1`; não faz DNS externo. Certificados/chaves são gerados em memória, o driver substitui o destino pelo loopback e mantém a verificação de SNI/hostname. Valida sucesso mTLS, ausência de certificado cliente, CA errada e hostname divergente. O bloqueio inicial do sandbox a `listen` foi resolvido pela aprovação do teste local; nenhuma restrição de acesso remoto foi contornada.
+O primeiro comando roda inteiramente com eventos sintéticos. O segundo requer permissão local para abrir uma porta efêmera em `127.0.0.1`; não faz DNS externo. Certificados/chaves são gerados em memória, o driver substitui o destino pelo loopback e mantém a verificação de SNI/hostname. Valida sucesso mTLS, ausência de certificado cliente, CA errada e hostname divergente.
 
 Testes locais não certificam o WSDL, a aceitação de um A1 real, a política fiscal ou o comportamento do Ambiente Nacional. Nenhuma transmissão real foi tentada.

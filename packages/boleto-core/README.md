@@ -26,7 +26,7 @@ createItau109BarcodePreview({purpose: 'offline-validation', profile, title, allo
 
 O perfil é copiado por propriedades próprias de dados e validado com o código CNAB existente. Campos desconhecidos, accessors, valores implícitos e objetos não planos são recusados. A entrada `createBoletoDigits` não aceita juros, desconto, multa, moeda variável, PIX, vencimento vazio, valor aberto, pagamento parcial ou campo livre informado pelo chamador.
 
-Uma entrada separada, `createItau109BoletoTermsCandidate({...boletoInput, collectionTerms})`, acrescenta a revisão explícita de juros/multa Itaú 109 sem alterar dígitos ou valor nominal. Ela aceita resolução ausente como pendência, nunca como taxa zero ou autorização. O [contrato offline dos encargos](../../docs/integrations/itau109-offline-charges.md) documenta a base mensal, arredondamento e datas que precisam de conferência. Não gera PDF, mensagens de protesto nem instruções bancárias. Todas as flags de emissão/registro/transmissão permanecem falsas.
+Uma entrada separada, `createItau109BoletoTermsCandidate({...boletoInput, collectionTerms})`, acrescenta a revisão explícita de juros/multa Itaú 109 sem alterar dígitos ou valor nominal. Ela aceita resolução ausente como pendência, nunca como taxa zero ou autorização. O [contrato offline dos encargos](../../packages/cnab-core/src/itau-terms.mjs) documenta a base mensal, arredondamento e datas que precisam de conferência. Não gera PDF, mensagens de protesto nem instruções bancárias. Todas as flags de emissão/registro/transmissão permanecem falsas.
 
 Para Itaú 109, o pacote confere também o DAC agência/conta contra o cálculo referenciado na posição 41 do manual. Divergência devolve `BOLETO_ACCOUNT_DIGIT_MISMATCH`; não altera o dígito recebido. Uma eventual conta excepcional exigiria especificação e perfil próprios. O `cnab-core` e os cadastros existentes não foram modificados.
 
@@ -56,7 +56,7 @@ Para formalizar a futura emissão será necessário:
 2. Vincular o candidato à reserva persistida de nosso número e à cópia imutável de conta/título/valor/vencimento do CNAB. `confirmed:true` local não substitui essa consulta autorizada. Manter números usados/reservados indisponíveis e coordenar a virada do emissor anterior.
 3. Implementar PDF/representação gráfica, dados completos de beneficiário/pagador e vínculo com retorno de registro. Conferir o resultado com o banco no canal apropriado. Não deduzir aceite de um DV correto nem reenviar boletos legados.
 
-Somente os metadados locais de arquivos/ZIPs foram examinados nesta análise: não foi encontrado PDF/nome de boleto no material inspecionado. Isso não comprova inexistência de boletos no sistema original e não fornece uma evidência contratual 110.
+A habilitação de qualquer carteira depende da especificação e do contrato bancário confirmados para a instalação; arquivos de sistemas anteriores não substituem essa confirmação.
 
 ## Testes
 

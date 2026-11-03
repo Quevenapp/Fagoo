@@ -31,7 +31,7 @@ A resposta não inclui XML, dados do emitente/destinatário, identidade, token d
 - `storage.read({bucket,key,signal,deadline})`: `Response` binária 200 ou `null` exclusivamente para ausência comprovada. MIME `application/octet-stream`, sem codificação ou com `identity`, comprimento coerente e corpo limitado.
 - `storage.putImmutable({bucket,key,bytes,contentType,upsert:false,ifNoneMatch:'*',signal,deadline})`: cria se ausente e retorna status 200/201/409. Deve consumir/copiar os bytes durante sua Promise e encerrar o acesso após cancelamento. Nenhum driver pode reter a referência após concluir.
 
-A porta implementada em `fiscal-artifact-storage` atende ao contrato mediante injeção explícita de um driver. Não foi ligada a credenciais ou serviço publicado por esta implementação. O bucket privado foi provisionado separadamente; os testes deste pacote não o acessam.
+A porta implementada em `fiscal-artifact-storage` atende ao contrato mediante injeção explícita de um driver. As credenciais são fornecidas pelo servidor e o bucket privado precisa ser provisionado na instalação; os testes deste pacote não o acessam.
 
 ## Validação
 

@@ -2,7 +2,7 @@
 
 Protótipo local, com portas obrigatórias e testes sintéticos. Não há adaptador de credencial operacional, rede padrão, leitura de ambiente, endpoint, agendador ou ativação de coleta. Não emite NF-e/NFC-e nem envia manifestações.
 
-A empresa escolheu transferir a coleta do NFStock ao Brufap **após homologação e virada coordenada**. O NFStock continua responsável até ser pausado, com obtenção do último NSU da SEFAZ e do horário de consulta. O checkpoint não foi informado. Este pacote não escolhe zero, não consulta em paralelo e não altera essa configuração.
+A ativação da coleta exige um coordenador único por escopo fiscal, homologação e checkpoint NSU confirmado com horário. Se outro coletor estiver ativo, o administrador deve coordenar sua pausa antes de liberar este serviço. O pacote não presume NSU inicial zero, não consulta em paralelo e não transfere automaticamente a responsabilidade pela coleta.
 
 ## Contrato local
 
@@ -67,4 +67,4 @@ node --test packages/fiscal-dfe-orchestrator/test/*.test.mjs
 
 Os testes usam PGlite sem `dataDir`, a migração 045 real, dados fictícios, portas de transporte e Storage em memória. Os 30 cenários passaram e incluem integração com a porta HTTP de Storage por driver simulado, além de perda de respostas, conflitos/limites do diário, XML inválido, lote incompleto, ACL/contexto, reserva expirada, ticket concorrente entre duas instâncias, aborto e recuperação sem reenvio. Não cobrem concorrência entre processos PostgreSQL reais ou homologação do serviço SEFAZ.
 
-Referências do contrato: [RPC 045](../../docs/integrations/sefaz-received-dfe-rpc.md), [parser de distribuição](../../docs/integrations/sefaz-received-dfe.md) e [transporte isolado](../fiscal-dfe-transport/README.md). A migração 045 aplicada permanece inalterada.
+Referências do contrato: [RPC 045](../../supabase/migrations/202610160045_dfe_distribution.sql), [parser de distribuição](../../packages/fiscal-xml/src/distribution.mjs) e [transporte isolado](../fiscal-dfe-transport/README.md). A estrutura 045 deve estar presente no banco da instalação.

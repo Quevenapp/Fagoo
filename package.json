@@ -15,13 +15,11 @@
     "build:erp:worker": "npm run build:erp && wrangler deploy --dry-run --config workers/erp-preview/wrangler.jsonc",
     "deploy:erp": "npm run build:erp && npm run check:erp:build && wrangler deploy --config workers/erp-preview/wrangler.jsonc",
     "preview:erp": "vite preview --config apps/erp/vite.config.ts",
-    "test:migration": "python3 -m unittest discover -s tools/migration -p 'test_*.py'",
     "build:sync": "wrangler deploy --dry-run --config workers/origin-sync/wrangler.jsonc",
     "deploy:sync": "wrangler deploy --config workers/origin-sync/wrangler.jsonc",
     "check:erp:build": "node tools/qa/check-erp-build.mjs",
     "test:backend": "node --test packages/backend-config/test/*.test.mjs",
-    "test:portability": "node --test tools/portability/portability.test.mjs",
-    "check:reference": "node tools/reference/check.mjs"
+    "test:database": "python3 -m unittest discover -s tools/migration -p 'test_*.py'"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.10",

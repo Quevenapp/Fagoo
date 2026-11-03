@@ -20,7 +20,7 @@ Arredondamento half-up: primeiro quantidade × preço em duas casas por item; de
 
 O resultado normalizado tem campos calculados e não deve ser enviado integralmente como novo `p_body`: o contrato de escrita aceita somente campos de entrada. Preserve IDs de itens ao editar; envie valores e campos calculados apenas em componentes de visualização.
 
-Limites e RPCs: [contrato dos documentos](../../docs/integrations/erp-documents-rpc.md). Testes:
+Limites e RPCs: [contrato dos documentos](../../supabase/migrations/202610160008_erp_documents.sql). Testes:
 
 ```sh
 node --test packages/erp-domain/test/*.test.mjs tools/migration/test_documents_sql.mjs

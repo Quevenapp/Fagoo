@@ -6,28 +6,28 @@ A consulta do staging Origin é somente leitura. Rotas nativas permitem cadastro
 
 | Área nativa | Rotas principais | Contrato |
 | --- | --- | --- |
-| Visão geral | `/v1/inicio` | [Agregados por perfil](../../docs/integrations/erp-home.md) |
-| Preparação da virada | `/v1/preparacao-virada` | [Conferência somente leitura](../../docs/integrations/erp-cutover-readiness.md) |
-| Conferência financeira da origem | `/v1/conferencia-financeira-origin` | [Valores, identidades e pendências, somente leitura](../../docs/integrations/financial-cutover-review.md) |
-| Importação financeira revisada | `/v1/importacao-financeira-origin` | [Prévia administrativa, lote atômico e proveniência permanente](../../docs/integrations/origin-financial-import.md) |
-| Duplicação de documentos | `/v1/duplicacao-documentos` | [Nova cópia e vínculo de origem](../../docs/integrations/erp-document-copy.md) |
-| Preparação dos itens fiscais | `/v1/preparacao-itens-fiscais` | [Conferência por revisão](../../docs/integrations/fiscal-item-preparation.md) |
-| Documento → financeiro | `/v1/documentos/:kind/:id/financeiro` | [Prévia, lançamento e reversão](../../docs/integrations/erp-document-finance.md) |
-| Documento → estoque | `/v1/documentos-estoque` | [Prévia, movimento e estorno](../../docs/integrations/erp-document-stock-rpc.md) |
-| Cadastros | `/v1/cadastros` | [Catálogo](../../docs/integrations/erp-catalog-rpc.md) |
-| Documentos e OS | `/v1/documentos` | [Documentos](../../docs/integrations/erp-documents-rpc.md) |
-| Estoque | `/v1/estoque` | [Movimentação e estorno](../../docs/integrations/erp-stock-rpc.md) |
-| Financeiro | `/v1/financeiro` | [Títulos, baixas e reversões](../../docs/integrations/erp-finance-rpc.md) |
-| Importação | `/v1/importacao-cadastros` | [Conferência de alterações](../../docs/integrations/erp-catalog-import.md) |
-| Anexos | `/v1/documentos/:kind/:id/anexos` | [Reserva, envio e download](../../docs/integrations/erp-attachments.md) |
-| CNAB 400 | `/v1/cnab` | [Perfis, remessas e retornos](../../docs/integrations/erp-cnab-rpc.md) |
+| Visão geral | `/v1/inicio` | [Agregados por perfil](../../workers/erp-api/src/home.mjs) |
+| Preparação da virada | `/v1/preparacao-virada` | [Conferência somente leitura](../../workers/erp-api/src/cutover.mjs) |
+| Conferência financeira da origem | `/v1/conferencia-financeira-origin` | [Valores, identidades e pendências, somente leitura](../../workers/erp-api/src/financial-cutover.mjs) |
+| Importação financeira revisada | `/v1/importacao-financeira-origin` | [Prévia administrativa, lote atômico e proveniência permanente](../../workers/erp-api/src/financial-import.mjs) |
+| Duplicação de documentos | `/v1/duplicacao-documentos` | [Nova cópia e vínculo de origem](../../workers/erp-api/src/document-copy.mjs) |
+| Preparação dos itens fiscais | `/v1/preparacao-itens-fiscais` | [Conferência por revisão](../../workers/erp-api/src/fiscal-item-preparation.mjs) |
+| Documento → financeiro | `/v1/documentos/:kind/:id/financeiro` | [Prévia, lançamento e reversão](../../workers/erp-api/src/document-finance.mjs) |
+| Documento → estoque | `/v1/documentos-estoque` | [Prévia, movimento e estorno](../../workers/erp-api/src/document-stock.mjs) |
+| Cadastros | `/v1/cadastros` | [Catálogo](../../workers/erp-api/src/catalog.mjs) |
+| Documentos e OS | `/v1/documentos` | [Documentos](../../supabase/migrations/202610160008_erp_documents.sql) |
+| Estoque | `/v1/estoque` | [Movimentação e estorno](../../workers/erp-api/src/stock.mjs) |
+| Financeiro | `/v1/financeiro` | [Títulos, baixas e reversões](../../workers/erp-api/src/finance.mjs) |
+| Importação | `/v1/importacao-cadastros` | [Conferência de alterações](../../workers/erp-api/src/catalog-import.mjs) |
+| Anexos | `/v1/documentos/:kind/:id/anexos` | [Reserva, envio e download](../../workers/erp-api/src/attachments.mjs) |
+| CNAB 400 | `/v1/cnab` | [Perfis, remessas e retornos](../../workers/erp-api/src/cnab.mjs) |
 | Empresa | `/v1/empresa`, `/identidade`, `/fiscal` | Migração 016: identidade para membros ativos, edição por admin; confirmação fiscal por admin/fiscal |
 
 As permissões de cada área são consultadas por sua rota base e revalidadas no SQL. Não inferir autorização de escrita a partir da tabela de leitura de staging abaixo. CNAB mantém `productionReady:false` e retornos não realizam baixa automática; configuração fiscal mantém `emission_enabled:false`.
 
 ## Autenticação e autorização
 
-Cada chamada exige `Authorization: Bearer <access_token do Supabase Auth>`. O Worker verifica o token por `GET /auth/v1/user` no projeto configurado. Só o UUID retornado por essa verificação é enviado às RPCs internas. Papéis de `user_metadata`, UUIDs informados pelo cliente e usuários anônimos não autorizam acesso.
+Cada chamada exige `Authorization: Bearer <access_token do serviço de autenticação>`. O Worker verifica o token por `GET /auth/v1/user` no projeto configurado. Só o UUID retornado por essa verificação é enviado às RPCs internas. Papéis de `user_metadata`, UUIDs informados pelo cliente e usuários anônimos não autorizam acesso.
 
 A migração `202610160004_erp_access.sql` cria a associação privada `erp_access.membership`, inicialmente vazia. Um usuário válido do Auth sem associação ativa recebe `403`. O primeiro administrador precisa ter seu UUID real verificado e receber uma associação explícita por um administrador do banco. Não existe promoção automática do primeiro cadastro nem endpoint de autoinscrição. Atualizações administrativas devem atualizar também `updated_at`.
 
@@ -47,7 +47,7 @@ Todos os papéis, inclusive `admin`, têm somente leitura **nas rotas de staging
 
 ```json
 {
-  "user_id": "UUID confirmado pelo Supabase Auth",
+  "user_id": "UUID confirmado pelo serviço de autenticação",
   "role": "vendas",
   "resources": ["contacts", "products", "sales_orders", "sales_proposals"],
   "data_mode": "staging_readonly"
@@ -106,7 +106,7 @@ Os dados são uma cópia em sincronização; a API não garante completude do hi
 
 ## Erros
 
-As respostas usam `{ "error": { "code": "ERP_FORBIDDEN", "request_id": "..." } }`, sem corpo de erro do Supabase, tokens ou dados de registros. O identificador também aparece em `X-Request-Id`.
+As respostas usam `{ "error": { "code": "ERP_FORBIDDEN", "request_id": "..." } }`, sem corpo de erro do backend, tokens ou dados de registros. O identificador também aparece em `X-Request-Id`.
 
 | HTTP | Significado |
 | --- | --- |
@@ -127,7 +127,7 @@ Configuração em `wrangler.jsonc`: URL pública do projeto e `ALLOWED_ORIGINS`,
 
 O segredo `SUPABASE_SERVICE_ROLE_KEY` pertence exclusivamente ao Worker; nunca deve entrar no bundle, configuração pública ou armazenamento do navegador. O frontend recebe apenas a chave pública do projeto para autenticação. Para staging, o Worker chama `erp_access_me(uuid)` e `erp_read_records(uuid,text,integer,integer,text,text,date,date)`. O lote adicional chama somente as RPCs de catálogo/histórico expressamente enumeradas nos módulos correspondentes. `anon` e `authenticated` não podem executá-las, e nem `service_role` possui acesso direto às tabelas privadas.
 
-A publicação foi realizada após a aplicação da migração 004, configuração do segredo de serviço e liberação da origem da prévia. O endereço `workers.dev` foi habilitado nessa implantação. A criação/verificação do primeiro usuário Auth e sua associação deliberada continuam pendentes. A interface autenticada está documentada em `apps/erp/ACCESS.md`; login real e consulta com associação precisam de verificação própria. Novas entidades de sincronização, como formas de pagamento e vendedores, exigem extensão explícita desta API.
+Antes do deploy, aplicar as estruturas SQL da release e configurar backend, segredo de serviço e origens permitidas da instalação. O cadastro inicial e a associação explícita do administrador seguem o [manual de instalação](../../docs/operations/installation.md). Validar login, leitura autorizada e recusa de acesso antes de disponibilizar a API. A [configuração do backend](../../docs/operations/backend-configuration.md) descreve as opções da instalação própria.
 
 Validação local, executada a partir da raiz:
 
@@ -167,9 +167,9 @@ O teste `catalog-contract.test.mjs` executa o Worker contra as funções reais d
 
 `GET /batches/:commandId` devolve o recibo imutável e os títulos atuais separadamente; `GET /origins/:entity/:sourceId` consulta a origem exata. Esses dois caminhos são administrativos. `GET /titles/:titleId/origin` permite somente proveniência mínima aos papéis `admin`, `financeiro` e `consulta`, sem expor o lote ou a evidência privada. Todos os caminhos estão sob o prefixo acima, usam RPCs de serviço e resposta limitada a 1 MiB.
 
-Os cinco RPCs são exclusivos de `service_role`; helpers e tabela de vínculos não possuem grants diretos, e a tabela tem RLS. A origem permanente bloqueia nova importação do mesmo ID, inclusive após cancelamento, e protege o núcleo do título. Reserva CNAB é recusada até existir um contrato de vínculo bancário legado. A API não infere quitação, não migra parciais, não cria baixa nem movimento de caixa. [Contrato completo e limites](../../docs/integrations/origin-financial-import.md).
+Os cinco RPCs são exclusivos de `service_role`; helpers e tabela de vínculos não possuem grants diretos, e a tabela tem RLS. A origem permanente bloqueia nova importação do mesmo ID, inclusive após cancelamento, e protege o núcleo do título. Reserva CNAB é recusada até existir um contrato de vínculo bancário legado. A API não infere quitação, não migra parciais, não cria baixa nem movimento de caixa. [Implementação do contrato e limites](src/financial-import.mjs).
 
-O conjunto focado 039 passou 26/26 testes SQL/HTTP/interoperabilidade com os parsers da UI. A bateria final da publicação passou 507/507; fixtures são sintéticas, sem chamada Auth ou financeira real.
+Os testes SQL, HTTP e de interoperabilidade usam os parsers da UI e fixtures sintéticas, sem chamada Auth ou financeira real. Eles não comprovam dados ou configuração de uma instalação específica.
 
 ## Histórico fiscal — lote 007
 
@@ -177,4 +177,4 @@ GET em `/v1/history/backups`, `/v1/history/xml` e `/v1/history/xml/:sha256/downl
 
 O download passa pelo Worker com autenticação de usuário e acesso de serviço ao bucket privado. O caminho é fixado pelo hash registrado; não aceita URLs/caminhos arbitrários. Os bytes são limitados a 8 MiB e conferidos por tamanho e SHA-256 antes de retornar como anexo `application/octet-stream`, com `no-store`, `nosniff` e CSP sandbox. Não são gerados links públicos. A verificação estrutural e de hash não equivale a validação de assinatura, XSD ou situação fiscal.
 
-Referências: [validação de usuário pelo Supabase Auth](https://supabase.com/docs/reference/javascript/auth-getuser), [JWTs do Supabase](https://supabase.com/docs/guides/auth/jwts).
+Referências: [contrato de validação do usuário](https://supabase.com/docs/reference/javascript/auth-getuser), [contrato de JWT do serviço de autenticação](https://supabase.com/docs/guides/auth/jwts).

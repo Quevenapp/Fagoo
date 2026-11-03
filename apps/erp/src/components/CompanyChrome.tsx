@@ -64,7 +64,7 @@ export function HomeProfileCard({controller}:{controller:Port}){
  return <section className="home-profile" aria-label="Meu perfil">
   <div className="home-profile-user"><span className="home-profile-avatar" aria-hidden="true">{initialsOf(name)}</span><div><strong>{name}</strong>{chrome.profile.email&&<small>{chrome.profile.email}</small>}</div></div>
   {chrome.storage&&(()=>{const s=storageSummary(chrome.storage);return <div className={`home-storage${s.warn?' is-warning':''}`}><p><Icon name="database" size={12}/>Armazenamento <strong>{s.label}</strong> {s.percent===null?'usados':`(${s.percent.toLocaleString('pt-BR')}%)`}</p>
-   {s.percent!==null?<progress className="home-storage-bar" max={100} value={s.percent} aria-label={`Armazenamento usado: ${s.percent.toLocaleString('pt-BR')}%`}/>:<p className="real-help">Sem limite definido em Espaço e armazenamento; o limite real é o do projeto no Supabase.</p>}
+   {s.percent!==null?<progress className="home-storage-bar" max={100} value={s.percent} aria-label={`Armazenamento usado: ${s.percent.toLocaleString('pt-BR')}%`}/>:<p className="real-help">Sem limite definido em Espaço e armazenamento. Consulte o administrador sobre a capacidade disponível nesta instalação.</p>}
    <Link to="/empresa-configuracoes?secao=armazenamento">Gerenciar armazenamento</Link></div>;})()}
  </section>;
 }

@@ -1,9 +1,9 @@
 # Porta privada de RPC para XML sem assinatura
 
-Adaptador local das sete funções internas da migração 048. A configuração exige URL canônica do projeto Supabase, chave de serviço e driver `fetchImpl` explícitos. Não lê variáveis de ambiente, não oferece rede padrão e não publica endpoints. Este pacote não foi ligado a credenciais ou serviços remotos.
+Adaptador local das sete funções internas da migração 048. A configuração exige origem HTTPS canônica do backend, chave de serviço e driver `fetchImpl` explícitos. Na instalação própria, informe também `supabaseDeployment: 'self-hosted'`, conforme a [validação compartilhada](../backend-config/src/origin.mjs). Não lê variáveis de ambiente, não oferece rede padrão e não publica endpoints. Este pacote não foi ligado a credenciais ou serviços remotos.
 
 ```js
-const rpc = createFiscalUnsignedRpc({projectUrl, serviceKey, fetchImpl});
+const rpc = createFiscalUnsignedRpc({projectUrl, supabaseDeployment: 'self-hosted', serviceKey, fetchImpl});
 const executor = createUnsignedXmlOrchestrator({rpc, storage});
 ```
 

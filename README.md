@@ -1,14 +1,14 @@
 # FAGOO
 
-ERP de código aberto baseado na aplicação completa do [Brufap](https://github.com/brunovnq/brufap), preservando o template original, os módulos, as regras de negócio e os contratos do banco. Licença [AGPL-3.0](LICENSE).
+ERP de código aberto para instalação própria. Reúne cadastros, compras, vendas, PDV, estoque, financeiro, cobrança/CNAB, fiscal, preferências e controle de acesso, com interface web e API. Licença [AGPL-3.0](LICENSE).
 
-Esta linha de reconstrução parte do commit `97be7a7eab5c132e540748757120a55897f1e971`. A mudança visual está adiada. A identidade apresentada ao usuário é FAGOO; identificadores técnicos usados em criptografia, arquivos e protocolos históricos permanecem quando sua alteração poderia quebrar compatibilidade.
+O FAGOO utiliza PostgreSQL, serviço de autenticação, API de dados, armazenamento de arquivos e serviços de aplicação. Cada instalação mantém sua empresa, usuários, dados, arquivos e credenciais em seu próprio ambiente.
 
-## Estado desta linha
+## Instalação própria
 
-O piloto `v0.1.0-alpha.1` usava outra aplicação e outro modelo de banco. Ele não é a base funcional desta reconstrução. Não aplique esta árvore como atualização automática do piloto e não use o instalador daquela versão para instalar o ERP desta linha. Consulte [instalação e validação](docs/operations/installation.md).
+A instalação inicial deve criar uma base sem dados comerciais. A empresa e o administrador são cadastrados durante a configuração inicial. Catálogos oficiais e configurações técnicas necessários ao funcionamento fazem parte do sistema; clientes, fornecedores, produtos, documentos, movimentos e saldos de uma empresa não acompanham a distribuição.
 
-A aplicação original está em `apps/erp`, a API em `workers/erp-api`, os serviços fiscais em `packages` e `workers`, e o histórico completo de migrações em `supabase/migrations`. Isso inclui cadastros, documentos comerciais, PDV, estoque, financeiro, cobrança/CNAB, fiscal, preferências e controle de acesso. Cada módulo conserva seus limites de homologação e disponibilidade; presença de código não equivale a autorização para operação fiscal ou bancária em produção.
+O código está na versão de desenvolvimento `0.2.0-dev.0`. O instalador Ubuntu e o fluxo de atualização pelo painel ainda precisam de integração e validação completas antes de uma release instalável. Consulte o [manual de instalação](docs/operations/installation.md) e o [estado do projeto](docs/status.md).
 
 ## Desenvolvimento
 
@@ -23,7 +23,7 @@ cp apps/erp/.env.example apps/erp/.env.local
 npm run dev:erp
 ```
 
-Preencha apenas as variáveis públicas do frontend. Chaves de serviço, senhas, certificados e tokens de infraestrutura pertencem ao ambiente privado dos serviços. As rotas de QA e seus dados sintéticos não são um servidor de produção.
+Preencha somente a configuração pública no frontend. Chaves de serviço, senhas, certificados e tokens de infraestrutura pertencem ao ambiente privado dos serviços. O ambiente de QA e seus dados sintéticos são destinados a desenvolvimento e testes.
 
 Verificações disponíveis:
 
@@ -31,24 +31,20 @@ Verificações disponíveis:
 npm run typecheck:erp
 npm run test:erp
 npm run test:backend
-npm run test:portability
-npm run check:reference
 npm run build:erp
 npm run check:erp:build
 ```
 
-Algumas suítes herdadas precisam de dependências fiscais e configuração de ambiente descritas em [verificação](docs/verification.md).
+O [guia de verificação](docs/verification.md) descreve o ambiente e os resultados dos testes. A [configuração das conexões](docs/operations/backend-configuration.md) apresenta as variáveis técnicas usadas pelos serviços.
 
-## Supabase e VPS
+## Atualizações
 
-O ERP usa PostgreSQL, RPCs/PostgREST, Auth e Storage. Uma VPS com somente PostgreSQL não substitui esses contratos. O caminho de menor alteração funcional é manter serviços compatíveis com Auth e Storage, além de PostgREST e um proxy HTTPS, enquanto se valida a restauração do banco e dos objetos.
+Todas as instalações usam a mesma distribuição e o mesmo contrato de atualização. Uma instalação que já contém dados recebe as releases do FAGOO preservando sua empresa, usuários, arquivos e configurações locais. O histórico versionado do banco acompanha as mudanças necessárias a cada versão.
 
-O modo hospedado continua sendo o padrão. Uma instalação própria deve configurar explicitamente `SUPABASE_DEPLOYMENT=self-hosted` nos serviços e `VITE_SUPABASE_DEPLOYMENT=self-hosted` no build do frontend. Os adaptadores aceitam uma origem HTTPS configurada pelo instalador; URLs fornecidas por requisições não selecionam o destino de credenciais. Veja [conexões](docs/operations/backend-configuration.md).
+A distribuição prevista utiliza artefatos públicos, sem token GitHub do cliente, com verificação de assinatura e integridade, compatibilidade de versão, backup e recuperação após falha. O contrato e o estado de implementação estão em [atualizações](docs/operations/updates.md).
 
-As ferramentas em `tools/portability` preparam um inventário somente leitura e comparam estrutura e contagens. Não exportam linhas de negócio, não restauram dados e não declaram uma migração concluída. O procedimento e os critérios de aceite estão em [migração do Supabase](docs/operations/supabase-migration.md).
+## Integrações e operação
 
-## Evolução prevista
+A API é o ponto de integração com agentes externos e outros sistemas. As permissões, validações de negócio, registros de auditoria e controles de repetição de operações permanecem no ERP.
 
-O instalador Ubuntu, o provisionamento Cloudflare, a atualização pública pelo painel, a API para agentes externos e a descoberta de servidor para aplicativos devem ser integrados sobre este ERP completo. Cada entrega precisa manter os mesmos fluxos e dados da referência. Não há nova publicação ou implantação implícita ao executar os testes locais.
-
-A análise de dimensionamento da VPS deve incluir o ERP e o container Hermes. A configuração de 1 vCPU e 4 GB precisa de medição com esses serviços antes de ser assumida como suficiente para produção.
+Os módulos fiscais e bancários conservam suas condições de disponibilidade e homologação. A habilitação de operações depende da configuração da empresa e da validação exigida por cada serviço. O dimensionamento da VPS precisa considerar a carga do ERP e os demais serviços executados no mesmo servidor.

@@ -1,10 +1,10 @@
 # Porta privada para RPCs de candidatos assinados
 
-Adaptador local das sete funções da [migração 050](../../docs/integrations/fiscal-signed-candidates-persistence.md). Não publica endpoints, não lê variáveis de ambiente, não fornece driver de rede padrão e não foi ligado ao ambiente remoto. Não abre certificado, assina XML, valida XSD ou acessa Storage.
+Adaptador local das sete funções da [migração 050](../../supabase/migrations/202610160050_signed_fiscal_candidates.sql). Não publica endpoints, não lê variáveis de ambiente, não fornece driver de rede padrão e não foi ligado ao ambiente remoto. Não abre certificado, assina XML, valida XSD ou acessa Storage.
 
 ```js
 import {createFiscalSignedRpc} from './src/rpc.mjs';
-const rpc = createFiscalSignedRpc({projectUrl, serviceKey, fetchImpl});
+const rpc = createFiscalSignedRpc({projectUrl, supabaseDeployment: 'self-hosted', serviceKey, fetchImpl});
 const result = await rpc('erp_fiscal_signed_command', {
   p_user_id: verifiedActorId,
   p_command_id: originalCommandId,
@@ -17,7 +17,7 @@ const result = await rpc('erp_fiscal_signed_command', {
 
 - Nomes permitidos: `erp_fiscal_signed_begin`, `use`, `finish`, `fail`, `get`, `command` e `history`, sempre com o prefixo completo.
 - Argumentos exatos por função. UUIDs canônicos, hashes SHA-256 minúsculos, versões inteiras, enum de falha determinística e evidência de assinatura/XSD/QR são validados antes do envio. Não há coerção de strings numéricas ou getters. `history` só preenche os defaults documentados `p_limit=25` e `p_before=null` quando omitidos.
-- Configuração exige URL HTTPS canônica `https://<projeto20caracteres>.supabase.co`, chave de serviço e `fetchImpl` explícitos. A chamada usa somente POST no caminho fixo da RPC, sem query, cookies, redirects ou URL efetiva diferente. Não permite destinos arbitrários.
+- Configuração exige origem HTTPS canônica do backend, chave de serviço e `fetchImpl` explícitos. Para instalação própria, informar `supabaseDeployment: 'self-hosted'`, conforme a [validação compartilhada](../backend-config/src/origin.mjs). A chamada usa somente POST no caminho fixo da RPC, sem query, cookies, redirects ou URL efetiva diferente. Não permite destinos arbitrários.
 - Requisição de até 16 KiB, respostas de até 128 KiB e erros de até 8 KiB. JSON exige UTF-8 estrito, MIME compatível, identidade de encoding e comprimento declarado coerente. Limites também se aplicam ao streaming sem `Content-Length`.
 - O DTO é validado e reconstruído com campos permitidos. Recibo histórico, estado atual e artefato permanecem separados. `finish` deve devolver o mesmo candidato, hash, tamanho e evidência enviados; `begin`, consultas e paginação ficam vinculados aos IDs e versões solicitados. As flags conservam o contrato 050, sem promover emissão, transmissão, regras tributárias, ICP ou revogação.
 - O resultado de `use` é **exclusivamente backend**: contém contexto/metadata da credencial, chave fiscal e referências privadas de objetos. Seus caminhos são derivados e conferidos em buckets fixos. Nunca enviar esse objeto ao navegador nem a logs. A validação do DTO não autentica ou decifra o envelope; o executor ainda deve conferir bytes, AEAD, contexto, certificado e autorização antes de usar o signer.

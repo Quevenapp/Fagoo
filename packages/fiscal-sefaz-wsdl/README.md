@@ -42,7 +42,7 @@ BRUFAP_WSDL_LOOPBACK_TEST=1 node --test packages/fiscal-sefaz-wsdl/test/loopback
 
 O primeiro comando não abre sockets. O segundo requer permissão local para escutar em `127.0.0.1`; o único driver substitui o destino pelo loopback, preservando SNI e a checagem de hostname. O teste usa certificados efêmeros fictícios e cobre mTLS válido, cliente ausente, CA incorreta e hostname incorreto. Não faz DNS externo nem consulta a SEFAZ. O parser reutiliza a dependência `@xmldom/xmldom` já fixada em `packages/fiscal-xml`; não houve mudança de lockfile.
 
-Fontes, alvos e limites de publicação estão no [contrato de evidência](../../docs/integrations/sefaz-sp-wsdl-evidence.md).
+Os alvos e operações aceitos estão no [perfil fixado](src/profile.mjs); a [suíte de WSDL](test/wsdl.test.mjs) verifica o contrato de evidência.
 
 ## Serviço privado051, sem ligação automática ao runtime
 
@@ -66,7 +66,7 @@ await service.command({actor, commandId}, {signal, deadline});
 
 Portas obrigatórias:
 
-- `rpc(name,args,{signal,deadline})`: somente as cinco RPCs051. O adaptador HTTP tem destino Supabase fixo, corpo16KiB, resposta128KiB, erro8KiB, UTF-8 fatal, JSON estrito, redirecionamento/encoding recusados e SQLSTATE fechado. Não inclui corpo, chave de serviço ou mensagem PostgreSQL em erros.
+- `rpc(name,args,{signal,deadline})`: somente as cinco RPCs051. O adaptador HTTP tem destino de backend fixo, corpo16KiB, resposta128KiB, erro8KiB, UTF-8 fatal, JSON estrito, redirecionamento/encoding recusados e SQLSTATE fechado. Não inclui corpo, chave de serviço ou mensagem PostgreSQL em erros.
 - `withPreparedTlsSession({actor,execution,context},action,{signal,deadline})`: autoriza novamente a preparação atual **antes** de buscar/abrir o envelope; pode usar `createWsdlPreparationAuthorizer`. Esse helper repete `begin` com a mesma UUID e argumentos derivados da captura, exige `replayed:true`, estado preparado e `execution` integralmente idêntica. Não consome `use`.
 - O callback da custódia entrega `{secureContext,metadata,signal,deadline}` temporários. O serviço confere fingerprint/CNPJ/período contra a metadata041 capturada, adequação declarada do loader ao uso TLS e flags falsas. Chama `use` uma única vez, compara todos os campos do grant e só então entrega o contexto ao GET fixo. A custódia deve aguardar a Promise e limpar o material antes de resolver; não pode conservar o contexto TLS.
 - `storage.read({bucket,key,signal,deadline})` retorna `Response` binária ou null para ausência confirmada; `storage.putImmutable({bucket,key,bytes,contentType,upsert:false,ifNoneMatch:'*',signal,deadline})` retorna `{status:200|201|409,requires_readback:true}`. O bucket é sempre `brufap-fiscal-artifacts`; caminho `wsdl/<attemptUUID>/<sha256>.xml`. A porta real deve preservar a ausência de overwrite e copiar os bytes antes de awaits. O serviço relê e confere tamanho/SHA-256 antes de `finish`, inclusive se a resposta do PUT se perde.
