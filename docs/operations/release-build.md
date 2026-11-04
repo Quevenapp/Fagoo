@@ -9,6 +9,8 @@ npm run check:erp:build
 
 O resultado fica em `apps/erp/dist`. Esse comando verifica os tipos, compila a interface, inspeciona os arquivos e inclui somente os assets produzidos nessa execução. Ele não publica no Cloudflare nem cria uma release no GitHub.
 
+Para disponibilizar uma correção pelo botão de atualização, siga [Publicar correções e atualizações](publishing-updates.md). A release assinada distribui o código-fonte e o build definitivo usa a configuração da instalação na VPS. O guia inclui uma configuração pública sintética para validar o build de produção local sem credenciais de clientes.
+
 O build é feito em um diretório temporário. Os diretórios de saída e cache só são substituídos depois da validação; falhas anteriores à substituição mantêm o artefato existente. O cache passa a conter apenas o build recém-gerado.
 
 Para atualizações de uma instalação em operação, `npm run build:erp` mantém até duas compilações anteriores por até sete dias. Essa retenção permite que abas abertas concluam o carregamento de módulos da versão que receberam. O build de distribuição inicia um novo conjunto de assets; ao implantá-lo sobre uma instalação existente, abas abertas podem precisar ser recarregadas.

@@ -90,6 +90,8 @@ O primeiro comando deve retornar `active`. Não exponha o socket nem altere as p
 
 ## Publicação pelo mantenedor
 
+O procedimento completo, com commit, push, versão, assinatura, tag, release e conferência do botão, está em [Publicar correções e atualizações](publishing-updates.md). Ele também explica a validação local do build sem credenciais de clientes e o uso de worktree isolado para trabalho simultâneo.
+
 O mantenedor confirma um commit limpo, atualiza a versão do `package.json` e do lockfile, executa as verificações e prepara os artefatos:
 
 ```sh

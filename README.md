@@ -45,6 +45,8 @@ Todas as instalações usam a mesma distribuição e o mesmo contrato de atualiz
 
 Em **Preferências → Sistema → Atualizações do sistema**, o administrador obtém releases públicas assinadas sem token GitHub. O processo verifica compatibilidade, salva backup e coordena serviços, banco, API e interface. A credencial Cloudflare é configurada uma vez na instalação e renovada quando necessário. Consulte [atualizações e recuperação](docs/operations/updates.md).
 
+Para mantenedores e agentes que precisam enviar correções ao repositório e disponibilizá-las nesse botão, siga [Publicar correções e atualizações](docs/operations/publishing-updates.md).
+
 ## Integrações e operação
 
 A API é o ponto de integração com agentes externos e outros sistemas. As permissões, validações de negócio, registros de auditoria e controles de repetição de operações permanecem no ERP.
