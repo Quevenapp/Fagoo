@@ -206,5 +206,44 @@ class UpdateTests(unittest.TestCase):
         self.assertEqual(service.current()['version'],'v0.2.0-dev.0')
         self.assertTrue((pipeline.backup/'database.dump').is_file())
 
+    def test_update_reuses_and_backs_up_private_connection_configuration(self):
+        import base64
+        from integration_config import integration_settings
+        from update_config import read_values
+        from test_deploy_application import DEPLOY
+        path = self.root / 'private/install/.env'
+        connection = {
+            'FAGOO_INTEGRATION_ENABLED': 'true', 'FAGOO_INTEGRATION_MODE': 'bidirectional',
+            'FAGOO_INTEGRATION_NAME': 'Private test connection', 'FAGOO_INTEGRATION_START_DATE': '2024-01-01',
+            'ORIGIN_API_ORIGIN': 'https://api.provider.example',
+            'ORIGIN_AUTHORIZATION_ENDPOINT': 'https://provider.example/oauth/authorize',
+            'ORIGIN_TOKEN_ENDPOINT': 'https://api.provider.example/oauth/token',
+            'ORIGIN_CLIENT_ID': 'synthetic-client', 'ORIGIN_CLIENT_SECRET': 'synthetic-client-secret',
+            'TOKEN_ENCRYPTION_KEY': base64.b64encode(b'x' * 32).decode(),
+            'INTEGRATION_ADMIN_TOKEN': 'synthetic-admin-token-for-tests-only',
+        }
+        with path.open('a', encoding='utf-8') as output:
+            output.write(''.join(f'{key}={value}\n' for key, value in connection.items()))
+        before = path.read_bytes()
+        expected = integration_settings(read_values(path))
+        service = self.checked()
+        pipeline, calls = self.pipeline_fixture(service)
+        pipeline.execute(self.manifest, str(uuid.uuid4()))
+        self.assertNotEqual(Path(service.current()['source_dir']), self.root)
+        self.assertEqual(path.read_bytes(), before)
+        self.assertEqual((pipeline.backup / 'runtime.env').read_bytes(), before)
+        self.assertEqual(integration_settings(read_values(path)), expected)
+        publications = [call for call in calls if 'deploy-application.py' in call]
+        self.assertEqual(len(publications), 2)
+        for call in publications:
+            self.assertIn('--env-file ' + str(path), call)
+        self.assertNotIn('--initialize-standalone', '\n'.join(calls))
+        api, _ = DEPLOY.configurations(read_values(path), 'a' * 32, 'b' * 32)
+        self.assertEqual(api['vars']['ORIGIN_CONNECTION_MODE'], 'bidirectional')
+        self.assertEqual(api['vars']['ORIGIN_WRITE_ENABLED'], 'true')
+        self.assertEqual(api['triggers']['crons'], ['*/2 * * * *'])
+        for secret in expected['secrets'].values():
+            self.assertNotIn(secret, json.dumps(api))
+
 
 if __name__=='__main__':unittest.main()

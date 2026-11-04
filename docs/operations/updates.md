@@ -29,6 +29,8 @@ Empresa, usuários, permissões, cadastros, documentos, movimentos, saldos, arqu
 
 Uma [conexão externa opcional](optional-integration.md) habilitada na configuração privada mantém seu modo, endpoints e credenciais na próxima publicação. A instalação padrão continua desconectada.
 
+A configuração permanente fica em `/opt/fagoo/private/install/.env`, fora das pastas de código das releases. As credenciais OAuth cifradas, checkpoints, vínculos, filas e escolhas operacionais ficam no PostgreSQL persistente. O atualizador passa o mesmo arquivo privado à preparação e à publicação da nova versão e o inclui no backup. Os padrões de instalação vazia não são reaplicados durante uma atualização. Uma conexão privada não precisa de um fork do aplicativo para receber releases comuns.
+
 Cada pacote é acompanhado de um manifesto assinado com Ed25519 e verificado pela chave pública fixada na instalação. O download tem tamanho limitado; o arquivo precisa corresponder ao SHA-256 assinado e não pode conter links, caminhos externos ou diretórios privados. O serviço aceita apenas releases públicas do repositório FAGOO. Ele recusa downgrade, reinstalação da mesma versão, mudanças de hash em migrações já aplicadas e troca da versão principal do PostgreSQL. Atualizações futuras que exigirem outro protocolo precisam de um procedimento próprio.
 
 O serviço fica em um socket Unix privado. A API exige administrador validado e não aceita comandos, caminhos ou URLs arbitrários. O progresso permanece acessível durante a manutenção; as demais requisições ao núcleo recebem `503`. `/healthz` continua respondendo `200` para indicar que o gateway está vivo, sem significar que o ERP já saiu da manutenção.
@@ -93,5 +95,9 @@ O mantenedor confirma um commit limpo, atualiza a versão do `package.json` e do
 ```sh
 python3 scripts/release.py --version vVERSAO --key /CAMINHO-PRIVADO/assinatura.pem --out /CAMINHO-PRIVADO/release --notes-file /CAMINHO/notas.txt
 ```
+
+Antes de empacotar ou assinar, esse comando executa obrigatoriamente `scripts/check-update-continuity.py`. A verificação cobre configuração privada e backup durante a troca de release, manutenção do modo de sincronização e do agendamento, preservação de credenciais cifradas/checkpoints/vínculos/filas ao repetir os padrões de instalação, rotas da API e proteções de entrega. Falha ou execução incompleta impede gerar o pacote. O código precisa continuar limpo e no mesmo commit após os testes. Esses testes usam dados sintéticos e não acessam instalações de clientes.
+
+Para executar a mesma verificação antecipadamente, com as dependências de desenvolvimento instaladas, use `python3 scripts/check-update-continuity.py`. O mantenedor também deve validar o ciclo de atualização em ambiente de teste; os testes de regressão não substituem a conferência operacional de uma instalação após atualizar.
 
 Publique `fagoo-source.tar.gz`, `fagoo-release.json` e `fagoo-release.sig` juntos na release da mesma tag do repositório `Quevenapp/Fagoo`. O painel consulta a release estável marcada como latest. Não substitua artefatos de uma versão já distribuída; publique uma nova versão. A chave privada de assinatura nunca integra o código ou a VPS do cliente. A publicação é manual e não requer habilitar GitHub Actions.

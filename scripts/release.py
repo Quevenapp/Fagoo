@@ -30,6 +30,16 @@ def main():
         raise SystemExit('RELEASE_VERSION_MUST_MATCH_PACKAGE')
     if git('status', '--porcelain=v1'):
         raise SystemExit('CLEAN_COMMITTED_SOURCE_REQUIRED')
+    commit = git('rev-parse','HEAD')
+    # A clean source tree alone does not prove that an installed connection will
+    # survive an update. These checks are mandatory, before packaging or signing.
+    try:
+        subprocess.run([sys.executable, str(ROOT / 'scripts/check-update-continuity.py')],
+                       cwd=ROOT, stdin=subprocess.DEVNULL, check=True)
+    except (OSError, subprocess.CalledProcessError):
+        raise SystemExit('UPDATE_CONTINUITY_CHECKS_FAILED') from None
+    if git('status', '--porcelain=v1') or git('rev-parse','HEAD') != commit:
+        raise SystemExit('SOURCE_CHANGED_DURING_RELEASE_CHECKS')
     key, output = Path(args.key).resolve(), Path(args.out).resolve()
     if key.is_relative_to(ROOT):
         relative = key.relative_to(ROOT).as_posix()
@@ -43,7 +53,6 @@ def main():
         path = rest.split('\t',1)[1]
         if mode == '120000' or path.split('/')[0] in ('.local','private','node_modules','.cache','.wrangler'):
             raise SystemExit('NON_DISTRIBUTABLE_SOURCE_PATH')
-    commit = git('rev-parse','HEAD')
     artifact = output / 'fagoo-source.tar.gz'
     process = subprocess.Popen(['git','-C',str(ROOT),'archive','--format=tar',commit], stdout=subprocess.PIPE)
     with gzip.open(artifact,'wb',compresslevel=9) as target:

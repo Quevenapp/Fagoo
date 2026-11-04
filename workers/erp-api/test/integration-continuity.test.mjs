@@ -58,3 +58,27 @@ test('scheduled collection precedes mirrors and two-way work, and paused mode ru
   assert.deepEqual(await scheduled({ cron: '*/2 * * * *' }, { ...env, ERP_SCHEDULED_TASKS_ENABLED: 'false' }), { state: 'disabled' });
   assert.deepEqual(calls, []);
 });
+
+test('an enabled private connection retains the bidirectional status and manual synchronization route', async () => {
+  const calls = [];
+  const active = { ...env, ORIGIN_CONNECTION_MODE: 'bidirectional', ORIGIN_WRITE_ENABLED: 'true' };
+  const handler = createHandler({ fetchImpl: async (url, options) => {
+    calls.push(url);
+    if (url.endsWith('/auth/v1/user')) return json({ id: user, app_metadata: {} });
+    if (url.endsWith('/rpc/erp_sync_status') || url.endsWith('/rpc/erp_sync_request')) {
+      assert.deepEqual(JSON.parse(options.body), { p_user_id: user });
+      return json({ ...status, enabled: true });
+    }
+    assert.fail('unexpected request: ' + url);
+  } });
+  for (const method of ['GET', 'POST']) {
+    const result = await handler(new Request('https://api.example.test/v1/sincronizacao-origin', {
+      method, headers: { Authorization: 'Bearer synthetic' },
+    }), active);
+    assert.equal(result.status, 200);
+    const data = await result.json();
+    assert.equal(data.enabled, true);
+    assert.equal(data.connection.mode, 'bidirectional');
+  }
+  assert.equal(calls.filter(url => url.endsWith('/rpc/erp_sync_request')).length, 1);
+});

@@ -32,12 +32,21 @@ test('fresh defaults disable capture once; replay preserves later explicit confi
     assert.equal((await state(db)).enabled, false);
     assert.equal((await db.query('select count(*)::integer n from fagoo_system.install_defaults')).rows[0].n, 1);
     const actor = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
-    await db.exec(`update erp_sync.settings set enabled=true, actor_id='${actor}', updated_at='2026-01-01T00:00:00Z';
-      insert into erp_access.membership values(1); insert into erp_catalog.record values(1);`);
+    await db.exec(`update erp_sync.settings set enabled=true, actor_id='${actor}', default_account_id='${actor}', updated_at='2026-01-01T00:00:00Z';
+      ${guarded.map(name => `insert into ${name} values(1);`).join('\n')}
+      create schema origin_sync;
+      create table origin_sync.credentials(ciphertext jsonb);
+      insert into origin_sync.credentials values('{"version":1,"ciphertext":"synthetic-encrypted-token"}');
+      create table origin_sync.resource_state(resource text,checkpoint jsonb);
+      insert into origin_sync.resource_state values('contacts','{"version":1,"recent":{"page":7}}');`);
     const before = await state(db);
+    const privateTables = [...guarded, 'origin_sync.credentials', 'origin_sync.resource_state'];
+    const beforeData = await Promise.all(privateTables.map(name => db.query(`select * from ${name}`)));
     await db.exec(sql);
     assert.deepEqual(await state(db), before);
-    assert.equal((await db.query('select count(*)::integer n from erp_catalog.record')).rows[0].n, 1);
+    for (let i = 0; i < privateTables.length; i++) {
+      assert.deepEqual((await db.query(`select * from ${privateTables[i]}`)).rows, beforeData[i].rows, privateTables[i]);
+    }
     assert.equal((await db.query("select count(*)::integer n from fagoo_system.schema_migration where version='synthetic-verified-ledger'")).rows[0].n, 1);
   } finally { await db.close(); }
 });
