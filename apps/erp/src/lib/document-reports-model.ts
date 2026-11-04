@@ -10,7 +10,7 @@ export interface ReportGroup { title: string; cards: ReportCard[] }
 /** Origin "Relatórios de vendas" (relatorios.php?id=3) and "Relatórios de serviço" (id=6), in the Origin order. */
 export const REPORT_CATALOG: Record<'sales_orders' | 'service_orders', ReportGroup[]> = {
   sales_orders: [
-    { title: 'Checkout de Pedidos de Venda', cards: [{ id: null, title: 'Relatório de Separação (Picking)', description: 'Itens a separar dos pedidos.', reason: 'Depende do checkout de pedidos, que ainda não existe no FAGOO.' }] },
+    { title: 'Checkout de Pedidos de Venda', cards: [{ id: null, title: 'Relatório de Separação (Picking)', description: 'Itens a separar dos pedidos.', reason: 'O relatório consolidado de separação ainda não está disponível. Para conferir um pedido, acesse Comercial > Checkout de pedidos.' }] },
     { title: 'Comissões', cards: [{ id: null, title: 'Relatório Complementar de Comissões', description: 'Comissões dos vendedores.', reason: 'O relatório ainda não existe no FAGOO; as comissões de cada vendedor estão em Financeiro > Comissões.' }] },
     { title: 'Notas Fiscais', cards: [{ id: 'nf-difal', title: 'Notas Fiscais ICMS DIFAL', description: 'Diferencial de alíquota das notas autorizadas, por UF de destino, com a cobertura do detalhamento.' }] },
     { title: 'Relatórios de Notas Fiscais', cards: [
