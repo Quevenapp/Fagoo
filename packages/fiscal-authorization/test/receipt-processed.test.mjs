@@ -7,6 +7,7 @@ import {composeReceiptProcessedNfe,ReceiptProcessedError} from '../src/receipt-p
 import {authorizationRequestBytes,verifyProcessedAuthorization} from '../src/index.mjs';
 import {createAuthorizationValidator} from '../src/validator.mjs';
 import {createReceiptValidator} from '../src/receipt-validator.mjs';
+import {TEST_PYTHON} from './test-runtime.mjs';
 let f;before(async()=>{f=await receiptFixture();});after(()=>f?.close());
 const error=code=>e=>e.code===code&&e.message===code;
 async function input(model='55',options={}){const source=f.create(model),request=await source.query(),responseBytes=receiptResponse({...request,...receiptValidationContext(request)},options),response=parseReceiptResponse({request,responseBytes});return{source,value:{authorizationRequest:source.request,request,response,responseBytes}};}
@@ -49,7 +50,7 @@ test('processed aggregate has its own512000-byte limit even when receipt respons
  const{value}=await input(),xml=value.responseBytes.toString(),expanded=xml.replace('<infProt>','<infProt>'+' '.repeat(511900-Buffer.byteLength(xml))),responseBytes=Buffer.from(expanded),response=parseReceiptResponse({request:value.request,responseBytes});assert.equal(responseBytes.length,511900);assert.throws(()=>composeReceiptProcessedNfe({...value,response,responseBytes}),error('RECEIPT_PROCESSED_SIZE_LIMIT'));
 });
 test('real Python validates receipt response and final nfeProc55/65; source-order error remains an XSD error',async()=>{
- const pythonPath=process.env.BRUFAP_TEST_PYTHON??'/Users/bruno/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3',validateReceipt=createReceiptValidator({pythonPath,validatorPath:fileURLToPath(new URL('../receipt-validator.py',import.meta.url))}),validateProcessed=createAuthorizationValidator({pythonPath,validatorPath:fileURLToPath(new URL('../validator.py',import.meta.url))});
+ const pythonPath=TEST_PYTHON,validateReceipt=createReceiptValidator({pythonPath,validatorPath:fileURLToPath(new URL('../receipt-validator.py',import.meta.url))}),validateProcessed=createAuthorizationValidator({pythonPath,validatorPath:fileURLToPath(new URL('../validator.py',import.meta.url))});
  for(const model of['55','65'])for(const status of['100','150']){const{value}=await input(model,{status}),r=await validateReceipt({request:value.request,kind:'response',xmlBytes:value.responseBytes});assert.equal(r.ok,true);const p=composeReceiptProcessedNfe(value),v=await validateProcessed({request:value.authorizationRequest,kind:'processed',xmlBytes:Buffer.from(p.processedXml)});assert.equal(v.ok,true);assert.equal(v.xsdValidated,true);assert.equal(v.referenceDigestMatched,true);assert.equal(v.protocolCStat,status);assert.equal(v.authorizedInHomologation,false);assert.equal(v.signatureVerified,false);
  const wrong=value.responseBytes.toString().replace('<tpAmb>2</tpAmb><verAplic>SINTETICO</verAplic>','<verAplic>SINTETICO</verAplic><tpAmb>2</tpAmb>');const bad=await validateReceipt({request:value.request,kind:'response',xmlBytes:Buffer.from(wrong)});assert.equal(bad.ok,false);assert.equal(bad.code,'RECEIPT_XSD_INVALID');}
 });

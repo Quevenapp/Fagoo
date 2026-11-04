@@ -8,7 +8,7 @@ import {resolvePreferences} from '../src/lib/origin-menu.ts';
 import {fileURLToPath} from 'node:url';
 import {readFile} from 'node:fs/promises';
 const tick=()=>new Promise(r=>setTimeout(r,0)),status=n=>e=>e instanceof AccessError&&e.status===n;
-const session={access_token:'synthetic-token-083',user:{id:ACTOR}},me=role=>({user_id:ACTOR,role,resources:[],data_mode:'staging_readonly'});
+const session={access_token:'synthetic-token-083',user:{id:ACTOR}},me=role=>({user_id:ACTOR,role,resources:[],data_mode:'staging_readonly',capabilities:{originIntegration:false,originHistory:true}});
 const auth={getSession:async()=>({data:{session},error:null}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),signOut:async()=>({error:null})};
 test('083 real controller rejects other roles and every mutation without business fetch',async()=>{
  for(const role of ['admin','consulta','vendas','financeiro','estoque','fiscal']){
@@ -71,7 +71,7 @@ test('083 authenticated route loads only for admin and hides detail after curren
 test('083 Preferências expose the entry only for an active administrator',async()=>{
  // Since 19/10/2026 Brufap-only tools sit in Preferências (gear), as in Origin; the daily menus stay Origin-exact.
  for(const role of ['admin','consulta','vendas','financeiro','estoque','fiscal']){
-  const v=await mountComponent('PreferencesPage.tsx',{homeTo:'/acesso',initialCategory:'integracoes',categories:resolvePreferences({role,resources:[]})});
+  const v=await mountComponent('PreferencesPage.tsx',{homeTo:'/acesso',initialCategory:'integracoes',categories:resolvePreferences({role,resources:[],capabilities:{originHistory:true}})});
   try{const links=v.nodes().filter(n=>n.props?.to==='/historico-vendas-origin');assert.equal(links.length,role==='admin'?1:0);}finally{v.unmount();}
  }
 });

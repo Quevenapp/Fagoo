@@ -37,7 +37,9 @@ npm run test:backend
 docker build --target test -f packages/fiscal-runtime/Dockerfile -t fagoo-fiscal-validation .
 ```
 
-Os nomes das variáveis de teste acima são identificadores técnicos usados pelas suítes. Use um diretório no filesystem nativo do Linux para os testes extensos. Dependências nativas devem ser instaladas no mesmo sistema operacional em que serão executadas.
+Os nomes das variáveis de teste acima são identificadores técnicos usados pelas suítes. Sem `BRUFAP_TEST_PYTHON`, os testes fiscais usam `.venv/bin/python3` quando esse ambiente existe na raiz e, depois, `/usr/bin/python3`. Use um diretório no filesystem nativo do Linux para os testes extensos. Dependências nativas devem ser instaladas no mesmo sistema operacional em que serão executadas.
+
+Os validadores fiscais oficiais rodam no Linux, como no runtime fiscal. No Windows, `npm run test:erp` marca como ignorados os casos da interface que leem XML assinado por esses validadores; execute a suíte no Linux, por exemplo no WSL, para cobri-los.
 
 O build do frontend exige configuração pública válida da instalação. A compilação usada nesta verificação empregou domínios fictícios e não serve como build de produção configurado para um cliente.
 

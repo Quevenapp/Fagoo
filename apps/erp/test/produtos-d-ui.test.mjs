@@ -94,7 +94,7 @@ test('product list: Campos customizados filter — category, Adicionar filtros, 
     assert.match(view.text(), /Campos customizados: Material contém “aço” · Cor: Azul/);
     const exportLink = view.find(node => node.type === 'test-router-link' && textOf(node.props.children).includes('Exportar dados para planilha'));
     assert.equal(new URLSearchParams(exportLink.props.to.split('?')[1]).has('custom'), false);
-    assert.match(view.text(), /A exportação não usa o filtro Campos customizados, como no Origin\./);
+    assert.match(view.text(), /A exportação não usa o filtro Campos customizados\./);
     // Reajuste "Produtos filtrados" carries the same filter as a list.
     await view.click('Reajuste e sincronização de preços');
     await view.change('price-adjust-value', '10'); await new Promise(resolve => setTimeout(resolve, 350)); await view.flush();

@@ -30,7 +30,8 @@ test('057 real catalog editor freezes exact10 body through lost ACK and failed c
   let writes=0,reads=0,body;
   // The product form first reads the complete product, the taxonomies (migration 119) and the custom field definitions (156);
   // only the save and its re-read count here.
-  const controller={async catalog(path,opts={}){if(path==='/v1/cadastros/campos-customizados')return{module:'products',items:[],data_mode:'erp_native'};if(path.includes('/taxonomias/'))return{kind:{'categorias-produtos':'categories','grupos-produtos':'product_groups','grupos-tags':'tag_groups',tags:'tags'}[path.split('/').at(-1)],items:[],data_mode:'erp_native'};
+  // The editor reads the session (optional integration capability) like the real AccessController exposes it.
+  const controller={getSnapshot:()=>({phase:'ready',membership:{user_id:contact,role:'admin',resources:['products'],data_mode:'staging_readonly',capabilities:{originIntegration:false}}}),async catalog(path,opts={}){if(path==='/v1/cadastros/campos-customizados')return{module:'products',items:[],data_mode:'erp_native'};if(path.includes('/taxonomias/'))return{kind:{'categorias-produtos':'categories','grupos-produtos':'product_groups','grupos-tags':'tag_groups',tags:'tags'}[path.split('/').at(-1)],items:[],data_mode:'erp_native'};
    if(!opts.method&&path.endsWith('/completo'))return{entity:'products',record:product,data_mode:'erp_native'};calls.push({path,body:structuredClone(opts.body)});if(opts.method){body=opts.body;writes++;if(writes===1)throw new AccessError(503);return{record:{...product,version:2,price:body.data.price}};}if(++reads===1)throw new AccessError(503);return{record:{...product,version:2,price:body.data.price}};}};
   const view=await mountComponent('ProductEditor.tsx',{controller,entity:'products',record:product,writable:true,onSaved:r=>accepted.push(r),onClose(){}},{componentName:'ProductEditor',expandChildren:['ProductForm']});
   try{

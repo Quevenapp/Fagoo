@@ -44,9 +44,11 @@ test('known upload followed by unavailable readback retries GET only',async()=>{
   await view.click('Consultar resultado atual');assert.equal(server.counts.reserve,1);assert.equal(server.counts.upload,1);assert.equal(server.counts.list,3);assert.equal(view.guard().busy,false);
  }finally{view.unmount();}
 });
+// Under a loaded parallel run the uncertain-result controls may need extra flushes after the upload settles.
+const untilControl=async(view,label)=>{for(let i=0;i<200;i++){try{view.button(label);return;}catch{await view.flush();await new Promise(resolve=>setTimeout(resolve,5));}}};
 test('uncertain upload followed by a busy lease and reserved readback remains frozen',async()=>{
  const server=attachmentsServer({before(op,{counts}){if(op==='upload'&&counts.upload===1)throw new AccessError(503);if(op==='upload'&&counts.upload===2)throw new AccessError(409);}}),view=await mountAttachments(server);
- try{await selectFile(view);await view.submit();await view.click('Confirmar a mesma operação');
+ try{await selectFile(view);await view.submit();await untilControl(view,'Confirmar a mesma operação');await view.click('Confirmar a mesma operação');
   assert.equal(server.rows[0].status,'reserved');assert.equal(view.button('Limpar seleção').disabled,true);assert.equal(view.guard().busy,true);assert.match(view.text(),/resultado ainda está pendente/);
   await view.click('Confirmar a mesma operação');assert.equal(server.counts.reserve,1);assert.equal(server.rows.length,1);assert.equal(server.rows[0].status,'ready');assert.equal(view.guard().busy,false);
  }finally{view.unmount();}

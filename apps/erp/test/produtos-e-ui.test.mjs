@@ -70,7 +70,7 @@ test('product list: "Produtos com composição" reveals Componente; the picked p
     assert.throws(() => view.input('catalog-component-filter'), 'no Componente with Tipo Todos');
     await view.change('catalog-type-filter', 'composition');
     assert.equal(view.input('catalog-component-filter').props.placeholder, 'Digite o nome ou código');
-    assert.match(view.text(), /Uma composição espelhada do Origin só entra neste filtro depois que a estrutura dela é informada no FAGOO\./);
+    assert.match(view.text(), /Uma composição importada só entra neste filtro depois que a estrutura dela é informada no FAGOO\./);
     // An older answer arriving after a newer text is ignored; while the search waits it says so (never "nenhum produto").
     await view.change('catalog-component-filter', 'Par');
     assert.match(view.text(), /Pesquisando…/); assert.doesNotMatch(view.text(), /Nenhum produto simples ativo encontrado/);

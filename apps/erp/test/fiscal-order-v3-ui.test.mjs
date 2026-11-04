@@ -45,7 +45,8 @@ function formServer(source) {
   };
   return { calls, controller };
 }
-const formTab = async (view, label) => { const found = view.nodes().find(n => n.type === 'button' && n.props.role === 'tab' && textOf(n).trim() === label); found.props.onClick(); await view.flush(); };
+// The form is continuous since v0.2.7: its section navigation points to fiscal-section-* instead of using tabs.
+const formTab = async (view, label) => { const found = view.nodes().find(n => n.type === 'button' && (n.props.role === 'tab' || String(n.props['aria-controls'] ?? '').startsWith('fiscal-section-')) && textOf(n).trim() === label); found.props.onClick(); await view.flush(); };
 const mountOrderForm = srv => mountComponent('FiscalInvoiceForm.tsx', { controller: srv.controller, config: { screen: 'nfe', model: '55', direction: '1' }, id: null, opening: { kind: 'order', documentId: ORDER }, today: '2026-10-20', onBack() {}, onSaved() {} },
   { location: `/historico-fiscal?modelo=55&nota=nova&pedido=${ORDER}` });
 

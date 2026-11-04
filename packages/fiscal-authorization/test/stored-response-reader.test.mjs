@@ -12,9 +12,10 @@ import {projectDispatchLedger} from '../src/dispatch-dto.mjs';
 import {RULE_PROFILES} from '../src/rule-profile-registry.mjs';
 import {createStoredResponseReader,STORED_RESPONSE_MANIFEST,STORED_RESPONSE_MANIFEST_HASH} from '../src/stored-response-reader.mjs';
 import {SP_AUTHORIZATION_SERVER_TRUST,SP_AUTHORIZATION_ROOT_HASH} from '../../fiscal-runtime/src/authorization-server-trust.mjs';
+import {TEST_PYTHON} from './test-runtime.mjs';
 const clone=structuredClone,code=c=>Object.assign(new Error(c),{code:c});
 let f;test.before(async()=>{f=await receiptFixture();});test.after(()=>f?.close());
-const realValidate=createAuthorizationValidator({pythonPath:process.env.BRUFAP_TEST_PYTHON??'/Users/bruno/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3',validatorPath:fileURLToPath(new URL('../validator.py',import.meta.url))});
+const realValidate=createAuthorizationValidator({pythonPath:TEST_PYTHON,validatorPath:fileURLToPath(new URL('../validator.py',import.meta.url))});
 function fixture(model='55',options={}){
  const base=f.create(model),record=clone(base.record),c=record.recovery,p=RULE_PROFILES[1],wire=Buffer.from(encodeReviewedAuthorizationSoap(prepareReviewedAuthorizationSoap({request:base.request}))),binding=reviewedAuthorizationBinding(model);
  Object.assign(record.receipt,{origin:'operational'});Object.assign(record.current,{state:'review_required'});

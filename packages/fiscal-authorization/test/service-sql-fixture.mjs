@@ -10,6 +10,7 @@ import {createAuthorizationRpc} from '../src/rpc.mjs';
 import {createAuthorizationStorage} from '../src/storage.mjs';
 import {createAuthorizationValidator} from '../src/validator.mjs';
 import {hash,fiscalResponse} from './service-fixtures.mjs';
+import {TEST_PYTHON} from './test-runtime.mjs';
 export {hash};
 export async function serviceFixture({credential:providedCredential,configureCredential,sourceOptions}={}){
  const f=await authorizationFixture();let signer,credential;try{
@@ -38,7 +39,7 @@ export async function serviceFixture({credential:providedCredential,configureCre
    if(o.method==='GET'){calls.read.push(key);const b=f.files.get(key);return b?new Response(Buffer.from(b),{headers:{'content-type':'application/octet-stream','content-length':String(b.length)}}):Response.json({code:'NoSuchKey'},{status:404});}
    assert.equal(o.method,'POST');assert.equal(o.headers['x-upsert'],'false');assert.equal(o.headers['If-None-Match'],'*');calls.put.push(key);buffers.push(o.body);if(f.files.has(key))return Response.json({code:'ResourceAlreadyExists'},{status:409});const b=Buffer.from(o.body);f.files.set(key,b);await f.db.query('insert into storage.objects values($1,$2,$3::jsonb)',['brufap-fiscal-artifacts',key,JSON.stringify({size:b.length,mimetype:'application/octet-stream'})]);return Response.json({}, {status:201});
   }});
-  const validateReal=createAuthorizationValidator({pythonPath:process.env.BRUFAP_TEST_PYTHON??'/Users/bruno/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3',validatorPath:fileURLToPath(new URL('../validator.py',import.meta.url))});
+  const validateReal=createAuthorizationValidator({pythonPath:TEST_PYTHON,validatorPath:fileURLToPath(new URL('../validator.py',import.meta.url))});
   const validate=async(v,o)=>{calls.validate.push(v.kind);return validateReal(v,o);};
   const binding={origin:'synthetic',profile:'synthetic-authorization-binding',ruleProfile:'synthetic-rules-only',encode:(_c,bytes)=>Buffer.concat([Buffer.from('SYNTHETIC-WIRE\n'),bytes]),extract:(_c,bytes)=>Buffer.from(bytes)};
   const custody=async(v,action,o)=>{calls.custody.push(v);assert.ok(o.signal instanceof AbortSignal);await action(Object.freeze({synthetic:true}));};

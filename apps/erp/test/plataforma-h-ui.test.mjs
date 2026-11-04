@@ -48,7 +48,7 @@ test('PRF-252: Novas NF-es counts what the server counts and "Marcar como vistas
   if(path==='/v1/plataforma/novas-nfes/vistas'){total=0;return{scope:'home_new_invoices_seen',seen_at:'2026-10-21T12:00:00Z',replayed:false,view:{...view(),seen_before:true}};}
   return view();}};
  const card=await mountComponent('HomeNewInvoices.tsx',{controller});
- assert.match(card.text(),/3Novas NF-es/);assert.match(card.text(),/2 sincronizadas do Origin/);assert.match(card.text(),/1 recebida da SEFAZ/);assert.match(card.text(),/Rascunhos e homologação não entram/);
+ assert.match(card.text(),/3Novas NF-es/);assert.match(card.text(),/2 do histórico importado \(autorizadas ou com DANFE\)/);assert.match(card.text(),/1 recebida da SEFAZ/);assert.match(card.text(),/Rascunhos e homologação não entram/);
  await card.click('Marcar como vistas');
  const post=calls.find(c=>c.method==='POST');assert.match(post.body.command_id,/^[0-9a-f-]{36}$/);
  assert.match(card.text(),/0Novas NF-es/);assert.match(card.text(),/última visualização/);

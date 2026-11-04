@@ -7,7 +7,8 @@ import {mountComponent} from './helpers/component-recovery-harness.mjs';
 import {importRequest,applyRequest,importPreview,importAck,importBatch,financialPage,financialRow} from './fixtures/financial-import.mjs';
 const BASE='/v1/importacao-financeira-origin',origin='https://erp.synthetic.invalid',actor='a0000000-0000-4000-8000-000000000001',other='a0000000-0000-4000-8000-000000000002';
 const session=(token='synthetic-original-token',id=actor)=>({access_token:token,user:{id}});
-const member=(role='admin',id=actor)=>({user_id:id,role,resources:['contacts'],data_mode:'staging_readonly'});
+// The cutover screens are Origin history routes: the installation must declare that capability (optional integration).
+const member=(role='admin',id=actor)=>({user_id:id,role,resources:['contacts'],data_mode:'staging_readonly',capabilities:{originIntegration:false,originHistory:true}});
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
 const deferred=()=>{let resolve;const promise=new Promise(r=>resolve=r);return{promise,resolve};};
 async function until(predicate){for(let i=0;i<200&&!predicate();i++)await tick();assert.ok(predicate(),'bounded synthetic wait');}

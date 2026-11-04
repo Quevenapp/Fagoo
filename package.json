@@ -11,7 +11,7 @@
     "test": "node --test workers/origin-sync/test/*.test.mjs",
     "dev:erp": "vite --config apps/erp/vite.config.ts",
     "typecheck:erp": "tsc --noEmit -p apps/erp/tsconfig.json",
-    "test:erp": "node --test apps/erp/test/*.test.mjs",
+    "test:erp": "node --test --test-concurrency=4 apps/erp/test/*.test.mjs",
     "build:erp": "npm run typecheck:erp && node tools/deployment/build-erp.mjs",
     "build:erp:release": "npm run typecheck:erp && node tools/deployment/build-erp.mjs --release",
     "build:erp:worker": "npm run build:erp && wrangler deploy --dry-run --config workers/erp-preview/wrangler.jsonc",

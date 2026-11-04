@@ -12,6 +12,7 @@ import {createSigner,disposeSigner,createSignedHomologationCandidate} from '../.
 import {businessFixture} from '../../fiscal-core/test/business-fixtures.mjs';
 import {buildBusinessXml} from '../../fiscal-xml/src/business-builder.mjs';
 import {createAuthorizationValidator} from '../src/validator.mjs';
+import {TEST_PYTHON} from './test-runtime.mjs';
 const require=createRequire(new URL('../../fiscal-xml/package.json',import.meta.url));
 const {SignedXml}=require('xml-crypto');
 const hash=v=>createHash('sha256').update(v).digest('hex'), bytes=v=>new TextEncoder().encode(v), decode=v=>new TextDecoder().decode(v);
@@ -94,7 +95,7 @@ test('without authorization WSDL evidence binding stays closed; this module has 
  for(const model of ['55','65']){const b=authorizationBindingStatus(model);assert.equal(b.status,'reviewed_wsdl_required');assert.equal(b.canTransmit,false);assert.equal(b.bindingReviewed,false);assert.equal('endpoint'in b,false);assert.equal('soapAction'in b,false);}
 });
 
-const PYTHON=process.env.BRUFAP_TEST_PYTHON??'/Users/bruno/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3';
+const PYTHON=TEST_PYTHON;
 const validator=fileURLToPath(new URL('../validator.py',import.meta.url));
 function xsd(f,xml,kind){
  const r=spawnSync(PYTHON,['-I','-B',validator],{input:JSON.stringify({xml,kind,expectedModel:f.request.model,expectedAccessKey:f.request.accessKey,expectedReferenceDigest:f.request.referenceDigest,expectedBatchId:f.request.batchId}),encoding:'utf8',timeout:15000,maxBuffer:16384,env:{PATH:'/usr/bin:/bin',LANG:'C.UTF-8'}});

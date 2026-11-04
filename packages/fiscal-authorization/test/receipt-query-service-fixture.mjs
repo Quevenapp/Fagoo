@@ -10,8 +10,9 @@ import {RECEIPT_QUERY_SOURCE_MANIFEST as M,RECEIPT_QUERY_SOURCE_MANIFEST_HASH as
 import {SP_RECEIPT_QUERY_SERVER_TRUST,SP_RECEIPT_QUERY_ROOT_HASH} from '../src/receipt-query-server-trust.mjs';
 import {createReceiptQueryService} from '../src/receipt-query-service.mjs';
 import {hash} from '../src/service-common.mjs';
+import {TEST_PYTHON} from './test-runtime.mjs';
 const clone=structuredClone,now=()=>new Date().toISOString(),err=code=>Object.assign(Error(code),{code});
-export const receiptValidate=createReceiptValidator({pythonPath:process.env.BRUFAP_TEST_PYTHON??'/Users/bruno/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3',validatorPath:fileURLToPath(new URL('../receipt-validator.py',import.meta.url))});
+export const receiptValidate=createReceiptValidator({pythonPath:TEST_PYTHON,validatorPath:fileURLToPath(new URL('../receipt-validator.py',import.meta.url))});
 export function serviceFixture(f,model='55',kind='authorization'){
  const x=sourceFixture(f,model,kind),actor=x.input.actor,files=new Map(),calls=[],state={record:null,beginArgs:null,policyOff:false,denied:false,variant:{batch:'105'},raw:null,hooks:{},sessionCalls:0,transports:0,sourceCalls:0};
  const policy={model,version:2,enabled:true,profile:M.profile,manifest_hash:MH,origin:'operational',binding_profile:`sp${model}-receipt-soap12-reviewed-20261016-v1`,lease_seconds:60,cadence_seconds:60,max_queries_per_hour:10,valid_from:new Date(Date.now()-86400000).toISOString(),valid_until:new Date(Date.now()+86400000).toISOString(),created_at:now()};

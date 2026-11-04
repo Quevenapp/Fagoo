@@ -1,3 +1,4 @@
+import {TEST_PYTHON} from './test-runtime.mjs';
 import assert from 'node:assert/strict';
 import {test,before,after} from 'node:test';
 import {readFileSync} from 'node:fs';
@@ -56,7 +57,7 @@ test('raw byte limits include SOAP; shared buffers/UTF8/DOCTYPE are refused with
  let reads=0;Object.defineProperty(raw,'byteLength',{get(){reads++;throw Error();}});Object.defineProperty(raw,Symbol.iterator,{value(){reads++;throw Error();}});assert.equal(extractReviewedReceiptSoap({request:x.soap,envelopeBytes:raw}).envelopeHash,hash(raw));assert.equal(reads,0);
 });
 test('binding extraction does not replace real XSD validation55/65',async()=>{
- const validate=createReceiptValidator({pythonPath:process.env.BRUFAP_TEST_PYTHON??'/Users/bruno/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3',validatorPath:fileURLToPath(new URL('../receipt-validator.py',import.meta.url))});
+ const validate=createReceiptValidator({pythonPath:TEST_PYTHON,validatorPath:fileURLToPath(new URL('../receipt-validator.py',import.meta.url))});
  for(const model of['55','65']){const x=await prepared(model);assert.equal((await validate({request:x.query,kind:'request',xmlBytes:receiptRequestBytes(x.query)})).ok,true);for(const wrongOrder of[false,true]){let p=text(response(x.query));if(wrongOrder)p=p.replace('<tpAmb>2</tpAmb><verAplic>SINTETICO</verAplic>','<verAplic>SINTETICO</verAplic><tpAmb>2</tpAmb>');const extracted=extractReviewedReceiptSoap({request:x.soap,envelopeBytes:bytes(envelope(bytes(p)))});assert.equal(extracted.xsdValidated,false);const r=await validate({request:x.query,kind:'response',xmlBytes:bytes(extracted.payloadXml)});assert.equal(r.ok,!wrongOrder);if(wrongOrder)assert.equal(r.code,'RECEIPT_XSD_INVALID');}}
 });
 test('observed public WSDL bytes match their own model and reject swapped/modified pins',{skip:process.env.BRUFAP_TEST_LOCAL_RECEIPT_WSDL!=='1'},()=>{

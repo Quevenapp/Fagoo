@@ -1,4 +1,5 @@
 import './synthetic-october-clock.mjs';
+import {TEST_PYTHON} from './test-runtime.mjs';
 // All records, reviews, certificates, sockets and byte stores are synthetic local fixtures.
 // This port simulates the proposed068 atomic review CAS; it does not test a deployed SQL068.
 import assert from 'node:assert/strict';
@@ -73,7 +74,7 @@ export async function operationalFixture({model='55',count=1,credential:provided
   throw Error('unknown fixture operation');
  };
  const storage={read:async v=>{calls.read.push(v.key);const b=files.get(v.key);return b?new Response(Buffer.from(b),{headers:{'content-type':'application/octet-stream','content-length':String(b.length)}}):null;},putImmutable:async v=>{assert.equal(v.upsert,false);assert.equal(v.ifNoneMatch,'*');assert.equal(hash(v.bytes),v.sha256);calls.put.push(v.key);const exists=files.has(v.key);if(!exists)files.set(v.key,Buffer.from(v.bytes));return{status:exists?409:201,requires_readback:true};}};
- const validateReal=createAuthorizationValidator({pythonPath:process.env.BRUFAP_TEST_PYTHON??'/Users/bruno/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3',validatorPath:fileURLToPath(new URL('../validator.py',import.meta.url))});
+ const validateReal=createAuthorizationValidator({pythonPath:TEST_PYTHON,validatorPath:fileURLToPath(new URL('../validator.py',import.meta.url))});
  const validate=async(v,o)=>{calls.validate.push(v.kind);return validateReal(v,o);};
  const readReview=async(q,o)=>{calls.review.push(q);assert.equal(q.actor,actor);assert.equal(q.candidateVersion,1);return state.reviewMissing?null:Buffer.from(JSON.stringify(reviewRecord(q,{version:state.reviewVersion,edit:state.reviewEdit})));};
  const secureContext=createSecureContext(),anchor=hash('synthetic local server anchor');
