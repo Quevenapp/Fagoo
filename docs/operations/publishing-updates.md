@@ -198,7 +198,7 @@ Confirme `isDraft: false`, `isPrerelease: false`, a nova tag como `latest` e Act
 
 ## Conferir a disponibilidade e a instalação
 
-Entre como administrador na instalação e abra **Preferências → Sistema → Atualizações do sistema**, rota `/preferencias/sistema/atualizacoes`. Clique em **Verificar atualizações** e confira a versão e as notas. A release fica disponível sem token GitHub para o cliente. O mantenedor usa sua própria autenticação GitHub para fazer push e publicar os artefatos.
+Entre como administrador na instalação e abra **Preferências → Sistema → Atualizações do sistema**, rota `/preferencias/sistema/atualizacoes`. A partir da v0.2.8, a página verifica automaticamente a disponibilidade ao abrir. Aguarde a conclusão, confira **Verificado em**, a versão e as notas. Clique em **Verificar atualizações** para repetir a consulta ou ao usar uma versão anterior do painel. A informação **Última versão conhecida** não confirma uma consulta atual. A release fica disponível sem token GitHub para o cliente. O mantenedor usa sua própria autenticação GitHub para fazer push e publicar os artefatos.
 
 **Atualizar agora** depende de uma versão superior à instalada, credencial Cloudflare configurada e ausência de atualização ou recuperação pendente. Se o pedido for somente disponibilizar a correção, reporte o link da release e a versão oferecida. Aplique a atualização na VPS quando essa etapa fizer parte do pedido ou já estiver autorizada.
 

@@ -13,11 +13,15 @@ Avise os usuários e escolha um horário adequado: o ERP entra em manutenção d
 ## Usar o botão
 
 1. Entre no FAGOO como administrador. A política de acesso e MFA da instalação continua sendo aplicada.
-2. Abra **Preferências → Sistema → Atualizações do sistema**.
-3. Clique em **Verificar atualizações**. Confira a versão instalada, a disponível e as notas da release.
+2. Abra **Preferências → Sistema → Atualizações do sistema**. A página consulta automaticamente as releases e mostra **Verificando…** durante a busca.
+3. Aguarde a conclusão e confira a versão instalada, a disponível, as notas da release e a data/hora em **Verificado em**. Use **Verificar atualizações** para repetir a consulta quando desejar. Em versões anteriores à v0.2.8, clique nesse botão também ao entrar na página.
 4. Clique em **Atualizar agora**. O botão só é habilitado para uma versão posterior, com publicação configurada e sem outra atualização ou recuperação pendente.
 5. Acompanhe as etapas na página de progresso. O processo continua na VPS se o navegador fechar. Na mesma sessão, a página pode ser recarregada; o acompanhamento usa uma autorização temporária somente de leitura, válida por duas horas.
 6. Aguarde **FAGOO atualizado** e clique em **Abrir FAGOO atualizado**. Confira o login e a versão instalada no painel.
+
+Abrir a página apenas verifica a disponibilidade; a instalação depende do clique em **Atualizar agora**. Uma versão salva de uma consulta anterior aparece como **Última versão conhecida** enquanto a nova consulta não estiver confirmada. Em caso de falha, a página mostra **Não foi possível verificar**, mantém a instalação desabilitada e permite tentar novamente. Ela só informa que a instalação está na versão mais recente depois de uma verificação concluída nesta visita.
+
+Se uma consulta já estiver em andamento, a página acompanha sua conclusão. Uma instalação ou recuperação pendente impede iniciar outra verificação. A consulta periódica de situação acompanha o serviço sem solicitar uma nova busca de release a cada ciclo.
 
 O atualizador não solicita token do GitHub nem pede a credencial Cloudflare a cada clique. Se não houver release posterior, **Atualizar agora** permanece desabilitado. Isso é esperado em uma instalação que já está na versão mais recente.
 
