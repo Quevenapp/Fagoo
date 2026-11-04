@@ -1,21 +1,46 @@
 /* One document surface. Breakpoints follow the available form width, including
    when the application sidebar is open or the browser is zoomed. */
-:root .fagoo-document-workspace { display:block; margin-top:16px; }
-:root .fagoo-document-outline { position:static; display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; padding:12px 0 16px; border:0; border-bottom:1px solid var(--border); border-radius:0; background:transparent; }
-:root .fagoo-document-outline .fagoo-eyebrow { width:auto; margin:0; }
-:root .fagoo-document-amount { font-family:var(--font-heading); font-size:22px; color:var(--accent-strong); letter-spacing:-.6px; }
-:root .fagoo-document-outline>span { margin:0; font-size:12px; color:var(--muted); }
-:root .fagoo-document-outline nav { display:flex; flex-wrap:wrap; gap:4px 16px; width:100%; }
-:root .fagoo-document-outline nav button { display:flex; align-items:center; gap:8px; min-height:36px; padding:4px 0; border:0; background:transparent; color:var(--text); font:inherit; font-size:13px; text-align:left; cursor:pointer; }
-:root .fagoo-document-outline nav button>span { color:var(--muted); font-size:12px; font-variant-numeric:tabular-nums; }
-:root .fagoo-document-outline nav button:hover { color:var(--accent-strong); }
-:root .fagoo-document-outline>p:last-child { display:none; }
+/* Sticky document bar: title, status, total and actions, with the steps of the sequence underneath. */
+:root .fagoo-document-header { position:sticky; top:var(--topbar-height); z-index:30; flex-wrap:wrap; align-items:flex-start; gap:12px 20px; margin:-24px -24px 0; padding:18px 24px 0; border-bottom:1px solid var(--border); border-radius:var(--radius-card) var(--radius-card) 0 0; background:color-mix(in srgb,var(--surface) 94%,transparent); backdrop-filter:saturate(1.3) blur(8px); }
+:root .fagoo-document-header .fagoo-document-title { flex:1 1 320px; min-width:0; }
+:root .fagoo-document-header h2 { font-size:22px; margin:0 0 4px; }
+:root .fagoo-document-header h2:focus { outline:0; }
+:root .fagoo-document-header p { display:flex; flex-wrap:wrap; align-items:center; gap:6px; font-size:13px; }
+:root .fagoo-document-header .document-editor-buttons small { display:flex; align-items:center; gap:3px; justify-content:flex-end; color:var(--muted); font-size:12px; }
+:root .fagoo-document-header .document-editor-buttons small kbd { min-width:18px; height:18px; font-size:10px; }
+:root .fagoo-document-outline { flex:1 0 100%; display:flex; align-items:center; justify-content:space-between; gap:8px 20px; margin:0; padding:0; border:0; background:transparent; }
+:root .fagoo-document-outline nav { min-width:0; overflow-x:auto; scrollbar-width:none; }
+:root .fagoo-document-outline nav::-webkit-scrollbar { display:none; }
+:root .fagoo-document-outline ol { display:flex; gap:2px; margin:0; padding:0; list-style:none; }
+:root .fagoo-document-outline nav button { position:relative; display:flex; align-items:center; gap:8px; min-height:44px; padding:0 12px; border:0; border-radius:0; background:transparent; color:var(--muted); font:inherit; font-size:14px; font-weight:550; white-space:nowrap; cursor:pointer; }
+:root .fagoo-document-outline nav button:hover { color:var(--heading); }
+:root .fagoo-document-outline nav button::after { content:''; position:absolute; left:10px; right:10px; bottom:-1px; height:2px; border-radius:2px; background:transparent; }
+:root .fagoo-document-outline nav button[aria-current='step'] { color:var(--heading); }
+:root .fagoo-document-outline nav button[aria-current='step']::after { background:var(--accent); }
+:root .fagoo-step-number { display:grid; place-items:center; width:22px; height:22px; border-radius:50%; background:var(--surface-alt); color:var(--muted); font-size:12px; font-weight:700; font-variant-numeric:tabular-nums; }
+:root .fagoo-document-outline nav button[aria-current='step'] .fagoo-step-number { background:var(--accent); color:var(--accent-text); }
+:root .fagoo-step-count { min-width:20px; padding:0 6px; border-radius:999px; background:var(--accent-soft); color:var(--accent-strong); font-size:11px; font-weight:700; line-height:18px; text-align:center; }
+:root .fagoo-document-summary { display:flex; align-items:baseline; gap:10px; margin:0; padding-bottom:10px; white-space:nowrap; }
+:root .fagoo-document-summary>span { color:var(--muted); font-size:13px; }
+:root .fagoo-document-amount { font-family:var(--font-heading); font-size:22px; font-weight:700; color:var(--heading); letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+:root .fagoo-document-workspace { display:block; margin-top:4px; }
 .fagoo-document-body,.fiscal-invoice-form { container-type:inline-size; min-width:0; }
-.fagoo-operation-anchor { scroll-margin-top:100px; margin-top:20px; padding-top:20px; border-top:1px solid var(--border); }
-:root .fagoo-document-editor .document-section { min-inline-size:0; margin:0; padding:20px 0; border:0; border-top:1px solid var(--border); border-radius:0; background:transparent; scroll-margin-top:100px; }
-:root .fagoo-document-editor .document-section legend { float:left; width:100%; margin:0 0 14px; padding:0; font-size:16px; font-weight:650; }
+:root .fagoo-document-editor :is(#document-identification,#document-line-items,#document-payment,#document-delivery,#document-notes,#document-operations) { scroll-margin-top:calc(var(--topbar-height) + var(--document-header-height,128px) + 12px); }
+.fagoo-operation-anchor { margin-top:24px; padding-top:20px; border-top:1px solid var(--border); }
+:root .fagoo-document-editor .document-section { min-inline-size:0; margin:0; padding:24px 0; border:0; border-top:1px solid var(--border); border-radius:0; background:transparent; }
+:root .fagoo-document-editor .document-section legend { float:left; display:flex; align-items:center; gap:10px; width:100%; margin:0 0 16px; padding:0; color:var(--heading); font-family:var(--font-heading); font-size:17px; font-weight:700; letter-spacing:-.01em; }
 :root .fagoo-document-editor .document-section legend+* { clear:both; }
 :root .fagoo-document-editor .document-section::after { content:''; display:block; clear:both; }
+/* Sales documents number their main sections like the steps above. */
+:root .fagoo-document-editor.is-sales-flow :is(#document-identification,#document-line-items,#document-payment)>legend::before,
+:root .fagoo-document-editor.is-sales-flow #document-delivery>.document-section:first-child>legend::before,
+:root .fagoo-document-editor.is-sales-flow #document-notes .document-section>legend::before { display:grid; place-items:center; width:26px; height:26px; flex-shrink:0; border-radius:8px; background:var(--accent-soft); color:var(--accent-strong); font:700 13px var(--font-body); }
+:root .fagoo-document-editor.is-sales-flow #document-identification>legend::before { content:'1'; }
+:root .fagoo-document-editor.is-sales-flow #document-line-items>legend::before { content:'2'; }
+:root .fagoo-document-editor.is-sales-flow #document-payment>legend::before { content:'3'; }
+:root .fagoo-document-editor.is-sales-flow #document-delivery>.document-section:first-child>legend::before { content:'4'; }
+:root .fagoo-document-editor.is-sales-flow #document-notes .document-section>legend::before { content:'5'; }
+:root .fagoo-document-editor .fagoo-document-step:empty { display:none; }
 :root .fagoo-document-editor #document-identification { border-top:0; }
 :root .fagoo-document-editor .document-section:disabled { opacity:1; }
 :root .fagoo-document-editor .document-grid,
@@ -86,15 +111,37 @@
 }
 @media(max-width:700px) {
   :root .fagoo-document-editor,:root .fiscal-invoice-form { padding:14px; }
+  :root .fagoo-document-header { position:static; margin:-14px -14px 0; padding:14px 14px 0; }
   :root .fagoo-document-editor .real-editor-heading { gap:12px; }
   :root .fagoo-document-editor .document-editor-buttons { width:100%; justify-items:stretch; }
   :root .fagoo-document-editor .document-editor-buttons>div { justify-content:flex-start; }
-  :root .fagoo-document-outline nav { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px 12px; }
-  :root .fagoo-document-outline nav button { font-size:12px; }
-  :root .fagoo-document-outline nav svg { display:none; }
+  :root .fagoo-document-editor .document-editor-buttons>div>button,:root .fagoo-document-editor .document-editor-buttons .document-save-split { flex:1; }
+  :root .fagoo-document-outline { flex-wrap:wrap-reverse; }
+  :root .fagoo-document-outline nav { width:100%; }
+  :root .fagoo-document-outline nav button { padding:0 8px; font-size:13px; }
+  :root .fagoo-document-summary { padding:4px 0 0; }
 }
 @media print {
   :root .fagoo-document-outline,:root .fiscal-form-tabs { display:none; }
+  :root .fagoo-document-header { position:static; margin:0; padding:0; border:0; background:none; backdrop-filter:none; }
+  :root .fagoo-document-editor.is-sales-flow legend::before { display:none !important; }
   .fagoo-document-body,.fiscal-invoice-form { container-type:normal; }
   :root .fiscal-invoice-form { padding:0; border:0; }
 }
+
+/* Groups inside a section (Detalhes de pagamento, referências): a quiet frame with a small caption. */
+:root .fagoo-document-editor .document-section fieldset:not(.document-section) { min-inline-size:0; margin:0; padding:12px 16px 16px; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); }
+:root .fagoo-document-editor .document-section fieldset:not(.document-section)>legend { float:none; display:block; width:auto; margin:0 0 4px; padding:0 6px; color:var(--muted); font:600 13px var(--font-body); letter-spacing:0; }
+:root .fagoo-document-editor .document-section fieldset:not(.document-section)>legend+* { clear:none; }
+:root .fagoo-document-editor .document-payment-details { display:grid; gap:12px; }
+:root .fagoo-document-editor .document-totals-title { margin:20px 0 8px; font-size:14px; color:var(--heading); }
+:root .fagoo-document-editor dl.document-total-summary { padding:12px; border-radius:var(--radius-card); background:var(--surface-alt); }
+:root .fagoo-document-editor dl.document-total-summary>div { padding:10px 12px; border:0; border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow-small); }
+:root .fagoo-document-editor dl.document-total-summary dt { font-size:12px; color:var(--muted); }
+:root .fagoo-document-editor dl.document-total-summary dd { font-size:15px; font-weight:650; color:var(--heading); }
+:root .fagoo-document-editor dl.document-total-summary .document-grand-total { background:var(--accent-soft); box-shadow:none; }
+:root .fagoo-document-editor dl.document-total-summary .document-grand-total dt { color:var(--accent-strong); }
+:root .fagoo-document-editor dl.document-total-summary .document-grand-total dd { font-family:var(--font-heading); font-size:20px; font-weight:700; color:var(--accent-strong); }
+:root .fagoo-document-editor .document-items thead th { background:var(--surface-alt); }
+:root .fagoo-document-editor .document-items td { vertical-align:top; }
+:root .fagoo-document-editor .document-items .document-item-position { padding-top:18px; font-weight:600; }

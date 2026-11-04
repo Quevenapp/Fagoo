@@ -82,6 +82,12 @@ export function CatalogPicker({ controller, entity, label, selected, disabled, o
     finally { draining.current = false; if (mounted.current) setCodeBusy(false); }
   };
   const keyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    // ↓ goes from the search to its results and opens them, so a record is chosen without the mouse.
+    if (event.key === 'ArrowDown' && !event.altKey && !event.ctrlKey && !event.metaKey) {
+      const list = (event.currentTarget as HTMLInputElement | undefined)?.parentElement?.querySelector?.('select');
+      if (list && !list.disabled && rows.length) { event.preventDefault(); list.focus(); try { (list as HTMLSelectElement & { showPicker?: () => void }).showPicker?.(); } catch { /* The focused list still answers to the arrows. */ } }
+      return;
+    }
     if (event.key !== 'Enter' || (event.nativeEvent as { isComposing?: boolean } | undefined)?.isComposing) return;
     event.preventDefault(); // A scanner's Enter must never save the document.
     if (entity === 'contacts' && contactTools && !disabled) { setAdvanced(true); return; } // Origin: ENTER opens the busca avançada.

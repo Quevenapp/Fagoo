@@ -1,7 +1,7 @@
-/* Área da empresa: a barra superior é a OriginTopBar; aqui fica só a trilha de localização, discreta como no Origin. */
-.company-context { max-width: 1600px; margin: 0 auto; display: flex; justify-content: space-between; gap: 14px; padding: 8px 14px 0; font-size: 11px; color: var(--muted); }
+/* Área da empresa: a trilha de localização (Início › módulo › tela) fica na barra superior (OriginTopBar). */
+.company-context { max-width: 1600px; margin: 0 auto; display: flex; justify-content: space-between; gap: 14px; padding: 8px 14px 0; font-size: 12px; color: var(--muted); }
 .company-context nav { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; }
-.company-context a { color: var(--accent); text-decoration: none; }
+.company-context a { color: var(--link); text-decoration: none; }
 .company-context a:hover { text-decoration: underline; }
 .company-context [aria-current="page"] { color: var(--heading); }
 @media (max-width: 600px) { .company-context { padding: 8px 10px 0; } }

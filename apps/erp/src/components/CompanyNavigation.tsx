@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import type { AccessState } from '../lib/real-access';
 import { ROLE_LABELS } from '../lib/real-access';
 import { activeGroupFor, matchesLocation, resolveMenu, resolvePreferences } from '../lib/origin-menu';
+import { workspaceMenu } from '../lib/fagoo-menu';
 import { useTheme } from '../hooks/useTheme';
 import OriginTopBar from './OriginTopBar';
 import OriginSyncButton from './OriginSyncButton';
@@ -44,17 +45,19 @@ export default function CompanyNavigation({ state, onLogout, controller }: { sta
   const user = { name: ready && role ? person ?? ROLE_LABELS[role] : authenticated ? 'Verificando acesso' : 'Visitante', company: chrome.profile?.company?.legal_name ?? 'FAGOO', detail: ready ? person && role ? `Perfil: ${ROLE_LABELS[role]}` : 'Área da empresa' : undefined };
   const system = ready && typeof controller?.system === 'function' ? controller as SystemController : null;
   const sync = originConnectionAvailable(state.membership) && ready && typeof controller?.originSync === 'function' ? controller as OriginSyncController : null;
-  return <>
-    <OriginTopBar groups={ready ? groups : []} activeGroup={active?.name} homeTo="/acesso" preferencesTo="/preferencias" user={user} theme={theme} onTheme={toggle}
-      userTitle="Meu Perfil" companyTo={ready ? '/empresa-configuracoes' : undefined} storage={ready && chrome.storage ? { label: `Armazenamento ${storageSummary(chrome.storage).label}`, to: '/empresa-configuracoes?secao=armazenamento' } : null}
-      notificationCount={ready ? chrome.unread : null} notificationsPanel={system && chrome.actor ? close => <NotificationsPanel controller={system} actor={chrome.actor!} onUnread={chrome.setUnread} onNavigate={close} /> : undefined}
-      onLogout={authenticated ? onLogout : undefined} actionsTo={ready ? '/preferencias/sistema/gestao-acoes' : undefined} helpLinks={ready ? COMPANY_HELP_LINKS.filter(link => originHistory || !isOriginIntegrationRoute(link.to)) : []} syncTool={sync ? <OriginSyncButton controller={sync} canRequest={role !== 'consulta'} canConfigure={role === 'admin'} /> : undefined} userLinks={ready ? [{ label: 'Dados da empresa', to: '/empresa-configuracoes', icon: 'building' }] : []} searchLinks={preferenceLinks} />
-    {ready && <div className="company-context"><nav aria-label="Localização"><Link to="/acesso">Início</Link>
-      {preparationPage ? <><span aria-hidden="true">›</span><Link to="/preferencias">Preferências</Link><span aria-hidden="true">›</span><Link to="/preparacao-virada">Preparação da virada</Link><span aria-hidden="true">›</span>{stockPage ? <><Link to="/preparacao-virada/depositos">Depósitos do Origin</Link><span aria-hidden="true">›</span><span aria-current="page">Estoque informado pelo Origin</span></> : <span aria-current="page">Depósitos do Origin</span>}</>
-        : active ? <><span aria-hidden="true">›</span><span>{active.name}</span>{current && current.label !== 'Dashboard geral' && <><span aria-hidden="true">›</span><span aria-current="page">{current.label}</span></>}</>
+  // The trail names the same module the sidebar shows (Comercial, Catálogo…), so both read alike.
+  const moduleName = useMemo(() => current?.to ? workspaceMenu(groups, role).find(group => group.columns.some(column => column.items.some(item => item.to === current.to)))?.name ?? active?.name : active?.name, [groups, role, current?.to, active?.name]);
+  const trail = ready ? location.pathname === '/acesso' ? <nav aria-label="Localização"><span aria-current="page">Visão geral</span></nav> : <nav aria-label="Localização"><Link to="/acesso">Início</Link>
+      {preparationPage ?<><span aria-hidden="true">›</span><Link to="/preferencias">Preferências</Link><span aria-hidden="true">›</span><Link to="/preparacao-virada">Preparação da virada</Link><span aria-hidden="true">›</span>{stockPage ? <><Link to="/preparacao-virada/depositos">Depósitos do Origin</Link><span aria-hidden="true">›</span><span aria-current="page">Estoque informado pelo Origin</span></> : <span aria-current="page">Depósitos do Origin</span>}</>
+        : active ? <><span aria-hidden="true">›</span><span>{moduleName}</span>{current && current.label !== 'Dashboard geral' && <><span aria-hidden="true">›</span><span aria-current="page">{current.label}</span></>}</>
         : location.pathname === '/preferencias' ? <><span aria-hidden="true">›</span><span aria-current="page">Preferências</span></>
         : hubCategory ? <><span aria-hidden="true">›</span><Link to="/preferencias">Preferências</Link><span aria-hidden="true">›</span><span aria-current="page">{hubCategory.label}</span></>
         : preference ? <><span aria-hidden="true">›</span><Link to="/preferencias">Preferências</Link><span aria-hidden="true">›</span>{preference.entry.to.startsWith('/preferencias/') ? <Link to={`/preferencias/${preference.category.id}`}>{preference.category.label}</Link> : <span>{preference.category.label}</span>}<span aria-hidden="true">›</span><span aria-current="page">{preference.entry.label}</span></> : null}
-    </nav></div>}
+    </nav> : undefined;
+  return <>
+    <OriginTopBar groups={ready ? groups : []} activeGroup={active?.name} homeTo="/acesso" preferencesTo="/preferencias" user={user} theme={theme} onTheme={toggle} role={ready ? role : undefined} trail={trail}
+      userTitle="Meu Perfil" companyTo={ready ? '/empresa-configuracoes' : undefined} storage={ready && chrome.storage ? { label: `Armazenamento ${storageSummary(chrome.storage).label}`, to: '/empresa-configuracoes?secao=armazenamento' } : null}
+      notificationCount={ready ? chrome.unread : null} notificationsPanel={system && chrome.actor ? close => <NotificationsPanel controller={system} actor={chrome.actor!} onUnread={chrome.setUnread} onNavigate={close} /> : undefined}
+      onLogout={authenticated ? onLogout : undefined} actionsTo={ready ? '/preferencias/sistema/gestao-acoes' : undefined} helpLinks={ready ? COMPANY_HELP_LINKS.filter(link => originHistory || !isOriginIntegrationRoute(link.to)) : []} syncTool={sync ? <OriginSyncButton controller={sync} canRequest={role !== 'consulta'} canConfigure={role === 'admin'} /> : undefined} userLinks={ready ? [{ label: 'Dados da empresa', to: '/empresa-configuracoes', icon: 'building' }] : []} searchLinks={preferenceLinks} />
   </>;
 }

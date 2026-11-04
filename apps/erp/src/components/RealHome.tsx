@@ -10,7 +10,8 @@ import HomeNewInvoices from './HomeNewInvoices';
 import ReleaseNotesPanel from './ReleaseNotesPanel';
 import type {PlatformPort} from '../lib/platform-model';
 import {HOME_BUCKET_LABELS,HOME_CATALOG_LABELS,HOME_PERIOD_OPTIONS,homeCustomRoute,homeNetCents,homePeriodMatches,homePeriodRoute,homePeriodSearch,homePeriodText,homeSalesLines,homeSessionAccess,homeSummaryPath,type HomeController,type HomePeriodKey,type HomePeriodRoute,type HomeSummary} from '../lib/home-model';
-import type {CompanyAccess} from '../lib/origin-menu';
+import {resolveMenu,type CompanyAccess} from '../lib/origin-menu';
+import {workspaceActions} from '../lib/workspace-actions';
 import {PeriodPicker} from './OriginList';
 import {HomeChart} from './HomeChart';
 import {HomeChartCards} from './HomeChartCards';
@@ -51,6 +52,8 @@ function HomeView({controller,access}:{controller:HomeController;access:CompanyA
   const period=summary?.period;
   const money=(cents:string)=>hidden?'R$ ••••':financeMoney(cents);
   const role=access?.role??summary?.role;
+  // Quick actions come from the destinations this access already has in the menu; nothing new is granted here.
+  const quick=useMemo(()=>access?workspaceActions(resolveMenu('real',access),access.role):[],[access]);
   const togglePanel=()=>{const next=!panel;setPanel(next);try{globalThis.localStorage?.setItem(PANEL_KEY,next?'open':'closed');}catch{/* Visit only. */}};
   const toggleHidden=()=>{const next=!hidden;setHidden(next);try{globalThis.localStorage?.setItem(VALUES_KEY,next?'hidden':'visible');}catch{/* Visit only. */}};
   useEffect(()=>{
@@ -84,7 +87,10 @@ function HomeView({controller,access}:{controller:HomeController;access:CompanyA
   </article>;
   const financeLink=(kind:'receivable'|'payable')=>period?`/financeiro-empresa?${new URLSearchParams({area:kind,from:period.from,to:period.to})}`:`/financeiro-empresa?area=${kind}`;
   return <div className="home-page fagoo-overview">
-    <header className="fagoo-overview-header"><div><p className="fagoo-eyebrow">PAINEL DA EMPRESA</p><h1>Seu negócio, em perspectiva.</h1><p>Uma visão dos resultados e do que precisa da sua atenção.</p></div><span className="fagoo-overview-date"><Icon name="calendar-days" size={17}/>{financeDate(today)}</span></header>
+    <header className="fagoo-overview-header"><div><p className="fagoo-eyebrow">{role==='vendas'?'PAINEL DE VENDAS':'PAINEL DA EMPRESA'}</p><h1>{role==='vendas'?'Suas vendas, em perspectiva.':'Seu negócio, em perspectiva.'}</h1><p>{role==='vendas'?'Comece um pedido, consulte clientes e produtos e acompanhe o período.':'Uma visão dos resultados e do que precisa da sua atenção.'}</p></div><span className="fagoo-overview-date"><Icon name="calendar-days" size={17}/>{financeDate(today)}</span></header>
+    {quick.length>0&&<nav className="fagoo-quick-actions" aria-label="Ações rápidas">{quick.map(action=><Link key={action.id} to={action.to} className={action.create?'is-create':undefined}>
+      <span className="fagoo-quick-icon" aria-hidden="true"><Icon name={action.icon} size={18}/></span><span className="fagoo-quick-text"><strong>{action.label}</strong><small>{action.description}</small></span>
+      <span className="fagoo-quick-keys"><span className="sr-only">Atalho:</span>{action.keys.map(key=><kbd key={key}>{key}</kbd>)}</span></Link>)}</nav>}
     <div className="home-main">
 
       <p className="home-alert"><Icon name="circle-info" size={16}/><span>{nativeIndicatorCoverageText(summary) ?? 'Este resumo considera os registros da sua empresa no FAGOO. Os indicadores serão preenchidos conforme os cadastros e movimentações forem registrados.'}</span></p>

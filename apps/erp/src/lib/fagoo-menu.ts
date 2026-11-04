@@ -6,8 +6,17 @@ const MODULES=[
  ['Catálogo','box'],['Estoque','warehouse'],['Financeiro','building-columns'],
  ['Fiscal','file-invoice'],['Pessoas','users'],
 ] as const;
+/** The modules each profile uses all day come first; the others keep the standard order. */
+const ROLE_FOCUS:Record<string,readonly string[]>={
+ vendas:['Comercial','Catálogo','Pessoas','Resultados'],
+ financeiro:['Financeiro','Comercial'],
+ estoque:['Estoque','Compras','Catálogo'],
+ fiscal:['Fiscal','Comercial','Compras'],
+};
+/** The module a profile works in when no other is selected. */
+export function focusModule(role?:string){return role?ROLE_FOCUS[role]?.[0]:undefined;}
 /** Recompose only already-authorized destinations. This layer grants no new access. */
-export function workspaceMenu(groups:readonly ResolvedGroup[]):WorkspaceModule[]{
+export function workspaceMenu(groups:readonly ResolvedGroup[],role?:string):WorkspaceModule[]{
  const buckets=new Map<string,{label:string;to:string}[]>(MODULES.map(([name])=>[name,[]]));
  for(const group of groups){
   const entries=[...group.columns.flatMap(column=>column.items),...(group.footer?[group.footer]:[])];
@@ -27,5 +36,7 @@ export function workspaceMenu(groups:readonly ResolvedGroup[]):WorkspaceModule[]
    if(!items.some(item=>item.to===entry.to))items.push({label:entry.label,to:entry.to});
   }
  }
- return MODULES.flatMap(([name,icon])=>buckets.get(name)!.length?[{name,icon,columns:[{title:'',items:buckets.get(name)!}]}]:[]);
+ const focus=role?ROLE_FOCUS[role]??[]:[];
+ const ordered=[...MODULES].sort((a,b)=>{const x=focus.indexOf(a[0]),y=focus.indexOf(b[0]);return (x<0?focus.length:x)-(y<0?focus.length:y);});
+ return ordered.flatMap(([name,icon])=>buckets.get(name)!.length?[{name,icon,columns:[{title:'',items:buckets.get(name)!}]}]:[]);
 }

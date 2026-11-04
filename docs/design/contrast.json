@@ -1,54 +1,24 @@
 {
-  "method": "WCAG relative luminance for selected semantic token pairs. Not a full accessibility audit.",
+  "method": "WCAG relative luminance for selected semantic token pairs of the FAGOO 2.0 palette. Not a full accessibility audit.",
   "pairs": [
-    {
-      "name": "Texto claro",
-      "text": "#393546",
-      "background": "#ffffff",
-      "ratio": 11.85,
-      "normalTextAA": true
-    },
-    {
-      "name": "Secundário claro",
-      "text": "#6a6378",
-      "background": "#f5f4f8",
-      "ratio": 5.23,
-      "normalTextAA": true
-    },
-    {
-      "name": "Botão claro",
-      "text": "#ffffff",
-      "background": "#6941c6",
-      "ratio": 6.62,
-      "normalTextAA": true
-    },
-    {
-      "name": "Texto escuro",
-      "text": "#e5dff0",
-      "background": "#211e2b",
-      "ratio": 12.56,
-      "normalTextAA": true
-    },
-    {
-      "name": "Secundário escuro",
-      "text": "#b7aec7",
-      "background": "#211e2b",
-      "ratio": 7.7,
-      "normalTextAA": true
-    },
-    {
-      "name": "Botão escuro",
-      "text": "#211238",
-      "background": "#b89af7",
-      "ratio": 7.45,
-      "normalTextAA": true
-    },
-    {
-      "name": "Menu",
-      "text": "#d4cbdf",
-      "background": "#252131",
-      "ratio": 10,
-      "normalTextAA": true
-    }
+    { "name": "Texto claro", "text": "#2b2834", "background": "#ffffff", "ratio": 14.42, "normalTextAA": true },
+    { "name": "Texto sobre o fundo", "text": "#2b2834", "background": "#f5f5f8", "ratio": 13.26, "normalTextAA": true },
+    { "name": "Secundário claro", "text": "#5f5a6b", "background": "#f5f5f8", "ratio": 6.1, "normalTextAA": true },
+    { "name": "Apoio sobre o fundo", "text": "#6e697c", "background": "#f5f5f8", "ratio": 4.86, "normalTextAA": true },
+    { "name": "Botão claro", "text": "#ffffff", "background": "#5b3dc8", "ratio": 7.13, "normalTextAA": true },
+    { "name": "Link claro", "text": "#4f33b8", "background": "#ffffff", "ratio": 8.41, "normalTextAA": true },
+    { "name": "Menu claro", "text": "#3a3746", "background": "#f9f9fb", "ratio": 11, "normalTextAA": true },
+    { "name": "Menu ativo claro", "text": "#4a2fae", "background": "#ebe7fb", "ratio": 7.52, "normalTextAA": true },
+    { "name": "Texto escuro", "text": "#e7e4ef", "background": "#1b1a22", "ratio": 13.75, "normalTextAA": true },
+    { "name": "Secundário escuro", "text": "#aaa5b8", "background": "#1b1a22", "ratio": 7.21, "normalTextAA": true },
+    { "name": "Apoio escuro", "text": "#8f8a9e", "background": "#1b1a22", "ratio": 5.17, "normalTextAA": true },
+    { "name": "Botão escuro", "text": "#1a1330", "background": "#a993f6", "ratio": 6.94, "normalTextAA": true },
+    { "name": "Link escuro", "text": "#bfaefa", "background": "#1b1a22", "ratio": 8.75, "normalTextAA": true },
+    { "name": "Menu escuro", "text": "#d9d5e4", "background": "#16151c", "ratio": 12.6, "normalTextAA": true },
+    { "name": "Menu ativo escuro", "text": "#d4c9fc", "background": "#2b2445", "ratio": 9.41, "normalTextAA": true },
+    { "name": "Sucesso", "text": "#1c6b40", "background": "#e7f4ec", "ratio": 5.75, "normalTextAA": true },
+    { "name": "Atenção", "text": "#835000", "background": "#fff2d6", "ratio": 6.08, "normalTextAA": true },
+    { "name": "Erro", "text": "#a3261e", "background": "#fdecea", "ratio": 6.44, "normalTextAA": true },
+    { "name": "Informação", "text": "#1b5a8c", "background": "#e8f1fa", "ratio": 6.37, "normalTextAA": true }
   ]
 }
