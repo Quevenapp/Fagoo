@@ -36,7 +36,8 @@ const REFUSALS={erp_document_origin_effects:[409,'ERP_DOCUMENT_ORIGIN_EFFECTS'],
   erp_document_custom_field_duplicate:[400,'ERP_DOCUMENT_CUSTOM_FIELD_DUPLICATE'],erp_document_custom_field_option_in_use:[400,'ERP_DOCUMENT_CUSTOM_FIELD_OPTION_IN_USE'],
   erp_document_custom_field_in_use:[400,'ERP_DOCUMENT_CUSTOM_FIELD_IN_USE'],erp_document_custom_field_limit:[400,'ERP_DOCUMENT_CUSTOM_FIELD_LIMIT'],
   // 202610200291: Checkout de pedidos.
-  erp_document_checkout_exceeds:[400,'ERP_DOCUMENT_CHECKOUT_EXCEEDS'],erp_document_checkout_unavailable:[409,'ERP_DOCUMENT_CHECKOUT_UNAVAILABLE']};
+  erp_document_checkout_exceeds:[400,'ERP_DOCUMENT_CHECKOUT_EXCEEDS'],erp_document_checkout_unavailable:[409,'ERP_DOCUMENT_CHECKOUT_UNAVAILABLE'],
+  erp_document_checkout_ambiguous:[409,'ERP_DOCUMENT_CHECKOUT_AMBIGUOUS']};
 export function documentsFailure(error){
   const match=typeof error?.upstreamMessage==='string'?REFUSALS[error.upstreamMessage]:undefined;
   return match&&error.status===match[0]?new DocumentsError(match[0],match[1]):error;

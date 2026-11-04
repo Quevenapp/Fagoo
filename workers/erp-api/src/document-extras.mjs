@@ -90,6 +90,7 @@ function checkoutView(value, route, saving) {
 
 const KIND = '(sales_proposals|sales_orders|purchase_orders|service_orders)';
 export function documentExtrasRoute(path) {
+  if (path === '/v1/documentos/sales_orders/checkout') return { extra: true, kind: 'sales_orders', id: null, action: 'checkout_lookup' };
   const trash = new RegExp(`^/v1/documentos/${KIND}/lixeira$`).exec(path);
   if (trash) return { extra: true, kind: trash[1], id: null, action: 'trash' };
   const notes = /^\/v1\/documentos\/(sales_orders|service_orders|purchase_orders)\/([0-9a-fA-F-]{36})\/observacoes$/.exec(path);
@@ -120,6 +121,7 @@ export function documentExtrasRoute(path) {
   return null;
 }
 export function documentExtrasMethods(route) {
+  if (route.action === 'checkout_lookup') return ['GET'];
   return { trash: ['POST'], notes: ['POST'], checkout: ['GET', 'POST'], supplier_descriptions: ['GET'], custom_fields: ['GET', 'POST'], custom_field_update: ['POST'], custom_field_delete: ['POST'], lot_products: ['GET'], lot_options: ['GET'], seller_commission: ['GET'], commission_operation: ['GET'], freight_paid: ['GET', 'POST'], product_search: ['GET'] }[route.action] ?? [];
 }
 
@@ -141,6 +143,12 @@ const version = (value, min) => int(value, min, 2147483647);
 
 export async function documentExtrasOperation(request, route, params, readBody) {
   const kind = route.kind;
+  if (route.action === 'checkout_lookup') {
+    single(params, ['number']);
+    const number = params.get('number');
+    if (!number || !/^[1-9][0-9]{0,9}$/.test(number)) invalid();
+    return { extra: true, rpc: 'erp_document_checkout_lookup', args: { p_number: number }, type: 'checkout_lookup' };
+  }
   if (route.action === 'trash') {
     if (params.size) invalid();
     const input = await readBody(request);
@@ -246,6 +254,10 @@ export function documentExtrasResponse(value, route, operation) {
     return { ...base, kind: route.kind, action: value.action, command_id: value.command_id, replayed: value.replayed, results: value.results.map(r => ({ id: r.id, ok: r.ok, reason: r.reason })) };
   }
   if (value.operational_effects !== false || value.kind !== route.kind) bad();
+  if (operation.type === 'checkout_lookup') {
+    if (!LOWER_UUID.test(value.id ?? '') || value.number !== operation.args.p_number) bad();
+    return { ...base, kind: route.kind, id: value.id, number: value.number };
+  }
   if (operation.type === 'checkout') return { ...base, ...checkoutView(value, route, operation.rpc === 'erp_document_checkout_save') };
   if (operation.type === 'supplier_descriptions') {
     if (value.document_id !== route.id || !Array.isArray(value.items) || value.items.length > 250 || value.items.some(item => !exact(item, ['item_id', 'product_id', 'description'])

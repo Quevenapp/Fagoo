@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 import { AccessError, type AccessController } from '../lib/real-access';
 import { STATES } from '../lib/real-documents-model';
-import { isDocumentMirror, type DocumentOrigin } from '../lib/document-mirror-model';
 import { applyRead, checkoutPath, complete, orderedLines, pickingLine, readCheckout, readsBody, readsOf, savedStatus, shown, units, type CheckoutView, type Reads } from '../lib/sales-checkout-model';
 import { autoFinanceMessage } from '../lib/document-pricing-model';
 import { Icon } from './Icon';
@@ -11,6 +10,7 @@ import './document-wave-g.css';
 type Controller = Pick<AccessController, 'documents' | 'getSnapshot'>;
 const sameReads = (a: Reads, b: Reads) => JSON.stringify(Object.entries(a).filter(([, v]) => v > 0n).map(([k, v]) => [k, String(v)]).sort()) === JSON.stringify(Object.entries(b).filter(([, v]) => v > 0n).map(([k, v]) => [k, String(v)]).sort());
 const failureText = (failure: unknown) => failure instanceof AccessError ? failure.code === 'ERP_DOCUMENT_CHECKOUT_UNAVAILABLE' ? 'O checkout vale só para pedidos Em aberto ou Checkout parcial.'
+  : failure.code === 'ERP_DOCUMENT_CHECKOUT_AMBIGUOUS' ? 'Há mais de um pedido com esse número. Confira a numeração na listagem antes de continuar.'
   : failure.code === 'ERP_DOCUMENT_CHECKOUT_EXCEEDS' ? 'Uma quantidade lida passa da quantidade do pedido. Corrija a leitura.' : failure.status === 409 ? 'O pedido mudou em outra tela. Leia o pedido de novo.'
     : failure.status === 403 ? 'Seu perfil não faz o checkout de pedidos.' : failure.status === 404 ? 'Pedido não encontrado.' : 'Não foi possível concluir. Tente de novo.' : 'Não foi possível concluir. Tente de novo.';
 
@@ -36,9 +36,8 @@ export default function SalesCheckout({ controller, onClose }: { controller: Con
     if (!/^[1-9]\d{0,9}$/.test(typed)) { setError('Informe o número do pedido de venda.'); return; }
     const signal = new AbortController(); request.current = signal; setBusy(true); setError(''); setNotice('');
     try {
-      const page = await controller.documents(`/v1/documentos/sales_orders?${new URLSearchParams({ page: '1', limit: '25', order: 'number_asc', q: typed, origin: 'brufap' })}`, { signal: signal.signal }) as { items?: (DocumentOrigin & { id: string; number: string })[] };
-      const row = page.items?.find(item => item.number === typed && !isDocumentMirror(item));
-      if (!row) { setError(`Pedido de venda ${typed} não encontrado.`); return; }
+      const row = await controller.documents(`/v1/documentos/sales_orders/checkout?${new URLSearchParams({ number: typed })}`, { signal: signal.signal }) as { id?: string; number?: string };
+      if (!row || typeof row.id !== 'string' || !/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(row.id) || row.number !== typed) throw new Error('Resposta inválida do checkout.');
       const next = readCheckout(await controller.documents(checkoutPath(row.id), { signal: signal.signal }), row.id);
       if (signal.signal.aborted) return; open(next);
     } catch (failure) { if (!signal.signal.aborted) setError(failureText(failure)); }

@@ -132,7 +132,7 @@ test('PRF-126: Checkout de pedidos reads the pedido by number, checks quantities
     settings: { order: 'nao_ordenar', split: false, picking: false, auto_save: false, quantity_input: true }, data_mode: 'erp_native', operational_effects: false });
   let saved = [];
   const c = controller((path, options) => {
-    if (path.startsWith('/v1/documentos/sales_orders?')) return { kind: 'sales_orders', items: [{ id: SALE, number: '290' }], total_count: 1 };
+    if (path === '/v1/documentos/sales_orders/checkout?number=290') return { kind: 'sales_orders', id: SALE, number: '290' };
     if (options.method === 'POST') { saved = options.body.reads; return { ...viewOf(saved, 'checkout_partial', 5), replayed: false, complete: false }; }
     return viewOf(saved, saved.length ? 'checkout_partial' : 'open', saved.length ? 5 : 4);
   });
@@ -154,7 +154,7 @@ test('PRF-126: Checkout de pedidos reads the pedido by number, checks quantities
   } finally { view.unmount(); }
   // A lost answer keeps the same command for "Conferir resultado".
   const lost = controller((path, options) => {
-    if (path.startsWith('/v1/documentos/sales_orders?')) return { kind: 'sales_orders', items: [{ id: SALE, number: '290' }], total_count: 1 };
+    if (path === '/v1/documentos/sales_orders/checkout?number=290') return { kind: 'sales_orders', id: SALE, number: '290' };
     if (options.method === 'POST') throw new AccessError(503);
     return viewOf([]);
   });

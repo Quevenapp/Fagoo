@@ -16,6 +16,32 @@ const save = (doc, view, reads, command = randomUUID(), user = f.users.admin) =>
   { command_id: command, expected_version: view.order.version, checkout_version: view.checkout_version, reads }, user);
 const order = () => f.create('sales_orders', { items: [f.line({ product_id: scanned.id, description: 'Caneta', code: 'CAN-291', quantity: '3', unit_price: '2' }), f.line({ product_id: f.product.id, quantity: '1' })] });
 
+test('exact lookup includes converted imported orders and refuses ambiguous, deleted and unauthorized results', async () => {
+  const doc = await order();
+  const number = '900000001';
+  const imported = await f.scalar(`insert into erp_documents.document(kind,number,status,contact_id,warehouse_id,contact_snapshot,body,total,created_by,updated_by,origin,authority)
+    select kind,$2::bigint,status,contact_id,warehouse_id,contact_snapshot,body,total,created_by,updated_by,'origin','brufap'
+    from erp_documents.document where id=$1 returning id::text v`, [doc.id, number]);
+  const path = `/v1/documentos/sales_orders/checkout?number=${number}`;
+  const found = await f.call(path);
+  assert.equal(found.status, 200, JSON.stringify(found.value));
+  assert.deepEqual([found.value.id, found.value.number], [imported, number]);
+  assert.equal((await f.call(`/v1/documentos/sales_orders/${imported}/checkout`)).status, 200);
+  assert.equal((await f.call(path, 'GET', undefined, f.users.consulta)).status, 403);
+  for (const query of ['', 'number=0', 'number=01', 'number=1.5', 'number=10000000000', `number=${number}&number=${number}`, `number=${number}&origin=brufap`])
+    assert.equal((await f.call(`/v1/documentos/sales_orders/checkout?${query}`)).status, 400, query);
+  assert.equal((await f.call('/v1/documentos/sales_orders/checkout?number=900000002')).status, 404);
+  await f.db.query('update erp_documents.document set number=$2::bigint where id=$1', [doc.id, number]);
+  const ambiguous = await f.call(path);
+  assert.deepEqual([ambiguous.status, ambiguous.value.error?.code], [409, 'ERP_DOCUMENT_CHECKOUT_AMBIGUOUS']);
+  const removed = await f.call('/v1/documentos/sales_orders/lixeira', 'POST', { command_id: randomUUID(), action: 'delete', ids: [imported], reason: 'Teste de busca na lixeira' });
+  assert.equal(removed.value.results?.[0]?.ok, true, JSON.stringify(removed.value));
+  assert.equal((await f.call(path)).value.id, doc.id);
+  const signature = 'public.erp_document_checkout_lookup(uuid,text)';
+  for (const role of ['anon', 'authenticated']) assert.equal(await f.scalar('select has_function_privilege($1,$2,\'EXECUTE\') v', [role, signature]), false);
+  assert.equal(await f.scalar('select has_function_privilege(\'service_role\',$1,\'EXECUTE\') v', [signature]), true);
+});
+
 test('privileges: the checkout RPCs run only for service_role; the helpers and tables are closed', async () => {
   for (const sig of ['public.erp_document_checkout_get(uuid,uuid)', 'public.erp_document_checkout_save(uuid,uuid,integer,integer,uuid,jsonb)']) {
     const row = (await f.db.query('select prosecdef,proconfig from pg_proc where oid=to_regprocedure($1)', [sig])).rows[0];

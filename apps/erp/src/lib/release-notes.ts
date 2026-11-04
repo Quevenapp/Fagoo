@@ -10,6 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
     'Entregas sem confirmação exigem conferência antes de novo envio, evitando repetir gravações cuja resposta se perdeu.',
     'Contas, categorias e formas de pagamento exigem vínculos seguros. Parcelas com formas diferentes preservam suas referências.',
     'A numeração local acompanha os documentos recebidos, sem renumerar os existentes.',
+    'O checkout encontra pedidos importados já convertidos para operação no FAGOO pelo número exato; números duplicados exigem conferência.',
     'As notas próprias continuam em homologação; as notas da conexão externa permanecem disponíveis para consulta.',
   ] },
   { version: '2026.11.03', date: '2026-11-03', title: 'FAGOO com instalação própria e início sem dados', items: [
@@ -20,7 +21,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   ] },
   { version: '2026.10.22', date: '2026-10-22', title: 'Sincronização de mão dupla com o Origin; estoque, notas e documentos comerciais do Origin', items: [
     'Botão Sincronizar na barra superior: o que é criado, alterado ou excluído no FAGOO vai para o Origin, e o que muda no Origin chega ao FAGOO. Em conflito, vale a alteração mais recente.',
-    'Contatos, produtos, propostas, pedidos de venda e de compra, contas a receber e a pagar (com baixas) e lançamentos de estoque vão e voltam. Ordens de serviço chegam do Origin, mas a API do Origin não permite gravá-las.',
+    'Contatos, produtos, propostas, pedidos de venda e de compra, contas a receber e a pagar (com baixas) e lançamentos de estoque vão e voltam. Ordens de serviço chegam do Origin; o envio de OS ainda não está implementado neste conector.',
     'Documentos vindos do Origin passam a abrir no editor do FAGOO, com edição, exclusão, situação e lançamentos; o painel da sincronização mostra filas, horários e pendências em linguagem simples.',
     'Controle de estoque mostra os saldos físicos e virtuais observados no Origin por produto e depósito, com origem, horário da leitura e filtros de negativos e pendências.',
     'O espelho preserva o histórico das observações e atualiza em lotes. Dados ausentes aparecem como cobertura parcial; os saldos de origem FAGOO ficam separados.',
