@@ -106,7 +106,7 @@ export function preferenceValueEqual(a,b){
 }
 export function preferenceClone(value){return value===null||typeof value!=='object'?value:JSON.parse(JSON.stringify(value));}
 
-const FIELD_KEYS=['key','section','label','kind','options','default','min','max','scale','maxLength','maxItems','format','widget','hint','group','showIf','status','note','since','minLength','formatSince','situations'];
+const FIELD_KEYS=['key','section','label','kind','options','default','min','max','scale','maxLength','maxItems','format','widget','hint','group','showIf','status','note','since','minLength','formatSince','situations','migratedDefaults'];
 const INFO_KEYS=['id','info','section','label','text','link','status','source','group'];
 const freezeDeep=v=>{if(v&&typeof v==='object'){Object.freeze(v);for(const x of Object.values(v))freezeDeep(x);}return v;};
 /** Checks a page schema once at import, so a malformed definition never reaches the API or the renderer. */
@@ -140,6 +140,7 @@ export function definePage(page){
   if(f.formatSince!==undefined&&(f.kind!=='text'||f.format==='plain'||typeof f.formatSince!=='string'||!/^[12][0-9]{2}$/.test(f.formatSince)||f.formatSince<=(f.since??page.since??'115')))bad(`PREFERENCE_FORMAT_SINCE_INVALID ${f.key}`);
   if(['users','documents'].includes(f.kind)&&!Number.isInteger(f.maxItems))bad(`PREFERENCE_ITEMS_INVALID ${f.key}`);
   if(!preferenceValueValid(f,f.default))bad(`PREFERENCE_DEFAULT_INVALID ${f.key}`);
+  if(f.migratedDefaults!==undefined&&(!Array.isArray(f.migratedDefaults)||!f.migratedDefaults.length||f.migratedDefaults.length>4||f.migratedDefaults.some(v=>!preferenceValueValid(f,v))))bad(`PREFERENCE_MIGRATED_DEFAULT_INVALID ${f.key}`);
   if(f.showIf!==undefined&&(!plain(f.showIf)||!keys.has(f.showIf.key)))bad(`PREFERENCE_SHOW_IF_INVALID ${f.key}`);
   // A key added to an applied page by a later migration (`since`) comes after the keys already applied, so their ordinals never move.
   if(f.since!==undefined&&(typeof f.since!=='string'||!/^(1[5-9][0-9]|2[0-9]{2})$/.test(f.since)||f.since<=(page.since??'115')))bad(`PREFERENCE_SINCE_INVALID ${f.key}`);

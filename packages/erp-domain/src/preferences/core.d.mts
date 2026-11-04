@@ -5,7 +5,7 @@ export type PreferenceDocument={document:string;name:string};
 export type PreferenceValue=boolean|string|number|string[]|Record<string,string>|PreferenceDocument[];
 export interface PreferenceKeymapOptions{actions:readonly string[];keys:readonly string[];labels:readonly string[]}
 export interface PreferenceField{
- key:string;section:string;label:string;kind:PreferenceKind;status:'stored'|'applied';default:PreferenceValue;
+ key:string;section:string;label:string;kind:PreferenceKind;status:'stored'|'applied';default:PreferenceValue;migratedDefaults?:readonly PreferenceValue[];
  options?:readonly(readonly[string,string])[]|PreferenceKeymapOptions;min?:number;max?:number;scale?:number;maxLength?:number;maxItems?:number;
  format?:'plain'|'email'|'email_list'|'digits';/** 264: minimum length of a 'digits' field. */minLength?:number;/** 264: migration that changed an applied 'plain' field to its format. */formatSince?:string;widget?:'select'|'radio'|'chips'|'legend';hint?:string;group?:string;note?:string;showIf?:{key:string;equals:PreferenceValue};
  /** Migration that inserts the key when it was added to an applied page (absent: the page's). */since?:string;

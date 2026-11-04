@@ -58,7 +58,9 @@ export function parsePreferencesPage(raw,pageId){
  need(v.can_manage===(page.scope==='user'||v.role==='admin'));
  const fields=storedFields(page);need(Array.isArray(v.items)&&v.items.length===fields.length);
  v.items.forEach((item,i)=>{const f=fields[i];exact(item,['key','value','version','updated_at']);need(item.key===f.key&&int(item.version)&&preferenceValueValid(f,item.value));
-  need(item.version===0?item.updated_at===null&&preferenceValueEqual(item.value,f.default):stamp(item.updated_at));});
+  // A published migration may change an implicit default without creating a company override.
+  // Accept only the defaults explicitly declared by that field, preserving the closed value contract.
+  need(item.version===0?item.updated_at===null&&[f.default,...(f.migratedDefaults??[])].some(value=>preferenceValueEqual(item.value,value)):stamp(item.updated_at));});
  if(pageHasDirectory(page)&&v.can_manage)directory(v.directory);else need(v.directory===null);
  return v;
 }

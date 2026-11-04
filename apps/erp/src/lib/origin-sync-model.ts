@@ -6,6 +6,7 @@ export interface OriginSyncStatus {
   push: { pending: number; failed: number; last_sent_at: string | null };
   pull: { pending: number; failed: number; last_applied_at: string | null };
   issues: number; recent_issues: OriginSyncIssue[]; run: OriginSyncRun | null; requested_run?: string;
+  connection?: { name: string; mode: 'paused' | 'receive' | 'bidirectional'; setup_url: string } | null;
 }
 export interface OriginSyncController { originSync: (path: string, options?: { method?: 'GET' | 'POST'; signal?: AbortSignal }) => Promise<unknown> }
 export const ORIGIN_SYNC_PATH = '/v1/sincronizacao-origin';
@@ -23,6 +24,11 @@ export function readOriginSyncStatus(value: unknown): OriginSyncStatus {
   for (const side of [v.push, v.pull]) if (!count(side.pending) || !count(side.failed)) bad();
   if (!stamp(v.push.last_sent_at) || !stamp(v.pull.last_applied_at)) bad();
   if (v.run !== null && v.run !== undefined && (!object(v.run) || !['queued', 'running', 'done', 'failed'].includes(v.run.state) || !object(v.run.stats))) bad();
+  if (v.connection !== null && v.connection !== undefined) {
+    const c = v.connection;
+    if (!object(c) || typeof c.name !== 'string' || !c.name.trim() || c.name.length > 60 || !['paused','receive','bidirectional'].includes(c.mode)) bad();
+    try { const u = new URL(c.setup_url); if(u.protocol !== 'https:' || u.username || u.password || u.pathname !== '/integracao-externa' || u.search || u.hash) bad(); } catch { bad(); }
+  }
   return { ...v, run: v.run ?? null };
 }
 
@@ -37,10 +43,11 @@ export const ENTITY_LABELS: Record<string, string> = {
   service_orders: 'Ordem de serviço', receivables: 'Conta a receber', payables: 'Conta a pagar', stock: 'Estoque', stock_balances: 'Estoque',
 };
 const CODES: Record<string, string> = {
-  ORIGIN_API_HAS_NO_SERVICE_ORDER_WRITE: 'A API do Origin não permite gravar ordens de serviço; esta OS fica só no FAGOO.',
-  ORIGIN_API_HAS_NO_SETTLEMENT_REVERSAL: 'A API do Origin não estorna baixas: estorne também no Origin.',
+  ORIGIN_API_HAS_NO_SERVICE_ORDER_WRITE: 'Este conector não envia ordens de serviço ao Origin; esta OS fica só no FAGOO.',
+  ORIGIN_API_HAS_NO_SETTLEMENT_REVERSAL: 'Este conector não envia estornos de baixas: confira e estorne também no Origin.',
   WAREHOUSE_NOT_IN_ORIGIN: 'Depósito sem vínculo com o Origin: o movimento ficou só no FAGOO.',
-  ORIGIN_ACCOUNT_OR_CATEGORY_UNKNOWN: 'Sem conta ou categoria do Origin para a baixa.',
+  ORIGIN_ACCOUNT_OR_CATEGORY_UNKNOWN: 'Conta ou categoria sem correspondência única no Origin. Confira os vínculos financeiros antes de reenviar.',
+  ORIGIN_PAYMENT_METHOD_UNKNOWN: 'Forma de pagamento sem correspondência única no Origin. Confira o cadastro e as parcelas antes de reenviar.',
   NO_FINANCE_ACCOUNT_FOR_SETTLEMENT: 'Baixa do Origin sem conta financeira no FAGOO: cadastre uma conta.',
   STATUS_UNMAPPED: 'Situação do Origin sem correspondência no FAGOO; a situação atual foi mantida.',
   INSTALLMENTS_NOT_APPLIED: 'As parcelas do Origin não fecham com o total; o documento entrou sem parcelas.',
@@ -49,12 +56,15 @@ const CODES: Record<string, string> = {
   ORIGIN_UNAUTHORIZED: 'A conexão com o Origin expirou: reautorize o aplicativo na integração.',
   ORIGIN_FORBIDDEN: 'O aplicativo do Origin não tem permissão para esta operação.',
   ORIGIN_WRITE_NOT_CONFIGURED: 'A API do FAGOO ainda não recebeu as credenciais do aplicativo do Origin.',
+  ORIGIN_WRITE_UNCONFIRMED: 'A resposta do envio não foi confirmada. Confira o registro no sistema externo antes de autorizar outra tentativa.',
+  ORIGIN_PARTIAL_WRITE_REVIEW: 'Parte da alteração foi enviada. Confira o registro no sistema externo antes de reenviar.',
+  ORIGIN_CREATED_ID_MISSING: 'O serviço recebeu o cadastro, mas não confirmou sua identificação. Confira o registro antes de reenviar.',
 };
-export function issueText(issue: OriginSyncIssue): string {
+export function issueText(issue: OriginSyncIssue, name = 'Origin'): string {
   const what = ENTITY_LABELS[issue.entity ?? ''] ?? 'Registro';
   const side = issue.direction === 'push' ? 'Envio ao Origin' : issue.direction === 'pull' ? 'Recebimento do Origin' : 'Conferência';
-  const text = (issue.code && CODES[issue.code]) || issue.detail || issue.code || 'Falha sem detalhe.';
-  return `${side} · ${what}${issue.source_id ? ` ${issue.source_id}` : ''}: ${text}`;
+  const text = (issue.code && CODES[issue.code]?.replaceAll('Origin', name)) || issue.detail || issue.code || 'Falha sem detalhe.';
+  return `${side.replaceAll('Origin', name)} · ${what}${issue.source_id ? ` ${issue.source_id}` : ''}: ${text}`;
 }
 export function runText(run: OriginSyncRun | null): string {
   if (!run) return 'Nenhuma sincronização pedida ainda.';

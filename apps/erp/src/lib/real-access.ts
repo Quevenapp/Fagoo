@@ -38,7 +38,7 @@ export const RESOURCE_LABELS = {
 export type Entity = keyof typeof RESOURCE_LABELS;
 export type AccessRole = 'admin' | 'consulta' | 'vendas' | 'financeiro' | 'estoque' | 'fiscal';
 export const ROLE_LABELS: Record<AccessRole, string> = { admin: 'Administrador', consulta: 'Consulta', vendas: 'Vendas', financeiro: 'Financeiro', estoque: 'Estoque', fiscal: 'Fiscal' };
-export interface Membership { user_id: string; role: AccessRole; resources: Entity[]; data_mode: 'staging_readonly'; capabilities?: { originIntegration: boolean; originHistory?: boolean } }
+export interface Membership { user_id: string; role: AccessRole; resources: Entity[]; data_mode: 'staging_readonly'; capabilities?: { originIntegration: boolean; originHistory?: boolean; originConnection?: boolean } }
 export interface Summary {
   id: string; entity: Entity; name: string | null; code: string | null; number: string | null;
   date: string | null; due_date: string | null; status: string | null; amount: string | null;
@@ -99,7 +99,7 @@ function membership(value: unknown): Membership {
   const item = value as Membership;
   if (!item || typeof item.user_id !== 'string' || !Object.hasOwn(ROLE_LABELS, item.role) || item.data_mode !== 'staging_readonly'
     || !Array.isArray(item.resources) || item.resources.some(entity => !entities.includes(entity))) throw new AccessError(502);
-  return { user_id: item.user_id, role: item.role, resources: [...new Set(item.resources)], data_mode: 'staging_readonly', capabilities: { originIntegration: item.capabilities?.originIntegration === true, originHistory: item.capabilities?.originHistory === true } };
+  return { user_id: item.user_id, role: item.role, resources: [...new Set(item.resources)], data_mode: 'staging_readonly', capabilities: { originIntegration: item.capabilities?.originIntegration === true, originHistory: item.capabilities?.originHistory === true, originConnection: item.capabilities?.originConnection === true } };
 }
 function recordPage(value: unknown, query: ListQuery): RecordPage {
   const page = value as RecordPage;
@@ -684,9 +684,9 @@ export function createAccessController(auth: AuthPort, apiUrl: string, fetcher: 
     },
     /** 202610220009: botão Sincronizar (mão dupla com o Origin): GET situação, POST pede uma rodada; sem corpo. */
     originSync: (path: string, options: NativeRequestOptions = {}) => {
-      if(state.membership?.capabilities?.originIntegration!==true)return Promise.reject(new AccessError(403));
+      if(state.membership?.capabilities?.originIntegration!==true&&state.membership?.capabilities?.originConnection!==true)return Promise.reject(new AccessError(403));
       if(path!=='/v1/sincronizacao-origin'||(options.method!==undefined&&!['GET','POST'].includes(options.method))||options.body!==undefined)return Promise.reject(new AccessError(400));
-      return nativeRequest('/v1/sincronizacao-origin',path,options,1024*1024,12000,()=>{if(state.membership?.capabilities?.originIntegration!==true)throw new AccessError(403);});
+      return nativeRequest('/v1/sincronizacao-origin',path,options,1024*1024,12000,()=>{if(state.membership?.capabilities?.originIntegration!==true&&state.membership?.capabilities?.originConnection!==true)throw new AccessError(403);});
     },
     integrationProgress: (path: string, options: NativeRequestOptions = {}) => {
       if(path!=='/v1/integracao-origin'||(options.method!==undefined&&options.method!=='GET')||options.body!==undefined)return Promise.reject(new AccessError(400));

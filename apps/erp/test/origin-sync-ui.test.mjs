@@ -38,7 +38,7 @@ test('issues are explained in plain words and a malformed status is never shown'
   try {
     await view.click('Sincronizar2');
     assert.match(view.text(), /2 pendências para conferir/);
-    assert.match(view.text(), /A API do Origin não permite gravar ordens de serviço/);
+    assert.match(view.text(), /Este conector não envia ordens de serviço ao Origin/);
     assert.match(view.text(), /O campo numeroDocumento é inválido/);
   } finally { view.unmount(); }
   const broken = await mountComponent('OriginSyncButton.tsx', { controller: server(() => ({ scope: 'other' })).controller, canRequest: true });
@@ -57,4 +57,18 @@ test('a document of Origin origin converted to the native model is editable; onl
   assert.equal(documentOriginLabel({ origin: 'brufap', authority: 'brufap' }), 'FAGOO');
   const totals = documentSelectionTotals([{ origin: 'origin', authority: 'brufap', total: '10.00' }, { origin: 'brufap', authority: 'brufap', total: '5.00' }]);
   assert.equal(totals.origin.total, '10.00'); assert.equal(totals.brufap.total, '5.00');
+});
+
+test('connection modes show the configured provider and prevent manual sends while paused or receiving', async () => {
+  for (const mode of ['paused', 'receive']) {
+    const s = server(() => status({ connection: { name: 'Fornecedor sintético', mode, setup_url: 'https://api.example.test/integracao-externa' } }));
+    const view = await mountComponent('OriginSyncButton.tsx', { controller: s.controller, canRequest: true, canConfigure: true });
+    try {
+      await view.click('Sincronizar');
+      assert.match(view.text(), /Fornecedor sintético/);
+      assert.match(view.text(), /Configurar conexão/);
+      assert.equal(s.calls.filter(call => call.method === 'POST').length, 0);
+    } finally { view.unmount(); }
+  }
+  assert.throws(() => readOriginSyncStatus(status({ connection: { name: 'X', mode: 'receive', setup_url: 'javascript:alert(1)' } })));
 });

@@ -34,8 +34,10 @@ test('session capabilities come only from explicit server flags, never RPC or re
     [{ ORIGIN_HISTORY_ENABLED: 'true' }, false, true]]) {
     const response = await handler(request(), { ...env, ...flags });
     assert.equal(response.status, 200);
-    assert.deepEqual((await response.json()).capabilities, { originIntegration, originHistory });
+    assert.deepEqual((await response.json()).capabilities, { originIntegration, originHistory, originConnection: false });
   }
+  const configured = await handler(request(), { ...env, ORIGIN_ENABLED: 'true', ORIGIN_CONNECTOR_ENABLED: 'true' });
+  assert.deepEqual((await configured.json()).capabilities, { originIntegration: false, originHistory: true, originConnection: true });
 });
 
 test('synchronization status requires both runtime flags and SQL enablement; disabled requests never run', async () => {

@@ -126,7 +126,7 @@ test('an order deleted in the Origin is moved to the Brufap trash',async()=>{
 test('receivables: payments in the Origin settle the Brufap title, and a Brufap settlement goes to the Origin',async()=>{
  const account=(await f.rpc('erp_finance_execute',{p_user_id:f.users.admin,p_command_id:randomUUID(),p_action:'account_save',p_data:{expected_version:0,name:'Caixa sintético',kind:'cash'}})).record;
  await f.db.query('update erp_sync.settings set default_account_id=$1',[account.id]);
- await f.stageOrigin('receivables','990050',{id:990050,situacao:3,vencimento:'2026-11-10',valor:100,saldo:40,dataEmissao:'2026-10-10',contato:{id:990010},historico:'Venda 1'});
+ await f.stageOrigin('receivables','990050',{id:990050,situacao:3,vencimento:'2026-11-10',valor:100,saldo:40,dataEmissao:'2026-10-10',contato:{id:990010},categoria:{id:62},historico:'Venda 1'});
  const result=await f.pull();assert.equal(result.failed,0,JSON.stringify(result));
  const id=await pulled('receivables','990050');
  const title=(await f.db.query('select * from erp_finance.title where id=$1',[id])).rows[0];
@@ -313,7 +313,7 @@ test('016: an order with a Origin invoice or Origin contas is locked like the na
  assert.deepEqual(await flags('990135'),{finance_active:false,stock_active:false,origin_finance:false,origin_invoice:false});
  const edit=async(id,body)=>{const doc=(await f.rpc('erp_document_get',{p_user_id:f.users.admin,p_kind:'sales_orders',p_id:id})).document;
   return f.rpc('erp_document_save',{p_user_id:f.users.admin,p_kind:'sales_orders',p_id:id,p_expected_version:doc.version,p_command_id:randomUUID(),
-   p_body:{date:doc.date,contact_id:doc.contact_id,items:doc.items.map(i=>({product_id:i.product_id,description:i.description,unit:i.unit,quantity:'5',unit_price:i.unit_price})),...body}});};
+   p_body:{date:doc.date,contact_id:doc.contact_id,commercial:null,installments:[],items:doc.items.map(i=>({product_id:i.product_id,description:i.description,detailed_description:null,unit:i.unit,quantity:'5',unit_price:i.unit_price})),...body}});};
  for(const origin of ['990132','990133'])await assert.rejects(edit(await pulled('sales_orders',origin),{}),/erp_document_origin_effects/);
  await edit(await pulled('sales_orders','990135'),{});
  const locked=await pulled('sales_orders','990132');
@@ -336,7 +336,7 @@ test('017: the Origin item valor is the net price; a Brufap item discount goes t
  assert.equal(Number(await f.scalar('select total v from erp_documents.document where id=$1',[id])),120);
  const doc=(await f.rpc('erp_document_get',{p_user_id:f.users.admin,p_kind:'sales_orders',p_id:id})).document;
  await f.rpc('erp_document_save',{p_user_id:f.users.admin,p_kind:'sales_orders',p_id:id,p_expected_version:doc.version,p_command_id:randomUUID(),
-  p_body:{date:doc.date,contact_id:doc.contact_id,items:doc.items.map(i=>({product_id:i.product_id,description:i.description,unit:i.unit,quantity:'2',unit_price:'100',discount_percent:'10'}))}});
+  p_body:{date:doc.date,contact_id:doc.contact_id,commercial:null,installments:[],items:doc.items.map(i=>({product_id:i.product_id,description:i.description,detailed_description:null,unit:i.unit,quantity:'2',unit_price:'100',discount_percent:'10'}))}});
  const [item]=(await f.claim()).filter(i=>i.record_id===id);
  assert.equal(item.requests[0].body.itens[0].valor,90);assert.equal(item.requests[0].body.itens[0].desconto,10);
  await f.ack([{id:item.id,token:item.token,ok:true,status:200}]);

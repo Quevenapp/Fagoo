@@ -4,6 +4,14 @@
 export interface ReleaseNote { version: string; date: string; title: string; items: readonly string[] }
 
 export const RELEASE_NOTES: readonly ReleaseNote[] = [
+  { version: '2026.11.04', date: '2026-11-04', title: 'Conexão opcional persistente e segurança no sincronismo', items: [
+    'A configuração privada da integração externa permanece nas atualizações. O administrador acompanha a conexão pelo botão Sincronizar.',
+    'Modos de operação: pausado, somente recebimento ou sincronização nos dois sentidos, conforme os recursos do conector.',
+    'Entregas sem confirmação exigem conferência antes de novo envio, evitando repetir gravações cuja resposta se perdeu.',
+    'Contas, categorias e formas de pagamento exigem vínculos seguros. Parcelas com formas diferentes preservam suas referências.',
+    'A numeração local acompanha os documentos recebidos, sem renumerar os existentes.',
+    'As notas próprias continuam em homologação; as notas da conexão externa permanecem disponíveis para consulta.',
+  ] },
   { version: '2026.11.03', date: '2026-11-03', title: 'FAGOO com instalação própria e início sem dados', items: [
     'Instalação própria com administrador, autenticação, banco e arquivos da empresa.',
     'Cadastros, vendas, compras, estoque e financeiro disponíveis na interface web do FAGOO.',

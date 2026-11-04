@@ -31,7 +31,7 @@ class Pipeline:
     def environment(self):
         # Dependencies and build processes receive no infrastructure credentials.
         import re
-        blocked = re.compile(r'TOKEN|PASSWORD|SECRET|CREDENTIAL|PRIVATE_KEY|^VITE_|^SUPABASE_|^CLOUDFLARE_|^CF_|^FAGOO_|^PG|^WRANGLER_|^WORKERS_CI_', re.I)
+        blocked = re.compile(r'TOKEN|PASSWORD|SECRET|CREDENTIAL|PRIVATE_KEY|^VITE_|^SUPABASE_|^CLOUDFLARE_|^CF_|^FAGOO_|^ORIGIN_|^INTEGRATION_|^PG|^WRANGLER_|^WORKERS_CI_', re.I)
         env = {key: value for key, value in os.environ.items() if not blocked.search(key)}
         env.update(CI='true', NO_COLOR='1', WRANGLER_SEND_METRICS='false', NODE_OPTIONS='--max-old-space-size=1536')
         return env

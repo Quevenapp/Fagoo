@@ -2,7 +2,7 @@
 // two-way synchronization (009-012). All records are synthetic.
 import { randomUUID } from 'node:crypto';
 import { documentMirrorFixture } from './document-mirror-fixture.mjs';
-export const TWO_WAY_MIGRATIONS=['202610220009_origin_two_way_core.sql','202610220010_origin_two_way_documents.sql','202610220011_origin_two_way_finance_stock.sql','202610220012_origin_two_way_pull_fixes.sql','202610220013_origin_two_way_item_discounts.sql','202610220014_origin_two_way_bank_number.sql','202610220015_origin_two_way_item_snapshots.sql','202610220016_origin_effects_lock.sql','202610220017_origin_item_net_price.sql','202610220018_origin_effects_list.sql'];
+export const TWO_WAY_MIGRATIONS=['202610220009_origin_two_way_core.sql','202610220010_origin_two_way_documents.sql','202610220011_origin_two_way_finance_stock.sql','202610220012_origin_two_way_pull_fixes.sql','202610220013_origin_two_way_item_discounts.sql','202610220014_origin_two_way_bank_number.sql','202610220015_origin_two_way_item_snapshots.sql','202610220016_origin_effects_lock.sql','202610220017_origin_item_net_price.sql','202610220018_origin_effects_list.sql','202611030001_sync_delivery_review.sql','202611030002_document_sequence_continuity.sql','202611030003_sync_finance_mapping.sql'];
 export async function originTwoWayFixture({migrate=true}={}){
  const f=await documentMirrorFixture({guards:true});try{
   await f.migrate('202610220008_product_list_origin_stock.sql');

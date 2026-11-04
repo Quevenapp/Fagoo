@@ -222,7 +222,7 @@ function ContactForm({ controller, record, writable, onClose, onSaved }: Catalog
               <label className="contact-switch"><input type="checkbox" role="switch" id="contact-credit_zero" checked={values.credit_limit_mode === 'zero'} disabled={locked} onChange={event => change('credit_limit_mode', event.target.checked ? 'zero' : 'value')} />Limite zero</label>
               {values.credit_limit_mode === 'value' && <div className="form-field"><label htmlFor="contact-credit_limit">Valor</label><input id="contact-credit_limit" inputMode="decimal" maxLength={20} value={values.credit_limit ?? ''} disabled={locked} aria-invalid={invalid === 'credit_limit' || undefined} onChange={event => change('credit_limit', event.target.value)} />
                 <small>Para definir um limite de crédito, informe um valor maior que zero.</small></div>}
-              <small className="real-help">A conferência do limite nas vendas ainda não usa este valor.</small></fieldset>
+              <small className="real-help">O limite é conferido nas propostas quando o bloqueio por crédito está habilitado nas preferências. Administradores podem ultrapassá-lo; pedidos de venda não usam essa conferência.</small></fieldset>
             {field(SECTION_FIELDS.financeiro[0])}
             <div className="form-field"><label htmlFor="contact-finance_category_id">Categoria<span className="contact-hint" title="Categoria de receita/despesa" aria-hidden="true"><Icon name="circle-info" size={10} /></span></label>
               {categories.error ? <input id="contact-finance_category_id" value={record?.finance_category_name ?? 'Sem categoria'} readOnly disabled title="Seu perfil não consulta as categorias financeiras." />

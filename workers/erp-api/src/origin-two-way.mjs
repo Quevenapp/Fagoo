@@ -73,13 +73,26 @@ export class OriginWriter {
       try {
         response = await this.#fetch(url.toString(), { method, redirect: 'manual', signal: controller.signal, body: payload,
           headers: { Authorization: `Bearer ${this.#token}`, Accept: 'application/json', 'enable-jwt': '1', ...(payload !== undefined ? { 'Content-Type': 'application/json' } : {}) } });
-      } catch { clearTimeout(timer); if (attempt < 2) { await this.#sleep(1000 * 2 ** attempt); continue; } throw new OriginWriteError('ORIGIN_NETWORK_ERROR', { retryable: true }); }
-      clearTimeout(timer);
-      if (response.status >= 300 && response.status < 400) { void response.body?.cancel?.(); throw new OriginWriteError('ORIGIN_REDIRECT_BLOCKED', { status: response.status }); }
-      const text = await response.text();
-      if (text.length > MAX_BODY) throw new OriginWriteError('ORIGIN_RESPONSE_SIZE_LIMIT', { status: response.status });
+      } catch {
+        clearTimeout(timer);
+        if (method !== 'GET') throw new OriginWriteError('ORIGIN_WRITE_UNCONFIRMED');
+        if (attempt < 2) { await this.#sleep(1000 * 2 ** attempt); continue; }
+        throw new OriginWriteError('ORIGIN_NETWORK_ERROR', { retryable: true });
+      }
+      // A mutation can have committed even when the upstream returns 5xx or loses its response.
+      // Without an upstream idempotency key, replay must require reconciliation.
+      if (method !== 'GET' && (response.status >= 500 || response.status === 408)) {
+        clearTimeout(timer); void response.body?.cancel?.();
+        throw new OriginWriteError('ORIGIN_WRITE_UNCONFIRMED', { status: response.status });
+      }
+      if (response.status >= 300 && response.status < 400) { clearTimeout(timer); void response.body?.cancel?.(); throw new OriginWriteError('ORIGIN_REDIRECT_BLOCKED', { status: response.status }); }
+      let text;
+      try { text = await response.text(); }
+      catch { throw new OriginWriteError(method === 'GET' ? 'ORIGIN_NETWORK_ERROR' : 'ORIGIN_WRITE_UNCONFIRMED', { status: response.status, retryable: method === 'GET' }); }
+      finally { clearTimeout(timer); }
+      if (text.length > MAX_BODY) throw new OriginWriteError(method === 'GET' ? 'ORIGIN_RESPONSE_SIZE_LIMIT' : 'ORIGIN_WRITE_UNCONFIRMED', { status: response.status });
       let data = null;
-      if (text) { try { data = JSON.parse(text); } catch { if (response.ok) throw new OriginWriteError('ORIGIN_INVALID_JSON', { status: response.status }); } }
+      if (text) { try { data = JSON.parse(text); } catch { if (response.ok) throw new OriginWriteError(method === 'GET' ? 'ORIGIN_INVALID_JSON' : 'ORIGIN_WRITE_UNCONFIRMED', { status: response.status }); } }
       if (response.ok) return { status: response.status, data };
       const status = response.status, retryable = status === 429 || status >= 500;
       if (retryable && attempt < 2) { await this.#sleep(retryDelay(response.headers.get('retry-after'), attempt, this.#now())); continue; }
@@ -102,11 +115,13 @@ const entityOfPath = path => Object.entries(DETAIL).find(([, base]) => base && p
 /** Sends one claimed outbox item: its requests in order ({id} is the ID created by the first POST), then rereads it. */
 export async function sendItem(item, { writer, rpc }) {
   let id = item.origin_id ?? null;
+  let completedWrites = 0;
   try {
     for (const request of item.requests) {
       if (request.path.includes('{id}') && !id) throw new OriginWriteError('ORIGIN_CREATED_ID_MISSING');
       const path = request.path.replace('{id}', id ?? '');
       const result = await writer.call(request.method, path, request.body === undefined ? {} : { body: request.body });
+      if (request.method !== 'GET') completedWrites++;
       if (request.method === 'POST' && !id && !path.endsWith('/baixar') && path !== '/estoques') {
         id = createdId(result.data);
         if (!id) throw new OriginWriteError('ORIGIN_CREATED_ID_MISSING', { status: result.status });
@@ -114,8 +129,9 @@ export async function sendItem(item, { writer, rpc }) {
     }
   } catch (error) {
     if (!(error instanceof OriginWriteError)) throw error;
-    return { id: item.id, token: item.token, ok: false, status: error.status, code: error.code, retry: error.retryable, origin_id: id,
-      error: error.detail ? `${error.code}: ${error.detail}` : error.code };
+    const code = completedWrites > 0 ? 'ORIGIN_PARTIAL_WRITE_REVIEW' : error.code;
+    return { id: item.id, token: item.token, ok: false, status: error.status, code, retry: completedWrites ? false : error.retryable, origin_id: id,
+      error: code === error.code ? (error.detail ? `${code}: ${error.detail}` : code) : `${code}: ${error.code}` };
   }
   // Reread: the Brufap gets the number, situação and values exactly as the Origin stored them.
   try {
@@ -126,7 +142,7 @@ export async function sendItem(item, { writer, rpc }) {
       if (detail) await rpc('erp_sync_stage', { p_entity: entity, p_source_id: path.split('/').pop(), p_payload: detail });
     }
     if (item.fetch_stock) await fetchStock([item.fetch_stock], { writer, rpc });
-  } catch (error) { if (!(error instanceof OriginWriteError)) throw error; /* The collector rereads it later. */ }
+  } catch { /* The write already succeeded. The collector can reread/stage it later. Never replay it for a read failure. */ }
   return { id: item.id, token: item.token, ok: true, status: 200, origin_id: id, deleted: item.deleted === true };
 }
 
@@ -144,19 +160,18 @@ export async function fetchStock(ids, { writer, rpc }) {
 export async function pushOutbox({ rpc, writer, deadline, now = Date.now, stats }) {
   for (let round = 0; round < 50; round++) {
     if (now() >= deadline || writer.remaining < 2) return false;
-    const items = await rpc('erp_sync_claim', { p_limit: Math.min(20, Math.max(1, Math.floor(writer.remaining / 2))), p_token: crypto.randomUUID() });
+    // Claim only the next item: a terminated worker must not strand an untouched batch.
+    const items = await rpc('erp_sync_claim', { p_limit: 1, p_token: crypto.randomUUID() });
     if (!Array.isArray(items) || !items.length) return true;
-    const results = [];
     for (const item of items) {
-      if (now() >= deadline || writer.remaining < 1) { results.push({ id: item.id, token: item.token, ok: false, retry: true, code: 'ORIGIN_TIME_BUDGET', error: 'ORIGIN_TIME_BUDGET' }); continue; }
-      const result = await sendItem(item, { writer, rpc });
-      results.push(result);
+      const result = now() >= deadline || writer.remaining < 1
+        ? { id: item.id, token: item.token, ok: false, retry: true, code: 'ORIGIN_TIME_BUDGET', error: 'ORIGIN_TIME_BUDGET' }
+        : await sendItem(item, { writer, rpc });
+      // Persist each outcome before another external write is attempted. An ack failure stops the cycle.
+      await rpc('erp_sync_ack', { p_results: [result] });
       if (result.ok) stats.pushed++; else if (!result.retry) stats.failed++;
-      if (result.code === 'ORIGIN_UNAUTHORIZED') break;
+      if (result.code === 'ORIGIN_UNAUTHORIZED') return false;
     }
-    // Items not reached in this round go back to the queue untouched.
-    for (const item of items) if (!results.some(r => r.id === item.id)) results.push({ id: item.id, token: item.token, ok: false, retry: true, code: 'ORIGIN_TIME_BUDGET', error: 'ORIGIN_TIME_BUDGET' });
-    await rpc('erp_sync_ack', { p_results: results });
   }
   return false;
 }
@@ -264,6 +279,8 @@ export async function runOriginTwoWay({ rpc, env, writerFactory = originWriterFr
   const deadline = now() + budgetMs, stats = { pulled: 0, pushed: 0, failed: 0 };
   if (env.ORIGIN_ENABLED !== 'true' || env.ORIGIN_TWO_WAY_ENABLED !== 'true') return { state: 'disabled' };
   const pull = await drainPull({ rpc, deadline, now, stats });
+  // Receiving an initial baseline must never consume the outgoing queue.
+  if (env.ORIGIN_WRITE_ENABLED === 'false') return { state: 'receive_only', pull, ...stats };
   let writer = null, writerError = null;
   try { writer = await writerFactory(env, { deadline }); } catch (error) { writerError = typeof error?.message === 'string' && /^[A-Z_]{3,80}$/.test(error.message) ? error.message : 'ORIGIN_AUTHORIZATION_UNAVAILABLE'; }
   const found = await rpc('erp_sync_run_get', {}), run = isObject(found) && typeof found.id === 'string' && ['queued', 'running'].includes(found.state) ? found : null;

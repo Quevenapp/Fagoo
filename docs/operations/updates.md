@@ -27,6 +27,8 @@ O serviço coordena o runtime local (PostgreSQL, autenticação, PostgREST, arma
 
 Empresa, usuários, permissões, cadastros, documentos, movimentos, saldos, arquivos, metadados e configuração privada permanecem na instalação. O processo não cria outro administrador, não semeia dados de demonstração e não troca as chaves existentes. O runtime fiscal separado, SMTP, bancos, certificados, agentes externos e suas configurações não são implantados por esse fluxo.
 
+Uma [conexão externa opcional](optional-integration.md) habilitada na configuração privada mantém seu modo, endpoints e credenciais na próxima publicação. A instalação padrão continua desconectada.
+
 Cada pacote é acompanhado de um manifesto assinado com Ed25519 e verificado pela chave pública fixada na instalação. O download tem tamanho limitado; o arquivo precisa corresponder ao SHA-256 assinado e não pode conter links, caminhos externos ou diretórios privados. O serviço aceita apenas releases públicas do repositório FAGOO. Ele recusa downgrade, reinstalação da mesma versão, mudanças de hash em migrações já aplicadas e troca da versão principal do PostgreSQL. Atualizações futuras que exigirem outro protocolo precisam de um procedimento próprio.
 
 O serviço fica em um socket Unix privado. A API exige administrador validado e não aceita comandos, caminhos ou URLs arbitrários. O progresso permanece acessível durante a manutenção; as demais requisições ao núcleo recebem `503`. `/healthz` continua respondendo `200` para indicar que o gateway está vivo, sem significar que o ERP já saiu da manutenção.

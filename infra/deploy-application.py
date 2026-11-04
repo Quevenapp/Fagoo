@@ -17,6 +17,7 @@ import warnings
 
 from configure import origin
 from update_config import cloudflare_credentials, source_identity
+from integration_config import integration_settings
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -61,7 +62,7 @@ def public_environment(values):
 def process_environment(source=None):
     # Build children never receive infrastructure credentials or inherited VITE overrides.
     source = os.environ if source is None else source
-    blocked = re.compile(r'TOKEN|PASSWORD|SECRET|CREDENTIAL|PRIVATE_KEY|^VITE_|^SUPABASE_|^CLOUDFLARE_|^CF_|^FAGOO_|^PG|^WRANGLER_|^WORKERS_CI_', re.I)
+    blocked = re.compile(r'TOKEN|PASSWORD|SECRET|CREDENTIAL|PRIVATE_KEY|^VITE_|^SUPABASE_|^CLOUDFLARE_|^CF_|^FAGOO_|^ORIGIN_|^INTEGRATION_|^PG|^WRANGLER_|^WORKERS_CI_', re.I)
     result = {key: value for key, value in source.items() if not blocked.search(key)}
     result.update({'CI': 'true', 'NO_COLOR': '1', 'WRANGLER_SEND_METRICS': 'false'})
     return result
@@ -85,6 +86,7 @@ def configurations(values, account_id, zone_id):
     if not re.fullmatch('[a-f0-9]{32}', account_id) or not re.fullmatch('[a-f0-9]{32}', zone_id):
         raise ValueError('CLOUDFLARE_IDENTIFIERS_INVALID')
     history_enabled = values.get('ORIGIN_HISTORY_ENABLED', 'false')
+    integration = integration_settings(values)
     if history_enabled not in ('true', 'false'):
         raise ValueError('ORIGIN_HISTORY_CONFIGURATION_INVALID')
     suffix = hashlib.sha256(values['FAGOO_WEB_ORIGIN'].encode()).hexdigest()[:12]
@@ -101,6 +103,9 @@ def configurations(values, account_id, zone_id):
                     'ORIGIN_HISTORY_ENABLED': history_enabled,
                     'FAGOO_VERSION': source_identity(ROOT)['version'],
                     'FAGOO_REVISION': source_identity(ROOT)['revision'] or 'source'}}
+    api['vars'].update(integration['vars'])
+    if integration['scheduled']:
+        api['triggers'] = {'crons': ['*/2 * * * *']}
     web = {**common, 'name': 'fagoo-web-' + suffix,
            'routes': [{'pattern': urllib.parse.urlsplit(values['FAGOO_WEB_ORIGIN']).hostname,
                        'custom_domain': True, 'zone_id': zone_id}],
@@ -237,7 +242,9 @@ def main():
         raise ValueError('APPLICATION_DEPLOY_LOCK_EXISTS: inspect the running process before recovering a stale lock') from None
     secrets_path = None
     token = ''
+    integration = integration_settings(values)
     private_values = [values[key] for key in ('SERVICE_ROLE_KEY', 'JWT_SECRET', 'POSTGRES_PASSWORD')]
+    private_values.extend(integration['secrets'].values())
     if values.get('FAGOO_UPDATE_AGENT_TOKEN'):
         if not re.fullmatch('[a-f0-9]{64}', values['FAGOO_UPDATE_AGENT_TOKEN']):
             raise ValueError('UPDATE_AGENT_TOKEN_INVALID')
@@ -280,7 +287,7 @@ def main():
                 descriptor, temporary = tempfile.mkstemp(prefix='api-secrets-', suffix='.json', dir=directory)
                 secrets_path = Path(temporary)
                 with os.fdopen(descriptor, 'w', encoding='utf-8') as output:
-                    json.dump({'SUPABASE_SERVICE_ROLE_KEY': values['SERVICE_ROLE_KEY'],
+                    json.dump({'SUPABASE_SERVICE_ROLE_KEY': values['SERVICE_ROLE_KEY'], **integration['secrets'],
                                **({'FAGOO_UPDATE_AGENT_TOKEN': values['FAGOO_UPDATE_AGENT_TOKEN']} if values.get('FAGOO_UPDATE_AGENT_TOKEN') else {})}, output)
                 deploy_env = {**env, 'CLOUDFLARE_API_TOKEN': token, 'CLOUDFLARE_ACCOUNT_ID': args.account_id}
                 run([node, str(wrangler), 'deploy', '--config', str(api_path), '--secrets-file', str(secrets_path)], 'API_DEPLOY', deploy_env, log, private_values)

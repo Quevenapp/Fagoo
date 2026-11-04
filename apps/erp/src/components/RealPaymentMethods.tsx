@@ -16,11 +16,10 @@ import { CONFLICT_TEXT, aborted, errorText, knownFailure } from './catalog-share
 import { contactRefusalText } from './contact-errors';
 import './contacts.css';
 
-// Cadastros > Formas de pagamento (Origin PL-01 a PL-07 e PF-01 a PF-09). Somente cadastro: as vendas, os títulos, as
-// baixas e a NF-e ainda não usam a forma de pagamento; a tela diz isso. Máquinas POS dependem de integração externa.
+// Formas de pagamento usadas pelos documentos e títulos. Máquinas POS dependem de integração externa.
 type Page = { items: PaymentMethod[]; page: number; size: number; total: number; can_write: boolean; accounts: Account[] };
 const NO_SELECTION: ReadonlySet<string> = new Set();
-const NOT_USED = 'Somente cadastro: pedidos, notas, contas a receber/pagar e baixas ainda não usam as formas de pagamento.';
+const PAYMENT_USAGE = 'As formas cadastradas ficam disponíveis nos documentos e títulos, conforme sua aplicação e situação. A seleção não confirma recebimento nem executa uma transação bancária.';
 
 export default function RealPaymentMethods({ controller }: { controller: AccessController }) {
   const [editing, setEditing] = useState<{ item: PaymentMethod | null; copy?: PaymentForm } | null>(null), [notice, setNotice] = useState('');
@@ -68,7 +67,7 @@ export default function RealPaymentMethods({ controller }: { controller: AccessC
     <header className="real-heading catalog-heading"><div className="catalog-title"><h1>Formas de pagamento</h1></div>
       <div className="catalog-heading-actions">{page && !writable && <span className="real-mode">Somente consulta</span>}{writable && <button type="button" className="primary-button" onClick={() => setEditing({ item: null })}><Icon name="plus" size={12} />Incluir forma</button>}</div></header>
     <div className="contact-tabs" role="tablist"><button type="button" role="tab" aria-selected>Formas de Pagamento</button><button type="button" role="tab" aria-selected={false} disabled title="Máquinas POS dependem de integração com a credenciadora, que o FAGOO ainda não tem.">Máquinas POS</button></div>
-    <p className="real-help">{NOT_USED}</p>
+    <p className="real-help">{PAYMENT_USAGE}</p>
     {notice && <p className="real-success" role="status">{notice}</p>}
     {error && <p className="real-alert" role="alert">{error}<button type="button" className="text-button" onClick={() => setReload(n => n + 1)}>Tentar novamente</button></p>}
     <form onSubmit={apply} aria-label="Filtros das formas de pagamento"><NativeListLayout filters={<>
@@ -141,7 +140,7 @@ function PaymentMethodEditor({ controller, item, copy, accounts, writable, onClo
   return <section className="real-editor catalog-editor contact-editor" aria-labelledby="payment-title">
     <header className="real-editor-heading catalog-editor-heading"><div className="catalog-editor-title"><h2 id="payment-title">Forma de pagamento</h2>{item && <span className={badgeClass(item.active ? 'Ativa' : 'Inativa')}>{item.active ? 'Ativa' : 'Inativa'}</span>}{!writable && <span className="real-mode">Somente consulta</span>}</div>
       <div className="catalog-editor-buttons"><button type="button" className="secondary-button" disabled={busy} onClick={() => guard.confirmLeave(onClose)}>{writable ? 'Cancelar' : 'Voltar'}</button>{writable && <button type="submit" form="payment-form" className="primary-button" disabled={locked}>{busy ? 'Salvando…' : 'Salvar'}</button>}</div></header>
-    <p className="real-help">{NOT_USED}</p>
+    <p className="real-help">{PAYMENT_USAGE}</p>
     {error && <p className="real-alert" role="alert">{error}</p>}
     {uncertain && <div className="real-editor-actions"><button type="button" className="primary-button" disabled={busy} onClick={() => void execute()}>{busy ? 'Conferindo…' : 'Conferir resultado'}</button></div>}
     <form id="payment-form" onSubmit={submit}><fieldset disabled={locked} className="contact-form">

@@ -60,6 +60,7 @@ import {posRoute,posMethods,parsePosRoute,executePosRoute,posRefusal,PosError} f
 import {platformRoute,platformMethods,parsePlatformRoute,executePlatformRoute,runPlatformTasks,createServiceRpc,createExportStorage,lookupCep,PlatformError} from './platform.mjs';
 import {securityRoute,securityMethods,parseSecurityRoute,executeSecurityRoute,SecurityError} from './security.mjs';
 import {originSyncRoute,originSyncMethods,originSyncStatus,runOriginTwoWay,OriginSyncRouteError} from './origin-two-way.mjs';
+import originConnector from '../../origin-sync/src/index.mjs';
 import {catalogMirrorRoute,catalogMirrorMethods,parseCatalogMirrorRoute,executeCatalogMirrorRoute,CatalogMirrorError} from './catalog-mirror.mjs';
 import {systemUpdateRoute,handleSystemUpdate} from './system-updates.mjs';
 export const ENTITIES = Object.freeze(['contacts', 'products', 'sales_orders', 'purchase_orders', 'sales_proposals', 'receivables', 'payables', 'nfe', 'nfce']);
@@ -256,6 +257,15 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
     try {
       const settings = config(env);
       const url = new URL(request.url);
+      if (['/integracao-externa', '/admin/status', '/admin/oauth/start', '/oauth/callback'].includes(url.pathname)) {
+        if (env.ORIGIN_CONNECTOR_ENABLED !== 'true' || env.ORIGIN_ENABLED !== 'true') throw new ApiError(404,'ERP_NOT_FOUND');
+        if (url.pathname === '/integracao-externa') {
+          if (request.method !== 'GET') throw new ApiError(405,'ERP_METHOD_NOT_ALLOWED');
+          url.pathname = '/';
+          return originConnector.fetch(new Request(url, request), env);
+        }
+        return originConnector.fetch(request, env);
+      }
       if(systemUpdateRoute(url.pathname))return handleSystemUpdate({request,env,settings,fetchImpl,authenticate:async token=>{
         const user=await upstream(`${settings.baseUrl}/auth/v1/user`,{method:'GET',headers:{apikey:settings.key,Authorization:`Bearer ${token}`,Accept:'application/json'}},'auth');
         if(!user||typeof user.id!=='string'||!UUID.test(user.id))throw new ApiError(401,'ERP_UNAUTHENTICATED');
@@ -347,6 +357,7 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
       // Sincronização de mão dupla com o Origin (009-011): GET situação, POST pede uma rodada e já começa a executá-la.
       if(originSyncRoute(url.pathname)){
         if(request.method==='POST'&&(env.ORIGIN_ENABLED!=='true'||env.ORIGIN_TWO_WAY_ENABLED!=='true'))throw new ApiError(503,'ORIGIN_DISABLED');
+        if(request.method==='POST'&&env.ORIGIN_WRITE_ENABLED==='false')throw new ApiError(409,'ORIGIN_RECEIVE_ONLY');
         const methods=originSyncMethods(),origin=request.headers.get('Origin');
         if(origin!==null){if(!settings.origins.includes(origin))throw new ApiError(403,'ERP_ORIGIN_NOT_ALLOWED');headers.set('Access-Control-Allow-Origin',origin);}
         if(request.method==='OPTIONS'){
@@ -369,7 +380,12 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
             const rpc=createServiceRpc({baseUrl:settings.baseUrl,key:settings.key,fetchImpl});
             ctx.waitUntil(runOriginTwoWay({rpc,env,budgetMs:25000}).catch(()=>null));
           }
-          return respond(200,{...result,enabled:result.enabled&&env.ORIGIN_ENABLED==='true'&&env.ORIGIN_TWO_WAY_ENABLED==='true'});
+          return respond(200,{...result,enabled:result.enabled&&env.ORIGIN_ENABLED==='true'&&env.ORIGIN_TWO_WAY_ENABLED==='true',
+            connection: env.ORIGIN_CONNECTOR_ENABLED === 'true' ? {
+              name: env.ORIGIN_CONNECTION_NAME || 'Integração externa',
+              mode: env.ORIGIN_CONNECTION_MODE || 'paused',
+              setup_url: new URL('/integracao-externa',env.PUBLIC_BASE_URL).href,
+            } : null});
         }catch(error){if(error instanceof OriginSyncRouteError)throw new ApiError(error.status,error.code);throw error;}
       }
       // Leva H (310): Preferências › Segurança, self-contained dispatch with the same origin, preflight and session checks.
@@ -985,6 +1001,7 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
         }
         return respond(200, { user_id: user.id, role: result.role, resources: result.resources, data_mode: 'staging_readonly',
           capabilities: { originIntegration: env.ORIGIN_ENABLED === 'true' && env.ORIGIN_TWO_WAY_ENABLED === 'true',
+            originConnection: env.ORIGIN_ENABLED === 'true' && env.ORIGIN_CONNECTOR_ENABLED === 'true',
             originHistory: env.ORIGIN_ENABLED === 'true' || env.ORIGIN_HISTORY_ENABLED === 'true' } });
       }
       return respond(200, safeList(result, match[1], query));
@@ -997,12 +1014,13 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
 }
 
 /** Leva H, lane plataforma (330): the cron of the Worker (wrangler.jsonc triggers) runs the server tasks with the service key. */
-export function createScheduled({ fetchImpl = globalThis.fetch, runTwoWay = runOriginTwoWay } = {}) {
+export function createScheduled({ fetchImpl = globalThis.fetch, runTwoWay = runOriginTwoWay, collectOrigin = originConnector.scheduled } = {}) {
   return async function scheduled(_event, env) {
     if (env.ERP_SCHEDULED_TASKS_ENABLED !== 'true') return { state: 'disabled' };
     const settings = config(env);
     if (_event?.cron === '*/2 * * * *') {
       const rpc = createServiceRpc({ baseUrl: settings.baseUrl, key: settings.key, fetchImpl });
+      if (env.ORIGIN_CONNECTOR_ENABLED === 'true' && env.SYNC_ENABLED === 'true') await collectOrigin(_event, env);
       // Each mirror has its own transaction and bounded recovery batch.
       const results = await Promise.allSettled([projectStockMirror(rpc), rpc('erp_fiscal_mirror_project', { p_limit: 100 }), rpc('erp_document_mirror_project', { p_limit: 100 })]);
       // Mão dupla (009-011): recebe do Origin, envia ao Origin e conduz a rodada do botão Sincronizar, depois dos espelhos.
