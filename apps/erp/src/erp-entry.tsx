@@ -10,3 +10,5 @@ export function mountErp(root:Root){
 }
 
 import './fagoo-system.css';
+
+import './components/document-layout.css';

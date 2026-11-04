@@ -54,7 +54,5 @@ dl.document-total-summary .document-grand-total dd{font-size:15px;color:var(--ac
 .document-contact-field{display:grid;gap:6px;align-content:start;min-width:0}
 .document-contact-helpers{display:flex;flex-wrap:wrap;gap:4px 12px}
 .document-contact-helpers:empty{display:none}
-/* Wide screens: Identificação in 4 columns, the Cliente over 2 with search and selection side by side and its helpers on the tools row. */
-@media(min-width:1200px){.real-editor .document-section>.document-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.real-editor .document-section>.document-grid>.document-contact-field{grid-column:span 2}.document-contact-field{position:relative}.document-contact-field .document-picker{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.document-contact-field .document-picker-label,.document-contact-field .contact-picker-tools{grid-column:1/-1}.document-contact-field .document-contact-helpers{position:absolute;right:0;bottom:4px}}
 /* Origem e duplicação: one compact line instead of a full section. */
 .document-section.document-origin-strip{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:12px 0;padding:10px 18px}.document-origin-strip p{margin:0}

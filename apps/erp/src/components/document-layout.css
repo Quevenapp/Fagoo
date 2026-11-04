@@ -1,0 +1,100 @@
+/* One document surface. Breakpoints follow the available form width, including
+   when the application sidebar is open or the browser is zoomed. */
+:root .fagoo-document-workspace { display:block; margin-top:16px; }
+:root .fagoo-document-outline { position:static; display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; padding:12px 0 16px; border:0; border-bottom:1px solid var(--border); border-radius:0; background:transparent; }
+:root .fagoo-document-outline .fagoo-eyebrow { width:auto; margin:0; }
+:root .fagoo-document-amount { font-family:var(--font-heading); font-size:22px; color:var(--accent-strong); letter-spacing:-.6px; }
+:root .fagoo-document-outline>span { margin:0; font-size:12px; color:var(--muted); }
+:root .fagoo-document-outline nav { display:flex; flex-wrap:wrap; gap:4px 16px; width:100%; }
+:root .fagoo-document-outline nav button { display:flex; align-items:center; gap:8px; min-height:36px; padding:4px 0; border:0; background:transparent; color:var(--text); font:inherit; font-size:13px; text-align:left; cursor:pointer; }
+:root .fagoo-document-outline nav button>span { color:var(--muted); font-size:12px; font-variant-numeric:tabular-nums; }
+:root .fagoo-document-outline nav button:hover { color:var(--accent-strong); }
+:root .fagoo-document-outline>p:last-child { display:none; }
+.fagoo-document-body,.fiscal-invoice-form { container-type:inline-size; min-width:0; }
+.fagoo-operation-anchor { scroll-margin-top:100px; margin-top:20px; padding-top:20px; border-top:1px solid var(--border); }
+:root .fagoo-document-editor .document-section { min-inline-size:0; margin:0; padding:20px 0; border:0; border-top:1px solid var(--border); border-radius:0; background:transparent; scroll-margin-top:100px; }
+:root .fagoo-document-editor .document-section legend { float:left; width:100%; margin:0 0 14px; padding:0; font-size:16px; font-weight:650; }
+:root .fagoo-document-editor .document-section legend+* { clear:both; }
+:root .fagoo-document-editor .document-section::after { content:''; display:block; clear:both; }
+:root .fagoo-document-editor #document-identification { border-top:0; }
+:root .fagoo-document-editor .document-section:disabled { opacity:1; }
+:root .fagoo-document-editor .document-grid,
+:root .fiscal-invoice-form .document-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:14px 18px; align-items:start; }
+:root .fagoo-document-editor .document-grid>* { min-width:0; }
+:root .fagoo-document-editor .document-contact-field { grid-column:span 2; position:static; }
+:root .fagoo-document-editor .document-contact-field .document-picker { grid-template-columns:minmax(0,1fr); }
+:root .fagoo-document-editor .document-contact-helpers { position:static; }
+@container (min-width:701px) {
+  :root .fagoo-document-editor .document-contact-field .document-picker { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  :root .fagoo-document-editor .document-contact-field :is(.document-picker-label,.contact-picker-tools) { grid-column:1/-1; }
+}
+:root .fagoo-document-editor :is(input,select,textarea),
+:root .fiscal-invoice-form :is(input,select,textarea) { min-width:0; max-width:100%; box-sizing:border-box; }
+:root .fagoo-document-editor .form-field,
+:root .fiscal-invoice-form .form-field { min-width:0; }
+:root .fagoo-document-editor .document-items { width:100%; min-width:0; }
+:root .fagoo-document-editor .document-items td { padding:10px 8px; }
+@container (min-width:1001px) {
+  :root .fagoo-document-editor .document-items td:nth-child(2) { min-width:180px; }
+}
+:root .fagoo-document-editor .document-total-summary { grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr)); gap:8px; padding:10px; }
+:root .fagoo-document-editor .document-origin-strip { padding:10px 0; }
+:root .fagoo-document-editor .document-add-item { flex-wrap:wrap; }
+:root .fagoo-document-editor .document-add-item .document-picker { min-width:0; }
+:root .fiscal-invoice-form { gap:0; padding:24px; border:1px solid var(--border); border-radius:14px; background:var(--surface); }
+:root .fiscal-form-tabs { display:flex; flex-wrap:wrap; gap:4px 8px; margin:0; padding:12px 0; border-bottom:1px solid var(--border); }
+:root .fiscal-form-tabs button { border:0; border-radius:6px; background:transparent; color:var(--text); padding:8px 10px; font:inherit; font-size:13px; cursor:pointer; }
+:root .fiscal-form-tabs button[aria-current] { background:var(--accent-soft); color:var(--accent-strong); }
+:root .fiscal-document-section { padding:20px 0; border-bottom:1px solid var(--border); scroll-margin-top:100px; }
+:root .fiscal-document-section:last-child { border-bottom:0; }
+:root .fiscal-document-section>h2 { margin:0 0 14px; font-size:16px; }
+:root .fiscal-invoice-form .real-heading { flex-wrap:wrap; gap:12px; }
+:root .fiscal-invoice-form .real-editor-actions { margin:0; }
+:root .fiscal-invoice-form .document-grid>* { min-width:0; }
+:root .fiscal-invoice-form .fiscal-contact-search { min-width:0; max-width:100%; }
+:root .fiscal-invoice-form .fiscal-totals { grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr)); }
+
+/* Keep the same inputs and handlers when a table becomes a labeled item. */
+@container (max-width:1000px) {
+  :root :is(.fagoo-document-editor,.fiscal-invoice-form) .document-responsive-table { display:block; width:100%; min-width:0; }
+  :root :is(.fagoo-document-editor,.fiscal-invoice-form) .document-responsive-table>thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+  :root :is(.fagoo-document-editor,.fiscal-invoice-form) .document-responsive-table>tbody { display:grid; gap:12px; }
+  :root :is(.fagoo-document-editor,.fiscal-invoice-form) .document-responsive-table>tbody>tr { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:14px; border:1px solid var(--border); border-radius:8px; background:var(--surface); }
+  :root :is(.fagoo-document-editor,.fiscal-invoice-form) .document-responsive-table>tbody>tr>td { display:block; width:auto; height:auto; min-width:0; max-width:none; padding:0; border:0; text-align:left; white-space:normal; overflow-wrap:anywhere; background:transparent; }
+  :root :is(.fagoo-document-editor,.fiscal-invoice-form) .document-responsive-table td[data-label]::before { content:attr(data-label); display:block; margin-bottom:5px; color:var(--muted); font-size:12px; font-weight:600; }
+  :root :is(.fagoo-document-editor,.fiscal-invoice-form) .document-responsive-table td.document-cell-wide { grid-column:1/-1; }
+  :root :is(.fagoo-document-editor,.fiscal-invoice-form) .document-responsive-table input:not([type=checkbox]),
+  :root :is(.fagoo-document-editor,.fiscal-invoice-form) .document-responsive-table select { width:100%; min-width:0; }
+  :root :is(.fagoo-document-editor,.fiscal-invoice-form) .document-responsive-table .document-line-actions { gap:8px; }
+  :root :is(.fagoo-document-editor,.fiscal-invoice-form) .document-responsive-table :is(.document-line-actions button,.icon-button) { min-width:36px; min-height:36px; }
+}
+@container (max-width:700px) {
+  :root .fagoo-document-editor .document-grid,
+  :root .fiscal-invoice-form .document-grid { grid-template-columns:minmax(0,1fr); }
+  :root .fagoo-document-editor .document-contact-field { grid-column:1/-1; }
+  :root .fagoo-document-editor .document-section { padding:18px 0; }
+  :root .fagoo-document-editor .document-reference-grid,
+  :root .fagoo-document-editor .document-reference-fields { grid-template-columns:minmax(0,1fr); }
+  :root .fagoo-document-editor .document-installment { grid-template-columns:minmax(0,1fr); }
+  :root .fagoo-document-editor .document-add-item { flex-direction:column; align-items:stretch; gap:10px; }
+  :root .fagoo-document-editor .document-add-item .document-picker { max-width:none; }
+  :root .fagoo-document-editor :is(input,select,textarea),
+  :root .fiscal-invoice-form :is(input,select,textarea) { font-size:16px; }
+}
+@container (max-width:300px) {
+  :root :is(.fagoo-document-editor,.fiscal-invoice-form) .document-responsive-table>tbody>tr { grid-template-columns:minmax(0,1fr); padding:12px; }
+}
+@media(max-width:700px) {
+  :root .fagoo-document-editor,:root .fiscal-invoice-form { padding:14px; }
+  :root .fagoo-document-editor .real-editor-heading { gap:12px; }
+  :root .fagoo-document-editor .document-editor-buttons { width:100%; justify-items:stretch; }
+  :root .fagoo-document-editor .document-editor-buttons>div { justify-content:flex-start; }
+  :root .fagoo-document-outline nav { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px 12px; }
+  :root .fagoo-document-outline nav button { font-size:12px; }
+  :root .fagoo-document-outline nav svg { display:none; }
+}
+@media print {
+  :root .fagoo-document-outline,:root .fiscal-form-tabs { display:none; }
+  .fagoo-document-body,.fiscal-invoice-form { container-type:normal; }
+  :root .fiscal-invoice-form { padding:0; border:0; }
+}

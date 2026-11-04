@@ -13,7 +13,7 @@ const textOf = value => Array.isArray(value) ? value.map(textOf).join('') : valu
 const components = (view, name) => view.nodes().filter(n => typeof n.type === 'function' && n.type.name === name);
 const button = (view, label) => { const found = view.nodes().find(n => n.type === 'button' && textOf(n).trim() === label); if (!found) throw new Error(`Missing button ${label}`); return found; };
 const press = async (view, label) => { const node = button(view, label); if (node.disabled) throw new Error(`Disabled button: ${label}`); node.props.onClick?.({ preventDefault() {}, stopPropagation() {} }); await view.flush(); };
-const tab = async (view, label) => { const found = view.nodes().find(n => n.type === 'button' && n.props.role === 'tab' && textOf(n).trim() === label); if (!found) throw new Error(`Missing tab ${label}`); found.props.onClick(); await view.flush(); };
+const tab = async (view, label) => { const found = view.nodes().find(n => n.type === 'button' && (n.props.role === 'tab' || String(n.props['aria-controls'] ?? '').startsWith('fiscal-section-')) && textOf(n).trim() === label); if (!found) throw new Error(`Missing tab ${label}`); found.props.onClick(); await view.flush(); };
 const modalPress = async (view, label) => { const modal = components(view, 'Modal').at(-1); let found; const walk = value => { if (Array.isArray(value)) { value.forEach(walk); return; } if (!value || typeof value !== 'object') return; if (value.type === 'button' && textOf(value).trim() === label) found = value; walk(value.props?.children); }; walk(modal.props.actions); if (!found) throw new Error('Missing dialog action ' + label); found.props.onClick?.({ preventDefault() {} }); await view.flush(); };
 const wait = async view => { await view.flush(); await new Promise(r => setTimeout(r, 300)); await view.flush(); };
 const rule = (tax, data) => ({ tax, position: 1, destinations: [], product_scope: 'any', ncms: [], product_ids: [], products: [], data, additional_info: null, fiscal_info: null });
@@ -245,7 +245,7 @@ test('Natureza › regra "Quando for: Grupo de Produtos": groups of the product 
   const form = await mountComponent('RealOperationNatures.tsx', { controller }, { location: '/naturezas-operacao?natureza=nova', expandChildren: ['OperationNatureForm', 'NatureRuleDialog'] });
   try {
     await form.change('nature-description', 'Venda por grupo');
-    form.nodes().find(n => n.type === 'button' && n.props.role === 'tab' && textOf(n) === 'IPI').props.onClick(); await form.flush();
+    form.nodes().find(n => n.type === 'button' && (n.props.role === 'tab' || String(n.props['aria-controls'] ?? '').startsWith('fiscal-section-')) && textOf(n) === 'IPI').props.onClick(); await form.flush();
     await press(form, 'Adicionar regra');
     await form.change('rule-scope', 'groups'); await wait(form);
     assert.ok(calls.some(c => c.path === '/v1/cadastros/taxonomias/grupos-produtos'), 'the groups come from the product cadastro');

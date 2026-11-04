@@ -1,3 +1,4 @@
+import './document-layout.css';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { AccessError, decimalMoney, type AccessController } from '../lib/real-access';
 import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
@@ -98,8 +99,18 @@ export default function FiscalInvoiceForm({ controller, config, id, opening, tod
   const [draft, setDraft] = useState<InvoiceDraft | null>(null), [baseline, setBaseline] = useState('');
   const [natures, setNatures] = useState<NatureSummary[]>([]), [details, setDetails] = useState<Record<string, NatureRecord>>({}), [settings, setSettings] = useState<Partial<TaxSettingsValues>>({});
   const [difalByState, setDifalByState] = useState<Record<string, string>>({}), [locks, setLocks] = useState({ items: false, installments: false });
-  // "Conciliar produtos" opens the note on the Itens tab, where the reconciliation panel is.
-  const [tab, setTab] = useState<Tab>(initialTab), [itemIndex, setItemIndex] = useState<number | null>(null), [showMore, setShowMore] = useState(false);
+  // Section shortcuts keep the full document mounted and preserve field focus/state.
+  const [tab, selectSection] = useState<Tab>(initialTab), [itemIndex, setItemIndex] = useState<number | null>(null), [showMore, setShowMore] = useState(false);
+  const sectionRoot = useRef<HTMLElement>(null);
+  const scrollSection = (value: Tab) => {
+    const section = sectionRoot.current?.querySelector<HTMLElement>(`#fiscal-section-${value}`);
+    section?.scrollIntoView({ block: 'start' });
+    section?.focus({ preventScroll: true });
+  };
+  const setTab = (value: Tab) => { selectSection(value); scrollSection(value); };
+  const loaded = Boolean(draft && context);
+  useEffect(() => { if (loaded && initialTab !== 'cabecalho') scrollSection(initialTab); }, [loaded, initialTab]);
+
   const [installmentIndex, setInstallmentIndex] = useState<number | null>(null), [refusal, setRefusal] = useState<OrderSource | null>(null), [origin, setOrigin] = useState<OrderSource | null>(null);
   const [group, setGroup] = useState<OrderSource[] | null>(null);
   const [loadError, setLoadError] = useState(''), [busy, setBusy] = useState(false), [uncertain, setUncertain] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState('');
@@ -402,8 +413,8 @@ export default function FiscalInvoiceForm({ controller, config, id, opening, tod
           {refDraft.type !== 'ecf' && field('fiscal-ref-series', 'Série', <input id="fiscal-ref-series" maxLength={3} disabled={locked} value={String(refDraft.series ?? '')} title="Caso não tenha a série, preencha este campo com 0 (zero)" onChange={event => setRefDraft(r => ({ ...r, series: event.target.value.replace(/\D/g, '') }))} />)}</>}
     </div>
     <button type="button" className="secondary-button" disabled={locked} onClick={addReference}>Incluir mais</button>{refError && <p className="real-alert" role="alert">{refError}</p>}
-    {draft.references.length ? <table className="data-table"><thead><tr><th>Chave de acesso / Série / Número</th><th><span className="sr-only">Ações</span></th></tr></thead><tbody>{draft.references.map((r, index) => <tr key={index}><td>{REFERENCE_OPTIONS.find(([v]) => v === r.type)?.[1]} · {r.key ? String(r.key) : `${r.series ?? ''} / ${r.number ?? ''}`}{typeof r.key === 'string' && referenceFound(r.key)}</td>
-      <td><button type="button" className="icon-button" aria-label="Remover documento referenciado" title="Remover documento referenciado" disabled={locked} onClick={() => update({ references: draft.references.filter((_, i) => i !== index) })}><Icon name="trash-can" size={12} /></button></td></tr>)}</tbody></table> : <p className="real-help">Nenhum item registrado</p>}
+    {draft.references.length ? <table className="data-table document-responsive-table"><thead><tr><th>Chave de acesso / Série / Número</th><th><span className="sr-only">Ações</span></th></tr></thead><tbody>{draft.references.map((r, index) => <tr key={index}><td data-label="Documento referenciado" className="document-cell-wide">{REFERENCE_OPTIONS.find(([v]) => v === r.type)?.[1]} · {r.key ? String(r.key) : `${r.series ?? ''} / ${r.number ?? ''}`}{typeof r.key === 'string' && referenceFound(r.key)}</td>
+      <td data-label="Ações"><button type="button" className="icon-button" aria-label="Remover documento referenciado" title="Remover documento referenciado" disabled={locked} onClick={() => update({ references: draft.references.filter((_, i) => i !== index) })}><Icon name="trash-can" size={12} /></button></td></tr>)}</tbody></table> : <p className="real-help">Nenhum item registrado</p>}
   </>;
   const pickContact = (contact: CatalogRecord, target: typeof contactTarget = contactTarget) => {
     setContactQuery(''); setContacts([]);
@@ -518,17 +529,17 @@ export default function FiscalInvoiceForm({ controller, config, id, opening, tod
   };
   const itemsTab = <>
     {imported(record) && canWrite && record!.deleted_at === null && <FiscalReconcilePanel controller={controller} record={record!} onSaved={saved => { const next = recordToDraft(saved); setRecord(saved); setDraft(next); setBaseline(JSON.stringify(next)); }} />}
-    {draft.items.length ? <div className="table-scroll" tabIndex={0}><table className="data-table fiscal-items"><thead><tr><th>#</th><th>Produto ou serviço</th><th>Código</th><th>UN</th><th className="numeric">Qtde</th><th className="numeric">Preço un</th><th className="numeric">Preço total</th><th>NCM</th><th><span className="sr-only">Ações</span></th></tr></thead>
-      <tbody>{draft.items.map((item, index) => <tr key={index}><td>{index + 1}</td>
-        <td><input aria-label={`Produto ou serviço do item ${index + 1}`} placeholder="Digite parte do nome ou código do item" maxLength={120} disabled={itemsLocked} value={String(item.description ?? '')} onChange={event => { setItem(index, { description: event.target.value, product_id: undefined }); setProductSearch({ index, query: event.target.value, results: [] }); }} />
+    {draft.items.length ? <div className="table-scroll" tabIndex={0}><table className="data-table fiscal-items document-responsive-table"><thead><tr><th>#</th><th>Produto ou serviço</th><th>Código</th><th>UN</th><th className="numeric">Qtde</th><th className="numeric">Preço un</th><th className="numeric">Preço total</th><th>NCM</th><th><span className="sr-only">Ações</span></th></tr></thead>
+      <tbody>{draft.items.map((item, index) => <tr key={index}><td data-label="Item">{index + 1}</td>
+        <td data-label="Produto ou serviço" className="document-cell-wide"><input aria-label={`Produto ou serviço do item ${index + 1}`} placeholder="Digite parte do nome ou código do item" maxLength={120} disabled={itemsLocked} value={String(item.description ?? '')} onChange={event => { setItem(index, { description: event.target.value, product_id: undefined }); setProductSearch({ index, query: event.target.value, results: [] }); }} />
           {productSearch?.index === index && productSearch.results.length > 0 && <ul className="fiscal-picker" role="listbox" aria-label="Produtos">{productSearch.results.map(p => <li key={p.id}><button type="button" onClick={() => pickProduct(index, p)}>{p.name}{p.code ? ` · ${p.code}` : ''}</button></li>)}</ul>}</td>
-        <td><input aria-label={`Código do item ${index + 1}`} maxLength={60} disabled={itemsLocked} value={String(item.code ?? '')} onChange={event => setItem(index, { code: event.target.value })} /></td>
-        <td><input aria-label={`Unidade do item ${index + 1}`} maxLength={6} disabled={itemsLocked} value={String(item.unit ?? '')} onChange={event => setItem(index, { unit: event.target.value })} /></td>
-        <td className="numeric"><input aria-label={`Quantidade do item ${index + 1}`} inputMode="decimal" disabled={itemsLocked} value={String(item.quantity ?? '')} onChange={event => setItem(index, { quantity: event.target.value })} /></td>
-        <td className="numeric"><input aria-label={`Preço unitário do item ${index + 1}`} inputMode="decimal" disabled={itemsLocked} value={String(item.unit_price ?? '')} onChange={event => setItem(index, { unit_price: event.target.value })} /></td>
-        <td className="numeric">{itemTotal(index) ? decimalMoney(itemTotal(index)) : '—'}</td>
-        <td><input aria-label={`NCM do item ${index + 1}`} maxLength={8} inputMode="numeric" disabled={itemsLocked} value={String(item.ncm ?? '')} onChange={event => setItem(index, { ncm: event.target.value.replace(/\D/g, '') })} /></td>
-        <td className="fiscal-item-icons">{itemIcons(item, index)}<button type="button" className="icon-button" title="Editar" aria-label={`Editar item ${index + 1}`} onClick={() => setItemIndex(index)}><Icon name="pen-to-square" size={12} /></button>
+        <td data-label="Código"><input aria-label={`Código do item ${index + 1}`} maxLength={60} disabled={itemsLocked} value={String(item.code ?? '')} onChange={event => setItem(index, { code: event.target.value })} /></td>
+        <td data-label="Unidade"><input aria-label={`Unidade do item ${index + 1}`} maxLength={6} disabled={itemsLocked} value={String(item.unit ?? '')} onChange={event => setItem(index, { unit: event.target.value })} /></td>
+        <td data-label="Quantidade"><input aria-label={`Quantidade do item ${index + 1}`} inputMode="decimal" disabled={itemsLocked} value={String(item.quantity ?? '')} onChange={event => setItem(index, { quantity: event.target.value })} /></td>
+        <td data-label="Preço unitário"><input aria-label={`Preço unitário do item ${index + 1}`} inputMode="decimal" disabled={itemsLocked} value={String(item.unit_price ?? '')} onChange={event => setItem(index, { unit_price: event.target.value })} /></td>
+        <td className="numeric" data-label="Preço total">{itemTotal(index) ? decimalMoney(itemTotal(index)) : '—'}</td>
+        <td data-label="NCM"><input aria-label={`NCM do item ${index + 1}`} maxLength={8} inputMode="numeric" disabled={itemsLocked} value={String(item.ncm ?? '')} onChange={event => setItem(index, { ncm: event.target.value.replace(/\D/g, '') })} /></td>
+        <td className="fiscal-item-icons document-cell-wide" data-label="Ações">{itemIcons(item, index)}<button type="button" className="icon-button" title="Editar" aria-label={`Editar item ${index + 1}`} onClick={() => setItemIndex(index)}><Icon name="pen-to-square" size={12} /></button>
           <button type="button" className="icon-button" title="Remover item do pedido" aria-label={`Remover item ${index + 1}`} disabled={itemsLocked} onClick={() => update({ items: draft.items.filter((_, i) => i !== index) })}><Icon name="trash-can" size={12} /></button></td></tr>)}</tbody></table></div>
       : <p className="real-help">Nenhum item registrado</p>}
     <button type="button" className="text-button" disabled={itemsLocked} onClick={() => update({ items: [...draft.items, { description: '', quantity: '1', unit_price: '', unit: 'UN' }] })}><Icon name="plus" size={10} /> Adicionar outro item</button>
@@ -601,21 +612,21 @@ export default function FiscalInvoiceForm({ controller, config, id, opening, tod
       {field('fiscal-category', 'Categoria', <select id="fiscal-category" disabled title="Usada ao lançar contas pela nota, que fica desligado por enquanto."><option>Sem categoria</option></select>)}
       {field('fiscal-destination', 'Destino', <select id="fiscal-destination" disabled title="Usado ao lançar contas pela nota, que fica desligado por enquanto."><option>{draft.direction === '1' ? 'Contas a Receber' : 'Contas a Pagar'}</option></select>)}</div>
     {p.indicator && <p className="real-help">Forma de pagamento do pedido: {p.indicator === '0' ? 'Pagamento à vista' : 'Pagamento a prazo'} (indicador da forma de pagamento da NF-e). <button type="button" className="text-button" disabled={paymentLocked} onClick={() => update(d => { const { indicator: _gone, ...rest } = d.payment; return { payment: rest }; })}>Usar o padrão pelas parcelas</button></p>}
-    {p.installments.length ? <table className="data-table"><thead><tr><th>Dias</th><th>Data</th><th className="numeric">Valor</th><th>Forma</th><th>Observação</th><th><span className="sr-only">Ações</span></th></tr></thead><tbody>{p.installments.map((i, index) => <tr key={index}>
-      <td><input aria-label={`Dias da parcela ${index + 1}`} maxLength={4} disabled={paymentLocked} value={String(i.days ?? '')} onChange={event => setInstallment(index, { days: event.target.value.replace(/\D/g, '') })} /></td>
-      <td><input aria-label={`Data da parcela ${index + 1}`} type="date" disabled={paymentLocked} value={String(i.date ?? '')} onChange={event => setInstallment(index, { date: event.target.value })} /></td>
-      <td><input aria-label={`Valor da parcela ${index + 1}`} inputMode="decimal" disabled={paymentLocked} value={String(i.amount ?? '')} onChange={event => setInstallment(index, { amount: event.target.value })} /></td>
-      <td><select aria-label={`Forma da parcela ${index + 1}`} disabled={paymentLocked} value={formaValue(i)} onChange={event => { const value = event.target.value; update(d => ({ payment: { ...d.payment, installments: d.payment.installments.map((x, n) => n === index ? withForma(x, value, methods) : x) } })); }}><option value="">Selecione</option>{formaOptions(methods, i).map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></td>
-      <td><input aria-label={`Observação da parcela ${index + 1}`} maxLength={255} disabled={paymentLocked} value={String(i.note ?? '')} onChange={event => setInstallment(index, { note: event.target.value })} /></td>
-      <td className="fiscal-item-icons"><button type="button" className="icon-button" title="Detalhes da parcela" aria-label={`Detalhes da parcela ${index + 1}`} onClick={() => setInstallmentIndex(index)}><Icon name="circle-info" size={12} /></button>
+    {p.installments.length ? <table className="data-table document-responsive-table"><thead><tr><th>Dias</th><th>Data</th><th className="numeric">Valor</th><th>Forma</th><th>Observação</th><th><span className="sr-only">Ações</span></th></tr></thead><tbody>{p.installments.map((i, index) => <tr key={index}>
+      <td data-label="Dias"><input aria-label={`Dias da parcela ${index + 1}`} maxLength={4} disabled={paymentLocked} value={String(i.days ?? '')} onChange={event => setInstallment(index, { days: event.target.value.replace(/\D/g, '') })} /></td>
+      <td data-label="Data"><input aria-label={`Data da parcela ${index + 1}`} type="date" disabled={paymentLocked} value={String(i.date ?? '')} onChange={event => setInstallment(index, { date: event.target.value })} /></td>
+      <td data-label="Valor"><input aria-label={`Valor da parcela ${index + 1}`} inputMode="decimal" disabled={paymentLocked} value={String(i.amount ?? '')} onChange={event => setInstallment(index, { amount: event.target.value })} /></td>
+      <td data-label="Forma"><select aria-label={`Forma da parcela ${index + 1}`} disabled={paymentLocked} value={formaValue(i)} onChange={event => { const value = event.target.value; update(d => ({ payment: { ...d.payment, installments: d.payment.installments.map((x, n) => n === index ? withForma(x, value, methods) : x) } })); }}><option value="">Selecione</option>{formaOptions(methods, i).map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></td>
+      <td data-label="Observação"><input aria-label={`Observação da parcela ${index + 1}`} maxLength={255} disabled={paymentLocked} value={String(i.note ?? '')} onChange={event => setInstallment(index, { note: event.target.value })} /></td>
+      <td className="fiscal-item-icons document-cell-wide" data-label="Ações"><button type="button" className="icon-button" title="Detalhes da parcela" aria-label={`Detalhes da parcela ${index + 1}`} onClick={() => setInstallmentIndex(index)}><Icon name="circle-info" size={12} /></button>
         <button type="button" className="icon-button" aria-label={`Remover parcela ${index + 1}`} disabled={paymentLocked} onClick={() => update({ payment: { ...p, installments: p.installments.filter((_, n) => n !== index) } })}><Icon name="trash-can" size={12} /></button></td></tr>)}</tbody></table> : <p className="real-help">Nenhuma parcela registrada</p>}
     {locks.installments && p.installments.length > 0 && <p className="real-help">As parcelas seguem as contas já lançadas pelo pedido de venda e não mudam com o total da nota.</p>}
     <button type="button" className="text-button" disabled={paymentLocked} onClick={() => update({ payment: { ...p, installments: [...p.installments, { date: draft.issue_date, amount: '', card: null }] } })}><Icon name="plus" size={10} /> Adicionar parcela</button>
   </>;
   const authorizedTab = <>
     <p className="real-help">Contatos que estão autorizados a fazer o download do XML da nota no Portal Nacional da NF-e.</p>
-    {draft.authorized_xml.length ? <table className="data-table"><thead><tr><th>Contato</th><th>CPF/CNPJ</th><th><span className="sr-only">Ações</span></th></tr></thead><tbody>{draft.authorized_xml.map((a, index) => <tr key={String(a.document)}><td>{String(a.name ?? '—')}</td><td>{String(a.document)}</td>
-      <td><button type="button" className="icon-button" aria-label="Remover pessoa" title="Remover pessoa" disabled={locked} onClick={() => update({ authorized_xml: draft.authorized_xml.filter((_, i) => i !== index) })}><Icon name="trash-can" size={12} /></button></td></tr>)}</tbody></table> : <p className="real-help">Nenhum contato autorizado</p>}
+    {draft.authorized_xml.length ? <table className="data-table document-responsive-table"><thead><tr><th>Contato</th><th>CPF/CNPJ</th><th><span className="sr-only">Ações</span></th></tr></thead><tbody>{draft.authorized_xml.map((a, index) => <tr key={String(a.document)}><td data-label="Contato">{String(a.name ?? '—')}</td><td data-label="CPF/CNPJ">{String(a.document)}</td>
+      <td data-label="Ações"><button type="button" className="icon-button" aria-label="Remover pessoa" title="Remover pessoa" disabled={locked} onClick={() => update({ authorized_xml: draft.authorized_xml.filter((_, i) => i !== index) })}><Icon name="trash-can" size={12} /></button></td></tr>)}</tbody></table> : <p className="real-help">Nenhum contato autorizado</p>}
     <div className="form-field"><label htmlFor="fiscal-authorized-search">Adicionar outro contato</label>{contactSearch('authorized', 'fiscal-authorized-search', 'Pesquisar contato')}</div>
   </>;
   const im = draft.intermediary;
@@ -634,7 +645,7 @@ export default function FiscalInvoiceForm({ controller, config, id, opening, tod
   const titleNumber = record?.number ? String(record.number).padStart(6, '0') : record ? 'sem número' : 'nova';
   const kind = draft.model === '65' ? 'NFC-e' : 'Nota fiscal';
   const labels = { ...Object.fromEntries(TABS), destinatario: draft.direction === '0' ? 'Remetente' : 'Destinatário' } as Record<Tab, string>;
-  return <section className="fiscal-invoice-form">
+  return <section className="fiscal-invoice-form" ref={sectionRoot}>
     <header className="real-heading"><div><h1>{kind} - {titleNumber}</h1>
       <p>{record ? <><span className={statusClass(record, draft.model)}>{statusLabel({ status: record.status, status_raw: null }, draft.model)}</span> · versão {record.version} · </> : null}{REGISTERED.includes(draft.issue_type) ? 'Nota de terceiros registrada no FAGOO, sem transmissão.' : 'Homologação · sem valor fiscal. Salvar não envia a nota.'}</p></div>
       <div className="real-editor-actions"><button type="button" className="secondary-button" disabled={busy} onClick={cancel}>Cancelar</button>
@@ -642,17 +653,19 @@ export default function FiscalInvoiceForm({ controller, config, id, opening, tod
           : <button type="button" className="primary-button" disabled={!editable || busy} onClick={() => void save()}>{busy ? 'Salvando…' : 'Salvar'}</button>}</div></header>
     {!canWrite && <p className="real-notice">Seu perfil atual não permite alterar notas fiscais. A nota está em leitura.</p>}
     {canWrite && record && !editableStatus(record) && <p className="real-notice">{record.deleted_at ? 'Nota excluída: o histórico fica preservado e ela não pode mais ser alterada.' : imported(record)
-      ? <>Nota importada do XML (chave {record.access_key ?? '—'}, protocolo {record.protocol ?? '—'}): fica como no XML. <button type="button" className="text-button" onClick={() => setTab('itens')}>Conciliar produtos</button> na aba Itens da nota fiscal.</>
+      ? <>Nota importada do XML (chave {record.access_key ?? '—'}, protocolo {record.protocol ?? '—'}): fica como no XML. <button type="button" className="text-button" onClick={() => setTab('itens')}>Conciliar produtos</button> na seção Itens da nota fiscal.</>
       : `Nota ${statusLabel({ status: record.status, status_raw: null }, draft.model).toLowerCase()}: só notas pendentes, rejeitadas, registradas ou bloqueadas são alteradas.`}</p>}
     {origin && !record && compositionNotices(origin).length > 0 && <p className="real-notice">Desmembrar produtos em uma estrutura na nota fiscal (Preferências › Vendas): {compositionNotices(origin).join(' ')} O item ficou com a composição.</p>}
-    {group && !record && <p className="real-notice">Nota agrupada de {group.length} {group[0]!.document.kind === 'service_orders' ? 'ordens de serviço' : 'pedidos'} (nº {group.map(s => s.document.number).join(', ')}) do mesmo cliente: as parcelas não são copiadas; use Gerar parcelas na aba Pagamento.{group.some(s => s.items.some(i => isServiceItem(s, i))) ? ' Os serviços ficam fora (são da NFS-e).' : ''}</p>}
+    {group && !record && <p className="real-notice">Nota agrupada de {group.length} {group[0]!.document.kind === 'service_orders' ? 'ordens de serviço' : 'pedidos'} (nº {group.map(s => s.document.number).join(', ')}) do mesmo cliente: as parcelas não são copiadas; use Gerar parcelas na seção Pagamento.{group.some(s => s.items.some(i => isServiceItem(s, i))) ? ' Os serviços ficam fora (são da NFS-e).' : ''}</p>}
     {origin && !group && !record && origin.items.some(i => isServiceItem(origin, i)) && <p className="real-notice">A nota leva só os produtos da ordem de serviço nº {origin.document.number}: {origin.items.filter(i => isServiceItem(origin, i)).length} serviço(s), o desconto geral, o frete, as outras despesas e as parcelas da OS ficaram de fora (serviços são da NFS-e).</p>}
     {(locks.items || locks.installments) && <p className="real-notice">{locks.items && locks.installments ? 'Estoque e contas já foram lançados pelo pedido de venda: itens, quantidades e parcelas ficam bloqueados.' : locks.items ? 'Estoque já lançado pelo pedido de venda: itens e quantidades ficam bloqueados.' : 'Contas já lançadas pelo pedido de venda: as parcelas ficam bloqueadas.'} (Preferências › Configurações de NF-e)</p>}
     {error && <p className="real-alert" role="alert">{error}</p>}
     {notice && <p className="real-success" role="status">{notice}</p>}
     <p className="real-help">(*) Campos obrigatórios · {ISSUE_TYPES[draft.direction][draft.issue_type] ?? ''}</p>
-    <nav className="origin-list-tabs fiscal-form-tabs" role="tablist" aria-label="Seções da nota">{TABS.filter(([value]) => value !== 'retencoes' || retentionShown).map(([value]) => <button type="button" role="tab" key={value} aria-selected={tab === value} onClick={() => setTab(value)}>{labels[value]}</button>)}</nav>
-    <div className="fiscal-tab" role="tabpanel" aria-label={labels[tab]}>{tab === 'retencoes' && !retentionShown ? content.calculo : content[tab]}</div>
+    <nav className="fiscal-form-tabs" aria-label="Seções da nota">{TABS.filter(([value]) => value !== 'retencoes' || retentionShown).map(([value]) => <button type="button" key={value} aria-controls={`fiscal-section-${value}`} aria-current={tab === value ? 'location' : undefined} onClick={() => setTab(value)}>{labels[value]}</button>)}</nav>
+    {TABS.filter(([value]) => value !== 'retencoes' || retentionShown).map(([value]) => <section key={value} id={`fiscal-section-${value}`} className="fiscal-document-section" aria-labelledby={`fiscal-heading-${value}`} tabIndex={-1}>
+      <h2 id={`fiscal-heading-${value}`}>{labels[value]}</h2><div className="fiscal-tab">{content[value]}</div>
+    </section>)}
     {itemIndex !== null && draft.items[itemIndex] && <FiscalInvoiceItemDialog key={itemIndex} item={draft.items[itemIndex]!} computed={draft.auto_tax ? computed?.input.items[itemIndex] ?? null : null} position={itemIndex + 1}
       crt={draft.crt} direction={draft.direction} natures={crtNatures} readOnly={itemsLocked} auto={draft.auto_tax} show={optionalTabs(prefs, draft.items[itemIndex])} itemDiscount={itemDiscount} totals={computed ? { total: computed.totals.lines[itemIndex] ?? null, freight: computed.totals.allocation.freight[itemIndex] ?? null, discount: computed.totals.allocation.discount[itemIndex] ?? null } : null}
       onCancel={() => setItemIndex(null)} onSave={item => { update({ items: draft.items.map((x, i) => i === itemIndex ? item : x) }); setItemIndex(null); }} />}

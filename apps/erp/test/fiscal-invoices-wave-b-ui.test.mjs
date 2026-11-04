@@ -12,8 +12,8 @@ const components = (view, name) => view.nodes().filter(n => typeof n.type === 'f
 const component = (view, name, index = 0) => components(view, name)[index];
 const button = (view, label) => { const found = view.nodes().find(n => n.type === 'button' && textOf(n).trim() === label); if (!found) throw new Error(`Missing button ${label}`); return found; };
 const press = async (view, label) => { const node = button(view, label); if (node.disabled) throw new Error(`Disabled button: ${label}`); node.props.onClick?.({ preventDefault() {}, stopPropagation() {} }); await view.flush(); };
-const tab = async (view, label) => { const found = view.nodes().find(n => n.type === 'button' && n.props.role === 'tab' && textOf(n).trim() === label); if (!found) throw new Error(`Missing tab ${label}`); found.props.onClick(); await view.flush(); };
-const tabs = view => view.nodes().filter(n => n.type === 'button' && n.props.role === 'tab').map(n => textOf(n).trim());
+const tab = async (view, label) => { const found = view.nodes().find(n => n.type === 'button' && (n.props.role === 'tab' || String(n.props['aria-controls'] ?? '').startsWith('fiscal-section-')) && textOf(n).trim() === label); if (!found) throw new Error(`Missing tab ${label}`); found.props.onClick(); await view.flush(); };
+const tabs = view => view.nodes().filter(n => n.type === 'button' && (n.props.role === 'tab' || String(n.props['aria-controls'] ?? '').startsWith('fiscal-section-'))).map(n => textOf(n).trim());
 const field = (view, label) => view.nodes().find(n => ['input', 'select'].includes(n.type) && n.props['aria-label'] === label);
 const wait = async view => { await view.flush(); await new Promise(r => setTimeout(r, 300)); await view.flush(); };
 const walk = (value, visit) => { if (Array.isArray(value)) { value.forEach(v => walk(v, visit)); return; } if (!value || typeof value !== 'object') return; visit(value); walk(value.props?.children, visit); };

@@ -139,7 +139,25 @@ test('a late list response never replaces a newer filter', async () => {
 });
 
 const mountForm = (srv, props = {}) => mountComponent('FiscalInvoiceForm.tsx', { controller: srv.controller, config: { screen: 'nfe', model: '55', direction: '1' }, id: null, opening: { kind: 'new' }, today: '2026-10-20', onBack() {}, onSaved() {}, ...props }, { location: '/historico-fiscal?modelo=55&nota=nova' });
-const tab = async (view, label) => { const found = view.nodes().find(n => n.type === 'button' && n.props.role === 'tab' && textOf(n).trim() === label); found.props.onClick(); await view.flush(); };
+const tab = async (view, label) => { const found = view.nodes().find(n => n.type === 'button' && (n.props.role === 'tab' || String(n.props['aria-controls'] ?? '').startsWith('fiscal-section-')) && textOf(n).trim() === label); found.props.onClick(); await view.flush(); };
+
+test('nota contínua: atalhos mantêm todas as seções e os valores editados no formulário', async () => {
+  const view = await mountForm(server());
+  try {
+    const sections = () => view.nodes().filter(n => n.type === 'section' && n.props.className === 'fiscal-document-section');
+    const ids = sections().map(n => n.props.id);
+    assert.ok(ids.includes('fiscal-section-cabecalho'));
+    assert.ok(ids.includes('fiscal-section-itens'));
+    assert.ok(ids.includes('fiscal-section-pagamento'));
+    assert.ok(ids.includes('fiscal-section-informacoes'));
+    await view.change('fiscal-recipient-name', 'Cliente do formulário contínuo');
+    await tab(view, 'Pagamento');
+    assert.deepEqual(sections().map(n => n.props.id), ids);
+    assert.equal(view.input('fiscal-recipient-name').props.value, 'Cliente do formulário contínuo');
+    const controls = view.nodes().filter(n => n.props.id).map(n => n.props.id);
+    assert.equal(new Set(controls).size, controls.length, 'seções simultâneas não duplicam IDs');
+  } finally { view.unmount(); }
+});
 
 test('new note: Origin defaults, one Salvar with command id, automatic Simples credit and recovery of an unknown outcome', async () => {
   let attempt = 0; const saved = [];
@@ -332,7 +350,7 @@ test('an inverted clone shows the entry labels of its own direction', async () =
   const view = await mountForm(server(), { opening: { kind: 'clone_invert', origin: originNote() } });
   try {
     assert.match(view.text(), /Tipo de Entrada\*/); assert.match(view.text(), /Data entrada/); assert.equal(view.text().includes('Tipo de saída*'), false);
-    assert.ok(view.nodes().some(n => n.type === 'button' && n.props.role === 'tab' && textOf(n).trim() === 'Remetente'));
+    assert.ok(view.nodes().some(n => n.type === 'button' && (n.props.role === 'tab' || String(n.props['aria-controls'] ?? '').startsWith('fiscal-section-')) && textOf(n).trim() === 'Remetente'));
   } finally { view.unmount(); }
 });
 
