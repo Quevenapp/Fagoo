@@ -1,6 +1,9 @@
 import importlib.util
 import io
 import json
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 import tempfile
 import unittest
@@ -15,6 +18,25 @@ SPEC.loader.exec_module(DEPLOY)
 
 
 class DeploymentTests(unittest.TestCase):
+    def test_candidate_import_works_from_an_older_updater_without_the_new_helper(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            previous = Path(temporary)
+            for filename in ('configure.py', 'update_config.py'):
+                shutil.copy2(Path(__file__).with_name(filename), previous / filename)
+            script = """import importlib.util, sys
+sys.path.insert(0, sys.argv[1])
+assert importlib.util.find_spec('integration_config') is None
+spec = importlib.util.spec_from_file_location('candidate', sys.argv[2])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+assert module.integration_settings({}) == {'vars': {}, 'secrets': {}, 'scheduled': False}
+print('CANDIDATE_IMPORT_OK')
+"""
+            result = subprocess.run([sys.executable, '-I', '-c', script, str(previous),
+                str(Path(__file__).with_name('deploy-application.py').resolve())], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stdout.strip(), 'CANDIDATE_IMPORT_OK')
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)

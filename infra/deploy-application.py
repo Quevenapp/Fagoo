@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import re
+import runpy
 import subprocess
 import tempfile
 import urllib.error
@@ -17,7 +18,10 @@ import warnings
 
 from configure import origin
 from update_config import cloudflare_credentials, source_identity
-from integration_config import integration_settings
+
+# The installed updater imports this candidate file before switching its own source tree.
+# Load newly introduced helpers beside the candidate, not from the old updater's sys.path.
+integration_settings = runpy.run_path(str(Path(__file__).with_name('integration_config.py')))['integration_settings']
 
 ROOT = Path(__file__).resolve().parents[1]
 
