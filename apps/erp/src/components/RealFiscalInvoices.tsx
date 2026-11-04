@@ -468,7 +468,7 @@ export default function RealFiscalInvoices({ controller, screen, backup }: { con
 
   if (opened) {
     const back = () => { setOpening(null); setParam({ nota: null, pedido: null, secao: null }); setReload(n => n + 1); };
-    if (opened.startsWith('origin-')) return <FiscalOriginInvoiceView key={opened} controller={controller} config={config} sourceId={opened.slice(6)} writable={writable} onBack={back} />;
+    if (opened.startsWith('origin-')) return <FiscalOriginInvoiceView key={opened} controller={controller} config={config} sourceId={opened.slice('origin-'.length)} writable={writable} onBack={back} />;
     if (opened !== 'nova' && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(opened)) return <section className="real-state-panel"><h1>Nota não encontrada</h1><button type="button" className="secondary-button" onClick={back}>Voltar à listagem</button></section>;
     // Like the emitter: a same-actor role loss hides the form but keeps a pending command for when access returns.
     const denied = <section className="real-state-panel"><h1>Nota do FAGOO não liberada</h1><p>Somente administradores e o perfil fiscal abrem as notas de homologação do FAGOO. Uma confirmação pendente fica preservada até o acesso voltar.</p><button type="button" className="secondary-button" onClick={back}>Voltar à listagem</button></section>;

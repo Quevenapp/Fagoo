@@ -244,6 +244,38 @@ const originNote = (over = {}) => ({ origin: 'origin', entity: 'nfe', source_id:
   total: '100.00', total_known: true, freight: null, contact: { name: 'Cliente Origin sintético', document: '12345678000190', ie: null, email: null, phone: null, street: null, number: null, complement: null, district: null, postal_code: null, city: null, state: 'SP', country: null },
   items: [{ code: 'P-1', description: 'Peça sintética', unit: 'UN', quantity: '2', unit_price: '50', total: '100.00', cfop: '5102', ncm: '84713012', gtin: null }], installments: [], transport: { freight_by: null, carrier: null },
   additional_info: null, xml: null, events: [], observed_at: '2026-10-20T12:00:00Z', data_mode: 'origin_mirror_readonly', writable: false, ...over });
+
+test('imported fiscal details preserve the complete source ID from direct links and list navigation', async () => {
+  const sourceId = '12345678901';
+  for (const [screen, model, direction, entity, location] of [
+    ['nfe', '55', '1', 'nfe', '/historico-fiscal?modelo=55'],
+    ['nfce', '65', '1', 'nfce', '/historico-fiscal?modelo=65'],
+    ['entrada', '55', '0', 'nfe', '/notas-entrada?origem=origin'],
+  ]) {
+    for (const direct of [true, false]) {
+      const endpoint = `/v1/notas-fiscais/origin/${entity}/${sourceId}`;
+      const note = originNote({ source_id: sourceId, entity, model, direction, access_key: null });
+      const srv = server({ rows: [originRow(1, { id: sourceId, number: 123 })], get: call => call.path === endpoint ? note : undefined });
+      const view = await mountComponent('RealFiscalInvoices.tsx', { controller: srv.controller, screen }, {
+        location: direct ? `${location}&nota=origin-${sourceId}` : location,
+        expandChildren: ['NativeListLayout', 'FiscalOriginInvoiceView'],
+      });
+      try {
+        if (!direct) {
+          component(view, 'RowMenu').props.items.find(item => item.label === 'Visualizar').onClick();
+          await view.flush();
+        }
+        assert.equal(new URLSearchParams(view.location().search).get('nota'), `origin-${sourceId}`);
+        assert.deepEqual(srv.calls.filter(call => call.path.startsWith('/v1/notas-fiscais/origin/')).map(call => call.path), [endpoint], `${screen}: exact source ID`);
+        assert.match(view.text(), /Cliente Origin sintético/);
+        assert.match(view.text(), /Peça sintética/);
+        assert.doesNotMatch(view.text(), /Nota não encontrada|Não foi possível carregar/);
+        assert.equal(srv.posts().length, 0, 'opening an imported invoice remains read-only');
+      } finally { view.unmount(); }
+    }
+  }
+});
+
 const guardPorts = () => {
   const flags = { changed: false, busy: false, bypass: 0 };
   return { flags, blocked: () => flags.bypass === 0 && (flags.changed || flags.busy), ports: { useUnsavedChanges(changed, busy) { flags.changed = changed; flags.busy = busy;
