@@ -27,9 +27,17 @@ targets:
     sources:
       - path: Fagoo
         excludes: [Resources, Panel/PanelFonts]
-    resources:
       - path: Fagoo/Resources
+        buildPhase: resources
       - path: Fagoo/Panel/PanelFonts
+        buildPhase: resources
+    preBuildScripts:
+      - name: Validate Firebase release configuration
+        script: /bin/sh "${SRCROOT}/scripts/validate-firebase.sh"
+        basedOnDependencyAnalysis: false
+        inputFiles:
+          - $(SRCROOT)/scripts/validate-firebase.sh
+          - $(SRCROOT)/Fagoo/Resources
     info:
       path: Fagoo/Info.plist
       properties:
