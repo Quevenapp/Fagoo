@@ -169,6 +169,7 @@ class CutoverTests(unittest.TestCase):
                     BACKUP.hold_adoption(self.marker, self.state, 'synthetic')
             if phase in ('COMMUNICATION_BOOTSTRAP', 'API_DEPLOY', 'COMMUNICATION_DEPLOY', 'WEB_DEPLOY'):
                 self.assertEqual(self.paused, 1)
+                self.assertEqual(json.loads(Path(command[command.index('--config') + 1]).read_text())['routes'], [])
             if phase == 'COMMUNICATION_RESUME': self.fail('Health failed; must keep engine paused')
         def fail_health(*args):
             phases.append('PUBLIC_HEALTH')
@@ -179,7 +180,7 @@ class CutoverTests(unittest.TestCase):
         with patch('sys.argv', argv), patch.object(DEPLOY, 'ROOT', self.root), patch.object(DEPLOY, 'run', side_effect=run), \
                 patch.object(DEPLOY, 'read_token', return_value='synthetic-cloudflare-private-token'), \
                 patch.object(DEPLOY, 'source_identity', return_value={'version': 'v1.0.0', 'revision': 'a' * 40}), \
-                patch.object(DEPLOY, 'check_domains'), patch.object(DEPLOY, 'verify_publication', side_effect=fail_health), \
+                patch.object(DEPLOY, 'check_domains'), patch.object(DEPLOY, 'bind_domains'), patch.object(DEPLOY, 'verify_publication', side_effect=fail_health), \
                 patch.dict(DEPLOY.communication_runtime, {'provision': lambda *args: self.state}):
             with self.assertRaisesRegex(ValueError, 'VERSION_VERIFICATION_FAILED'):
                 DEPLOY.main()

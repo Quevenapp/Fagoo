@@ -26,6 +26,7 @@ from update_config import cloudflare_credentials, source_identity
 integration_settings = runpy.run_path(str(Path(__file__).with_name('integration_config.py')))['integration_settings']
 communication_runtime = runpy.run_path(str(Path(__file__).with_name('communication_runtime.py')))
 queue_push_settings = runpy.run_path(str(Path(__file__).with_name('queue_push_config.py')))['queue_push_settings']
+cloudflare_domains = runpy.run_path(str(Path(__file__).with_name('cloudflare_domains.py')))
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -158,30 +159,43 @@ def cloudflare_get(path, token):
     return result
 
 
-def check_domains(configs, account_id, zone_id, token, get=cloudflare_get):
-    # Wrangler's non-interactive deploy replaces conflicting DNS automatically.
-    # Refuse that situation before upload instead of relying on a hidden prompt.
-    zone = get('/zones/' + zone_id, token)['result']
-    if zone.get('account', {}).get('id') != account_id or not zone.get('name'):
-        raise ValueError('CLOUDFLARE_ZONE_ACCOUNT_MISMATCH')
-    domain_response = get('/accounts/' + account_id + '/workers/domains', token)
-    domains = domain_response['result']
-    if not isinstance(domains, list) or domain_response.get('result_info', {}).get('total_count', len(domains)) > len(domains):
-        raise ValueError('CLOUDFLARE_DOMAIN_LIST_INCOMPLETE')
+def upload_configuration(config):
+    routes = config.get('routes')
+    if not isinstance(routes, list):
+        raise ValueError('CUSTOM_DOMAIN_CONFIGURATION_INVALID')
+    # A new internal engine deliberately has no public hostname. Existing
+    # domains stay attached during upload; Wrangler's publishing branch is skipped.
+    return cloudflare_domains['upload_configuration'](config) if routes else {**config, 'routes': []}
+
+
+def domain_groups(configs, default_zone):
+    groups = {}
     for config in configs:
-        hostname = config['routes'][0]['pattern']
-        if hostname != zone['name'] and not hostname.endswith('.' + zone['name']):
-            raise ValueError('APPLICATION_HOST_OUTSIDE_ZONE')
-        linked = [domain for domain in domains if domain.get('hostname') == hostname]
-        if len(linked) > 1 or any(domain.get('service') != config['name'] or domain.get('zone_id') != zone_id for domain in linked):
-            raise ValueError('CUSTOM_DOMAIN_BELONGS_TO_ANOTHER_WORKER')
-        if not linked:
-            query = urllib.parse.urlencode({'name': hostname, 'per_page': 100, 'page': 1})
-            records = get('/zones/' + zone_id + '/dns_records?' + query, token)['result']
-            if not isinstance(records, list):
-                raise ValueError('CLOUDFLARE_DNS_RESPONSE_INVALID')
-            if records:
-                raise ValueError('CUSTOM_DOMAIN_DNS_CONFLICT: remove only the intended web/API DNS records in the dashboard, then retry')
+        upload_configuration(config)
+        by_zone = {}
+        for route in config['routes']:
+            zone = route.get('zone_id', default_zone)
+            by_zone.setdefault(zone, []).append(route)
+        for zone, routes in by_zone.items():
+            groups.setdefault(zone, []).append({**config, 'routes': routes})
+    return groups
+
+
+def check_domains(configs, account_id, zone_id, token, get=cloudflare_get):
+    # Zone and ownership GETs work without DNS-read permission. DNS collision
+    # checks use the official changeset after upload, before any domain write.
+    def read(method, path, private_token, body=None):
+        if method != 'GET' or body is not None:
+            raise ValueError('CUSTOM_DOMAIN_PREFLIGHT_NOT_READ_ONLY')
+        return get(path, private_token)
+    for zone, selected in domain_groups(configs, zone_id).items():
+        cloudflare_domains['preflight_domains'](selected, account_id, zone, token, call=read)
+
+
+def bind_domains(configs, account_id, zone_id, token, call=None):
+    for zone, selected in domain_groups(configs, zone_id).items():
+        cloudflare_domains['bind_domains'](selected, account_id, zone, token,
+            **({'call': call} if call else {}))
 
 
 def inspect_build(directory, secrets):
@@ -297,8 +311,8 @@ def main():
     log_path = directory / ('deploy-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ') + '.log')
     try:
         api_path, web_path = directory / 'erp-api.json', directory / 'erp-web.json'
-        write_private(api_path, api)
-        write_private(web_path, web)
+        write_private(api_path, upload_configuration(api))
+        write_private(web_path, upload_configuration(web))
         node, npm = 'node', ('npm.cmd' if os.name == 'nt' else 'npm')
         wrangler = ROOT / 'node_modules/wrangler/bin/wrangler.js'
         if not wrangler.is_file():
@@ -328,7 +342,7 @@ def main():
                     run([node, str(wrangler), 'deploy', '--config', str(path), '--dry-run', '--outdir', str(directory / name.lower())], name, env, log, private_values)
                 if communication_enabled:
                     communication_path = directory / 'communication.json'
-                    write_private(communication_path, communication_runtime['configuration'](ROOT, values, args.account_id, communication_state))
+                    write_private(communication_path, upload_configuration(communication_runtime['configuration'](ROOT, values, args.account_id, communication_state)))
                     inspect_build(ROOT / 'workers/communication/dist', private_values)
                     run([node, str(wrangler), 'deploy', '--config', str(communication_path), '--dry-run', '--outdir', str(directory / 'communication_package')], 'COMMUNICATION_PACKAGE', env, log, private_values)
                 write_private(prepared_path, {'inputs': prepared_identity(values, api, web), 'build': build_fingerprint(ROOT / 'apps/erp/dist'),
@@ -357,7 +371,8 @@ def main():
                     private_values.append(communication_state['master_key'])
                     communication_config = communication_runtime['configuration'](ROOT, values, args.account_id, communication_state)
                     communication_path = directory / 'communication.json'
-                    write_private(communication_path, communication_config)
+                    check_domains((communication_config,), args.account_id, args.zone_id, token)
+                    write_private(communication_path, upload_configuration(communication_config))
                     descriptor, temporary = tempfile.mkstemp(prefix='communication-secrets-', suffix='.json', dir=directory)
                     communication_secrets_path = Path(temporary)
                     with os.fdopen(descriptor, 'w', encoding='utf-8') as output:
@@ -381,17 +396,20 @@ def main():
                             'COMMUNICATION_ADOPTION_PAUSE', deploy_env, log, private_values)
                     # Bootstrap without the reverse binding until the API exports the authority.
                     if not communication_state.get('deployed'):
-                        bootstrap = {**communication_config, 'services': []}
+                        bootstrap = {**upload_configuration(communication_config), 'services': []}
                         bootstrap_path = directory / 'communication-bootstrap.json'
                         write_private(bootstrap_path, bootstrap)
                         run([node, str(wrangler), 'deploy', '--config', str(bootstrap_path), '--secrets-file', str(communication_secrets_path)], 'COMMUNICATION_BOOTSTRAP', deploy_env, log, private_values)
                 run([node, str(wrangler), 'deploy', '--config', str(api_path), '--secrets-file', str(secrets_path)], 'API_DEPLOY', deploy_env, log, private_values)
+                bind_domains((api,), args.account_id, args.zone_id, token)
                 if communication_enabled:
                     run([node, str(wrangler), 'deploy', '--config', str(communication_path), '--secrets-file', str(communication_secrets_path)], 'COMMUNICATION_DEPLOY', deploy_env, log, private_values)
+                    bind_domains((communication_config,), args.account_id, args.zone_id, token)
                     communication_state['deployed'] = True
                     communication_runtime['private_write'](communication_runtime['state_path'](args.env_file), communication_state)
                 check_domains((web,), args.account_id, args.zone_id, token)
                 run([node, str(wrangler), 'deploy', '--config', str(web_path)], 'WEB_DEPLOY', deploy_env, log, private_values)
+                bind_domains((web,), args.account_id, args.zone_id, token)
                 verify_publication(values, source_identity(ROOT))
                 if communication_enabled and not args.keep_communication_paused and (Path(args.env_file).resolve().parent / 'communication-maintenance.json').exists():
                     run([sys.executable, str(ROOT / 'infra/backup-communication.py'), '--env-file', str(args.env_file),

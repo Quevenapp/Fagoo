@@ -112,16 +112,21 @@ print('CANDIDATE_IMPORT_OK')
             self.assertEqual(token, 'hidden-test-token')
             if path == '/zones/' + self.zone:
                 return {'result': {'account': {'id': account or self.account}, 'name': 'example.test'}}
-            if path == '/accounts/' + self.account + '/workers/domains':
+            if path == '/accounts/' + self.account + '/workers/domains?zone_id=' + self.zone:
                 return {'result': list(domains)}
-            self.assertIn('/dns_records?name=', path)
-            return {'result': list(records)}
+            self.fail('Preflight must not require DNS permissions: ' + path)
         return get
 
-    def test_preflight_refuses_existing_dns_instead_of_wrangler_overwrite(self):
-        with self.assertRaisesRegex(ValueError, 'CUSTOM_DOMAIN_DNS_CONFLICT'):
-            DEPLOY.check_domains((self.api, self.web), self.account, self.zone, 'hidden-test-token',
-                                 get=self.getter(records=[{'name': 'api.example.test', 'type': 'A'}]))
+    def test_preflight_uses_ownership_without_dns_and_upload_cannot_replace_domains(self):
+        DEPLOY.check_domains((self.api, self.web), self.account, self.zone, 'hidden-test-token', get=self.getter())
+        self.assertEqual(DEPLOY.upload_configuration(self.api)['routes'], [])
+        self.assertEqual(len(self.api['routes']), 1)
+        internal = {'name': 'internal-engine', 'account_id': self.account, 'routes': []}
+        self.assertEqual(DEPLOY.upload_configuration(internal), internal)
+        forbidden = lambda *args, **kwargs: self.fail('An internal engine has no public domain to bind')
+        DEPLOY.check_domains((internal,), self.account, self.zone, 'hidden-test-token', get=forbidden)
+        DEPLOY.bind_domains((internal,), self.account, self.zone, 'hidden-test-token', call=forbidden)
+
 
     def test_preflight_refuses_other_worker_and_wrong_account(self):
         with self.assertRaisesRegex(ValueError, 'CUSTOM_DOMAIN_BELONGS_TO_ANOTHER_WORKER'):
@@ -134,6 +139,31 @@ print('CANDIDATE_IMPORT_OK')
         DEPLOY.check_domains((self.api, self.web), self.account, self.zone, 'hidden-test-token', get=self.getter())
         DEPLOY.check_domains((self.api,), self.account, self.zone, 'hidden-test-token',
                              get=self.getter(domains=[{'hostname': 'api.example.test', 'service': self.api['name'], 'zone_id': self.zone}]))
+
+    def test_adopted_engine_keeps_its_original_zone_and_existing_domain_without_writing(self):
+        zone = 'c' * 32
+        engine = {'name': 'legacy-engine', 'account_id': self.account,
+                  'routes': [{'pattern': 'existing.legacy.test', 'custom_domain': True, 'zone_id': zone}]}
+        calls = []
+        def read(method, path, token, body=None):
+            calls.append((method, path))
+            self.assertEqual(method, 'GET')
+            if path == '/zones/' + zone:
+                return {'result': {'name': 'legacy.test', 'account': {'id': self.account}}}
+            self.assertEqual(path, '/accounts/' + self.account + '/workers/domains?zone_id=' + zone)
+            return {'result': [{'hostname': 'existing.legacy.test', 'service': 'legacy-engine', 'zone_id': zone}]}
+        DEPLOY.bind_domains((engine,), self.account, self.zone, 'synthetic', call=read)
+        self.assertEqual(DEPLOY.upload_configuration(engine)['routes'], [])
+        self.assertEqual(engine['routes'][0]['zone_id'], zone)
+        self.assertTrue(calls)
+
+    def test_safe_binding_checks_dns_collision_after_upload_without_overrides(self):
+        from test_cloudflare_domains import FakeCloudflare
+        fake = FakeCloudflare()
+        fake.changeset = {'added': [], 'updated': [], 'removed': [], 'conflicting': [{'hostname': self.api['routes'][0]['pattern']}]}
+        with self.assertRaisesRegex(ValueError, 'CUSTOM_DOMAIN_CONFLICT'):
+            DEPLOY.bind_domains((self.api,), self.account, self.zone, 'synthetic-private-token', call=fake)
+        self.assertNotIn('PUT', [call[0] for call in fake.calls])
 
     def test_build_inspection_detects_real_installation_secret(self):
         public = Path(self.temp.name) / 'dist'
