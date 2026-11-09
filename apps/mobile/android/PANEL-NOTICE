@@ -1,0 +1,14 @@
+Painéis e impressão FAGOO
+Copyright (c) 2026 brunovnq.
+
+PanelTheme.kt, FagooReceiptPayloads.kt e FagooThermalPrinter.kt derivam de
+Vinki_v4, commit b52d4d9238d1c71c06010b82b75399b3d45ab671. O código nativo
+próprio foi aberto por autorização expressa do titular e distribuído sob
+a licença AGPL-3.0 do FAGOO. A declaração MPL-2.0 no workspace Rust do
+Vinki não foi estendida a estes arquivos nativos, que não a declaravam.
+O runtime Rust, Quall e SQLite não são incorporados ao aplicativo FAGOO.
+
+As fontes Overpass, Atkinson Hyperlegible, B612, Anton, Archivo e Lexend
+mantêm os respectivos avisos OFL em app/src/main/assets/licencas-fontes.
+ThermalPrinterKit e Printher estão em packages/thermal-printer-kit; sua
+NOTICE e ORIGINAL-LICENSE registram a origem e a autorização de abertura.

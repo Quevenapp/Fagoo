@@ -11,3 +11,5 @@ packages/fiscal-authorization/receipt-schema/** -text
 packages/fiscal-vault/trust/** -text
 # Empty context lines in unified patches must keep their single space marker.
 workers/communication/connectors/hermes/*.patch whitespace=-blank-at-eol
+# Preserve the upstream font license text as distributed.
+apps/mobile/**/OFL-*.txt whitespace=-blank-at-eol

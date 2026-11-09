@@ -1,0 +1,7 @@
+**/build/
+**/.build/
+**/.gradle/
+**/.kotlin/
+**/.swiftpm/
+**/local.properties
+**/.DS_Store

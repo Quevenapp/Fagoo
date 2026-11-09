@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Same paths and coordinates as apps/erp/public/fagoo-mark.svg. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="40" android:viewportHeight="40">
+    <group android:translateX="4" android:translateY="4">
+        <path android:fillColor="@android:color/transparent" android:strokeColor="#B99BF3"
+            android:strokeWidth="5" android:strokeLineCap="round" android:pathData="M7,26V10a4,4 0,0 1,4 -4h15" />
+        <path android:fillColor="@android:color/transparent" android:strokeColor="#B99BF3"
+            android:strokeWidth="5" android:strokeLineCap="round" android:pathData="M14,26V18a3,3 0,0 1,3 -3h7" />
+    </group>
+    <path android:fillColor="#B99BF3" android:fillAlpha="0.55" android:pathData="M33,29a3,3 0,1 0,-6 0a3,3 0,1 0,6 0" />
+</vector>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fagoo</string>
+    <string name="channel_messages">Mensagens</string>
+    <string name="channel_messages_desc">Novas mensagens de clientes em atendimentos seus</string>
+    <string name="channel_queue">Fila de atendimento</string>
+    <string name="channel_queue_desc">Novos atendimentos aguardando e transferências</string>
+    <string name="channel_tickets">Protocolos</string>
+    <string name="channel_tickets_desc">Protocolos abertos, vencendo ou atrasados</string>
+    <string name="channel_calls">Ligações</string>
+    <string name="channel_calls_desc">Ligações de voz recebidas pelo WhatsApp</string>
+    <string name="channel_call_service">Ligação em andamento</string>
+    <string name="notification_call_incoming">Ligação recebida</string>
+    <string name="action_answer">Atender</string>
+    <string name="action_decline">Recusar</string>
+</resources>

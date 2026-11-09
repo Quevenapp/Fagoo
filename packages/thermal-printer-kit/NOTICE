@@ -1,0 +1,15 @@
+ThermalPrinterKit — distribuição integrada ao FAGOO
+Copyright (c) 2026 brunovnq.
+
+Esta cópia foi incorporada ao FAGOO em 2026-11-09 por autorização expressa do
+titular para abrir o código necessário ao aplicativo e ao kit de impressão.
+O código próprio incluído nesta distribuição passa a ser oferecido sob a
+GNU Affero General Public License, versão 3 (LICENSE).
+
+ORIGINAL-LICENSE preserva o aviso da cópia de origem. A autorização de
+distribuição acima vale para esta cópia; não remove direitos de terceiros
+nem altera licenças das dependências AndroidX, Kotlin, corrotinas ou ZXing.
+
+Foram incluídos os módulos Android, a interface Printher e o núcleo/interface
+iOS. Aplicativos de laboratório, builds, binários e ferramentas de desktop
+não fazem parte desta cópia. Os manifests foram ajustados a esse escopo.

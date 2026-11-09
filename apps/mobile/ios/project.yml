@@ -1,0 +1,92 @@
+name: Fagoo
+options:
+  bundleIdPrefix: br.com.queven
+  deploymentTarget:
+    iOS: "15.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+settings:
+  base:
+    SWIFT_VERSION: "5.10"
+    SWIFT_STRICT_CONCURRENCY: minimal
+    DEVELOPMENT_TEAM: A6AXA7CBU3
+    CODE_SIGN_STYLE: Automatic
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+packages:
+  Firebase:
+    url: https://github.com/firebase/firebase-ios-sdk
+    exactVersion: "11.6.0"
+  ThermalPrinterKit:
+    path: ../../../packages/thermal-printer-kit/ios
+targets:
+  Fagoo:
+    type: application
+    platform: iOS
+    sources:
+      - path: Fagoo
+        excludes: [Resources, Panel/PanelFonts]
+    resources:
+      - path: Fagoo/Resources
+      - path: Fagoo/Panel/PanelFonts
+    info:
+      path: Fagoo/Info.plist
+      properties:
+        CFBundleDisplayName: Fagoo
+        CFBundleName: Fagoo
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UIBackgroundModes: [remote-notification]
+        NSMicrophoneUsageDescription: "Grave mensagens de áudio para as conversas que você atende."
+        NSCameraUsageDescription: "Envie fotos e vídeos nas suas conversas."
+        NSPhotoLibraryUsageDescription: "Escolha fotos e vídeos para enviar nas suas conversas."
+        NSContactsUsageDescription: "Compartilhe um contato quando você escolher essa ação."
+        NSLocationWhenInUseUsageDescription: "Compartilhe sua localização somente quando você escolher essa ação."
+        NSBluetoothAlwaysUsageDescription: "Conecte a impressora autorizada deste painel."
+        NSLocalNetworkUsageDescription: "Localize e conecte a impressora deste painel na rede."
+        NSBonjourServices: [_printer._tcp, _pdl-datastream._tcp, _ipp._tcp]
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        FirebaseAppDelegateProxyEnabled: false
+        ITSAppUsesNonExemptEncryption: false
+    entitlements:
+      path: Fagoo/Fagoo.entitlements
+      properties:
+        aps-environment: development
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: br.com.queven.fagoo
+        TARGETED_DEVICE_FAMILY: "1,2"
+        OTHER_LDFLAGS: ["-ObjC"]
+    dependencies:
+      - package: Firebase
+        product: FirebaseMessaging
+      - package: ThermalPrinterKit
+        product: ThermalPrinterKit
+      - package: ThermalPrinterKit
+        product: Printher
+      - sdk: AVFoundation.framework
+  FagooTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: FagooTests
+    dependencies:
+      - target: Fagoo
+schemes:
+  Fagoo:
+    build:
+      targets:
+        Fagoo: all
+        FagooTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets: [FagooTests]
+    archive:
+      config: Release
