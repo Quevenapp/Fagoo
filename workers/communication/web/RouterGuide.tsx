@@ -1,3 +1,4 @@
+import {ApiDocumentationLink} from "./ApiDocumentation";
 import countersImage from "../docs/screenshots/29-router-contadores.jpg";
 import accountImage from "../docs/screenshots/30-router-conta.jpg";
 import poolImage from "../docs/screenshots/31-router-grupo.jpg";
@@ -283,7 +284,7 @@ export function RouterGuide() {
           >
             Exemplos cURL, JavaScript e Python e configuração detalhada
           </a>{" "}
-          · <a href="/api-docs">API interativa</a>
+          · <ApiDocumentationLink>Referência da API</ApiDocumentationLink>
         </p>
       </details>
       <p>

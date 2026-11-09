@@ -1,3 +1,4 @@
+import {ApiDocumentationLink} from "./ApiDocumentation";
 import mediaImage from "../docs/screenshots/26-whatsapp-midias.jpg";
 import groupsImage from "../docs/screenshots/27-whatsapp-grupos.jpg";
 import callsImage from "../docs/screenshots/28-whatsapp-ligacoes.jpg";
@@ -115,7 +116,7 @@ export function WhatsAppGuide() {
         <a href="https://github.com/Quevenapp/Wabotia/blob/main/docs/WHATSAPP.md">
           Passo a passo completo e atualização dos conectores ↗
         </a>{" "}
-        · <a href="/api-docs">Usar estes recursos pela API ↗</a>
+        · <ApiDocumentationLink>Usar estes recursos pela API ↗</ApiDocumentationLink>
       </p>
     </section>
   );

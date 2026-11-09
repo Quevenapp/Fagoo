@@ -1,4 +1,5 @@
 import { WhatsAppConversation } from "./WhatsAppConversation";
+import {ApiDocumentationLink} from './ApiDocumentation';
 import { NumberRouter } from "./NumberRouter";
 import {
   LinesPanel,
@@ -323,7 +324,7 @@ function Landing() {
         <div>
           <a href="#como-funciona">Como funciona</a>
           <a href="/install">Instalação</a>
-          <a href="/api-docs">Para desenvolvedores</a>
+          <ApiDocumentationLink>Para desenvolvedores</ApiDocumentationLink>
         </div>
         <a className="button small" href="/app">
           Abrir painel <ArrowUpRight size={16} />
@@ -577,9 +578,9 @@ function Install() {
           <a href="/app">
             Abrir painel <ArrowRight size={17} />
           </a>
-          <a href="/api-docs">
+          <ApiDocumentationLink>
             Documentação da API <Code2 size={17} />
-          </a>
+          </ApiDocumentationLink>
           <a href="/app?demo=1">
             Conhecer as telas com dados fictícios <ArrowUpRight size={17} />
           </a>
@@ -872,6 +873,7 @@ export function App({managedContext}: {managedContext?:any} = {}) {
     [form, setForm] = useState<Row>({}),
     [notice, setNotice] = useState(""),
     [error, setError] = useState(""),
+    [refreshError, setRefreshError] = useState(""),
     [busy, setBusy] = useState(false),
     [selection, setSelection] = useState<Row | null>(null),
     [contactEditing, setContactEditing] = useState(false),
@@ -931,6 +933,7 @@ export function App({managedContext}: {managedContext?:any} = {}) {
     setMobile(false);
     setSearch("");
     setError("");
+    setRefreshError("");
     setNotice("");
     setSettingsDirty(false);
     settingsDirtyRef.current = false;
@@ -956,6 +959,7 @@ export function App({managedContext}: {managedContext?:any} = {}) {
     setOverview({});
     setBots([]);
     setError("");
+    setRefreshError("");
     setNotice("");
   }
   function changeMode(mode: PanelMode) {
@@ -1034,7 +1038,7 @@ export function App({managedContext}: {managedContext?:any} = {}) {
       setNotice(success);
       return result;
     } catch (e: any) {
-      setError(e.message);
+      if(e?.name!=='AbortError')setError(e.message);
     } finally {
       setBusy(false);
     }
@@ -1151,9 +1155,10 @@ export function App({managedContext}: {managedContext?:any} = {}) {
         page === "reports" ? data : data.data || data,
         data.next_cursor || null,
       );
+      setRefreshError("");
     } catch (e: any) {
-      if (currentScope.current === loadScope && request === latestLoad.current)
-        setError(e.message);
+      if (e?.name!=='AbortError' && currentScope.current === loadScope && request === latestLoad.current)
+        setRefreshError(e.message);
     }
   }
   useEffect(() => {
@@ -1533,9 +1538,9 @@ export function App({managedContext}: {managedContext?:any} = {}) {
               />
               {overview.enabled ? "Atendimento ativo" : "Atendimento pausado"}
             </span>
-            <a href="/api-docs" title="Documentação da API">
+            <ApiDocumentationLink title="Documentação da API">
               <Code2 size={19} />
-            </a>
+            </ApiDocumentationLink>
             <span className="avatar small-avatar">{me.name[0]}</span>
           </div>
         </header>
@@ -1649,10 +1654,10 @@ export function App({managedContext}: {managedContext?:any} = {}) {
               </button>
             </div>
           )}
-          {error && (
+          {(error || refreshError) && (
             <div role="alert" className="notice error">
-              {error}
-              <button onClick={() => setError("")}>
+              {error || refreshError}
+              <button onClick={() => {setError("");setRefreshError("");}}>
                 <X size={15} />
               </button>
             </div>
@@ -1886,9 +1891,9 @@ export function App({managedContext}: {managedContext?:any} = {}) {
                       Você tem o controle. Assumir uma conversa pausa as
                       respostas da IA.
                     </span>
-                    <a href="/api-docs">
+                    <ApiDocumentationLink>
                       Conheça a API <ArrowUpRight size={14} />
-                    </a>
+                    </ApiDocumentationLink>
                   </div>
                 </>
               )}
@@ -3010,10 +3015,10 @@ export function App({managedContext}: {managedContext?:any} = {}) {
                         }
                       />
                     </section>
-                    <a className="bottom-note" href="/api-docs">
-                      <Code2 size={20} /> Abra a documentação interativa da API{" "}
+                    <ApiDocumentationLink className="bottom-note">
+                      <Code2 size={20} /> Abra a referência da API{" "}
                       <ArrowUpRight size={16} />
-                    </a>
+                    </ApiDocumentationLink>
                   </details>
                 </>
               )}

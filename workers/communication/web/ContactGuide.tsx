@@ -1,3 +1,4 @@
+import {ApiDocumentationLink} from "./ApiDocumentation";
 import agendaImage from "../docs/screenshots/23-agenda.jpg";
 
 export function ContactGuide() {
@@ -84,7 +85,7 @@ export function ContactGuide() {
         <a href="https://github.com/Quevenapp/Wabotia/blob/main/docs/CONTATOS.md">
           Guia completo da agenda ↗
         </a>{" "}
-        · <a href="/api-docs">Agenda pela API ↗</a>
+        · <ApiDocumentationLink>Agenda pela API ↗</ApiDocumentationLink>
       </p>
     </section>
   );

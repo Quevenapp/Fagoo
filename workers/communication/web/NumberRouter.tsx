@@ -1,3 +1,4 @@
+import {ApiDocumentationLink} from "./ApiDocumentation";
 import React, { useEffect, useRef, useState } from "react";
 import { NumberPolicyEditor } from "./NumberPolicyEditor";
 import { numberPolicyPresets } from "../src/number-policy";
@@ -1168,7 +1169,7 @@ export function NumberRouter({
                   reconciliação; repetir com outro número pode duplicar a
                   mensagem.
                 </p>
-                <a href="/api-docs">Abrir documentação da API</a>
+                <ApiDocumentationLink>Abrir documentação da API</ApiDocumentationLink>
               </details>
             </section>
           </>

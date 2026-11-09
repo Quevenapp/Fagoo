@@ -8,14 +8,15 @@ import workspaceCss from './workspace.css?inline';
 import setupCss from './setup-wizard.css?inline';
 import routerCss from './router-workspace.css?inline';
 import pairingCss from './pairing.css?inline';
-import {communicationPath,rawCommunicationOptions} from './fagoo-transport';
+import {communicationPath,rawCommunicationOptions,communicationFailure} from './fagoo-transport';
+import {ApiDocumentationProvider,ManagedApiDocumentation,documentationHref} from './ApiDocumentation';
 type Context={user_id:string;role:string;units:{id:string;name:string;capabilities:string[];team_ids:string[]}[]};
 type Props={controller:{communication:(path:string,options?:any)=>Promise<any>};context:Context;unitId:string;initialPage?:string};
 /** Embedded React, not another browser session. The parent owns every authenticated request. */
 export function FagooCommunication(props:Props){
  const host=useRef<HTMLDivElement>(null),[shadow,setShadow]=useState<ShadowRoot|null>(null);
  useEffect(()=>{if(host.current)setShadow(host.current.shadowRoot || host.current.attachShadow({mode:'open'}));},[]);
- return <div ref={host}>{shadow && createPortal(<><style>{(baseCss+workspaceCss+setupCss+routerCss+pairingCss).replaceAll(":root",":host")+`:host{display:block;color:#17362d;font-family:system-ui,sans-serif}.app-shell{min-height:70vh}.fagoo-managed .sidebar-bottom a,.fagoo-managed .sidebar-bottom button,.fagoo-managed button[title="Novo perfil"]{display:none}.fagoo-inbox{padding:20px}.fagoo-inbox nav{display:flex;gap:12px;margin-bottom:18px}.fagoo-inbox .work{display:grid;grid-template-columns:minmax(180px,30%) 1fr;gap:18px}.fagoo-inbox .thread{padding:12px;width:100%;text-align:left}.fagoo-inbox [role=alert]{color:#a22}@media(max-width:700px){.fagoo-inbox .work{display:block}}`}</style><Workspace key={`${props.context.user_id}:${props.unitId}`} {...props}/></>,shadow)}</div>;
+ return <div ref={host}>{shadow && createPortal(<ApiDocumentationProvider href={documentationHref(props.unitId)}><style>{(baseCss+workspaceCss+setupCss+routerCss+pairingCss).replaceAll(":root",":host")+`:host{display:block;color:#17362d;font-family:system-ui,sans-serif}.app-shell{min-height:70vh}.fagoo-managed .sidebar-bottom a,.fagoo-managed .sidebar-bottom button,.fagoo-managed button[title="Novo perfil"]{display:none}.fagoo-inbox{padding:20px}.fagoo-inbox nav{display:flex;gap:12px;margin-bottom:18px}.fagoo-inbox .work{display:grid;grid-template-columns:minmax(180px,30%) 1fr;gap:18px}.fagoo-inbox .thread{padding:12px;width:100%;text-align:left}.fagoo-inbox [role=alert]{color:#a22}@media(max-width:700px){.fagoo-inbox .work{display:block}}`}</style><Workspace key={`${props.context.user_id}:${props.unitId}`} {...props}/></ApiDocumentationProvider>,shadow)}</div>;
 }
 function Workspace({controller,context,unitId,initialPage}:Props){
  const unit=context.units.find(u=>u.id===unitId);
@@ -26,16 +27,19 @@ function Workspace({controller,context,unitId,initialPage}:Props){
   const path=(value:string)=>communicationPath(value,unitId);
   const me={id:context.user_id,name:'Usuário Fagoo',role:unit?.capabilities.includes('communication.configure')?'admin':'operator'};
   const call:any=async(value:string,method='GET',body?:unknown,signal?:AbortSignal,idempotencyKey?:string)=>{
+   try{
    if(value==='v1/me')return me;
    if(value==='v1/profiles')return [{id:unitId,name:unit?.name || 'Unidade'}];
    if(value==='v1/users')return (await controller.communication(`${prefix}/team`,{signal:lifetime.signal})).data.filter((p:any)=>p.kind==='user').map((p:any)=>({...p,role:'operator',profiles:[unitId]}));
    if(/^v1\/(applications|keys)(\/|$)/.test(value))value=prefix+value.slice(2);
-   return controller.communication(path(value),{method,body,signal:signal?AbortSignal.any([signal,lifetime.signal]):lifetime.signal,idempotencyKey:method==='GET'?undefined:idempotencyKey || crypto.randomUUID()});
+   return await controller.communication(path(value),{method,body,signal:signal?AbortSignal.any([signal,lifetime.signal]):lifetime.signal,idempotencyKey:method==='GET'?undefined:idempotencyKey || crypto.randomUUID()});
+   }catch(error){throw communicationFailure(error,method);}
   };
-  call.raw=(value:string,options:RequestInit={})=>controller.communication(path(value),{...rawCommunicationOptions(options),signal:options.signal?AbortSignal.any([options.signal,lifetime.signal]):lifetime.signal});
+  call.raw=async(value:string,options:RequestInit={})=>{try{return await controller.communication(path(value),{...rawCommunicationOptions(options),signal:options.signal?AbortSignal.any([options.signal,lifetime.signal]):lifetime.signal});}catch(error){throw communicationFailure(error,options.method || 'GET');}};
   return call;
  },[controller,context.user_id,unitId,unit,lifetime]);
  if(!unit)return <p role="alert">Unidade indisponível.</p>;
+ if(initialPage==='api-docs')return <ManagedApiDocumentation unit={unit}/>;
  if(unit.capabilities.includes('communication.configure'))return <><IntegratedSettings api={api} unitId={unitId}/><App managedContext={{api,initialPage:initialPage && !['users','contacts','system'].includes(initialPage)?initialPage:'overview'}}/></>;
  return <Inbox api={api} unit={unit} userId={context.user_id}/>;
 }
