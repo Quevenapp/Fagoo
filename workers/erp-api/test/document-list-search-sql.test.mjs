@@ -19,9 +19,11 @@ const list = (kind, params, user) => f.call(`/v1/documentos/${kind}?${new URLSea
 const ids = response => response.value.items.map(item => item.id);
 const search = conditions => JSON.stringify(conditions);
 
-test('privileges and signature: the new erp_document_list replaces the one of 268; the helpers stay closed', async () => {
+test('privileges and signature: the current erp_document_list replaces 268 and 289; the helpers stay closed', async () => {
   assert.equal(await f.scalar('select to_regprocedure($1) is null v', [`public.erp_document_list(${SIG})`]), true);
-  const sig = `public.erp_document_list(${SIG},text[],jsonb)`;
+  assert.equal(await f.scalar('select to_regprocedure($1) is null v', [`public.erp_document_list(${SIG},text[],jsonb)`]), true);
+  // 202610220007 adds the Origin/native origin filter to the 289 signature.
+  const sig = `public.erp_document_list(${SIG},text[],jsonb,text)`;
   for (const role of ['anon', 'authenticated']) assert.equal(await f.scalar("select has_function_privilege($1,$2,'EXECUTE') v", [role, sig]), false);
   assert.equal(await f.scalar("select has_function_privilege('service_role',$1,'EXECUTE') v", [sig]), true);
   for (const fn of ['erp_documents.list_conditions(text,jsonb)', 'erp_documents.list_condition_value(erp_documents.document,text)', 'erp_documents.list_condition(text,text,text,text)', 'erp_documents.list_conditions_match(erp_documents.document,jsonb)'])

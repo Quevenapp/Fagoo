@@ -16,8 +16,8 @@ const editable = doc => ({ ...f.data(doc.kind), ...Object.fromEntries(Object.ent
 
 test('privileges: the new and replaced functions run only for service_role; the internal helper for nobody; the old list signature is gone', async () => {
   for (const fn of ['public.erp_document_get(uuid,text,uuid)', 'public.erp_document_save(uuid,text,uuid,integer,uuid,jsonb)', 'public.erp_document_export(uuid,text,text,text,integer)', 'public.erp_document_history(uuid,text,uuid,uuid,text,integer)',
-    // 202610200268 adds p_service_id to the 238 signature and 202610200289 p_lots and p_custom (the current one is checked here).
-    'public.erp_document_list(uuid,text,integer,uuid,text,text,text,text,integer,text,text[],text,uuid,uuid,text,text,text,text,text,text,text,text,text,text,text,text,boolean,text[],uuid,uuid,uuid,text[],jsonb)']) {
+    // 268 adds p_service_id, 289 p_lots/p_custom, and 202610220007 p_origin (the current signature is checked here).
+    'public.erp_document_list(uuid,text,integer,uuid,text,text,text,text,integer,text,text[],text,uuid,uuid,text,text,text,text,text,text,text,text,text,text,text,text,boolean,text[],uuid,uuid,uuid,text[],jsonb,text)']) {
     const row = (await f.db.query("select p.prosecdef,p.proconfig from pg_proc p where p.oid=to_regprocedure($1)", [fn])).rows[0];
     assert.ok(row?.prosecdef, `${fn} security definer`); assert.deepEqual(row.proconfig, ['search_path=pg_catalog']);
     for (const role of ['public', 'anon', 'authenticated']) assert.equal(await f.scalar(`select has_function_privilege(${role === 'public' ? "'public'" : `'${role}'`},$1,'execute') v`, [fn]), false, `${fn} ${role}`);
@@ -26,6 +26,7 @@ test('privileges: the new and replaced functions run only for service_role; the 
   for (const fn of ['erp_documents.contact_usable(uuid,uuid)', 'erp_documents.auto_products(uuid,text,uuid,jsonb)', 'erp_documents.transitions()', 'erp_documents.editable(text)', 'erp_documents.effects_transition_allowed(text,text,text)'])
     for (const role of ['anon', 'authenticated', 'service_role']) assert.equal(await f.scalar(`select has_function_privilege('${role}',$1,'execute') v`, [fn]), false, `${fn} ${role}`);
   assert.equal(await f.scalar("select to_regprocedure('public.erp_document_list(uuid,text,integer,uuid,text,text,text,text,integer,text,text[],text,uuid,uuid,text,text,text,text,text,text,text,text,text,text,text,text,boolean,text[],uuid)') v"), null);
+  assert.equal(await f.scalar("select to_regprocedure('public.erp_document_list(uuid,text,integer,uuid,text,text,text,text,integer,text,text[],text,uuid,uuid,text,text,text,text,text,text,text,text,text,text,text,text,boolean,text[],uuid,uuid,uuid,text[],jsonb)') v"), null);
 });
 
 test('Cadastrar automaticamente produtos: the free item becomes a product for Vendas too (pedido, proposta and OS)', async () => {
