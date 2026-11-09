@@ -269,6 +269,7 @@ class Run:
     def run_api(self):
         require(self.transport == 'https', 'QA_API_REQUIRES_HTTPS')
         require(set(self.state['accounts']) == {'admin', 'operator_a', 'operator_b'}, 'QA_AUTH_PHASE_REQUIRED')
+        require(self.sql("select count(*) from fagoo_system.schema_migration where version like '202611090011%';") == '1', 'QA_BUSINESS_CONFLICT_MIGRATION_REQUIRED')
         for name in self.state['accounts']:
             self.login(name, elevate=name == 'admin')
         self.api('admin', '/v1/fagoo/setup')
@@ -282,6 +283,10 @@ class Run:
         unit_a, unit_b = self.state['unit_a'], self.state['unit_b']
         context = self.api('operator_a', '/v1/fagoo/context')
         self.check('unit_scope_context', [unit['id'] for unit in context['units']] == [unit_a])
+        membership = self.api('operator_a', '/v1/me')
+        self.check('operational_role_has_no_implicit_erp_access', membership['role'] == 'operacao' and membership['resources'] == [])
+        self.api('operator_a', '/v1/records/receivables', allowed=(403,))
+        self.check('operational_role_financial_read_denied')
         self.api('operator_a', '/v1/fagoo/setup', allowed=(403,))
         self.api('operator_a', '/v1/crm/units/' + unit_b + '/snapshot', allowed=(403,))
         self.check('admin_and_other_unit_denied')
@@ -312,7 +317,10 @@ class Run:
         before = self.sql(financial_counts)
         self.command('operator_a', 'won', path, 'opportunity.move', {'id': opportunity['id'], 'stage': 'won', 'expected_version': 1})
         self.check('crm_won_does_not_post_finance', self.sql(financial_counts) == before)
-        self.api('operator_a', path, 'POST', {'command_id': str(uuid.uuid4()), 'action': 'opportunity.move', 'payload': {'id': opportunity['id'], 'stage': 'lost', 'expected_version': 1}}, allowed=(409,))
+        if 'stale_version_probe' not in self.state:
+            self.state['stale_version_probe'] = {'command_id': str(uuid.uuid4()), 'action': 'opportunity.move', 'payload': {'id': opportunity['id'], 'stage': 'lost', 'expected_version': 1}}
+            self.save()
+        self.api('operator_a', path, 'POST', self.state['stale_version_probe'], allowed=(409,))
         self.check('crm_version_conflict')
         final = self.api('operator_a', '/v1/crm/units/' + unit_a + '/snapshot?contact_id=' + contact)
         self.check('crm_opportunity_task_visible', len(final['opportunities']) == 1 and final['opportunities'][0]['stage'] == 'won' and len(final['tasks']) == 1)

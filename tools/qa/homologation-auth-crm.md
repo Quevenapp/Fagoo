@@ -31,11 +31,14 @@ python3 tools/qa/homologation_auth_crm.py --run-id 0123456789ab --phase api --au
 ```
 
 A segunda fase cria duas unidades QA, vincula um operador a cada unidade, testa
-negação de administração e de outra unidade, cria um contato canônico sintético,
+negação de administração, de dados financeiros e de outra unidade, cria um contato canônico sintético,
 oportunidade, tarefa e histórico, confere recibo/repetição idempotente e conflito
 de versão. Marcar a oportunidade como ganha não deve criar registros financeiros.
 O contato usa o RPC de projeção local com namespace `qa`; os demais comandos
 funcionais passam pela API HTTPS. Não gera filas, impressões ou mensagens reais.
+A migração aditiva `202611090011` é obrigatória antes desta fase: conflitos
+determinísticos dos novos comandos usam `PT409`, sem solicitar o retry de
+serialização do PostgREST. A execução completa possui 356 migrações.
 
 Senhas, segredo TOTP e sessões ficam em
 `private/qa/<run-id>/credentials.json` (0600, diretório 0700). O relatório separado

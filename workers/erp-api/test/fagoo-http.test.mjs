@@ -27,3 +27,24 @@ test('panel tokens cannot enter private modules or setup and are hashed before R
  assert.equal((await invoke('/v1/fagoo/device')).status,200);
  assert.deepEqual(calls,[['fagoo_device_auth',{p_token_hash:await sha256(token)}]]);
 });
+
+test('PostgREST PT409 business conflicts reach clients as 409 without retry or database details',async()=>{
+ const unit='10000000-0000-4000-8000-000000000003',command='10000000-0000-4000-8000-000000000004';
+ for(const [path,payload,rpc] of [
+  ['/v1/fagoo/commands',{command_id:command,action:'unit.save',payload:{id:unit,name:'Stale',expected_version:0}},'fagoo_command'],
+  [`/v1/crm/units/${unit}/commands`,{command_id:command,action:'opportunity.move',payload:{id:device,stage:'won',expected_version:0}},'fagoo_crm_command'],
+  [`/v1/crm/units/${unit}/links`,{command_id:command,ticket_id:device,contact_id:actor,expected_version:0},'fagoo_relationship_link'],
+ ]){
+  let calls=0;
+  const handler=createHandler({fetchImpl:async url=>{
+   const target=new URL(url).pathname;
+   if(target==='/auth/v1/user')return Response.json({id:actor});
+   if(target.endsWith('/erp_access_gate_v2'))return Response.json({scope:'access_gate',user_id:actor,open:true,mfa_required:false,mfa_ok:true});
+   if(target.endsWith('/fagoo_context'))return Response.json({user_id:actor,role:'admin',units:[]});
+   if(target.endsWith('/'+rpc)){calls++;return Response.json({code:'PT409',message:'private_database_conflict',details:'private details',hint:null},{status:409});}
+   assert.fail('Unexpected RPC');
+  }});
+  const response=await handler(new Request('https://api.example.test'+path,{method:'POST',headers:{Authorization:'Bearer synthetic',Origin:'https://erp.example.test','Content-Type':'application/json'},body:JSON.stringify(payload)}),env);
+  assert.equal(response.status,409);assert.equal(calls,1);assert.deepEqual(await response.json(),{error:{code:'ERP_CONFLICT'}});
+ }
+});

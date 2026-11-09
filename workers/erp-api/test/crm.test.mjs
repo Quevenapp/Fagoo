@@ -30,9 +30,16 @@ test('CRM canonical SQL preserves ownership, units, stages, tasks, replay and ER
    create or replace function erp_catalog.contact_require_visible(p_user_id uuid,p_id uuid) returns void language plpgsql stable as $$begin if not erp_catalog.contact_visible_to(p_user_id,p_id) then raise exception 'hidden' using errcode='42501';end if;end $$;`);
   await f.db.exec(await readFile(new URL('../../../supabase/migrations/202611090003_fagoo_queues.sql',import.meta.url),'utf8'));
   await f.db.exec(await readFile(new URL('../../../supabase/migrations/202611090004_fagoo_crm.sql',import.meta.url),'utf8'));
+  await f.db.exec(await readFile(new URL('../../../supabase/migrations/202611090006_fagoo_consolidation.sql',import.meta.url),'utf8'));
   await f.db.exec(await readFile(new URL('../../../supabase/migrations/202611090007_fagoo_contact_sources.sql',import.meta.url),'utf8'));
   await f.db.exec(await readFile(new URL('../../../supabase/migrations/202611090008_fagoo_relationship_history.sql',import.meta.url),'utf8'));
+  const protectedSignatures=['public.fagoo_command(uuid,uuid,text,jsonb)','public.fagoo_crm_command(uuid,uuid,uuid,text,jsonb)','public.fagoo_relationship_link(uuid,uuid,uuid,uuid,uuid,integer)','public.fagoo_consolidation_import(uuid,jsonb)'];
+  const attributes=async()=>Promise.all(protectedSignatures.map(signature=>f.db.query('select proacl::text,prosecdef,provolatile,proconfig::text,proowner::text from pg_proc where oid=$1::regprocedure',[signature]).then(r=>r.rows[0])));
+  const beforeAttributes=await attributes();
+  await f.db.exec(await readFile(new URL('../../../supabase/migrations/202611090011_fagoo_business_conflicts.sql',import.meta.url),'utf8'));
+  assert.deepEqual(await attributes(),beforeAttributes,'Conflict correction must preserve function grants, owner and security attributes');
   const unit=await f.configure('unit.save',{name:'Matriz'}),other=await f.configure('unit.save',{name:'Outra'});
+  await assert.rejects(()=>f.configure('unit.save',{id:unit.id,name:'Stale',expected_version:0}),{code:'PT409'});
   const projection={p_unit_id:unit.id,p_source_namespace:'whatsapp:synthetic-line',p_source_id:'synthetic-person',p_name:'Nome do canal',p_phone:'5500000000'};
   const projected=await f.rpc('fagoo_contact_project',projection);assert.equal(projected.created,true);
   await f.db.query('update erp_catalog.record set name=$2,human_edited=true where id=$1',[projected.contact_id,'Nome revisado no ERP']);
@@ -52,7 +59,7 @@ test('CRM canonical SQL preserves ownership, units, stages, tasks, replay and ER
   await assert.rejects(()=>read(f.users.operacao,other.id),{code:'42501'});
   assert.equal((await read(f.users.vendas)).opportunities.length,0);
   await assert.rejects(()=>send('opportunity.move',{id:created.id,stage:'won',expected_version:1},{user:f.users.vendas}),{code:'42501'});
-  await assert.rejects(()=>send('opportunity.move',{id:created.id,stage:'won',expected_version:99}),{code:'40001'});
+  await assert.rejects(()=>send('opportunity.move',{id:created.id,stage:'won',expected_version:99}),{code:'PT409'});
   await send('opportunity.move',{id:created.id,stage:'won',expected_version:1});
   assert.equal((await read()).opportunities[0].stage,'won');assert.equal(await f.scalar('select count(*)::int v from erp_documents.document'),0);
   const task=await send('task.save',{title:'Retornar',contact_id:contact,owner_id:f.users.operacao,opportunity_id:created.id,due_at:'2026-11-10T12:00:00Z'});
@@ -73,7 +80,7 @@ test('CRM canonical SQL preserves ownership, units, stages, tasks, replay and ER
   const invitation=(await queueCommand('rating.request',{ticket_id:ticket.id})).result.rating_invite_id;await f.rpc('fagoo_queue_public_rating',{p_token:ticket.public_token,p_invite_id:invitation,p_stars:5,p_comment:'Avaliação sintética'});
   const linkArgs={p_user_id:f.users.operacao,p_unit_id:unit.id,p_command_id:randomUUID(),p_ticket_id:ticket.id,p_contact_id:contact,p_expected_version:0};
   assert.equal((await f.rpc('fagoo_relationship_link',linkArgs)).link.contact_id,contact);assert.equal((await f.rpc('fagoo_relationship_link',linkArgs)).replayed,true);
-  await assert.rejects(()=>f.rpc('fagoo_relationship_link',{...linkArgs,p_command_id:randomUUID()}),{code:'40001'});
+  await assert.rejects(()=>f.rpc('fagoo_relationship_link',{...linkArgs,p_command_id:randomUUID()}),{code:'PT409'});
   await assert.rejects(()=>f.rpc('fagoo_relationship_link',{...linkArgs,p_user_id:f.users.vendas,p_command_id:randomUUID()}),{code:'42501'});
   const document=randomUUID();await f.db.query("insert into erp_documents.document(id,kind,number,status,contact_id,contact_snapshot,body,total,created_by,updated_by)values($1,'sales_orders',1,'draft',$2,'{}','{}',99,$3,$3)",[document,contact,f.users.admin]);
   const history=user=>f.rpc('fagoo_relationship_history',{p_user_id:user,p_unit_id:unit.id,p_contact_id:contact});
@@ -81,5 +88,10 @@ test('CRM canonical SQL preserves ownership, units, stages, tasks, replay and ER
   assert.ok((await history(f.users.admin)).events.some(e=>e.kind==='commercial.document'&&e.href.includes(document)));
   await f.configure('member.save',{user_id:f.users.operacao,unit_id:unit.id,capabilities:['crm.read','crm.write']});relation=await history(f.users.operacao);assert.equal(relation.events.some(e=>e.kind.startsWith('queue.')),false);assert.ok(relation.events.some(e=>e.kind==='note.add'));
   await f.db.exec('set role service_role');await assert.rejects(()=>f.db.query('select * from fagoo.crm_opportunity'),{code:'42501'});await f.db.exec('reset role');
+  const importedUnit=await f.configure('unit.save',{name:'Synthetic import'});
+  const bundle={format:'fagoo-consolidation-v1',run_id:randomUUID(),unit_id:importedUnit.id,source_id:'synthetic',source_sha256:'a'.repeat(64),plan_sha256:'b'.repeat(64),archive_sha256:'c'.repeat(64),records:{},identities:[],communication:[]};
+  await f.rpc('fagoo_consolidation_import',{p_user_id:f.users.admin,p_bundle:bundle});
+  assert.equal((await f.rpc('fagoo_consolidation_import',{p_user_id:f.users.admin,p_bundle:bundle})).replayed,true);
+  await assert.rejects(()=>f.rpc('fagoo_consolidation_import',{p_user_id:f.users.admin,p_bundle:{...bundle,plan_sha256:'d'.repeat(64)}}),{code:'PT409'});
  }finally{await f.close();}
 });

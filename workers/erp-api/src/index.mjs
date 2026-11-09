@@ -210,7 +210,7 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
             ...(['financeTransfers','itauNetCredit','cnabOperationalV2'].includes(kind) ? { '55000': [409, 'ERP_CONFLICT'] } : {}),
             ...(['originProposalImport','originProposalImportV2'].includes(kind) ? { '22023': [422, 'ERP_VALIDATION_FAILED'] } : {}),
             ...(kind === 'serviceEvents' ? { '54000': [409, 'ERP_SERVICE_EVENT_LIMIT'] } : {}),
-            ...(kind === 'platform' ? { '42501': [403, 'ERP_ACCESS_DENIED'], '22023': [400, 'ERP_INVALID_INPUT'], '55000': [409, 'ERP_CONFLICT'] } : {}),
+            ...(kind === 'platform' ? { '42501': [403, 'ERP_ACCESS_DENIED'], '22023': [400, 'ERP_INVALID_INPUT'], '55000': [409, 'ERP_CONFLICT'], PT409: [409, 'ERP_CONFLICT'] } : {}),
             ...(kind === 'attachments' ? { '54000': [409, 'ERP_ATTACHMENT_QUOTA'], '55000': [503, 'ERP_ATTACHMENT_STORAGE_UNAVAILABLE'] } : {}) };
           if (problem && Object.hasOwn(errors, problem.code)) { const [status, code] = errors[problem.code], failure = new ApiError(status, code);
             // Contatos (wave C): the SQL message stays on the error only to pick an allow-listed code (catalogFailure); it is never sent.
