@@ -68,6 +68,19 @@ test('write requests require authentication and SQL errors are sanitized with ap
   }
 });
 
+test('PostgREST 16 serialization response remains a sanitized terminal ERP conflict', async () => {
+  const { handler, calls } = harness({ code: '40001', message: 'erp_catalog_version_conflict',
+    details: 'private database detail', hint: null }, 500);
+  const response = await handler(request(`/v1/cadastros/contacts/${id}/active`, 'PATCH', {
+    expected_version: 2, command_id: command, active: true,
+  }), env);
+  assert.equal(response.status, 409);
+  const body = await response.text();
+  assert.match(body, /ERP_CONFLICT/);
+  assert.doesNotMatch(body, /private|erp_catalog_version_conflict|40001/);
+  assert.equal(calls.filter(call => call.url.endsWith('/rpc/erp_catalog_set_active')).length, 1);
+});
+
 test('CORS permits writes only on native catalog routes; staging remains read-only', async () => {
   const { handler, calls } = harness();
   const preflight = (path, method, origin = 'https://erp.example.test') => new Request(`https://api.example.test${path}`, { method: 'OPTIONS', headers: { Origin: origin, 'Access-Control-Request-Method': method, 'Access-Control-Request-Headers': 'Authorization, Content-Type' } });

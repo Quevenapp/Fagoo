@@ -3,6 +3,7 @@ import hashlib
 import hmac
 import json
 from pathlib import Path
+import re
 import tempfile
 import unittest
 
@@ -49,6 +50,19 @@ class ConfigurationTests(unittest.TestCase):
 
 
 class SchemaTests(unittest.TestCase):
+    def test_rest_runtime_does_not_reintroduce_infinite_business_conflict_retries(self):
+        manifest = json.loads((ROOT / 'infra/runtime-manifest.json').read_text())
+        override = manifest['runtime_overrides']['rest']
+        compose = (ROOT / 'infra/compose.yaml').read_text()
+        service = re.search(r'(?ms)^  rest:\n(.*?)(?=^  [a-z]|\Z)', compose).group(1)
+        image = re.search(r'^    image: (.+)$', service, re.M).group(1)
+        self.assertEqual(image, override['image'])
+        self.assertRegex(image, r'^postgrest/postgrest:v16\.[0-9]+@sha256:[a-f0-9]{64}$')
+        self.assertRegex(override['previous_image'], r'^postgrest/postgrest:v14\.18@sha256:[a-f0-9]{64}$')
+        self.assertGreaterEqual(manifest['database_major'], 14)
+        self.assertIn('test: [CMD, postgrest, --ready]', service)
+        self.assertIn('PGRST_DB_SCHEMAS: public,storage', service)
+
     def test_standalone_defaults_are_opt_in_after_schema_and_never_part_of_updates(self):
         directory = ROOT / 'supabase/migrations'
         normal = program(directory)

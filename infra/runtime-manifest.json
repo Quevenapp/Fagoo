@@ -15,5 +15,13 @@
   "upstream_runtime_reference": "831d6302c7361c0a5115a91e953bdf084eb85330",
   "upstream_runtime_compose_url": "https://raw.githubusercontent.com/supabase/supabase/831d6302c7361c0a5115a91e953bdf084eb85330/docker/docker-compose.yml",
   "upstream_runtime_compose_sha256": "8a75b7bdba9dec1f21814118431ca3469c1a43f4aed542379bb3d356602a67ea",
-  "runtime_scope": "Selected database, Auth, PostgREST and Storage image versions from the referenced compose; custom loopback Caddy gateway. All deployed images are pinned by digest in infra/compose.yaml."
+  "runtime_scope": "Selected database, Auth and Storage image versions from the referenced compose; PostgREST override below; custom loopback Caddy gateway. All deployed images are pinned by digest in infra/compose.yaml.",
+  "runtime_overrides": {
+    "rest": {
+      "image": "postgrest/postgrest:v16.5@sha256:1347d7552b88f17832912c06afbf7c43209af6eeeb60834b04aae12c9bd9d5cc",
+      "previous_image": "postgrest/postgrest:v14.18@sha256:c7cd7e265a85b05248abf53f4473fcec7e327c282d0bd0cf60f1551996d09fcf",
+      "reason": "PostgREST 14 retries deterministic SQLSTATE 40001 business conflicts indefinitely; version 16 removes that retry behavior.",
+      "release_url": "https://github.com/PostgREST/postgrest/releases/tag/v16.5"
+    }
+  }
 }
