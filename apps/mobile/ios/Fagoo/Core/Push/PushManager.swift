@@ -7,10 +7,31 @@ import FirebaseMessaging
 struct PrivatePushIdentity: Equatable {
     let epoch: UUID; let loggedIn: Bool; let panel: Bool
     let user: String?; let unit: String?; let server: String?
+    var canRegister: Bool { loggedIn && !panel && user != nil && unit != nil && server != nil }
     func accepts(_ data: [AnyHashable: Any]) -> Bool {
-        loggedIn && !panel && user != nil && unit != nil && server != nil &&
+        canRegister &&
         data["user_id"] as? String == user && data["unit_id"] as? String == unit && data["server"] as? String == server
     }
+}
+/// APNs must acknowledge this human session before Firebase registration can start.
+struct PushRegistrationGate {
+    enum Action { case none, requestAPNS, fetchFCM }
+    private var pending: PrivatePushIdentity?
+    private var ready: PrivatePushIdentity?
+    static func authorized(_ status: UNAuthorizationStatus) -> Bool {
+        status == .authorized || status == .provisional || status == .ephemeral
+    }
+    mutating func next(_ identity: PrivatePushIdentity, authorization: UNAuthorizationStatus, hasAPNSToken: Bool) -> Action {
+        guard identity.canRegister, Self.authorized(authorization) else { reset(); return .none }
+        if ready == identity, hasAPNSToken { return .fetchFCM }
+        if pending == identity { return .none }
+        ready = nil; pending = identity; return .requestAPNS
+    }
+    mutating func acceptAPNS(_ identity: PrivatePushIdentity) -> Bool {
+        guard identity.canRegister, pending == identity || ready == identity else { reset(); return false }
+        pending = nil; ready = identity; return true
+    }
+    mutating func reset() { pending = nil; ready = nil }
 }
 struct PushRegistrationSnapshot {
     let origin: URL; let token: String; let device: String; let units: Set<String>
@@ -20,6 +41,8 @@ struct PushRegistrationSnapshot {
 final class PushManager: NSObject, MessagingDelegate {
     static let shared = PushManager()
     private(set) var configured = false
+    private var registrationGate = PushRegistrationGate()
+    private var registrationInFlight: PrivatePushIdentity?
     var visibleConversationId: String?
     func configure() {
         guard let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist"),
@@ -32,26 +55,41 @@ final class PushManager: NSObject, MessagingDelegate {
         guard configured, app.isLoggedIn, app.panel == nil, !app.busy else { return false }
         let accepted = (try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert,.sound,.badge])) ?? false
         guard before == identity() else { return false }
-        if accepted { UIApplication.shared.registerForRemoteNotifications(); await register() }
+        if accepted { await register() }
         return accepted
     }
-    func didRegister(_ token: Data) { if configured { Messaging.messaging().apnsToken = token; Task { await register() } } }
+    func didRegister(_ token: Data) {
+        guard configured, registrationGate.acceptAPNS(identity()) else { return }
+        Messaging.messaging().apnsToken = token
+        Task { await register() }
+    }
+    func didFailRegistration() { registrationGate.reset() }
     nonisolated func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) { Task { @MainActor in
         let app=AppContainer.shared
-        guard app.isLoggedIn, app.panel == nil, !app.busy else { return }
-        app.session.pushToken = fcmToken; await self.register()
+        guard fcmToken != nil, app.isLoggedIn, app.panel == nil, !app.busy else { return }
+        // Fetch afresh after the APNs/identity gate; never save a delayed delegate token.
+        await self.register()
     } }
     func register() async {
         let app = AppContainer.shared
         guard configured, app.isLoggedIn, app.panel == nil, !app.busy, let unit = app.profileId else { return }
-        let epoch = app.epoch
+        let before = identity()
+        let settings = await UNUserNotificationCenter.current().notificationSettings()
+        guard before == identity(), !app.busy, registrationInFlight != before else { return }
+        switch registrationGate.next(before, authorization: settings.authorizationStatus, hasAPNSToken: Messaging.messaging().apnsToken != nil) {
+        case .none: return
+        case .requestAPNS: UIApplication.shared.registerForRemoteNotifications(); return
+        case .fetchFCM: break
+        }
+        registrationInFlight = before
+        defer { if registrationInFlight == before { registrationInFlight = nil } }
         let token: String? = await withCheckedContinuation { callback in Messaging.messaging().token { token, _ in callback.resume(returning: token) } }
-        guard app.epoch == epoch, app.isLoggedIn, app.panel == nil, !app.busy, let token, let snapshot=registrationSnapshot() else { return }
+        guard before == identity(), !app.busy, let token, let snapshot=registrationSnapshot() else { return }
         do {
             let body: [String: JSONValue] = ["token":.string(token),"name":.string("Fagoo iOS"),"platform":.string("ios"),"app_version":.string("1.0.0"),"profiles":.array([.string(unit)]),"enabled":.bool(true)]
             let _: JSONValue = try await app.api.request(.put,"v1/communication/units/\(unit)/devices/\(app.session.deviceId)",body:body)
-            guard app.epoch == epoch else { await unregister(snapshot); return }; app.session.pushToken = token; app.session.registeredUnits.insert(unit)
-        } catch { if app.epoch != epoch { await unregister(snapshot) } }
+            guard before == identity() else { await unregister(snapshot); return }; app.session.pushToken = token; app.session.registeredUnits.insert(unit)
+        } catch { if before != identity() { await unregister(snapshot) } }
     }
     func registrationSnapshot() -> PushRegistrationSnapshot? {
         let app=AppContainer.shared
@@ -75,6 +113,7 @@ final class PushManager: NSObject, MessagingDelegate {
         clearAllNotifications()
     }
     func clearAllNotifications() {
+        registrationGate.reset(); registrationInFlight = nil
         let center = UNUserNotificationCenter.current(); center.removeAllDeliveredNotifications(); center.removeAllPendingNotificationRequests()
         UIApplication.shared.applicationIconBadgeNumber = 0; visibleConversationId = nil
     }

@@ -52,7 +52,13 @@ struct RootView: View {
         .overlay { if phase != .active && container.panel == nil { Color(uiColor: .systemBackground).ignoresSafeArea().overlay(Text("Fagoo").font(.title.bold())) } }
         .task(id: phase) {
             guard phase == .active else { return }
-            while !Task.isCancelled { await container.refreshTokenIfNeeded(); do { try await Task.sleep(nanoseconds: 30_000_000_000) } catch { break } }
+            await container.refreshTokenIfNeeded()
+            guard !Task.isCancelled else { return }
+            await PushManager.shared.register()
+            while !Task.isCancelled {
+                do { try await Task.sleep(nanoseconds: 30_000_000_000) } catch { break }
+                await container.refreshTokenIfNeeded()
+            }
         }
     }
 }

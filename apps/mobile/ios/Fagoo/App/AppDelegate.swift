@@ -7,6 +7,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         Task { @MainActor in PushManager.shared.configure() }; return true
     }
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) { Task { @MainActor in PushManager.shared.didRegister(deviceToken) } }
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) { Task { @MainActor in PushManager.shared.didFailRegistration() } }
     func application(_ application: UIApplication, didReceiveRemoteNotification data: [AnyHashable:Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult)->Void) {
         Task { @MainActor in completionHandler(await PushManager.shared.receive(data)) }
     }
