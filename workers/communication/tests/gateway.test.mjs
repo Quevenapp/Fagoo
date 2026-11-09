@@ -15,6 +15,18 @@ test('refuses panel identities and respects canonical authorization denial',asyn
  assert.equal((await handleCommunication({request,userId:user,deviceId:unit,env:{},rpc:()=>assert.fail()})).status,403);
  assert.equal((await handleCommunication({request,userId:user,context,env:{},rpc:()=>{throw Object.assign(Error(),{status:403,code:'ERP_ACCESS_DENIED'});}})).status,403);
 });
+test('managed web device tests pass through the canonical unit binding while standalone system push remains closed',async()=>{
+ let captured;const names=[];
+ const input={userId:user,deviceId:null,context,rpc:async(name,args)=>{names.push([name,args]);return grant;},env:{COMMUNICATION:{fetch:async request=>{captured=request;return Response.json({results:[]});}}}};
+ // This endpoint has no request payload; keep the Node runner on the same bodyless contract.
+ const response=await handleCommunication({...input,request:new Request(`https://api.test/v1/communication/units/${unit}/devices/device-test/test`,{method:'POST',headers:{Authorization:'Bearer private'}})});
+ assert.equal(response.status,200);assert.equal(new URL(captured.url).origin,'https://api.test');
+ assert.equal(new URL(captured.url).pathname,'/api/v1/profiles/legacy-profile/devices/device-test/test');
+ assert.equal(captured.headers.get('X-Fagoo-Client'),'web');assert.equal(captured.headers.get('Authorization'),null);
+ assert.deepEqual(names,[['fagoo_communication_context',{p_user_id:user,p_unit_id:unit,p_capability:'communication.read'}]]);
+ assert.equal((await handleCommunication({...input,request:new Request(`https://api.test/v1/communication/units/${unit}/system/push/test`,{method:'POST'})})).status,404);
+ assert.equal(names.length,1);
+});
 test('never grants claim using a read permission or an actor from JSON',async()=>{
  let args;await handleCommunication({request:new Request(`https://api.test/v1/communication/units/${unit}/conversations/c/actions`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'claim',user_id:'forged'})}),userId:user,context,env:{},rpc:async(name,a)=>{args=a;return {...grant,capabilities:['communication.read']};}});
  assert.equal(args.p_capability,'communication.claim');assert.equal(args.p_user_id,user);

@@ -48,4 +48,16 @@ A reversão para v14.18 reintroduz o risco nas funções legadas que ainda lanç
 
 ## Estado de aceite
 
-Patch preparado e testes locais registrados no PR. Execução real em homologação, resultados dos roteiros e recibos de imagens são evidências separadas; preencher somente após observação. Nenhuma conclusão de produção decorre desta preparação.
+Em 9/11/2026, os roteiros foram executados sequencialmente por HTTPS em `fagoo-homolog`, com PostgREST 16.5 e o mesmo conjunto sintético usado no aceite de Auth/CRM:
+
+- REST: **9/9 verificações aprovadas**. O erro legado `40001` retornou diretamente no REST e foi convertido em `409` pelo Worker, dentro do limite de 12 segundos, sem repetição indefinida. Contato, auditoria e recibo permaneceram inalterados. Foram confirmadas as recusas aos papéis anônimo/autenticado no RPC exclusivo de serviço, o bloqueio do operador no catálogo ERP e o isolamento do CRM.
+- Filas: **15/15 verificações aprovadas**. Doze emissões concorrentes produziram números únicos e contíguos; doze solicitações com o mesmo comando produziram uma única senha e recibo. Também passaram recuperação do recibo, rejeição de outro payload com o mesmo ID, isolamento entre unidades, sequência independente, chamadas sem duplicação, projeção do dispositivo sem dados privados, recusa de chats/WhatsApp/outra unidade, claim único de impressão, confirmação incerta idempotente sem reexecução e revisões ordenadas.
+
+Os recibos sanitizados foram copiados para os seguintes caminhos privados, ignorados pelo Git. Foram verificados os campos permitidos e a ausência de credenciais; seu conteúdo operacional não integra a distribuição:
+
+| Recibo local | SHA-256 |
+| --- | --- |
+| `.local/audit/homolog-postgrest-9e786a54cb21.json` | `ba496416346647a29e2df8026bcc054e5c57ca17216ee34f7b015fd9b86f0c47` |
+| `.local/audit/homolog-queues-9e786a54cb21.json` | `10386790d3c034a712c70cd73770ad34042ba77dbad554dc8f836e463947c1c1` |
+
+O dispositivo do ensaio foi somente HTTP. Não houve impressão física, áudio, envio de mensagens ou push. A confirmação incerta foi informada explicitamente; esse resultado não comprova perda real de ACK, interrupção de transporte físico ou uso por hotspot. Permanecem pendentes os ensaios de bancada, notificações reais e navegação/sessão nos aplicativos. Os resultados não promovem a v1.0.0 a produção nem comprovam todos os fluxos do ERP.

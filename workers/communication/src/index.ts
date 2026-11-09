@@ -536,7 +536,7 @@ app.post("/api/v1/devices/:id/test", async (c) => {
   );
   if (!device)
     throw new ApiError(404, "not_found", "Dispositivo não encontrado.");
-  return c.json({ results: await sendTest(c.env, [device]) });
+  return c.json({ results: await sendTest(c.env, [device], new URL(c.req.url).origin) });
 });
 app.get("/api/v1/profiles", async (c) =>
   c.json(

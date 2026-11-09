@@ -1,4 +1,4 @@
-import { managedPushAllowed } from './managed';
+import { currentGrant, managedPushAllowed } from './managed';
 import { all, one, exec } from "./db";
 import {
   type Env,
@@ -141,6 +141,7 @@ export async function sendPush(
   env: Env,
   messages: PushMessage[],
   cfg?: PushConfig,
+  beforeSend?: (message: PushMessage) => Promise<boolean>,
 ): Promise<PushResult[]> {
   if (!messages.length) return [];
   let config = cfg || (await pushConfig(env));
@@ -158,7 +159,7 @@ export async function sendPush(
         "push_not_configured",
         "Conta de serviço FCM não configurada.",
       );
-    return sendFcm(config.service_account, messages);
+    return sendFcm(config.service_account, messages, fetch, beforeSend);
   }
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -230,13 +231,15 @@ const ticketStates: Record<string, string> = {
 const stuck = new Map<string, { id: number; attempts: number }>();
 const truncate = (value: string, max: number) =>
   value.length > max ? value.slice(0, max - 1).trimEnd() + "…" : value;
-export function testMessage(device: Device): PushMessage {
+export function testMessage(device: Device, fagoo?: {userId:string;unitId:string;server:string}): PushMessage {
   return {
     token: device.token,
     platform: device.platform,
-    title: "Wabotia",
+    title: fagoo ? "Fagoo" : "Wabotia",
     body: "Notificação de teste recebida com sucesso.",
-    data: { type: "test", server: device.origin || "" },
+    data: { type: "test", server: fagoo?.server ?? device.origin ?? "",
+      ...(fagoo ? {user_id:fagoo.userId,unit_id:fagoo.unitId,profile_id:fagoo.unitId} : {}) },
+    ...(fagoo ? {data_only:true} : {}),
     priority: "normal",
     channel: "messages",
     category: "MESSAGE",
@@ -290,11 +293,40 @@ export async function applyResults(
       );
   }
 }
-export async function sendTest(env: Env, devices: Device[]) {
+export async function sendTest(env: Env, devices: Device[], server?: string) {
   if (!devices.length) return [];
+  let identity: {userId:string;unitId:string;server:string}|undefined;
+  let beforeSend: ((message:PushMessage)=>Promise<boolean>)|undefined;
+  if (env.FAGOO_MANAGED === 'true') {
+    const actor=env.FAGOO_ACTOR, grant=env.FAGOO_GRANT;
+    if (!actor?.fagoo || actor.kind!=='user' || !grant || actor.id!==grant.user_id || actor.fagoo.unitId!==grant.unit_id ||
+        actor.profiles.length!==1 || actor.profiles[0]!==grant.profile_id || !server ||
+        !/^https:\/\/[^/]+$/.test(server))
+      throw new ApiError(403,'push_not_authorized','Teste de notificação não autorizado.');
+    identity={userId:actor.id,unitId:grant.unit_id,server};
+    const capability=grant.capabilities.includes('communication.read')?'communication.read':'team.chat';
+    const allowed=async(device:Device)=>{
+      const current=await currentGrant(env,grant.profile_id,actor.id,capability);
+      if (!current || current.unit_id!==grant.unit_id) return false;
+      const registered=await one(env,'SELECT * FROM devices WHERE id=? AND user_id=? AND enabled=1',device.id,actor.id);
+      const profiles=json(registered?.profiles,[]);
+      return !!registered && registered.provider==='fcm' && registered.token===device.token &&
+        registered.platform===device.platform && registered.origin===server &&
+        Array.isArray(profiles) && profiles.includes(grant.profile_id);
+    };
+    for (const device of devices) if (!await allowed(device))
+      throw new ApiError(403,'push_not_authorized','Teste de notificação não autorizado.');
+    // OAuth may take time: recheck the current grant and registration just before FCM dispatch.
+    beforeSend=async message=>{
+      const device=devices.find(d=>d.token===message.token && d.platform===message.platform);
+      return !!device && await allowed(device);
+    };
+  }
   const results = await sendPush(
     env,
-    devices.map((d) => testMessage(d)),
+    devices.map((d) => testMessage(d,identity)),
+    undefined,
+    beforeSend,
   );
   await applyResults(
     env,

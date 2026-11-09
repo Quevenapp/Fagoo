@@ -214,6 +214,7 @@ export async function sendFcm(
   sa: ServiceAccount,
   messages: PushMessage[],
   fetchImpl: typeof fetch = fetch,
+  beforeSend?: (message: PushMessage) => Promise<boolean>,
 ): Promise<PushResult[]> {
   if (!messages.length) return [];
   let accessToken: string;
@@ -230,6 +231,14 @@ export async function sendFcm(
   const worker = async () => {
     while (next < messages.length) {
       const index = next++;
+      if (beforeSend) {
+        let allowed = false;
+        try { allowed = await beforeSend(messages[index]); } catch {}
+        if (!allowed) {
+          results[index] = {token: messages[index].token, status: "error", error: "push_not_authorized"};
+          continue;
+        }
+      }
       results[index] = await sendOne(sa, accessToken, messages[index], fetchImpl);
     }
   };
