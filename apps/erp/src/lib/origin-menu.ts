@@ -114,7 +114,7 @@ export const COMPANY_PREFERENCES: readonly PreferenceCategory[] = [
     { title: 'Tabelas e configurações adicionais', entries: [{ label: 'Alterar dados da empresa', to: '/empresa-configuracoes', description: 'Cadastro fiscal e dados gerais da empresa.' }] },
   ] },
   { id: 'sistema', label: 'Sistema', icon: 'desktop', sections: [
-    { title: 'Manutenção da instalação', entries: [{label:'Atualizações do sistema',to:'/preferencias/sistema/atualizacoes',roles:ADMIN,description:'Versão instalada, novas versões e atualização completa da sua instalação.'}] },
+    { title: 'Manutenção da instalação', entries: [{label:'Atualizações do sistema',to:'/preferencias/sistema/atualizacoes',roles:ADMIN,description:'Versão instalada, novas versões e atualização completa da sua instalação.'},{label:'Wabotia',to:'/preferencias/sistema/wabotia',roles:ADMIN,description:'Conectar atendimento e bots por código, sem copiar credenciais.'}] },
     { title: 'Configurações do sistema', entries: [page('sistema-interface')] },
     { title: 'Tabelas e configurações adicionais', entries: [
       { label: 'Consulta de exclusões realizadas', to: '/preferencias/sistema/consulta-exclusoes', roles: ADMIN }, { label: 'Gerenciador de arquivos', to: '/preferencias/sistema/gerenciador-arquivos', roles: ADMIN }, { label: 'Relatórios customizados', to: '/preferencias/sistema/relatorios-customizados', description: 'Relatórios padrão e os customizados liberados para você.' },

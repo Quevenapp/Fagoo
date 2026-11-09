@@ -771,6 +771,12 @@ export function createAccessController(auth: AuthPort, apiUrl: string, fetcher: 
       return nativeRequest('/v1/importacao-financeira-origin',path,options);
     },
     company: (path: string, options: NativeRequestOptions = {}) => nativeRequest('/v1/empresa', path, options),
+    wabotia: (path: string, options: NativeRequestOptions = {}) => {
+      if(!/^\/v1\/system\/wabotia(?:\/(?:start|poll|disconnect|forget))?$/.test(path) || (options.method??'GET')!==(path==='/v1/system/wabotia'?'GET':'POST'))return Promise.reject(new AccessError(400));
+      const requireAdmin=()=>{if(state.phase!=='ready'||state.membership?.role!=='admin')throw new AccessError(state.phase==='ready'?403:401);};
+      try{requireAdmin();}catch(error){return Promise.reject(error);}
+      return nativeRequest('/v1/system/wabotia',path,options,32768,20000,requireAdmin).then(value=>{requireAdmin();return value;});
+    },
     preferences: (path: string, options: NativeRequestOptions = {}) => {
       let captured;try{captured=capturePreferencesRequest(path,options);}catch{return Promise.reject(new AccessError(400));}
       return nativeRequest(PREFERENCES_BASE,captured.path,captured.options,PREFERENCES_RESPONSE_BYTES,15000);

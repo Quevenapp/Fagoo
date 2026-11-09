@@ -6,6 +6,7 @@ import {stockObservationsRoute,stockObservationsMethods,parseStockObservationsRo
 import {warehouseImportRoute,warehouseImportMethods,parseWarehouseImportRoute,executeWarehouseImportRoute,WarehouseImportError,WAREHOUSE_IMPORT_MAX_BYTES} from './origin-warehouse-import.mjs';
 import {stockOpeningRoute,stockOpeningMethods,parseStockOpeningRoute,executeStockOpeningRoute,StockOpeningError,STOCK_OPENING_MAX_BYTES} from './stock-opening.mjs';
 import {preferencesRoute,preferencesMethods,parsePreferencesRoute,executePreferencesRoute,PreferencesError,PREFERENCES_RESPONSE_BYTES} from './preferences.mjs';
+import {wabotiaRoute,handleWabotia} from './wabotia.mjs';
 import {itauLegacyReadinessRoute,itauLegacyReadinessMethods,parseItauLegacyReadinessRoute,executeItauLegacyReadinessRoute,ItauLegacyReadinessError,ITAU_LEGACY_MAX_BYTES} from './itau-legacy-readiness.mjs';
 import {salesHistoryRoute,salesHistoryMethods,parseSalesHistoryRoute,executeSalesHistoryRoute,SalesHistoryError,SALES_HISTORY_MAX_BYTES} from './origin-sales-history.mjs';
 import {stockReservationsMethods,parseStockReservationsRoute,executeStockReservationsRoute,StockReservationsError} from './stock-reservations.mjs';
@@ -266,7 +267,7 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
         }
         return originConnector.fetch(request, env);
       }
-      if(systemUpdateRoute(url.pathname))return handleSystemUpdate({request,env,settings,fetchImpl,authenticate:async token=>{
+      if(systemUpdateRoute(url.pathname)||wabotiaRoute(url.pathname))return (wabotiaRoute(url.pathname)?handleWabotia:handleSystemUpdate)({request,env,settings,fetchImpl,authenticate:async token=>{
         const user=await upstream(`${settings.baseUrl}/auth/v1/user`,{method:'GET',headers:{apikey:settings.key,Authorization:`Bearer ${token}`,Accept:'application/json'}},'auth');
         if(!user||typeof user.id!=='string'||!UUID.test(user.id))throw new ApiError(401,'ERP_UNAUTHENTICATED');
         if(user.is_anonymous===true)throw new ApiError(403,'ERP_FORBIDDEN');
