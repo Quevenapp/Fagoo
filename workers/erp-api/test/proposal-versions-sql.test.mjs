@@ -8,7 +8,8 @@ import { documentsEFixture } from './helpers/documents-e-fixture.mjs';
 let f;
 before(async () => { f = await documentsEFixture(); });
 after(async () => f?.close());
-const editable = doc => { const { id, kind, number, status, version, effect_flags, contact_snapshot, source_proposal_id, created_at, updated_at, totals, situation, seller_name, category_name, carrier_name,
+// Origin/authority/readonly are response metadata, never editable document input.
+const editable = doc => { const { id, kind, number, status, version, origin, authority, readonly, effect_flags, contact_snapshot, source_proposal_id, created_at, updated_at, totals, situation, seller_name, category_name, carrier_name,
   price_list_name, payment_account_name, payment_method_names, payment_account_names, proposal_version, ...data } = doc; return { ...data, items: data.items.map(({ position, gross, discount, total, product_snapshot, ...item }) => ({ ...item, id: null })),
   installments: data.installments.map(({ position, ...row }) => row) }; };
 const read = async id => (await f.call(`/v1/documentos/sales_proposals/${id}`)).value.document;

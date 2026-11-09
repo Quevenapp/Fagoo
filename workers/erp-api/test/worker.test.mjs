@@ -35,7 +35,7 @@ test('verified UUID goes to service RPC; user metadata, email and arbitrary resp
   });
   const response = await handler(request('/v1/me', { headers: { Authorization: 'Bearer synthetic-user-jwt', Origin: 'https://erp.example.test' } }), env);
   assert.equal(response.status, 200);
-  assert.deepEqual(await response.json(), { ...member, capabilities: { originIntegration: false, originHistory: false } });
+  assert.deepEqual(await response.json(), { ...member, capabilities: { originIntegration: false, originConnection: false, originHistory: false } });
   assert.equal(calls[0].headers.Authorization, 'Bearer synthetic-user-jwt');
   assert.equal(calls[1].headers.Authorization, 'Bearer synthetic-service-key');
   assert.deepEqual(JSON.parse(calls[1].body), { p_user_id: USER });
