@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def main():
     suites = [
+        ('runtime configuration and distributed schema', [sys.executable, '-m', 'unittest', 'discover', '-s', 'infra', '-p', 'test_runtime.py']),
         ('private connection configuration', [sys.executable, '-m', 'unittest', 'discover', '-s', 'infra', '-p', 'test_integration_config.py']),
         ('application publication', [sys.executable, '-m', 'unittest', 'discover', '-s', 'infra', '-p', 'test_deploy_application.py']),
         ('update and recovery', [sys.executable, '-m', 'unittest', 'discover', '-s', 'infra', '-p', 'test_system_updates.py']),

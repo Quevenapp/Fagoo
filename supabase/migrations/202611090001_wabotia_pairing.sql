@@ -1,4 +1,5 @@
 -- Integration credentials remain encrypted and accessible only by the ERP service.
+BEGIN;
 CREATE TABLE public.erp_wabotia_pairing (
  id integer PRIMARY KEY CHECK(id=1),
  cipher text NOT NULL DEFAULT '',
@@ -31,3 +32,4 @@ BEGIN
 END $$;
 REVOKE ALL ON FUNCTION public.erp_wabotia_state(text,uuid,text) FROM PUBLIC,anon,authenticated;
 GRANT EXECUTE ON FUNCTION public.erp_wabotia_state(text,uuid,text) TO service_role;
+COMMIT;
