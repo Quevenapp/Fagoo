@@ -22,6 +22,7 @@ import uuid
 from release_protocol import PROTOCOL, RELEASES, VERSION, atomic_json, digest_file, download, newer_version, verify_manifest
 from update_config import read_values, cloudflare_credentials, source_identity
 from update_pipeline import Pipeline
+from installation_scope import installation_scope
 
 ACTIVE = {'checking', 'queued', 'running'}
 UUID = re.compile(r'[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}\Z')
@@ -30,6 +31,7 @@ UUID = re.compile(r'[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}\Z')
 class Updater:
     def __init__(self, root, fetch=download, pipeline=Pipeline, restart=False):
         self.root = Path(root).resolve()
+        self.scope = installation_scope(read_values(self.root / 'private/install/.env'))
         self.home = self.root / 'private/updates'
         self.home.mkdir(parents=True, exist_ok=True, mode=0o700)
         self.public_key = self.root / 'private/update-service/release-root.pem'
@@ -174,7 +176,7 @@ class Updater:
                 finally:
                     self.action_lock.release()
                 if self.restart and self.status().get('state') == 'succeeded':
-                    subprocess.Popen(['systemctl', '--no-block', 'restart', 'fagoo-updater.service'],
+                    subprocess.Popen(['systemctl', '--no-block', 'restart', self.scope['updater_service']],
                                      stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             threading.Thread(target=task, daemon=True).start()
             return response

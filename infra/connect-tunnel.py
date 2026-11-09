@@ -22,10 +22,21 @@ import urllib.request
 import uuid
 import warnings
 
+from installation_scope import installation_scope
+from update_config import read_values
+
 SERVICE = 'fagoo-cloudflared.service'
 TOKEN_DIR = Path('/etc/fagoo/cloudflared')
 UNIT_PATH = Path('/etc/systemd/system') / SERVICE
 METRICS_PORT = 20241
+
+
+def configuration(env_file=None):
+    # Older installs can run without a runtime file. An explicitly selected
+    # missing file must fail, rather than silently target the default instance.
+    path = Path(env_file if env_file is not None else 'private/install/.env')
+    values = read_values(path) if env_file is not None or path.exists() else {}
+    return installation_scope(values)
 
 
 def extract_token(pasted, expected_id=None):
@@ -60,10 +71,11 @@ def extract_token(pasted, expected_id=None):
         raise ValueError('TUNNEL_TOKEN_INVALID') from None
 
 
-def unit_text(binary, token_path):
+def unit_text(binary, token_path, metrics_port=METRICS_PORT):
     # Fixed paths in production. Refuse systemd expansion/control characters.
     if any(not re.fullmatch(r'/[A-Za-z0-9_./-]+', str(path)) for path in [binary, token_path]):
         raise ValueError('TUNNEL_PATH_INVALID')
+    metrics_port = installation_scope({'FAGOO_TUNNEL_METRICS_PORT': str(metrics_port)})['metrics_port']
     return f'''[Unit]
 Description=FAGOO Cloudflare Tunnel connector
 After=network-online.target
@@ -72,7 +84,7 @@ Wants=network-online.target
 [Service]
 Type=notify
 TimeoutStartSec=90
-ExecStart={binary} --no-autoupdate tunnel --metrics 127.0.0.1:{METRICS_PORT} run --token-file {token_path}
+ExecStart={binary} --no-autoupdate tunnel --metrics 127.0.0.1:{metrics_port} run --token-file {token_path}
 Restart=on-failure
 RestartSec=5
 UMask=0077
@@ -90,11 +102,11 @@ WantedBy=multi-user.target
 '''
 
 
-def create_configuration(token, binary, token_dir=TOKEN_DIR, unit_path=UNIT_PATH):
+def create_configuration(token, binary, token_dir=TOKEN_DIR, unit_path=UNIT_PATH, metrics_port=METRICS_PORT):
     token_dir, unit_path = Path(token_dir), Path(unit_path)
     if token_dir.exists() or token_dir.is_symlink() or unit_path.exists() or unit_path.is_symlink():
         raise ValueError('TUNNEL_CONFIGURATION_EXISTS')
-    content = unit_text(binary, token_dir / 'token')
+    content = unit_text(binary, token_dir / 'token', metrics_port)
     token_dir.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
     token_dir.mkdir(mode=0o700)
     # Keep partial files after an I/O failure for explicit inspection; never
@@ -112,27 +124,30 @@ def command(args, timeout=15, check=True):
     return result
 
 
-def preflight():
+def preflight(scope=None):
+    scope = scope if scope is not None else installation_scope({})
+    token_dir = Path(scope['tunnel_token_dir'])
+    unit_path = Path('/etc/systemd/system') / scope['tunnel_service']
     if os.name != 'posix' or os.geteuid() != 0 or not Path('/run/systemd/system').is_dir():
         raise ValueError('ROOT_SYSTEMD_LINUX_REQUIRED')
     if not sys.stdin.isatty():
         raise ValueError('PRIVATE_TERMINAL_REQUIRED')
-    if TOKEN_DIR.exists() or TOKEN_DIR.is_symlink() or UNIT_PATH.exists() or UNIT_PATH.is_symlink():
+    if token_dir.exists() or token_dir.is_symlink() or unit_path.exists() or unit_path.is_symlink():
         raise ValueError('TUNNEL_CONFIGURATION_EXISTS')
     binary = shutil.which('cloudflared')
     if not binary or '--token-file' not in command([binary, 'tunnel', 'run', '--help']).stdout.decode('utf-8', errors='replace'):
         raise ValueError('CLOUDFLARED_TOKEN_FILE_REQUIRED')
-    state = command(['systemctl', 'show', SERVICE, '--property=LoadState', '--value']).stdout.decode().strip()
+    state = command(['systemctl', 'show', scope['tunnel_service'], '--property=LoadState', '--value']).stdout.decode().strip()
     if state != 'not-found':
         raise ValueError('TUNNEL_SERVICE_EXISTS')
     # The metrics endpoint is loopback-only and used for a non-secret readiness check.
     import socket
     with socket.socket() as probe:
         try:
-            probe.bind(('127.0.0.1', METRICS_PORT))
+            probe.bind(('127.0.0.1', scope['metrics_port']))
         except OSError:
             raise ValueError('TUNNEL_METRICS_PORT_BUSY') from None
-    with urllib.request.urlopen('http://127.0.0.1:8081/healthz', timeout=5) as response:
+    with urllib.request.urlopen(f"http://127.0.0.1:{scope['local_port']}/healthz", timeout=5) as response:
         if response.status != 200:
             raise ValueError('FAGOO_LOCAL_GATEWAY_NOT_READY')
     return binary
@@ -140,21 +155,24 @@ def preflight():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--env-file', help='Private runtime configuration (default: private/install/.env, when present).')
     parser.add_argument('--tunnel-id', help='Optional UUID shown in the Cloudflare dashboard; never a token.')
     args = parser.parse_args()
     try:
         expected_id = str(uuid.UUID(args.tunnel_id)) if args.tunnel_id else None
-        binary = preflight()
+        scope = configuration(args.env_file)
+        binary = preflight(scope)
         warnings.simplefilter('error', getpass.GetPassWarning)
         pasted = getpass.getpass('Paste the tunnel token or the copied cloudflared command (hidden): ')
         token, _ = extract_token(pasted, expected_id)
-        create_configuration(token, binary)
+        create_configuration(token, binary, Path(scope['tunnel_token_dir']),
+                             Path('/etc/systemd/system') / scope['tunnel_service'], scope['metrics_port'])
         del pasted, token
         command(['systemctl', 'daemon-reload'])
         print('Starting the tunnel connector. This can take up to 90 seconds.', flush=True)
-        command(['systemctl', 'enable', '--now', SERVICE], timeout=100)
-        command(['systemctl', 'is-active', '--quiet', SERVICE])
-        with urllib.request.urlopen(f'http://127.0.0.1:{METRICS_PORT}/ready', timeout=5) as response:
+        command(['systemctl', 'enable', '--now', scope['tunnel_service']], timeout=100)
+        command(['systemctl', 'is-active', '--quiet', scope['tunnel_service']])
+        with urllib.request.urlopen(f"http://127.0.0.1:{scope['metrics_port']}/ready", timeout=5) as response:
             if response.status != 200:
                 raise ValueError('TUNNEL_NOT_READY')
         print('Tunnel connected. Confirm Healthy in the dashboard and save its public hostname route.')

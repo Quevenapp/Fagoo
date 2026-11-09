@@ -12,6 +12,7 @@ import urllib.request
 from release_protocol import atomic_json, extract_release, digest_file
 from update_config import read_values, cloudflare_credentials
 from update_lock import UpdateLock
+from installation_scope import installation_scope
 
 
 class Pipeline:
@@ -20,6 +21,7 @@ class Pipeline:
         self.root = service.root
         self.env_file = self.root / 'private/install/.env'
         self.values = read_values(self.env_file)
+        self.scope = installation_scope(self.values)
         self.credentials_path = self.root / 'private/install/cloudflare/credentials.json'
         self.credentials = cloudflare_credentials(self.credentials_path)
         self.previous = service.current()
@@ -53,7 +55,7 @@ class Pipeline:
         return (result.stdout or b'').decode('utf-8', errors='replace').strip()
 
     def compose(self, source, *args, **kwargs):
-        return self.run(['docker', 'compose', '--project-name', 'fagoo', '--env-file', self.env_file,
+        return self.run(['docker', 'compose', '--project-name', self.scope['project'], '--env-file', self.env_file,
                          '-f', Path(source) / 'infra/compose.yaml', *args], **kwargs)
 
     def phase(self, value):
@@ -67,7 +69,8 @@ class Pipeline:
                              '-c', "select current_setting('server_version_num')::integer/10000")
         if major != str(manifest['database_major']):
             raise ValueError('DATABASE_MAJOR_UPGRADE_REFUSED')
-        self.run([sys.executable, candidate / 'infra/migrate.py', '--env-file', self.env_file, '--check-only'], cwd=candidate)
+        self.run([sys.executable, candidate / 'infra/migrate.py', '--env-file', self.env_file,
+                  '--project-name', self.scope['project'], '--check-only'], cwd=candidate)
         database = int(self.compose(self.source, 'exec', '-T', 'db', 'psql', '-X', '-At', '-U', 'postgres', '-d', 'postgres',
                                     '-c', "select pg_database_size('postgres')"))
         objects = int(self.compose(self.source, 'exec', '-T', 'storage', 'du', '-sk', '/var/lib/storage').split()[0]) * 1024
@@ -128,6 +131,7 @@ class Pipeline:
                 if communication_file.exists():
                     shutil.copy2(communication_file, self.backup / 'communication-installation.json')
                 self.run([sys.executable, self.source / 'infra/record-runtime.py', '--env-file', self.env_file,
+                          '--project-name', self.scope['project'],
                           '--output', self.backup / 'previous-runtime-images.json'])
                 atomic_json(self.maintenance, {'job': job})
                 self.service.save(recovery_required=True, backup_id=self.backup.name)
@@ -150,9 +154,11 @@ class Pipeline:
                 recovery['runtime_changed'] = True
                 atomic_json(self.backup / 'recovery.json', recovery)
                 self.compose(candidate, 'up', '-d', '--wait', '--wait-timeout', '300', 'db', 'auth', 'rest', 'storage')
-                self.run([sys.executable, candidate / 'infra/bootstrap-owner.py', '--env-file', self.env_file], cwd=candidate)
+                self.run([sys.executable, candidate / 'infra/bootstrap-owner.py', '--env-file', self.env_file,
+                          '--project-name', self.scope['project']], cwd=candidate)
                 self.phase('database')
-                self.run([sys.executable, candidate / 'infra/migrate.py', '--env-file', self.env_file], cwd=candidate)
+                self.run([sys.executable, candidate / 'infra/migrate.py', '--env-file', self.env_file,
+                          '--project-name', self.scope['project']], cwd=candidate)
                 self.phase('cloudflare')
                 self.run([sys.executable, candidate / 'infra/deploy-application.py', '--env-file', self.env_file,
                           '--account-id', self.credentials['account_id'], '--zone-id', self.credentials['zone_id'],

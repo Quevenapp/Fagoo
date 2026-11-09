@@ -15,6 +15,8 @@ from release_protocol import atomic_json, digest_file
 from update_agent import Updater
 from update_pipeline import Pipeline
 from communication_runtime import read_state, state_path, private_write, verify_backup
+from installation_scope import installation_scope
+from update_config import read_values
 
 
 def validate_recovery(root, backup_id):
@@ -102,6 +104,13 @@ def finish_communication_recovery(pipeline, backup, communication, held):
                       '--credentials-file', pipeline.credentials_path, '--resume-after-update'])
 
 
+def recovery_scope(root, backup, recovery):
+    scope = installation_scope(read_values(Path(root) / 'private/install/.env'))
+    if recovery.get('backup_complete') and installation_scope(read_values(Path(backup) / 'runtime.env'))['instance_id'] != scope['instance_id']:
+        raise ValueError('RECOVERY_INSTALLATION_SCOPE_MISMATCH')
+    return scope
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root',required=True)
@@ -117,7 +126,8 @@ def main():
     backup,recovery=validate_recovery(root,args.backup_id)
     if state.get('backup_id')!=args.backup_id:raise SystemExit('BACKUP_DOES_NOT_MATCH_INTERRUPTED_UPDATE')
     if recovery.get('runtime_changed') and not recovery.get('backup_complete'):raise SystemExit('COMPLETE_BACKUP_REQUIRED')
-    subprocess.run(['systemctl','stop','fagoo-updater.service'],check=True)
+    scope=recovery_scope(root,backup,recovery)
+    subprocess.run(['systemctl','stop',scope['updater_service']],check=True)
     service=Updater(root)
     pipeline=Pipeline(service)
     source=Path(recovery['previous']['source_dir']).resolve()
@@ -130,12 +140,14 @@ def main():
             shutil.copyfile(backup/'runtime.env', pipeline.env_file)
             os.chmod(pipeline.env_file, 0o600)
             record=json.loads((backup/'previous-runtime-images.json').read_text())
+            if record.get('project') != scope['project']:
+                raise ValueError('RECOVERY_INSTALLATION_SCOPE_MISMATCH')
             images={item['service']:item['image_id'] for item in record['containers']}
             if set(images)!={'db','auth','rest','storage','gateway'} or any(not re.fullmatch('sha256:[a-f0-9]{64}',v) for v in images.values()):
                 raise ValueError('PREVIOUS_RUNTIME_IMAGES_INVALID')
             override=backup/'recovery-images.json'
             atomic_json(override,{'services':{name:{'image':image} for name,image in images.items()}})
-            command=['docker','compose','--project-name','fagoo','--env-file',pipeline.env_file,'-f',source/'infra/compose.yaml','-f',override]
+            command=['docker','compose','--project-name',scope['project'],'--env-file',pipeline.env_file,'-f',source/'infra/compose.yaml','-f',override]
             pipeline.run([*command,'up','-d','--wait','db'])
             pipeline.run([*command,'exec','-T','db','psql','-X','-v','ON_ERROR_STOP=1','-U','supabase_admin','-d','template1','-c',
                 "ALTER DATABASE postgres ALLOW_CONNECTIONS false; SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='postgres';"])
@@ -170,7 +182,7 @@ def main():
     finally:
         pipeline.log.close()
         pipeline.log=None
-        subprocess.run(['systemctl','start','fagoo-updater.service'],check=True)
+        subprocess.run(['systemctl','start',scope['updater_service']],check=True)
 
 
 if __name__=='__main__':

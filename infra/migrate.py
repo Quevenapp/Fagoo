@@ -6,6 +6,9 @@ import re
 import subprocess
 import sys
 
+from installation_scope import project_for
+from update_config import read_values
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -51,7 +54,7 @@ def program(directory, check_only=False, initialize_standalone=False):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--env-file', default='private/install/.env')
-    parser.add_argument('--project-name', default='fagoo')
+    parser.add_argument('--project-name')
     parser.add_argument('--sql-only', action='store_true')
     parser.add_argument('--check-only', action='store_true')
     parser.add_argument('--initialize-standalone', action='store_true', help='Apply one-time defaults only to a fresh installation before creating its administrator.')
@@ -62,6 +65,7 @@ if __name__ == '__main__':
             sys.stdout.reconfigure(encoding='utf-8', newline='\n')
             sys.stdout.write(sql)
         else:
+            args.project_name = project_for(read_values(args.env_file), args.project_name)
             command = ['docker', 'compose', '--project-name', args.project_name, '--env-file', str(Path(args.env_file).resolve()), '-f', str(ROOT / 'infra/compose.yaml'), 'exec', '-T', 'db', 'psql', '-X', '-q', '-U', 'postgres', '-d', 'postgres', '-v', 'ON_ERROR_STOP=1', '-f', '-']
             # Preserve LF inside dollar-quoted function bodies on every host.
             # Text-mode stdin on Windows would silently change the pinned prosrc.

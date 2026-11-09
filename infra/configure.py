@@ -28,10 +28,13 @@ def token(secret, role):
     return (body + b'.' + encode(hmac.new(secret.encode(), body, hashlib.sha256).digest())).decode()
 
 
-def configure(destination, web_origin, backend_origin, api_origin, local_port=8081):
+def configure(destination, web_origin, backend_origin, api_origin, local_port=8081, instance_id='fagoo', metrics_port=20241):
+    from installation_scope import installation_scope
+    scope = installation_scope({'FAGOO_INSTANCE_ID': instance_id, 'FAGOO_LOCAL_PORT': str(local_port), 'FAGOO_TUNNEL_METRICS_PORT': str(metrics_port)})
     if not 1024 <= local_port <= 65535:
         raise ValueError('LOCAL_PORT_INVALID')
-    values = {'FAGOO_WEB_ORIGIN': origin(web_origin), 'FAGOO_BACKEND_ORIGIN': origin(backend_origin), 'FAGOO_API_ORIGIN': origin(api_origin), 'FAGOO_LOCAL_PORT': str(local_port)}
+    values = {'FAGOO_WEB_ORIGIN': origin(web_origin), 'FAGOO_BACKEND_ORIGIN': origin(backend_origin), 'FAGOO_API_ORIGIN': origin(api_origin),
+              'FAGOO_LOCAL_PORT': str(local_port), 'FAGOO_INSTANCE_ID': scope['instance_id'], 'FAGOO_TUNNEL_METRICS_PORT': str(scope['metrics_port'])}
     values['POSTGRES_PASSWORD'] = secrets.token_hex(32)
     values['JWT_SECRET'] = secrets.token_hex(48)
     values['FAGOO_UPDATE_AGENT_TOKEN'] = secrets.token_hex(32)
@@ -68,9 +71,11 @@ if __name__ == '__main__':
     parser.add_argument('--backend-origin', required=True)
     parser.add_argument('--api-origin', required=True)
     parser.add_argument('--local-port', type=int, default=8081)
+    parser.add_argument('--instance-id', default='fagoo')
+    parser.add_argument('--tunnel-metrics-port', type=int, default=20241)
     args = parser.parse_args()
     try:
-        configure(args.output, args.web_origin, args.backend_origin, args.api_origin, args.local_port)
+        configure(args.output, args.web_origin, args.backend_origin, args.api_origin, args.local_port, args.instance_id, args.tunnel_metrics_port)
     except (ValueError, OSError):
         raise SystemExit('CONFIGURATION_NOT_CREATED: verify origins, permissions and whether the destination already exists.')
     print('Private runtime configuration and public frontend.env created. No credentials were printed.')

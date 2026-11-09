@@ -1,4 +1,4 @@
-name: fagoo
+name: ${FAGOO_INSTANCE_ID:-fagoo}
 
 services:
   db:

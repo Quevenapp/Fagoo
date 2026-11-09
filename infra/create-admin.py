@@ -9,6 +9,9 @@ import urllib.error
 import urllib.request
 import uuid
 
+from installation_scope import project_for
+from update_config import read_values
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -32,6 +35,7 @@ def psql(env_file, project, sql):
 def create(env_file, project, email, display_name, password, request_impl=urllib.request.urlopen):
     env_file = Path(env_file).resolve()
     cfg = configuration(env_file)
+    project = project_for(cfg, project)
     if not re.fullmatch(r'[^\s@]{1,200}@[^\s@.]+(?:\.[^\s@.]+)+', email) or not 1 <= len(display_name) <= 200 or any(ord(x) < 32 for x in display_name) or len(password) < 12 or len(password) > 200:
         raise ValueError('ADMIN_INPUT_INVALID')
     # This permanent marker lives outside business data and survives later
@@ -67,7 +71,7 @@ commit;
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--env-file', default='private/install/.env')
-    parser.add_argument('--project-name', default='fagoo')
+    parser.add_argument('--project-name')
     parser.add_argument('--email', required=True)
     parser.add_argument('--name', required=True)
     args = parser.parse_args()

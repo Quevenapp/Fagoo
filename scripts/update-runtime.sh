@@ -5,18 +5,23 @@ umask 077
 task_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 cd "$task_root"
 task_env=private/install/.env
-task_project=fagoo
+task_requested_project=''
 while (($#)); do
+  (($# >= 2)) || { printf '%s\n' 'Each option requires a value.' >&2; exit 1; }
+  [[ -n "$2" ]] || { printf '%s\n' 'Each option requires a nonempty value.' >&2; exit 1; }
   case "$1" in
     --env-file) task_env=$2; shift 2 ;;
-    --project-name) task_project=$2; shift 2 ;;
+    --project-name) task_requested_project=$2; shift 2 ;;
     *) printf '%s\n' 'Unsupported argument.' >&2; exit 1 ;;
   esac
 done
-[[ -f "$task_env" && "$task_project" =~ ^[a-z0-9][a-z0-9_-]*$ ]] || { printf '%s\n' 'Existing runtime configuration is required.' >&2; exit 1; }
+[[ -f "$task_env" ]] || { printf '%s\n' 'Existing runtime configuration is required.' >&2; exit 1; }
+task_project=$(python3 infra/installation_scope.py --env-file "$task_env" --field project)
+[[ -z "$task_requested_project" || "$task_requested_project" == "$task_project" ]] || { printf '%s\n' 'The requested project differs from the persisted installation.' >&2; exit 1; }
 task_compose=(docker compose --project-name "$task_project" --env-file "$task_env" -f infra/compose.yaml)
 mkdir -p -- "$task_root/private"
-task_lock="$task_root/private/update-$task_project.lock"
+# The dashboard updater and manual updates share this lock within the same root.
+task_lock="$task_root/private/update-fagoo.lock"
 mkdir -- "$task_lock" 2>/dev/null || { printf '%s\n' 'An update lock exists. Inspect the running update before recovering a stale lock.' >&2; exit 1; }
 task_maintenance=false
 task_backup='not-created'

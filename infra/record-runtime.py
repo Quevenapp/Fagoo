@@ -7,6 +7,9 @@ from pathlib import Path
 import re
 import subprocess
 
+from installation_scope import project_for
+from update_config import read_values
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -16,6 +19,7 @@ def read(command):
 
 
 def record(env_file, project, destination):
+    project = project_for(read_values(env_file), project)
     if not re.fullmatch(r'[a-z0-9][a-z0-9_-]*', project):
         raise ValueError('RUNTIME_PROJECT_INVALID')
     compose = ['docker', 'compose', '--project-name', project, '--env-file', str(Path(env_file).resolve()), '-f', str(ROOT / 'infra/compose.yaml')]
@@ -35,7 +39,7 @@ def record(env_file, project, destination):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--env-file', default='private/install/.env')
-    parser.add_argument('--project-name', default='fagoo')
+    parser.add_argument('--project-name')
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
     try:

@@ -12,6 +12,7 @@ import tempfile
 
 from release_protocol import atomic_json
 from update_config import read_values, source_identity
+from installation_scope import installation_scope
 
 ROOT = Path(__file__).resolve().parents[1]
 LAUNCHER = '''import argparse,json,os
@@ -41,6 +42,7 @@ def prepare(root):
         raise ValueError('INSTALLATION_PATH_INVALID')
     env = root / 'private/install/.env'
     values = read_values(env)
+    installation_scope(values)
     directory = root / 'private/update-service'
     run = directory / 'run'
     run.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -95,6 +97,14 @@ WantedBy=multi-user.target
 '''
 
 
+def write_service_unit(path, content, root):
+    """An existing service belongs to this exact installation, or it cannot be replaced."""
+    path = Path(path)
+    if path.is_symlink() or (path.exists() and '\nWorkingDirectory=' + str(root) + '\n' not in path.read_text(encoding='utf-8')):
+        raise ValueError('UPDATE_SERVICE_BELONGS_TO_ANOTHER_INSTALLATION')
+    private_text(path, content)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', default=str(ROOT))
@@ -102,12 +112,15 @@ def main():
     if os.name != 'posix' or os.geteuid() != 0:
         raise SystemExit('Run with sudo on the Ubuntu server.')
     unit = prepare(args.root)
-    Path('/etc/systemd/system/fagoo-updater.service').write_text(unit, encoding='utf-8')
-    subprocess.run(['systemd-analyze', 'verify', '/etc/systemd/system/fagoo-updater.service'], check=True)
+    root = Path(args.root).resolve()
+    service = installation_scope(read_values(root / 'private/install/.env'))['updater_service']
+    unit_path = Path('/etc/systemd/system') / service
+    write_service_unit(unit_path, unit, root)
+    subprocess.run(['systemd-analyze', 'verify', str(unit_path)], check=True)
     subprocess.run(['systemctl', 'daemon-reload'], check=True)
-    subprocess.run(['systemctl', 'enable', 'fagoo-updater.service'], check=True)
-    subprocess.run(['systemctl', 'restart', 'fagoo-updater.service'], check=True)
-    subprocess.run(['systemctl', 'is-active', '--quiet', 'fagoo-updater.service'], check=True)
+    subprocess.run(['systemctl', 'enable', service], check=True)
+    subprocess.run(['systemctl', 'restart', service], check=True)
+    subprocess.run(['systemctl', 'is-active', '--quiet', service], check=True)
     print('FAGOO update service installed. Publish the application to activate the administrator panel.')
 
 
