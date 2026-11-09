@@ -183,7 +183,8 @@ import kotlinx.serialization.json.JsonObject
 @Serializable data class CallActionResult(val id: String = "", val status: String = "", val delivery_id: String? = null)
 
 @Serializable data class DeviceRegistration(
-    val platform: String = "android",
+    // Required by the API; a default would be omitted by FagooJson.encodeDefaults=false.
+    val platform: String,
     val provider: String = "fcm",
     val token: String,
     val name: String,
