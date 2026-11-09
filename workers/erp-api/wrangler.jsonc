@@ -2,7 +2,7 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "fagoo-erp-api",
-  "main": "src/index.mjs",
+  "main": "src/worker.mjs",
   "compatibility_date": "2026-10-15",
   "compatibility_flags": [
     "enable_request_signal"

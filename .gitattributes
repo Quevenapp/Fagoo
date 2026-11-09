@@ -9,3 +9,5 @@ packages/fiscal-schema/schemas/** -text
 packages/fiscal-authorization/schema/** -text
 packages/fiscal-authorization/receipt-schema/** -text
 packages/fiscal-vault/trust/** -text
+# Empty context lines in unified patches must keep their single space marker.
+workers/communication/connectors/hermes/*.patch whitespace=-blank-at-eol

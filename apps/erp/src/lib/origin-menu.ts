@@ -4,7 +4,7 @@ import { originHistoryAvailable, isOriginIntegrationRoute } from './integration-
 import { preferencePage, preferencePageHref } from '../../../../packages/erp-domain/src/preferences/catalog.mjs';
 
 export type MenuGroupName = 'Meu Negócio' | 'Cadastros' | 'Vendas' | 'Estoque' | 'Financeiro';
-export type CompanyRole = 'admin' | 'consulta' | 'financeiro' | 'vendas' | 'estoque' | 'fiscal';
+export type CompanyRole = 'admin' | 'consulta' | 'financeiro' | 'vendas' | 'estoque' | 'fiscal' | 'operacao';
 
 export interface RealTarget { to: string; roles?: readonly CompanyRole[]; resource?: string }
 export interface MenuItemDefinition { label: string; real?: RealTarget }
@@ -114,7 +114,7 @@ export const COMPANY_PREFERENCES: readonly PreferenceCategory[] = [
     { title: 'Tabelas e configurações adicionais', entries: [{ label: 'Alterar dados da empresa', to: '/empresa-configuracoes', description: 'Cadastro fiscal e dados gerais da empresa.' }] },
   ] },
   { id: 'sistema', label: 'Sistema', icon: 'desktop', sections: [
-    { title: 'Manutenção da instalação', entries: [{label:'Atualizações do sistema',to:'/preferencias/sistema/atualizacoes',roles:ADMIN,description:'Versão instalada, novas versões e atualização completa da sua instalação.'},{label:'Wabotia',to:'/preferencias/sistema/wabotia',roles:ADMIN,description:'Conectar atendimento e bots por código, sem copiar credenciais.'}] },
+    { title: 'Manutenção da instalação', entries: [{label:'Atualizações do sistema',to:'/preferencias/sistema/atualizacoes',roles:ADMIN,description:'Versão instalada, novas versões e atualização completa da sua instalação.'},{label:'Configurar Fagoo',to:'/configurar',roles:ADMIN,description:'Empresa, unidades, pessoas, dispositivos e atendimento no mesmo assistente.'}] },
     { title: 'Configurações do sistema', entries: [page('sistema-interface')] },
     { title: 'Tabelas e configurações adicionais', entries: [
       { label: 'Consulta de exclusões realizadas', to: '/preferencias/sistema/consulta-exclusoes', roles: ADMIN }, { label: 'Gerenciador de arquivos', to: '/preferencias/sistema/gerenciador-arquivos', roles: ADMIN }, { label: 'Relatórios customizados', to: '/preferencias/sistema/relatorios-customizados', description: 'Relatórios padrão e os customizados liberados para você.' },

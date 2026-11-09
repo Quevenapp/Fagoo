@@ -85,7 +85,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Falha ao preparar as dependências da release.
 
 Se um desses diretórios já existir, confira sua finalidade e use um novo caminho quando necessário. Não apague ambientes ou sobrescreva artefatos de uma publicação anterior para contornar a verificação.
 
-`install:deployment` instala as dependências fixadas na raiz, em `workers/erp-api`, `packages/fiscal-xml` e `packages/fiscal-danfe`. Apenas `npm ci` na raiz não prepara todos os pacotes necessários. Execute os testes relevantes aos módulos modificados, incluindo regressões que reproduzam a falha corrigida. Para mudanças visuais, confira também as telas e os tamanhos de viewport afetados.
+`install:deployment` instala as dependências fixadas na raiz, em `workers/erp-api`, `workers/communication`, `packages/fiscal-xml` e `packages/fiscal-danfe`. Apenas `npm ci` na raiz não prepara todos os pacotes necessários. Execute os testes relevantes aos módulos modificados, incluindo regressões que reproduzam a falha corrigida. Para mudanças visuais, confira também as telas e os tamanhos de viewport afetados.
 
 Valide o build de produção em um processo temporário, com configuração pública sintética:
 

@@ -1,0 +1,29 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {createHandler} from '../src/index.mjs';
+import {handleFagooBoundary,handleFagoo,sha256} from '../src/fagoo.mjs';
+const actor='10000000-0000-4000-8000-000000000001',device='10000000-0000-4000-8000-000000000002';
+const env={SUPABASE_DEPLOYMENT:'self-hosted',SUPABASE_URL:'https://services.example.test',SUPABASE_SERVICE_ROLE_KEY:'synthetic',ALLOWED_ORIGINS:'https://erp.example.test'};
+test('Fagoo routes enforce Auth, real MFA and context before reaching setup',async()=>{
+ for(const [mfa,origin,status] of [[false,'https://erp.example.test',403],[true,'https://evil.example',403],[true,'https://erp.example.test',200]]){
+  let read=false;
+  const handler=createHandler({fetchImpl:async url=>{
+   const path=new URL(url).pathname;
+   if(path==='/auth/v1/user')return Response.json({id:actor});
+   if(path.endsWith('/erp_access_gate_v2'))return Response.json({scope:'access_gate',user_id:actor,open:true,mfa_required:true,mfa_ok:mfa});
+   if(path.endsWith('/fagoo_context'))return Response.json({user_id:actor,role:'admin',units:[]});
+   if(path.endsWith('/fagoo_setup')){read=true;return Response.json({units:[],members:[],devices:[]});}
+   throw new Error('unexpected');
+  }});
+  const response=await handler(new Request('https://api.example.test/v1/fagoo/setup',{headers:{Authorization:'Bearer token',Origin:origin}}),env);
+  assert.equal(response.status,status);assert.equal(read,status===200);
+ }
+});
+test('panel tokens cannot enter private modules or setup and are hashed before RPC',async()=>{
+ const token='fgd_'+'a'.repeat(64),calls=[];
+ const rpc=async(name,args)=>{calls.push([name,args]);return {id:device,mode:'panel',capabilities:['panel.read']};};
+ const invoke=path=>handleFagooBoundary({request:new Request('https://api.test'+path,{headers:{Authorization:'FagooDevice '+token}}),settings:{origins:[]},env:{},authenticate:()=>assert.fail('not a user'),rpc,route:handleFagoo});
+ assert.equal((await invoke('/v1/fagoo/setup')).status,403);
+ assert.equal((await invoke('/v1/communication/units/x')).status,403);
+ assert.equal(calls.length,0);
+ assert.equal((await invoke('/v1/fagoo/device')).status,200);
+ assert.deepEqual(calls,[['fagoo_device_auth',{p_token_hash:await sha256(token)}]]);
+});

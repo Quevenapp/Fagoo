@@ -78,10 +78,18 @@ class Pipeline:
         spec = importlib.util.spec_from_file_location('fagoo_publish_preflight', Path(source) / 'infra/deploy-application.py')
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        api, web = module.configurations(self.values, self.credentials['account_id'], self.credentials['zone_id'])
+        communication = module.communication_runtime['read_state'](module.communication_runtime['state_path'](self.env_file), self.values, self.credentials['account_id']) if hasattr(module, 'communication_runtime') else None
+        api, web = module.configurations(self.values, self.credentials['account_id'], self.credentials['zone_id'], communication) if communication else module.configurations(self.values, self.credentials['account_id'], self.credentials['zone_id'])
         module.check_domains((api, web), self.credentials['account_id'], self.credentials['zone_id'], self.credentials['token'])
         result = {}
-        for config in (api, web):
+        components = [api, web]
+        if communication:
+            adopting = module.communication_runtime['adopting'](communication, self.values)
+            if adopting:
+                module.communication_runtime['verify_adoption'](communication, self.values)
+            if communication.get('deployed') or adopting:
+                components.append({'name': communication['worker']})
+        for config in components:
             value = module.cloudflare_get(f"/accounts/{self.credentials['account_id']}/workers/scripts/{config['name']}/deployments", self.credentials['token'])['result']
             deployments = value.get('deployments', []) if isinstance(value, dict) else value
             if isinstance(deployments, list):
@@ -116,6 +124,9 @@ class Pipeline:
                 atomic_json(self.backup / 'recovery.json', {'job': job, 'previous': self.previous, 'target': manifest,
                                                            'cloudflare': previous_cloudflare, 'backup_complete': False, 'runtime_changed': False})
                 shutil.copy2(self.env_file, self.backup / 'runtime.env')
+                communication_file = self.env_file.parent / 'communication.json'
+                if communication_file.exists():
+                    shutil.copy2(communication_file, self.backup / 'communication-installation.json')
                 self.run([sys.executable, self.source / 'infra/record-runtime.py', '--env-file', self.env_file,
                           '--output', self.backup / 'previous-runtime-images.json'])
                 atomic_json(self.maintenance, {'job': job})
@@ -131,6 +142,9 @@ class Pipeline:
                 recovery = json.loads((self.backup / 'recovery.json').read_text())
                 recovery['backup_complete'] = True
                 recovery['sha256'] = {name: digest_file(self.backup / name) for name in ('database.dump', 'storage.tar', 'runtime.env', 'previous-runtime-images.json')}
+                if (self.backup / 'communication-installation.json').exists():
+                    recovery['sha256']['communication-installation.json'] = digest_file(self.backup / 'communication-installation.json')
+                    recovery['communication_data_policy'] = 'preserve-live-inbox; restore only to reviewed new resources'
                 atomic_json(self.backup / 'recovery.json', recovery)
                 self.phase('runtime')
                 recovery['runtime_changed'] = True
@@ -142,12 +156,15 @@ class Pipeline:
                 self.phase('cloudflare')
                 self.run([sys.executable, candidate / 'infra/deploy-application.py', '--env-file', self.env_file,
                           '--account-id', self.credentials['account_id'], '--zone-id', self.credentials['zone_id'],
-                          '--deploy', '--prepared', '--credentials-file', self.credentials_path], cwd=candidate)
+                          '--deploy', '--prepared', '--keep-communication-paused', '--credentials-file', self.credentials_path], cwd=candidate)
                 self.phase('verification')
                 self.compose(candidate, 'up', '-d', '--wait', '--wait-timeout', '120', 'gateway')
                 self.check_public_version(manifest)
                 self.maintenance.unlink()
                 self.check_health()
+                if (self.env_file.parent / 'communication-maintenance.json').exists():
+                    self.run([sys.executable, candidate / 'infra/backup-communication.py', '--env-file', self.env_file,
+                              '--credentials-file', self.credentials_path, '--resume-after-update'], cwd=candidate)
                 installed = {'version': manifest['version'], 'revision': manifest['source_commit'], 'source_dir': str(candidate),
                              'database_major': manifest['database_major'], 'installed_at': self.service.stamp()}
                 atomic_json(state / 'installed.json', installed)

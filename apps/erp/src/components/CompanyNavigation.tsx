@@ -12,6 +12,8 @@ import type { OriginSyncController } from '../lib/origin-sync-model';
 import { NotificationsPanel, useCompanyChrome, useStoredThemeAtLogin } from './CompanyChrome';
 import { storageSummary, type SystemController } from '../lib/system-model';
 import './company-navigation.css';
+import type { FagooContext } from '../lib/fagoo-model';
+import type { ResolvedGroup } from '../lib/origin-menu';
 
 // Leva H (PRF-287, PRF-255): the help of the Brufap itself, inside the app; no external help domain.
 const COMPANY_HELP_LINKS = [{ label: 'Central de ajuda do FAGOO', to: '/ajuda', icon: 'circle-question' }, { label: 'Convivência com o Origin', to: '/ajuda/convivencia', icon: 'arrows-rotate' },
@@ -20,7 +22,7 @@ const COMPANY_HELP_LINKS = [{ label: 'Central de ajuda do FAGOO', to: '/ajuda', 
 // Company area navigation: the Origin top bar (same menu as the demo) plus the location trail.
 // Brufap-only tools live in Preferências (gear), like Origin's own settings. With a controller that offers the Sistema port,
 // the bar shows the user's name, the razão social, Armazenamento and the live notifications (migration 151).
-export default function CompanyNavigation({ state, onLogout, controller }: { state: AccessState; onLogout: () => void; controller?: Partial<SystemController> & Partial<OriginSyncController> & { preferences?: (path: string, options?: { method?: 'GET'; signal?: AbortSignal }) => Promise<unknown> } }) {
+export default function CompanyNavigation({ state, onLogout, controller, fagooContext }: { state: AccessState; onLogout: () => void; fagooContext?: FagooContext|null; controller?: Partial<SystemController> & Partial<OriginSyncController> & { preferences?: (path: string, options?: { method?: 'GET'; signal?: AbortSignal }) => Promise<unknown> } }) {
   const location = useLocation();
   const { theme, toggle } = useTheme();
   const ready = state.phase === 'ready';
@@ -30,7 +32,11 @@ export default function CompanyNavigation({ state, onLogout, controller }: { sta
   const originIntegration = ready && originIntegrationEnabled(state.membership);
   const originHistory = ready && originHistoryAvailable(state.membership);
   const access = ready && role ? { role, resources, capabilities: state.membership?.capabilities } : {};
-  const groups = useMemo(() => resolveMenu('real', access), [ready, role, resources.join(','), originIntegration, originHistory]);
+  const groups = useMemo(() => {
+    const existing=resolveMenu('real', access),caps=new Set(fagooContext?.units.flatMap(u=>u.capabilities)??[]);
+    const items=[...((caps.has('communication.read')||caps.has('team.chat'))?[{label:'Central de atendimento',to:'/atendimento'}]:[]),...(['queue.read','queue.operate','panel.read','ticket.issue'].some(c=>caps.has(c))?[{label:'Filas e painéis',to:'/filas'}]:[]),...(caps.has('crm.read')?[{label:'Relacionamento e oportunidades',to:'/crm'}]:[]),...(fagooContext&&role==='admin'?[{label:'Configurar Fagoo',to:'/configurar'}]:[])];
+    return items.length?[...existing,{name:'Meu Negócio',columns:[{title:'Fagoo',items:items.map(item=>({...item,disabled:false}))}]} as ResolvedGroup]:existing;
+  }, [ready, role, resources.join(','), originIntegration, originHistory,fagooContext]);
   const preferences = useMemo(() => resolvePreferences(access), [ready, role, originIntegration, originHistory]);
   const preferenceLinks = preferences.flatMap(category => category.entries.map(entry => ({ label: entry.label, to: entry.to })));
   const preparationPage = originHistory && ready && role === 'admin' && ['/preparacao-virada/depositos', '/preparacao-virada/depositos/estoque'].includes(location.pathname);

@@ -7,6 +7,10 @@ import {warehouseImportRoute,warehouseImportMethods,parseWarehouseImportRoute,ex
 import {stockOpeningRoute,stockOpeningMethods,parseStockOpeningRoute,executeStockOpeningRoute,StockOpeningError,STOCK_OPENING_MAX_BYTES} from './stock-opening.mjs';
 import {preferencesRoute,preferencesMethods,parsePreferencesRoute,executePreferencesRoute,PreferencesError,PREFERENCES_RESPONSE_BYTES} from './preferences.mjs';
 import {wabotiaRoute,handleWabotia} from './wabotia.mjs';
+import {fagooRoute,handleFagoo,handleFagooBoundary} from './fagoo.mjs';
+import {crmRoute,handleCrm} from './crm.mjs';
+import {queuesRoute,queuesPublicRoute,handleQueues} from './queues.mjs';
+import {communicationRoute,handleCommunication,communicationPublicRoute,forwardCommunicationPublic,runCommunicationNoticeTasks} from './communication.mjs';
 import {itauLegacyReadinessRoute,itauLegacyReadinessMethods,parseItauLegacyReadinessRoute,executeItauLegacyReadinessRoute,ItauLegacyReadinessError,ITAU_LEGACY_MAX_BYTES} from './itau-legacy-readiness.mjs';
 import {salesHistoryRoute,salesHistoryMethods,parseSalesHistoryRoute,executeSalesHistoryRoute,SalesHistoryError,SALES_HISTORY_MAX_BYTES} from './origin-sales-history.mjs';
 import {stockReservationsMethods,parseStockReservationsRoute,executeStockReservationsRoute,StockReservationsError} from './stock-reservations.mjs';
@@ -65,7 +69,7 @@ import originConnector from '../../origin-sync/src/index.mjs';
 import {catalogMirrorRoute,catalogMirrorMethods,parseCatalogMirrorRoute,executeCatalogMirrorRoute,CatalogMirrorError} from './catalog-mirror.mjs';
 import {systemUpdateRoute,handleSystemUpdate} from './system-updates.mjs';
 export const ENTITIES = Object.freeze(['contacts', 'products', 'sales_orders', 'purchase_orders', 'sales_proposals', 'receivables', 'payables', 'nfe', 'nfce']);
-const ROLES = ['admin', 'consulta', 'vendas', 'financeiro', 'estoque', 'fiscal'];
+const ROLES = ['admin', 'consulta', 'vendas', 'financeiro', 'estoque', 'fiscal', 'operacao'];
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 /** Leva H (310): session_id and aal of a token Auth has already validated (/auth/v1/user), read only to ask the database about
  * that session (auth.sessions decides aal2). Anything unreadable is a session the database cannot find: never aal2. */
@@ -258,6 +262,8 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
     try {
       const settings = config(env);
       const url = new URL(request.url);
+      // Provider signatures and durable reception remain available independently of ERP user sessions.
+      if(communicationPublicRoute(url.pathname))return forwardCommunicationPublic({request,env});
       if (['/integracao-externa', '/admin/status', '/admin/oauth/start', '/oauth/callback'].includes(url.pathname)) {
         if (env.ORIGIN_CONNECTOR_ENABLED !== 'true' || env.ORIGIN_ENABLED !== 'true') throw new ApiError(404,'ERP_NOT_FOUND');
         if (url.pathname === '/integracao-externa') {
@@ -267,6 +273,14 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
         }
         return originConnector.fetch(request, env);
       }
+      if(fagooRoute(url.pathname)||crmRoute(url.pathname)||communicationRoute(url.pathname)||queuesRoute(url.pathname))return handleFagooBoundary({request,env,settings,publicRoute:queuesPublicRoute(url.pathname),route:queuesRoute(url.pathname)?handleQueues:crmRoute(url.pathname)?handleCrm:communicationRoute(url.pathname)?handleCommunication:handleFagoo,
+        rpc:(name,args)=>upstream(`${settings.baseUrl}/rest/v1/rpc/${name}`,{method:'POST',headers:{apikey:settings.key,Authorization:`Bearer ${settings.key}`,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(args)},'platform'),
+        authenticate:async token=>{
+          const user=await upstream(`${settings.baseUrl}/auth/v1/user`,{method:'GET',headers:{apikey:settings.key,Authorization:`Bearer ${token}`,Accept:'application/json'}},'auth');
+          if(!user||!UUID.test(user.id??''))throw new ApiError(401,'ERP_UNAUTHENTICATED');
+          if(user.is_anonymous===true)throw new ApiError(403,'ERP_FORBIDDEN');
+          await accessGate(user,settings,token,true);return user.id.toLowerCase();
+        }});
       if(systemUpdateRoute(url.pathname)||wabotiaRoute(url.pathname))return (wabotiaRoute(url.pathname)?handleWabotia:handleSystemUpdate)({request,env,settings,fetchImpl,authenticate:async token=>{
         const user=await upstream(`${settings.baseUrl}/auth/v1/user`,{method:'GET',headers:{apikey:settings.key,Authorization:`Bearer ${token}`,Accept:'application/json'}},'auth');
         if(!user||typeof user.id!=='string'||!UUID.test(user.id))throw new ApiError(401,'ERP_UNAUTHENTICATED');
@@ -1017,6 +1031,10 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
 /** Leva H, lane plataforma (330): the cron of the Worker (wrangler.jsonc triggers) runs the server tasks with the service key. */
 export function createScheduled({ fetchImpl = globalThis.fetch, runTwoWay = runOriginTwoWay, collectOrigin = originConnector.scheduled } = {}) {
   return async function scheduled(_event, env) {
+    if(_event?.cron==='* * * * *'&&env.FAGOO_COMMUNICATION_ENABLED==='true'){
+      const settings=config(env);
+      return runCommunicationNoticeTasks({env,rpc:createServiceRpc({baseUrl:settings.baseUrl,key:settings.key,fetchImpl}),publicOrigin:env.FAGOO_WEB_ORIGIN});
+    }
     if (env.ERP_SCHEDULED_TASKS_ENABLED !== 'true') return { state: 'disabled' };
     const settings = config(env);
     if (_event?.cron === '*/2 * * * *') {

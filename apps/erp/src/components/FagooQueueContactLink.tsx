@@ -1,0 +1,27 @@
+import {useEffect,useRef,useState,type FormEvent} from 'react';
+import {Link} from 'react-router-dom';
+import {fagooError,type FagooPort} from '../lib/fagoo-model';
+
+type Contact={id:string;name:string;phone?:string;mobile?:string;email?:string};
+type Association={ticket_id:string;contact_id:string;version:number};
+type Command={command_id:string;ticket_id:string;contact_id:string;expected_version:number};
+type Receipt={status:string;link?:Association};
+
+/** Explicit identity association. Phone similarity never creates or merges a contact. */
+export default function FagooQueueContactLink({controller,unitId,ticketId,canWrite,connected}:{controller:Pick<FagooPort,'crm'>;unitId:string;ticketId:string;canWrite:boolean;connected:boolean}){
+ const base=`/v1/crm/units/${unitId}`,epoch=useRef(0),locked=useRef(false);
+ const[link,setLink]=useState<Association|null>(null),[loaded,setLoaded]=useState(false),[query,setQuery]=useState(''),[contacts,setContacts]=useState<Contact[]>([]),[chosen,setChosen]=useState(''),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[pending,setPending]=useState<Command|null>(null);
+ useEffect(()=>{const current=++epoch.current,abort=new AbortController();setLoaded(false);setLink(null);setContacts([]);setChosen('');setQuery('');setError('');setNotice('');setPending(null);setBusy(false);locked.current=false;
+  controller.crm(base+'/links?ticket_id='+encodeURIComponent(ticketId),{signal:abort.signal}).then(value=>{if(abort.signal.aborted||current!==epoch.current)return;const next=(value as {link:Association|null}).link;setLink(next);setChosen(next?.contact_id??'');setLoaded(true);}).catch(e=>{if(!abort.signal.aborted&&current===epoch.current)setError(fagooError(e));});
+  return()=>{abort.abort();epoch.current++;};
+ },[controller,unitId,ticketId]);
+ useEffect(()=>{if(!canWrite)return;const abort=new AbortController(),current=epoch.current,timer=setTimeout(()=>{controller.crm(base+'/contacts?query='+encodeURIComponent(query),{signal:abort.signal}).then(value=>{if(!abort.signal.aborted&&current===epoch.current)setContacts((value as {contacts:Contact[]}).contacts);}).catch(e=>{if(!abort.signal.aborted&&current===epoch.current)setError(fagooError(e));});},250);return()=>{clearTimeout(timer);abort.abort();};},[controller,unitId,ticketId,query,canWrite]);
+ function applied(receipt:Receipt){if(receipt.status!=='succeeded'||!receipt.link)throw Error('Invalid association receipt');setLink(receipt.link);setChosen(receipt.link.contact_id);setPending(null);setError('');setNotice('Contato associado ao atendimento.');}
+ async function save(event?:FormEvent){event?.preventDefault();if(locked.current||!connected||!canWrite||!loaded||!chosen)return;const current=epoch.current,command=pending??{command_id:crypto.randomUUID(),ticket_id:ticketId,contact_id:chosen,expected_version:link?.version??0};locked.current=true;setBusy(true);setPending(command);setError('');
+  try{const receipt=await controller.crm(base+'/links',{method:'POST',body:command});if(current===epoch.current)applied(receipt as Receipt);}
+  catch(e){if(current===epoch.current){setError(fagooError(e));if([400,403,404,409,422].includes((e as {status:number}).status)){setPending(null);setLoaded(false);try{const value=await controller.crm(base+'/links?ticket_id='+encodeURIComponent(ticketId));if(current===epoch.current){const next=(value as {link:Association|null}).link;setLink(next);setChosen(next?.contact_id??'');setLoaded(true);}}catch{/* Access or connectivity must be restored before another change. */}}}}
+  finally{if(current===epoch.current){locked.current=false;setBusy(false);}}
+ }
+ async function recover(){if(!pending||locked.current)return;const current=epoch.current;locked.current=true;setBusy(true);try{const receipt=await controller.crm(base+'/links/'+pending.command_id) as Receipt;if(current!==epoch.current)return;if(receipt.status==='succeeded')applied(receipt);else setNotice('A associação ainda não foi confirmada. Tentar novamente reutiliza a mesma operação.');}catch(e){if(current===epoch.current)setError(fagooError(e));}finally{if(current===epoch.current){locked.current=false;setBusy(false);}}}
+ return <section><h3>Contato do CRM</h3>{link?<p><Link to={`/crm?unit=${unitId}&contact=${link.contact_id}`}>Abrir contato e histórico de relacionamento</Link></p>:<p>Este atendimento ainda não foi associado a um contato.</p>}{error&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}{canWrite&&<form onSubmit={e=>void save(e)}><label>Buscar contato<input value={query} disabled={busy||!!pending} maxLength={120} onChange={e=>setQuery(e.target.value)} placeholder="Nome, telefone ou e-mail"/></label><label>Contato<select value={chosen} disabled={busy||!!pending} onChange={e=>setChosen(e.target.value)}><option value="">Selecione o cadastro correto</option>{chosen&&!contacts.some(c=>c.id===chosen)&&<option value={chosen}>Contato associado</option>}{contacts.map(c=><option key={c.id} value={c.id}>{c.name}{c.mobile||c.phone?` · ${c.mobile||c.phone}`:''}</option>)}</select></label><p>A associação é manual e preserva o cadastro existente.</p><button disabled={!loaded||!connected||busy||!chosen||(!pending&&chosen===link?.contact_id)}>{pending?'Tentar a mesma associação novamente':link?'Alterar contato associado':'Associar contato'}</button>{pending&&<button type="button" disabled={busy||!connected} onClick={()=>void recover()}>Consultar confirmação</button>}</form>}</section>;
+}

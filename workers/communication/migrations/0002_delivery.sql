@@ -1,0 +1,13 @@
+ALTER TABLE conversations ADD COLUMN menu_parent TEXT;
+ALTER TABLE bot_runs ADD COLUMN request_body TEXT;
+ALTER TABLE bot_runs ADD COLUMN completion_handled INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE outbox ADD COLUMN completion_handled INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE messages ADD COLUMN source_key TEXT;
+ALTER TABLE bot_runs ADD COLUMN source_key TEXT;
+CREATE UNIQUE INDEX run_source ON bot_runs(source_key) WHERE source_key IS NOT NULL;
+ALTER TABLE events ADD COLUMN source_key TEXT;
+CREATE UNIQUE INDEX event_source ON events(source_key) WHERE source_key IS NOT NULL;
+CREATE UNIQUE INDEX message_source ON messages(source_key) WHERE source_key IS NOT NULL;
+CREATE TABLE transport_receipts(id TEXT PRIMARY KEY,connection_id TEXT NOT NULL,status TEXT NOT NULL,external_id TEXT,error TEXT,created INTEGER NOT NULL);
+CREATE TABLE webhook_attempts(id INTEGER PRIMARY KEY AUTOINCREMENT,delivery_id TEXT NOT NULL,status INTEGER,error TEXT,created INTEGER NOT NULL);
+CREATE UNIQUE INDEX outbox_transport_message ON messages(conversation_id,external_id,direction) WHERE external_id IS NOT NULL AND direction='outbound';

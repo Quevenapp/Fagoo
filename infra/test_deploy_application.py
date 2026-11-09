@@ -54,9 +54,9 @@ print('CANDIDATE_IMPORT_OK')
             self.assertNotIn(self.values[key], serialized)
         self.assertEqual(public['VITE_SUPABASE_ANON_KEY'], self.values['ANON_KEY'])
         self.assertEqual(self.api['vars']['ALLOWED_ORIGINS'], self.values['FAGOO_WEB_ORIGIN'])
-        self.assertEqual(self.api['main'], str(DEPLOY.ROOT / 'workers/erp-api/src/index.mjs'))
+        self.assertEqual(self.api['main'], str(DEPLOY.ROOT / 'workers/erp-api/src/worker.mjs'))
         self.assertFalse(self.api['workers_dev'])
-        self.assertNotIn('triggers', self.api)
+        self.assertEqual(self.api['triggers']['crons'], ['* * * * *'])
 
     def test_worker_names_are_stable_per_installation(self):
         self.assertEqual((self.api, self.web), DEPLOY.configurations(self.values, self.account, self.zone))

@@ -2,12 +2,14 @@ import type {ResolvedGroup} from './origin-menu';
 
 export type WorkspaceModule={name:string;icon:string;columns:{title:string;items:{label:string;to:string}[]}[]};
 const MODULES=[
+ ['Atendimento','comments'],['Filas e painéis','desktop'],['CRM','address-book'],['Configuração','sliders'],
  ['Resultados','chart-line'],['Comercial','receipt'],['Compras','cart-shopping'],
  ['Catálogo','box'],['Estoque','warehouse'],['Financeiro','building-columns'],
  ['Fiscal','file-invoice'],['Pessoas','users'],
 ] as const;
 /** The modules each profile uses all day come first; the others keep the standard order. */
 const ROLE_FOCUS:Record<string,readonly string[]>={
+ operacao:['Atendimento','Filas e painéis','CRM'],
  vendas:['Comercial','Catálogo','Pessoas','Resultados'],
  financeiro:['Financeiro','Comercial'],
  estoque:['Estoque','Compras','Catálogo'],
@@ -24,7 +26,11 @@ export function workspaceMenu(groups:readonly ResolvedGroup[],role?:string):Work
    if(!entry.to)continue;
    const route=new URL(entry.to,'https://fagoo.invalid'),p=route.pathname,q=route.searchParams;
    let target:string;
-   if(/fiscal|nfce|notas-/.test(p))target='Fiscal';
+   if(p==='/atendimento')target='Atendimento';
+   else if(p==='/filas')target='Filas e painéis';
+   else if(p==='/crm')target='CRM';
+   else if(p==='/configurar')target='Configuração';
+   else if(/fiscal|nfce|notas-/.test(p))target='Fiscal';
    else if(q.get('tipo')==='purchase_orders'||/compras|recebimentos/.test(p)||q.get('painel')==='sugestao')target='Compras';
    else if(p==='/cadastros-reais')target=q.get('cadastro')==='products'?'Catálogo':q.get('cadastro')==='warehouses'?'Estoque':'Pessoas';
    else if(/contatos|vendedores|funcionarios|funcionários/.test(p)||entry.label==='Fornecedores')target='Pessoas';

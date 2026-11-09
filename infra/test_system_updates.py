@@ -241,7 +241,7 @@ class UpdateTests(unittest.TestCase):
         api, _ = DEPLOY.configurations(read_values(path), 'a' * 32, 'b' * 32)
         self.assertEqual(api['vars']['ORIGIN_CONNECTION_MODE'], 'bidirectional')
         self.assertEqual(api['vars']['ORIGIN_WRITE_ENABLED'], 'true')
-        self.assertEqual(api['triggers']['crons'], ['*/2 * * * *'])
+        self.assertEqual(api['triggers']['crons'], ['*/2 * * * *', '* * * * *'])
         for secret in expected['secrets'].values():
             self.assertNotIn(secret, json.dumps(api))
 

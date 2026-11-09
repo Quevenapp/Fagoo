@@ -1,0 +1,8 @@
+Wabotia - Copyright (c) 2026 Quevenapp contributors.
+Regras de atendimento e extensão de entrada exclusiva derivadas do WABABOTAI (MIT).
+Hermes Agent é um projeto independente da NousResearch (MIT), usado como serviço externo.
+As extensões em connectors/hermes foram preparadas para a revisão Hermes
+0e427d788d253630d38a3a51cd76849e73cd6925; atualizações exigem revalidação.
+Baileys, Hono, React, Lucide, Mammoth, unpdf e ferramentas Cloudflare preservam
+suas respectivas licenças distribuídas nos pacotes npm.
+Wabotia não é afiliado à Cloudflare, Meta, Telegram ou NousResearch.

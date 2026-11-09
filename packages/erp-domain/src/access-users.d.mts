@@ -1,4 +1,4 @@
-export type AccessRole='admin'|'consulta'|'vendas'|'financeiro'|'estoque'|'fiscal';
+export type AccessRole='admin'|'consulta'|'vendas'|'financeiro'|'estoque'|'fiscal'|'operacao';
 export type UserStatus='ativo'|'inativo'|'sem_acesso';
 export type UserFilter='todos'|UserStatus;
 export type UserTypeFilter='todos'|'normal'|'contador';

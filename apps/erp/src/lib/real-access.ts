@@ -36,8 +36,8 @@ export const RESOURCE_LABELS = {
   receivables: 'Contas a receber', payables: 'Contas a pagar', nfe: 'NF-e · modelo 55', nfce: 'NFC-e · modelo 65',
 } as const;
 export type Entity = keyof typeof RESOURCE_LABELS;
-export type AccessRole = 'admin' | 'consulta' | 'vendas' | 'financeiro' | 'estoque' | 'fiscal';
-export const ROLE_LABELS: Record<AccessRole, string> = { admin: 'Administrador', consulta: 'Consulta', vendas: 'Vendas', financeiro: 'Financeiro', estoque: 'Estoque', fiscal: 'Fiscal' };
+export type AccessRole = 'admin' | 'consulta' | 'vendas' | 'financeiro' | 'estoque' | 'fiscal' | 'operacao';
+export const ROLE_LABELS: Record<AccessRole, string> = { admin: 'Administrador', consulta: 'Consulta', vendas: 'Vendas', financeiro: 'Financeiro', estoque: 'Estoque', fiscal: 'Fiscal', operacao: 'Atendimento e operação' };
 export interface Membership { user_id: string; role: AccessRole; resources: Entity[]; data_mode: 'staging_readonly'; capabilities?: { originIntegration: boolean; originHistory?: boolean; originConnection?: boolean } }
 export interface Summary {
   id: string; entity: Entity; name: string | null; code: string | null; number: string | null;
@@ -70,6 +70,7 @@ export class AccessError extends Error {
   constructor(status: number, code?: string, field?: string) { super('access_request_failed'); this.status = status; this.code = code; if (field) this.field = field; }
 }
 export type NativeRequestOptions = { method?: 'GET' | 'POST' | 'PATCH'; body?: unknown; signal?: AbortSignal };
+export type CommunicationRequestOptions = {method?:'GET'|'POST'|'PUT'|'PATCH'|'DELETE';body?:unknown;signal?:AbortSignal;idempotencyKey?:string;rawResponse?:boolean;contentType?:string};
 export type A1RequestOptions = { method?: 'GET' | 'POST'; body?: Uint8Array | Record<string, unknown>; signal?: AbortSignal };
 export type AttachmentRequestOptions = { method?: 'GET' | 'POST' | 'PUT'; body?: unknown; contentType?: string; download?: boolean; signal?: AbortSignal };
 async function limitedBytes(response: Response, limit: number) {
@@ -297,6 +298,37 @@ export function createAccessController(auth: AuthPort, apiUrl: string, fetcher: 
       if (stopped || current !== generation || controller.signal.aborted) throw new DOMException('Request cancelled', 'AbortError');
       throw handleAccessFailure(error,bearer,credential);
     } finally { requests.delete(controller);options.signal?.removeEventListener('abort', abort); }
+  };
+  const communicationRequest = async (path:string, options:CommunicationRequestOptions={}):Promise<unknown> => {
+    if(!token||state.phase!=='ready'||stopped)throw new AccessError(401);
+    const pathname=path.split('?')[0];
+    if(!path.startsWith('/v1/communication/')||path.includes('#')||pathname.includes('\\')||/%(?:2e|2f|5c)/i.test(pathname)||pathname.split('/').some(p=>p==='.'||p==='..'))throw new AccessError(400);
+    const method=options.method??'GET';
+    if(!['GET','POST','PUT','PATCH','DELETE'].includes(method)||options.idempotencyKey!==undefined&&!/^[a-zA-Z0-9_-]{8,128}$/.test(options.idempotencyKey))throw new AccessError(400);
+    const binary=options.body instanceof Blob||options.body instanceof Uint8Array||options.body instanceof ArrayBuffer;
+    const form=options.body instanceof FormData;
+    if(binary&&(options.body instanceof Blob?options.body.size:(options.body as Uint8Array|ArrayBuffer).byteLength)>128*1024*1024)throw new AccessError(413);
+    if(options.contentType!==undefined&&!/^[a-zA-Z0-9!#$&^_.+-]+\/[a-zA-Z0-9!#$&^_.+-]+$/.test(options.contentType))throw new AccessError(400);
+    const payload=options.body===undefined?undefined:binary||form?options.body as BodyInit:JSON.stringify(options.body);
+    if(method==='GET'&&payload!==undefined)throw new AccessError(400);
+    const current=generation,controller=new AbortController(),timeout=new AbortController(),abort=()=>controller.abort();
+    const timer=setTimeout(()=>timeout.abort(),binary||form||options.rawResponse?120000:30000);
+    options.signal?.addEventListener('abort',abort,{once:true});if(options.signal?.aborted)abort();requests.add(controller);
+    let bearer=token,credential=credentialEpoch;
+    try{
+      const authorized=authorizedBearer(controller.signal);bearer=typeof authorized==='string'?authorized:await authorized;assertDispatch(current,controller,bearer);credential=credentialEpoch;
+      const headers:Record<string,string>={Authorization:`Bearer ${bearer}`,Accept:options.rawResponse?'*/*':'application/json'};
+      if(payload!==undefined&&!form)headers['Content-Type']=binary?options.contentType??'application/octet-stream':'application/json';
+      if(options.idempotencyKey)headers['Idempotency-Key']=options.idempotencyKey;
+      const response=await fetcher(`${apiUrl}${path}`,{method,headers,body:payload,cache:'no-store',credentials:'omit',redirect:'error',signal:AbortSignal.any([controller.signal,timeout.signal])});
+      if(!response.ok){const detail=await refusalDetail(response);throw new AccessError(response.status,detail.code,detail.field);}
+      const bytes=response.status===204?null:await limitedBytes(response,options.rawResponse?128*1024*1024:8*1024*1024);
+      if(stopped||current!==generation||controller.signal.aborted)throw new DOMException('Session changed','AbortError');
+      return options.rawResponse?new Response(bytes,{status:response.status,headers:response.headers}):bytes?JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes)):null;
+    }catch(error){
+      if(stopped||current!==generation||controller.signal.aborted)throw new DOMException('Request cancelled','AbortError');
+      const failure=handleAccessFailure(error,bearer,credential);throw failure instanceof AccessError?failure:new AccessError(503);
+    }finally{clearTimeout(timer);requests.delete(controller);options.signal?.removeEventListener('abort',abort);}
   };
   const a1Request = async (path: string, options: A1RequestOptions = {}): Promise<unknown> => {
     if (!token || state.phase !== 'ready' || stopped) throw new AccessError(401);
@@ -777,6 +809,10 @@ export function createAccessController(auth: AuthPort, apiUrl: string, fetcher: 
       try{requireAdmin();}catch(error){return Promise.reject(error);}
       return nativeRequest('/v1/system/wabotia',path,options,32768,20000,requireAdmin).then(value=>{requireAdmin();return value;});
     },
+    fagoo: (path: string, options: NativeRequestOptions = {}) => nativeRequest('/v1/fagoo',path,options),
+    queues: (path: string, options: NativeRequestOptions = {}) => nativeRequest('/v1/queues',path,options),
+    crm: (path: string, options: NativeRequestOptions = {}) => nativeRequest('/v1/crm',path,options),
+    communication: communicationRequest,
     preferences: (path: string, options: NativeRequestOptions = {}) => {
       let captured;try{captured=capturePreferencesRequest(path,options);}catch{return Promise.reject(new AccessError(400));}
       return nativeRequest(PREFERENCES_BASE,captured.path,captured.options,PREFERENCES_RESPONSE_BYTES,15000);

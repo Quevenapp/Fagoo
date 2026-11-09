@@ -1,0 +1,13 @@
+CREATE TABLE meta_accounts(id TEXT PRIMARY KEY,profile_id TEXT NOT NULL REFERENCES profiles(id),name TEXT NOT NULL,waba_id TEXT NOT NULL UNIQUE,timezone TEXT NOT NULL DEFAULT 'America/Sao_Paulo',discovered TEXT NOT NULL DEFAULT '[]',discovered_at INTEGER NOT NULL DEFAULT 0,created INTEGER NOT NULL);
+CREATE TABLE meta_numbers(connection_id TEXT PRIMARY KEY REFERENCES connections(id),account_id TEXT NOT NULL REFERENCES meta_accounts(id),phone_id TEXT NOT NULL UNIQUE,service_limit INTEGER NOT NULL DEFAULT 1000 CHECK(service_limit BETWEEN 0 AND 1000),baseline_period TEXT NOT NULL,baseline_used INTEGER NOT NULL DEFAULT 0 CHECK(baseline_used>=0),monitored_at INTEGER NOT NULL);
+CREATE TABLE number_pools(id TEXT PRIMARY KEY,profile_id TEXT NOT NULL REFERENCES profiles(id),account_id TEXT NOT NULL REFERENCES meta_accounts(id),name TEXT NOT NULL,strategy TEXT NOT NULL DEFAULT 'least_used',enabled INTEGER NOT NULL DEFAULT 0,allow_paid INTEGER NOT NULL DEFAULT 0,public_token TEXT UNIQUE,created INTEGER NOT NULL);
+CREATE TABLE number_pool_members(pool_id TEXT NOT NULL REFERENCES number_pools(id),connection_id TEXT NOT NULL REFERENCES meta_numbers(connection_id),last_selected INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(pool_id,connection_id));
+CREATE TABLE number_router_grants(app_id TEXT NOT NULL REFERENCES applications(id),profile_id TEXT NOT NULL,source_type TEXT NOT NULL,source_id TEXT NOT NULL,allow_paid INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(app_id,profile_id,source_type,source_id));
+ALTER TABLE outbox ADD COLUMN quota_month TEXT;
+ALTER TABLE outbox ADD COLUMN quota_category TEXT;
+CREATE INDEX outbox_number_quota ON outbox(connection_id,quota_category,status);
+CREATE TABLE meta_message_usage(connection_id TEXT NOT NULL,external_id TEXT NOT NULL,status TEXT NOT NULL,category TEXT NOT NULL DEFAULT 'unknown',billable INTEGER,pricing_type TEXT,delivered_at INTEGER,period TEXT,updated INTEGER NOT NULL,PRIMARY KEY(connection_id,external_id));
+CREATE INDEX meta_usage_period ON meta_message_usage(connection_id,period,category);
+ALTER TABLE conversations ADD COLUMN recipient_id TEXT;
+CREATE UNIQUE INDEX conversation_routed_recipient ON conversations(connection_id,recipient_id) WHERE recipient_id IS NOT NULL;
+CREATE TABLE router_affinities(profile_id TEXT NOT NULL,actor TEXT NOT NULL,external_id TEXT NOT NULL,source_type TEXT NOT NULL,source_id TEXT NOT NULL,conversation_id TEXT NOT NULL REFERENCES conversations(id),connection_id TEXT NOT NULL,recipient TEXT NOT NULL,created INTEGER NOT NULL,PRIMARY KEY(profile_id,actor,external_id),UNIQUE(connection_id,recipient));

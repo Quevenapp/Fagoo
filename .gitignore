@@ -78,3 +78,19 @@ supabase/.temp/
 
 # Local validation output, dry-run bundles and private migration reports.
 work/
+
+# Native build outputs and private signing/push configuration.
+**/.gradle/
+**/build/
+**/local.properties
+**/google-services.json
+**/GoogleService-Info.plist
+**/DerivedData/
+**/xcuserdata/
+*.apk
+*.aab
+*.ipa
+*.mobileprovision
+**/*.xcodeproj/
+**/Info.plist
+**/Fagoo.entitlements

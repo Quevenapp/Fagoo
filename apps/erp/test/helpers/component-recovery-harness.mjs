@@ -1,6 +1,7 @@
 import {build} from 'esbuild';
 import {randomUUID} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
+import {basename} from 'node:path';
 import {readFile} from 'node:fs/promises';
 import {decimalMoney} from '../../src/lib/real-access.ts';
 
@@ -10,6 +11,10 @@ export class AccessError extends Error {constructor(status){super(`HTTP ${status
 const registry=globalThis.__brufapRecoveryTests??=new Map();
 export async function mountComponent(filename,props,{componentName,expandChildren=false,location:initialLocation='/qa',modules={},ports={}}={}){
  if(componentName&&!/^[A-Za-z_$][\w$]*$/.test(componentName))throw new Error('Invalid component name');
+ // These existing ERP route fixtures already replace navigation and all native route modules.
+ // Keep the new workspace chrome at that same explicit boundary; Fagoo module tests mount
+ // their real components directly, and a test can override this module to exercise the shell.
+ if(componentName==='ConnectedArea'&&Object.hasOwn(modules,'./CompanyNavigation')&&Object.hasOwn(modules,'./native-modules')&&!Object.hasOwn(modules,'./FagooWorkspace'))modules={...modules,'./FagooWorkspace':'export const useFagooContext=()=>({context:null,error:"",retry(){}});export function FagooHome(){return null;}export default function FagooWorkspace(){return null;}'};
  const key=randomUUID(),frames=new Map(),effects=[];let current,index=0,dirty=true,tree,disposed=false,idCount=0;
  let location;const navigations=[];const navigate=(target,options)=>{const url=new URL(typeof target==='string'?target:`${target.pathname??location.pathname}${target.search??''}`,'https://synthetic.invalid');location={pathname:url.pathname,search:url.search,hash:url.hash,key:randomUUID(),...(options?.state!==undefined?{state:options.state}:{})};navigations.push({search:url.search,replace:Boolean(options?.replace)});dirty=true;};navigate(initialLocation);
  const runtime={AccessError,decimalMoney,guard:null,
@@ -17,6 +22,10 @@ export async function mountComponent(filename,props,{componentName,expandChildre
   useRef(initial){const i=index++;return current.slots[i]??=( {current:initial} );},
   useId(){return runtime.useRef(`recovery-${++idCount}`).current;},
   useMemo(fn,deps){const slots=current.slots,i=index++,old=slots[i];if(!old||!deps||deps.some((v,j)=>!Object.is(v,old.deps[j])))slots[i]={deps,value:fn()};return slots[i].value;},
+  useCallback(fn,deps){return runtime.useMemo(()=>fn,deps);},
+  forwardRef(render){return props=>render(props,props.ref??null);},
+  createElement(type,props,...children){return runtime.jsx(type,{...props,...(children.length?{children:children.length===1?children[0]:children}:{})},props?.key);},
+  lazy(load){let loaded,pending;return function LazyModule(props){if(!loaded){pending??=load().then(module=>{loaded=module.default;if(!disposed)dirty=true;});return null;}return runtime.jsx(loaded,props);};},
   useLocation(){return location;},useNavigate(){return navigate;},
   useSearchParams(){return[new URLSearchParams(location.search),value=>navigate(`${location.pathname}?${typeof value==='function'?value(new URLSearchParams(location.search)):value}`)];},
   useEffect(fn,deps){const slots=current.slots,i=index++,old=slots[i];if(!old||!deps||deps.some((v,j)=>!Object.is(v,old.deps[j]))){slots[i]={deps,cleanup:old?.cleanup};effects.push(()=>{slots[i].cleanup?.();slots[i].cleanup=fn();});}},
@@ -28,15 +37,20 @@ export async function mountComponent(filename,props,{componentName,expandChildre
  };
  runtime.useLayoutEffect=runtime.useEffect;Object.assign(runtime,ports);registry.set(key,runtime);
  const entry=fileURLToPath(new URL(`../../src/components/${filename}`,import.meta.url));
- const result=await build({entryPoints:[entry],bundle:true,write:false,format:'esm',jsx:'automatic',logLevel:'silent',define:{'import.meta.env':'{}'},plugins:[{name:'recovery-test-hooks',setup(builder){
+ const result=await build({entryPoints:[entry],bundle:true,write:false,format:'esm',jsx:'automatic',platform:'browser',mainFields:['browser','module','main'],loader:{'.jpg':'dataurl','.jpeg':'dataurl','.png':'dataurl','.webp':'dataurl','.svg':'dataurl'},logLevel:'silent',define:{'import.meta.env':'{}'},plugins:[{name:'recovery-test-hooks',setup(builder){
   builder.onResolve({filter:/.*/},args=>Object.hasOwn(modules,args.path)?{path:args.path,namespace:'test-module'}:undefined);
   builder.onResolve({filter:/^\//,namespace:'test-module'},args=>({path:args.path,namespace:'file'}));
   builder.onResolve({filter:/^[A-Za-z]:[\\/]/,namespace:'test-module'},args=>({path:args.path,namespace:'file'}));
   builder.onLoad({filter:/.*/,namespace:'test-module'},args=>({contents:`const r=globalThis.__brufapRecoveryTests.get(${JSON.stringify(key)});\n${modules[args.path]}`,loader:'js'}));
+  // Vite's asset query imports are values, not JavaScript entry points. In particular, the
+  // Opus encoder worker URL must never pull its Node fs/path fallback into a browser fixture.
+  builder.onResolve({filter:/\?(url|inline)$/},async args=>{const suffix=args.path.endsWith('?url')?'url':'inline',resolved=await builder.resolve(args.path.replace(/\?(url|inline)$/,''),{resolveDir:args.resolveDir,kind:args.kind});return resolved.errors.length?{errors:resolved.errors}:{path:resolved.path,namespace:'test-vite-'+suffix};});
+  builder.onLoad({filter:/.*/,namespace:'test-vite-url'},args=>({contents:`export default ${JSON.stringify('/fixture-assets/'+basename(args.path))};`,loader:'js'}));
+  builder.onLoad({filter:/.*/,namespace:'test-vite-inline'},async args=>({contents:`export default ${JSON.stringify(await readFile(args.path,'utf8'))};`,loader:'js'}));
   // Export a private editor only in this in-memory test bundle. Production source is untouched.
   if(componentName)builder.onLoad({filter:/\.tsx$/},async args=>args.path===entry?{contents:`${await readFile(entry,'utf8')}\nexport {${componentName} as __recoveryComponent};`,loader:'tsx'}:undefined);
   builder.onResolve({filter:/^(react(?:\/jsx-runtime)?|react-dom|react-router-dom|.*\/hooks\/useUnsavedChanges|.*\/lib\/real-access)$/},args=>({path:args.path,namespace:'test-hooks'}));
-  builder.onLoad({filter:/.*/,namespace:'test-hooks'},args=>({contents:`const r=globalThis.__brufapRecoveryTests.get(${JSON.stringify(key)});`+(args.path==='react'?'export const useState=r.useState,useRef=r.useRef,useEffect=r.useEffect,useLayoutEffect=r.useLayoutEffect,useId=r.useId,useMemo=r.useMemo,useSyncExternalStore=r.useSyncExternalStore;':args.path==='react/jsx-runtime'?'export const jsx=r.jsx,jsxs=r.jsx,Fragment=r.Fragment;':args.path==='react-dom'?'export const createPortal=child=>child;':args.path==='react-router-dom'?'export const Link="test-router-link",useLocation=r.useLocation,useNavigate=r.useNavigate,useSearchParams=r.useSearchParams;':args.path.endsWith('useUnsavedChanges')?'export const useUnsavedChanges=r.useUnsavedChanges,useUnsavedForm=r.useUnsavedForm,useUnsavedChangesGuard=r.useUnsavedChangesGuard;':'export const AccessError=r.AccessError,decimalMoney=r.decimalMoney;'),loader:'js'}));
+  builder.onLoad({filter:/.*/,namespace:'test-hooks'},args=>({contents:`const r=globalThis.__brufapRecoveryTests.get(${JSON.stringify(key)});`+(args.path==='react'?'export default r;export const lazy=r.lazy,forwardRef=r.forwardRef,createElement=r.createElement,useCallback=r.useCallback,useState=r.useState,useRef=r.useRef,useEffect=r.useEffect,useLayoutEffect=r.useLayoutEffect,useId=r.useId,useMemo=r.useMemo,useSyncExternalStore=r.useSyncExternalStore;':args.path==='react/jsx-runtime'?'export const jsx=r.jsx,jsxs=r.jsx,Fragment=r.Fragment;':args.path==='react-dom'?'export const createPortal=child=>child;':args.path==='react-router-dom'?'export const Link="test-router-link",useLocation=r.useLocation,useNavigate=r.useNavigate,useSearchParams=r.useSearchParams;':args.path.endsWith('useUnsavedChanges')?'export const useUnsavedChanges=r.useUnsavedChanges,useUnsavedForm=r.useUnsavedForm,useUnsavedChangesGuard=r.useUnsavedChangesGuard;':'export const AccessError=r.AccessError,decimalMoney=r.decimalMoney;'),loader:'js'}));
   builder.onLoad({filter:/\.css$/},()=>({contents:'',loader:'js'}));
  }}]});
  const compiled=await import(`data:text/javascript;base64,${Buffer.from(result.outputFiles[0].text).toString('base64')}`),Component=componentName?compiled.__recoveryComponent:compiled.default;
@@ -47,7 +61,7 @@ export async function mountComponent(filename,props,{componentName,expandChildre
  const nodes=()=>{const output=[];const walk=(value,disabled=false)=>{if(Array.isArray(value)){value.forEach(v=>walk(v,disabled));return;}if(!value||typeof value!=='object')return;const own=disabled||value.type==='fieldset'&&Boolean(value.props.disabled);output.push({...value,disabled:own||Boolean(value.props.disabled)});walk(value.props.children,own);};walk(tree);return output;};
  const textOf=value=>Array.isArray(value)?value.map(textOf).join(''):value&&typeof value==='object'?textOf(value.props?.children):value===null||value===undefined||typeof value==='boolean'?'':String(value);
  const find=predicate=>{const found=nodes().find(predicate);if(!found)throw new Error('Missing component control');return found;};
- render();await flush();
+ try{render();await flush();}catch(error){disposed=true;for(const frame of frames.values())for(const slot of frame.slots)slot?.cleanup?.();registry.delete(key);throw error;}
  return{flush,nodes,find,text:()=>textOf(tree),button:label=>find(n=>n.type==='button'&&textOf(n)===label),input:id=>find(n=>n.props.id===id),guard:()=>runtime.guard,
   location:()=>({...location}),navigations:()=>navigations.map(entry=>({...entry})),async navigate(target){navigate(target);await flush();},async updateProps(next){props={...props,...next};dirty=true;await flush();},
   async click(label){const node=this.button(label);if(node.disabled)throw new Error(`Disabled button: ${label}`);node.props.onClick?.({preventDefault(){}});await flush();},

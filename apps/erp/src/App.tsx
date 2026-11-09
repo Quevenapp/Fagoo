@@ -4,12 +4,15 @@ import NativeModuleBoundary from './components/NativeModuleBoundary';
 
 const RealAccess = lazy(() => import('./components/RealAccess'));
 const SystemUpdateProgress = lazy(() => import('./components/SystemUpdateProgress'));
+const FagooPublicTicket = lazy(() => import('./components/FagooPublicTicket'));
 
 export default function App() {
   const { pathname } = useLocation();
+  if (pathname === '/preferencias/sistema/wabotia') return <Navigate to="/atendimento?page=connections" replace />;
+  if (/^\/(senha|s)\/[A-Za-z0-9_-]{22,128}$/.test(pathname)) return <NativeModuleBoundary resetKey={pathname} label="Carregando senha…"><FagooPublicTicket /></NativeModuleBoundary>;
   if(pathname==='/atualizacao')return <SystemUpdateProgress/>;
   if (pathname === '/') return <Navigate to="/acesso" replace />;
-  return ['/acesso', '/preferencias', '/dados-origin', '/cadastros-reais', '/historico-fiscal', '/documentos-empresa', '/estoque-empresa', '/financeiro-empresa', '/importar-cadastros', '/importar-orcamentos', '/conferir-compras-origin', '/conferir-vendas-origin', '/historico-vendas-origin', '/cobrancas-legadas-itau', '/cobranca-empresa', '/cobranca-operacional', '/retornos-operacionais', '/notas-recebidas', '/numeracao-fiscal', '/certificado-a1', '/conexao-sefaz', '/empresa-configuracoes','/preparacao-virada/depositos/estoque','/preparacao-virada/depositos','/preparacao-virada','/estoque-abertura','/emissor-fiscal','/relatorio-vencimentos','/xmls-sincronizados','/integracao-origin','/painel-produtos-empresa','/conferencia-estoque-empresa','/checkin-recebimentos','/relatorios-estoque',
+  return ['/atendimento', '/filas', '/crm', '/configurar', '/acesso', '/preferencias', '/dados-origin', '/cadastros-reais', '/historico-fiscal', '/documentos-empresa', '/estoque-empresa', '/financeiro-empresa', '/importar-cadastros', '/importar-orcamentos', '/conferir-compras-origin', '/conferir-vendas-origin', '/historico-vendas-origin', '/cobrancas-legadas-itau', '/cobranca-empresa', '/cobranca-operacional', '/retornos-operacionais', '/notas-recebidas', '/numeracao-fiscal', '/certificado-a1', '/conexao-sefaz', '/empresa-configuracoes','/preparacao-virada/depositos/estoque','/preparacao-virada/depositos','/preparacao-virada','/estoque-abertura','/emissor-fiscal','/relatorio-vencimentos','/xmls-sincronizados','/integracao-origin','/painel-produtos-empresa','/conferencia-estoque-empresa','/checkin-recebimentos','/relatorios-estoque',
     '/notas-entrada','/naturezas-operacao','/inutilizacoes-nfe','/cartas-correcao',
     '/categorias-produtos','/grupos-produtos','/tags','/grupos-tags','/exportacao-produtos','/listas-precos','/campos-customizados',
     '/tipos-contatos-empresa','/vendedores-empresa','/formas-pagamento-empresa','/funcionarios-empresa','/importar-contatos','/numeracao-contatos',

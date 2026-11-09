@@ -1,0 +1,11 @@
+services:
+  wabotia-qr:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      WABOTIA_DATA: /app/data
+    volumes:
+      - qr-data:/app/data
+volumes:
+  qr-data:

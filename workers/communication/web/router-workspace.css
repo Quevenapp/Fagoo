@@ -1,0 +1,105 @@
+.router-step-nav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 24px 0;
+}
+
+.number-router .router-step-nav button {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 15px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+  color: var(--ink);
+  text-align: left;
+  white-space: normal;
+  font: inherit;
+}
+
+.number-router .router-step-nav button[aria-pressed="true"] {
+  border-color: var(--green);
+  background: #f0f6ed;
+}
+
+.number-router .router-step-nav button:hover:not(:disabled) {
+  border-color: var(--green);
+}
+
+.router-step-nav button:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+}
+
+.router-step-number {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #edf0ea;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.router-step-nav button[aria-pressed="true"] .router-step-number {
+  background: var(--green);
+  color: white;
+}
+
+.router-step-nav strong,
+.router-step-nav small {
+  display: block;
+}
+
+.router-step-nav strong {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.router-step-nav small {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #657266;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.router-step-content {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+
+.router-step-content > .card {
+  margin: 0;
+}
+
+.router-step-empty {
+  padding: 32px;
+}
+
+.router-technical-details {
+  margin-top: 16px;
+}
+
+@media (max-width: 1100px) {
+  .router-step-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .router-step-nav {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .number-router .router-step-nav button {
+    padding: 12px;
+  }
+}

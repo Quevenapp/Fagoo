@@ -1,5 +1,5 @@
 import type { NativeDocumentCoverage } from './document-mirror.mjs';
-export type BusinessRole='admin'|'consulta'|'vendas'|'financeiro'|'estoque'|'fiscal';
+export type BusinessRole='admin'|'consulta'|'vendas'|'financeiro'|'estoque'|'fiscal'|'operacao';
 export type BusinessStatus='draft'|'open'|'verified'|'in_progress'|'partially_fulfilled'|'fulfilled'|'cancelled';
 export type BusinessPanel='mensal'|'diario'|'pedidos-venda'|'vendas-vendedor'|'venda-canal'|'previsao-estoque'|'margem-pedido'|'novos-recorrentes'|'atividade-carteira'|'curva-abc';
 export const BUSINESS_BASE:'/v1/meu-negocio';

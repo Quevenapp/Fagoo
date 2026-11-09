@@ -80,5 +80,5 @@ export function formatDocument(value:string){
  if(/^[A-Z0-9]{12}\d{2}$/i.test(v))return `${v.slice(0,2)}.${v.slice(2,5)}.${v.slice(5,8)}/${v.slice(8,12)}-${v.slice(12)}`;
  return value;
 }
-export const ROLE_NAMES:Record<PreferencesPageView['role'],string>={admin:'Administrador',consulta:'Consulta',vendas:'Vendas',financeiro:'Financeiro',estoque:'Estoque',fiscal:'Fiscal'};
+export const ROLE_NAMES:Record<PreferencesPageView['role'],string>={admin:'Administrador',consulta:'Consulta',vendas:'Vendas',financeiro:'Financeiro',estoque:'Estoque',fiscal:'Fiscal',operacao:'Atendimento e operação'};
 export const policyText=(allow:boolean)=>allow?'Ativado — os lançamentos podem deixar o saldo negativo.':'Desativado — os lançamentos não podem deixar o saldo negativo.';

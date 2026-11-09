@@ -5,7 +5,7 @@ import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const packages=['.', 'workers/erp-api', 'packages/fiscal-xml', 'packages/fiscal-danfe'];
+const packages=['.', 'workers/erp-api', 'packages/fiscal-xml', 'packages/fiscal-danfe', 'workers/communication'];
 const read=path=>JSON.parse(readFileSync(path, 'utf8'));
 
 function verifyInstalled() {
@@ -25,7 +25,7 @@ function verifyInstalled() {
     console.error('Deployment dependencies are missing or differ from their lockfiles:\n'+missing.join('\n'));
     throw new Error('DEPENDENCIES_REQUIRED: run npm run install:deployment from the repository root.');
   }
-  console.log('All four application dependency trees match their direct locked dependencies.');
+  console.log('All application dependency trees match their direct locked dependencies.');
 }
 
 try {

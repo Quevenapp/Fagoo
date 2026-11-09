@@ -1,4 +1,4 @@
-export type PreferenceRole='admin'|'consulta'|'vendas'|'financeiro'|'estoque'|'fiscal';
+export type PreferenceRole='admin'|'consulta'|'vendas'|'financeiro'|'estoque'|'fiscal'|'operacao';
 export type PreferenceKind='toggle'|'choice'|'multi'|'integer'|'decimal'|'text'|'textarea'|'users'|'keymap'|'documents';
 export type PreferenceScope='company'|'user';
 export type PreferenceDocument={document:string;name:string};

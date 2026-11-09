@@ -5,7 +5,7 @@ import {parsePreferencesPath,SYSTEM_SCREENS} from '../lib/preferences-route';
 import type {PreferencesController} from '../lib/preferences-model';
 import PreferencesPage from './PreferencesPage';
 import SystemUpdates from './SystemUpdates';
-import WabotiaPairing from './WabotiaPairing';
+
 import type {UpdatePort} from '../lib/system-updates';
 import PreferenceSettingsPage from './PreferenceSettingsPage';
 import RealUsers from './RealUsers';
@@ -37,7 +37,7 @@ import type {NativeRequestOptions} from '../lib/real-access';
  */
 export default function CompanyPreferences({controller,state}:{controller:PreferencesController&UsersController&SystemLogController&BusinessController&{catalog?:(path:string,options?:NativeRequestOptions)=>Promise<unknown>};state:AccessState}){
  const {pathname}=useLocation();
- if(pathname==='/preferencias/sistema/wabotia')return <WabotiaPairing controller={controller as unknown as Parameters<typeof WabotiaPairing>[0]['controller']} state={state}/>;
+
  if(pathname==='/preferencias/sistema/atualizacoes')return <SystemUpdates controller={controller as unknown as Partial<UpdatePort>} state={state}/>;
  if(pathname==='/meu-negocio')return <BusinessDashboards key={state.membership!.user_id} controller={controller}/>;
  const categories=resolvePreferences({role:state.membership!.role,resources:state.membership!.resources,capabilities:state.membership!.capabilities}),route=parsePreferencesPath(pathname);

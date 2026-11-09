@@ -4,7 +4,7 @@ import {parseUsersList,parseUser,parseUserResult,parseInvitePending,captureUsers
 export {parseUsersList,parseUser,parseUserResult,parseInvitePending,captureUsersQuery,ACCESS_ROLES};
 export type {AccessUser,AccessRole,UsersPage,UserFilter,UserSaveInput,UserInviteInput,UserResult,InvitePending};
 export interface UsersController{getSnapshot:()=>AccessState;subscribe:(fn:()=>void)=>()=>void;accessUsers:(path:string,options?:NativeRequestOptions)=>Promise<unknown>;listPreferences:(path:string,options?:NativeRequestOptions)=>Promise<unknown>}
-export const ROLE_TEXT:Record<AccessRole,string>={admin:'Administrador',consulta:'Consulta',vendas:'Vendas',financeiro:'Financeiro',estoque:'Estoque',fiscal:'Fiscal'};
+export const ROLE_TEXT:Record<AccessRole,string>={admin:'Administrador',consulta:'Consulta',vendas:'Vendas',financeiro:'Financeiro',estoque:'Estoque',fiscal:'Fiscal',operacao:'Atendimento e operação'};
 export const STATUS_TEXT:Record<AccessUser['status'],string>={ativo:'Ativo',inativo:'Inativo',sem_acesso:'Sem acesso'};
 export const FILTER_TEXT:Record<UserFilter,string>={todos:'Todos',ativo:'Ativos',inativo:'Inativos',sem_acesso:'Sem acesso à empresa'};
 export const USER_COLUMNS=[{id:'nome',label:'Nome'},{id:'login',label:'Login'},{id:'tipo',label:'Tipo'},{id:'perfil',label:'Perfil de acesso'},{id:'situacao',label:'Situação'},{id:'mfa',label:'MFA'},{id:'ultimo_acesso',label:'Último acesso'}] as const;

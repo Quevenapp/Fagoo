@@ -1,8 +1,10 @@
 # FAGOO
 
-ERP de código aberto para instalação própria. Reúne cadastros, compras, vendas, PDV, estoque, financeiro, cobrança/CNAB, fiscal, preferências e controle de acesso, com interface web e API. Licença [AGPL-3.0](LICENSE).
+Sistema de gestão de código aberto para instalação própria na nuvem. Reúne ERP, atendimento, filas e painéis e CRM em uma empresa, com usuários, contatos e configuração compartilhados. O aplicativo Android/iOS oferece painéis e comunicação; a administração e os módulos completos continuam no navegador. Licença [AGPL-3.0](LICENSE).
 
 O FAGOO utiliza PostgreSQL, serviço de autenticação, API de dados, armazenamento de arquivos e serviços de aplicação. Cada instalação mantém sua empresa, usuários, dados, arquivos e credenciais em seu próprio ambiente.
+
+Na v1.0.0, o motor de atendimento herdado é um serviço interno com D1, R2 e Durable Objects. As filas operam por transações PostgreSQL. Aparelhos dependem da internet, inclusive quando conectados por hotspot: não há central local nem comandos offline. Consulte o [contrato da consolidação](docs/architecture/fagoo-1.0.0-contract.md), o [aplicativo](apps/mobile/README.md) e os [critérios de homologação](docs/operations/fagoo-1.0.0-acceptance.md).
 
 ## Instalação própria
 
@@ -15,10 +17,7 @@ A distribuição inclui instalador para Ubuntu 24.04, publicação da interface/
 Use Node.js 24. Para as verificações fiscais completas, use Linux/Ubuntu, OpenSSL 3 e Python com as dependências de `packages/fiscal-schema/requirements.txt`.
 
 ```sh
-npm ci
-npm ci --prefix packages/fiscal-xml --ignore-scripts
-npm ci --prefix packages/fiscal-danfe --ignore-scripts
-npm ci --prefix workers/erp-api --ignore-scripts
+npm run install:deployment
 cp apps/erp/.env.example apps/erp/.env.local
 npm run dev:erp
 ```

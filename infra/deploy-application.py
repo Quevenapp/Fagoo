@@ -10,7 +10,9 @@ from pathlib import Path
 import re
 import runpy
 import subprocess
+import sys
 import tempfile
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -22,6 +24,8 @@ from update_config import cloudflare_credentials, source_identity
 # The installed updater imports this candidate file before switching its own source tree.
 # Load newly introduced helpers beside the candidate, not from the old updater's sys.path.
 integration_settings = runpy.run_path(str(Path(__file__).with_name('integration_config.py')))['integration_settings']
+communication_runtime = runpy.run_path(str(Path(__file__).with_name('communication_runtime.py')))
+queue_push_settings = runpy.run_path(str(Path(__file__).with_name('queue_push_config.py')))['queue_push_settings']
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -66,7 +70,7 @@ def public_environment(values):
 def process_environment(source=None):
     # Build children never receive infrastructure credentials or inherited VITE overrides.
     source = os.environ if source is None else source
-    blocked = re.compile(r'TOKEN|PASSWORD|SECRET|CREDENTIAL|PRIVATE_KEY|^VITE_|^SUPABASE_|^CLOUDFLARE_|^CF_|^FAGOO_|^ORIGIN_|^INTEGRATION_|^PG|^WRANGLER_|^WORKERS_CI_', re.I)
+    blocked = re.compile(r'TOKEN|PASSWORD|SECRET|CREDENTIAL|PRIVATE_KEY|MASTER_KEY|^FCM_|^APNS_|^VITE_|^SUPABASE_|^CLOUDFLARE_|^CF_|^FAGOO_|^ORIGIN_|^INTEGRATION_|^PG|^WRANGLER_|^WORKERS_CI_', re.I)
     result = {key: value for key, value in source.items() if not blocked.search(key)}
     result.update({'CI': 'true', 'NO_COLOR': '1', 'WRANGLER_SEND_METRICS': 'false'})
     return result
@@ -86,7 +90,7 @@ def read_token():
     return value
 
 
-def configurations(values, account_id, zone_id):
+def configurations(values, account_id, zone_id, communication_state=None):
     if not re.fullmatch('[a-f0-9]{32}', account_id) or not re.fullmatch('[a-f0-9]{32}', zone_id):
         raise ValueError('CLOUDFLARE_IDENTIFIERS_INVALID')
     history_enabled = values.get('ORIGIN_HISTORY_ENABLED', 'false')
@@ -97,7 +101,7 @@ def configurations(values, account_id, zone_id):
     common = {'account_id': account_id, 'compatibility_date': '2026-10-15',
               'workers_dev': False, 'preview_urls': False, 'observability': {'enabled': False}}
     api = {**common, 'name': 'fagoo-api-' + suffix,
-           'main': str(ROOT / 'workers/erp-api/src/index.mjs'),
+           'main': str(ROOT / 'workers/erp-api/src/worker.mjs'),
            'compatibility_flags': ['enable_request_signal'],
            'routes': [{'pattern': urllib.parse.urlsplit(values['FAGOO_API_ORIGIN']).hostname,
                        'custom_domain': True, 'zone_id': zone_id}],
@@ -108,8 +112,13 @@ def configurations(values, account_id, zone_id):
                     'FAGOO_VERSION': source_identity(ROOT)['version'],
                     'FAGOO_REVISION': source_identity(ROOT)['revision'] or 'source'}}
     api['vars'].update(integration['vars'])
+    api['vars'].update(queue_push_settings(values)['vars'])
+    api['services'] = communication_runtime['api_bindings'](values, communication_state)
     if integration['scheduled']:
         api['triggers'] = {'crons': ['*/2 * * * *']}
+    if communication_runtime['enabled'](values):
+        api['vars'].update({'FAGOO_COMMUNICATION_ENABLED':'true','FAGOO_WEB_ORIGIN':values['FAGOO_WEB_ORIGIN']})
+        api.setdefault('triggers', {'crons': []})['crons'].append('* * * * *')
     web = {**common, 'name': 'fagoo-web-' + suffix,
            'routes': [{'pattern': urllib.parse.urlsplit(values['FAGOO_WEB_ORIGIN']).hostname,
                        'custom_domain': True, 'zone_id': zone_id}],
@@ -222,6 +231,30 @@ def run(command, phase, env, log, secrets, cwd=ROOT):
     print(phase + ': OK', flush=True)
 
 
+def verify_publication(values, expected, opener=None, attempts=10, delay=3):
+    """Wrangler success is not a health check. Both public versions must identify this build."""
+    opener = opener or urllib.request.build_opener(NoRedirect())
+    if not expected.get('version') or not re.fullmatch('[a-f0-9]{40}', str(expected.get('revision', ''))):
+        raise ValueError('PUBLISHED_IDENTITY_REQUIRED')
+    for endpoint in (values['FAGOO_WEB_ORIGIN'] + '/fagoo-version.json', values['FAGOO_API_ORIGIN'] + '/v1/system/version'):
+        for attempt in range(attempts):
+            try:
+                request = urllib.request.Request(endpoint + '?verification=' + expected['revision'],
+                    headers={'Cache-Control': 'no-cache', 'User-Agent': 'FAGOO-updater/1', 'Accept': 'application/json'})
+                with opener.open(request, timeout=10) as response:
+                    raw = response.read(4097)
+                    if response.status != 200 or len(raw) > 4096:
+                        raise ValueError('PUBLISHED_VERSION_VERIFICATION_FAILED')
+                    actual = json.loads(raw)
+                if actual.get('version') == expected['version'] and actual.get('revision') == expected['revision']:
+                    break
+            except (OSError, ValueError):
+                pass
+            if attempt + 1 == attempts:
+                raise ValueError('PUBLISHED_VERSION_VERIFICATION_FAILED')
+            time.sleep(delay)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--env-file', default='private/install/.env')
@@ -229,6 +262,7 @@ def main():
     parser.add_argument('--zone-id', required=True)
     parser.add_argument('--credentials-file', help='Read the private saved Cloudflare credentials; never prompt.')
     parser.add_argument('--prepared', action='store_true', help='Publish the exact build prepared by a previous dry run.')
+    parser.add_argument('--keep-communication-paused', action='store_true', help='The updater resumes only after its runtime health verification.')
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument('--dry-run', action='store_true')
     mode.add_argument('--deploy', action='store_true')
@@ -236,7 +270,9 @@ def main():
     if args.prepared and not args.deploy:
         raise ValueError('PREPARED_BUILD_REQUIRES_DEPLOY')
     values = configuration(args.env_file)
-    api, web = configurations(values, args.account_id, args.zone_id)
+    communication_enabled = communication_runtime['enabled'](values)
+    communication_state = communication_runtime['read_state'](communication_runtime['state_path'](args.env_file), values, args.account_id) if communication_enabled else None
+    api, web = configurations(values, args.account_id, args.zone_id, communication_state)
     directory = ROOT / 'private/install/cloudflare'
     directory.mkdir(parents=True, exist_ok=True, mode=0o700)
     lock = directory / 'deploy.lock'
@@ -245,10 +281,15 @@ def main():
     except FileExistsError:
         raise ValueError('APPLICATION_DEPLOY_LOCK_EXISTS: inspect the running process before recovering a stale lock') from None
     secrets_path = None
+    communication_secrets_path = None
     token = ''
     integration = integration_settings(values)
+    queue_push = queue_push_settings(values)
     private_values = [values[key] for key in ('SERVICE_ROLE_KEY', 'JWT_SECRET', 'POSTGRES_PASSWORD')]
     private_values.extend(integration['secrets'].values())
+    private_values.extend(queue_push['secrets'].values())
+    if communication_state:
+        private_values.append(communication_state['master_key'])
     if values.get('FAGOO_UPDATE_AGENT_TOKEN'):
         if not re.fullmatch('[a-f0-9]{64}', values['FAGOO_UPDATE_AGENT_TOKEN']):
             raise ValueError('UPDATE_AGENT_TOKEN_INVALID')
@@ -276,6 +317,8 @@ def main():
                     raise ValueError('PREPARED_BUILD_CHANGED')
             else:
                 run([npm, 'run', 'build:erp'], 'ERP_BUILD', public, log, private_values)
+                if communication_enabled:
+                    run([npm, '--prefix', str(ROOT / 'workers/communication'), 'run', 'build'], 'COMMUNICATION_BUILD', env, log, private_values)
                 (ROOT / 'apps/erp/dist/fagoo-version.json').write_text(json.dumps(source_identity(ROOT)) + '\n', encoding='utf-8')
                 run([npm, 'run', 'check:erp:build'], 'ERP_BUILD_CHECK', env, log, private_values)
             count = inspect_build(ROOT / 'apps/erp/dist', private_values)
@@ -283,20 +326,77 @@ def main():
             if not args.prepared:
                 for path, name in ((api_path, 'API_PACKAGE'), (web_path, 'WEB_PACKAGE')):
                     run([node, str(wrangler), 'deploy', '--config', str(path), '--dry-run', '--outdir', str(directory / name.lower())], name, env, log, private_values)
-                write_private(prepared_path, {'inputs': prepared_identity(values, api, web), 'build': build_fingerprint(ROOT / 'apps/erp/dist')})
+                if communication_enabled:
+                    communication_path = directory / 'communication.json'
+                    write_private(communication_path, communication_runtime['configuration'](ROOT, values, args.account_id, communication_state))
+                    inspect_build(ROOT / 'workers/communication/dist', private_values)
+                    run([node, str(wrangler), 'deploy', '--config', str(communication_path), '--dry-run', '--outdir', str(directory / 'communication_package')], 'COMMUNICATION_PACKAGE', env, log, private_values)
+                write_private(prepared_path, {'inputs': prepared_identity(values, api, web), 'build': build_fingerprint(ROOT / 'apps/erp/dist'),
+                    'communication_build': build_fingerprint(ROOT / 'workers/communication/dist') if communication_enabled else None})
             if args.deploy:
                 token = cloudflare_credentials(args.credentials_file, args.account_id, args.zone_id)['token'] if args.credentials_file else read_token()
                 private_values.append(token)
+                # The coordinated backup also needs credentials during an interactive installation.
+                # Persist through the existing private credential path before invoking it.
+                if not args.credentials_file:
+                    write_private(directory / 'credentials.json', {'account_id': args.account_id, 'zone_id': args.zone_id, 'token': token})
                 check_domains((api, web), args.account_id, args.zone_id, token)
                 descriptor, temporary = tempfile.mkstemp(prefix='api-secrets-', suffix='.json', dir=directory)
                 secrets_path = Path(temporary)
                 with os.fdopen(descriptor, 'w', encoding='utf-8') as output:
-                    json.dump({'SUPABASE_SERVICE_ROLE_KEY': values['SERVICE_ROLE_KEY'], **integration['secrets'],
+                    json.dump({'SUPABASE_SERVICE_ROLE_KEY': values['SERVICE_ROLE_KEY'], **integration['secrets'], **queue_push['secrets'],
                                **({'FAGOO_UPDATE_AGENT_TOKEN': values['FAGOO_UPDATE_AGENT_TOKEN']} if values.get('FAGOO_UPDATE_AGENT_TOKEN') else {})}, output)
                 deploy_env = {**env, 'CLOUDFLARE_API_TOKEN': token, 'CLOUDFLARE_ACCOUNT_ID': args.account_id}
+                if communication_enabled:
+                    if args.prepared and prepared.get('communication_build') != build_fingerprint(ROOT / 'workers/communication/dist'):
+                        raise ValueError('PREPARED_COMMUNICATION_BUILD_CHANGED')
+                    communication_state = communication_runtime['provision'](args.env_file, values, args.account_id, token)
+                    adopting = communication_runtime['adopting'](communication_state, values)
+                    if adopting:
+                        communication_runtime['verify_activation'](communication_state)
+                    private_values.append(communication_state['master_key'])
+                    communication_config = communication_runtime['configuration'](ROOT, values, args.account_id, communication_state)
+                    communication_path = directory / 'communication.json'
+                    write_private(communication_path, communication_config)
+                    descriptor, temporary = tempfile.mkstemp(prefix='communication-secrets-', suffix='.json', dir=directory)
+                    communication_secrets_path = Path(temporary)
+                    with os.fdopen(descriptor, 'w', encoding='utf-8') as output:
+                        json.dump({'MASTER_KEY': communication_state['master_key'],
+                                   **({ 'FAGOO_QUEUE_FCM_SERVICE_ACCOUNT_JSON': queue_push['secrets']['FAGOO_QUEUE_FCM_SERVICE_ACCOUNT_JSON'] }
+                                      if queue_push['secrets'].get('FAGOO_QUEUE_FCM_SERVICE_ACCOUNT_JSON') else {})}, output)
+                    # The first upgrade may still run the v0.3.1 updater. The candidate therefore
+                    # performs its own external backup before changing engine schema/code.
+                    if communication_state.get('deployed'):
+                        run([sys.executable, str(ROOT / 'infra/backup-communication.py'), '--env-file', str(args.env_file),
+                             '--credentials-file', str(args.credentials_file or directory / 'credentials.json'), '--config', str(communication_path), '--hold'],
+                            'COMMUNICATION_BACKUP', deploy_env, log, private_values)
+                    elif adopting:
+                        run([sys.executable, str(ROOT / 'infra/backup-communication.py'), '--env-file', str(args.env_file),
+                             '--credentials-file', str(args.credentials_file or directory / 'credentials.json'), '--prepare-adoption'],
+                            'COMMUNICATION_ADOPTION_CHECKPOINT', deploy_env, log, private_values)
+                    run([node, str(wrangler), 'd1', 'migrations', 'apply', 'DB', '--remote', '--config', str(communication_path)], 'COMMUNICATION_DATABASE', deploy_env, log, private_values)
+                    if adopting:
+                        run([sys.executable, str(ROOT / 'infra/backup-communication.py'), '--env-file', str(args.env_file),
+                             '--credentials-file', str(args.credentials_file or directory / 'credentials.json'), '--hold-adoption'],
+                            'COMMUNICATION_ADOPTION_PAUSE', deploy_env, log, private_values)
+                    # Bootstrap without the reverse binding until the API exports the authority.
+                    if not communication_state.get('deployed'):
+                        bootstrap = {**communication_config, 'services': []}
+                        bootstrap_path = directory / 'communication-bootstrap.json'
+                        write_private(bootstrap_path, bootstrap)
+                        run([node, str(wrangler), 'deploy', '--config', str(bootstrap_path), '--secrets-file', str(communication_secrets_path)], 'COMMUNICATION_BOOTSTRAP', deploy_env, log, private_values)
                 run([node, str(wrangler), 'deploy', '--config', str(api_path), '--secrets-file', str(secrets_path)], 'API_DEPLOY', deploy_env, log, private_values)
+                if communication_enabled:
+                    run([node, str(wrangler), 'deploy', '--config', str(communication_path), '--secrets-file', str(communication_secrets_path)], 'COMMUNICATION_DEPLOY', deploy_env, log, private_values)
+                    communication_state['deployed'] = True
+                    communication_runtime['private_write'](communication_runtime['state_path'](args.env_file), communication_state)
                 check_domains((web,), args.account_id, args.zone_id, token)
                 run([node, str(wrangler), 'deploy', '--config', str(web_path)], 'WEB_DEPLOY', deploy_env, log, private_values)
+                verify_publication(values, source_identity(ROOT))
+                if communication_enabled and not args.keep_communication_paused and (Path(args.env_file).resolve().parent / 'communication-maintenance.json').exists():
+                    run([sys.executable, str(ROOT / 'infra/backup-communication.py'), '--env-file', str(args.env_file),
+                         '--credentials-file', str(args.credentials_file or directory / 'credentials.json'), '--resume-after-update'],
+                        'COMMUNICATION_RESUME', deploy_env, log, private_values)
                 if not args.credentials_file:
                     write_private(directory / 'credentials.json', {'account_id': args.account_id, 'zone_id': args.zone_id, 'token': token})
         print(('Application published.' if args.deploy else 'Dry run passed; nothing was published.') + ' Fiscal runtime and SMTP are separate setup steps.')
@@ -310,6 +410,8 @@ def main():
     finally:
         if secrets_path is not None:
             secrets_path.unlink(missing_ok=True)
+        if communication_secrets_path is not None:
+            communication_secrets_path.unlink(missing_ok=True)
         lock.rmdir()
 
 

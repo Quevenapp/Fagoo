@@ -1,0 +1,22 @@
+import {readFile,mkdtemp,writeFile,rm,rmdir} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join,resolve} from 'node:path';import {spawnSync} from 'node:child_process';
+import {readVinkiSnapshot,protectSnapshot,buildBundle,verifyBundle,hash,canonical,savePrivate,importSql,actionSql,d1AdoptionSql,decryptArchive} from './core.mjs';
+const [action,...raw]=process.argv.slice(2),args={};for(let i=0;i<raw.length;i+=2){if(!raw[i]?.startsWith('--')||!raw[i+1]||raw[i+1].startsWith('--'))throw new Error('Use --option value');args[raw[i].slice(2)]=raw[i+1];}
+const required=name=>{if(!args[name])throw new Error('Missing --'+name);return args[name];};const json=async path=>JSON.parse(await readFile(resolve(path),'utf8'));
+async function execute(sql){if(!process.env.PGDATABASE)throw new Error('Set PGDATABASE privately to the approved PostgreSQL connection');const dir=await mkdtemp(join(tmpdir(),'fagoo-consolidation-')),file=join(dir,'operation.sql');try{await writeFile(file,sql,{mode:0o600});const result=spawnSync(process.env.FAGOO_PSQL??'psql',['--no-psqlrc','--quiet','--file',file],{encoding:'utf8',env:{...process.env,PGAPPNAME:'fagoo-consolidation'}});if(result.error||result.status!==0)throw new Error('PostgreSQL operation failed. Inspect the database audit; credentials and SQL payload were not printed.');process.stdout.write(result.stdout);}finally{await rm(file,{force:true});await rmdir(dir);}}
+try{
+ if(action==='export'){
+  const snapshot=await readVinkiSnapshot(required('sqlite')),mapping=await json(required('mapping'));if(args['cloud-sqlite'])snapshot.cloud=await readVinkiSnapshot(args['cloud-sqlite']);else if(mapping.cloud_review!=='no_cloud_installation')throw new Error('Supply --cloud-sqlite or explicitly review cloud_review=no_cloud_installation');const archive=await protectSnapshot(snapshot,mapping,args.media,process.env.FAGOO_MIGRATION_KEY);
+  const archiveText=JSON.stringify(archive,null,2)+'\n',bundle=buildBundle(snapshot,mapping,hash(archiveText)),out=resolve(required('out'));
+  await savePrivate(out+'.archive.json',archiveText);await savePrivate(out+'.bundle.json',bundle);await savePrivate(out+'.d1-adoption.sql',d1AdoptionSql(bundle));
+  console.log(JSON.stringify({status:'exported',run_id:bundle.run_id,source_sha256:bundle.source_sha256,plan_sha256:bundle.plan_sha256,counts:Object.fromEntries(Object.entries(bundle.records).map(([k,v])=>[k,v.length])),archive:out+'.archive.json'}));
+ }else if(action==='dry-run'){
+  const bundle=verifyBundle(await json(required('bundle')));const archive=await readFile(resolve(required('archive')));if(hash(archive)!==bundle.archive_sha256)throw new Error('archive_hash_mismatch');
+  const restored=decryptArchive(JSON.parse(archive),process.env.FAGOO_MIGRATION_KEY);if(hash(canonical(restored.snapshot))!==bundle.source_sha256)throw new Error('source_archive_mismatch');
+  if(args['current-sqlite']){const current=await readVinkiSnapshot(args['current-sqlite']);if(restored.snapshot.cloud){if(!args['current-cloud-sqlite'])throw new Error('Supply --current-cloud-sqlite to recheck the cloud source');current.cloud=await readVinkiSnapshot(args['current-cloud-sqlite']);}if(hash(canonical(current))!==bundle.source_sha256)throw new Error('source_changed_since_export');}
+  console.log(JSON.stringify({status:'validated',run_id:bundle.run_id,source_sha256:bundle.source_sha256,archive_restore_verified:true,records:Object.fromEntries(Object.entries(bundle.records).map(([k,v])=>[k,v.length])),old_authority_changed:false}));
+ }else if(action==='import'){
+  const bundle=verifyBundle(await json(required('bundle')));if(hash(await readFile(resolve(required('archive'))))!==bundle.archive_sha256)throw new Error('archive_hash_mismatch');await execute(importSql(bundle,required('actor')));
+ }else if(['reconcile','activate'].includes(action))await execute(actionSql(action,required('run'),required('actor'),action==='activate'?await json(required('evidence')):undefined));
+ else if(action==='restore-archive'){const archive=await json(required('archive'));await savePrivate(resolve(required('out')),decryptArchive(archive,process.env.FAGOO_MIGRATION_KEY));console.log('Archive decrypted into the explicitly selected private output.');}
+ else throw new Error('Commands: export, dry-run, import, reconcile, activate, restore-archive. See tools/consolidation/README.md.');
+}catch(error){console.error(error.message);process.exitCode=1;}

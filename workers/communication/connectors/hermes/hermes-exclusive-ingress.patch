@@ -1,0 +1,234 @@
+--- a/gateway/run_inbound.py
++++ b/gateway/run_inbound.py
+@@ -221,6 +221,10 @@
+             and not getattr(event, "_hermes_startup_restore_replay", False)
+         ):
+             self._queue_startup_restore_event(event)
++            return None
++
++        from gateway.exclusive_ingress import dispatch as dispatch_exclusive
++        if await dispatch_exclusive(self, event):
+             return None
+ 
+         if is_internal:
+--- a/gateway/run_startup.py
++++ b/gateway/run_startup.py
+@@ -1658,6 +1658,8 @@
+         self._update_runtime_status(self._serving_state())
+         await self._start_finish_wiring(connected_count)
+         self._start_spawn_background_watchers()
++        from gateway.exclusive_ingress import start_services
++        start_services(self)
+         from hermes_cli.observability.shared_metrics_startup import record_process_ready
+         record_process_ready("gateway_boot", background=True)
+         logger.info("Press Ctrl+C to stop")
+--- /dev/null
++++ b/gateway/exclusive_ingress.py
+@@ -0,0 +1,207 @@
++"""Durable exclusive ingress ownership for standalone gateway consumers.
++
++Bindings are host state, independent of plugin enablement. Missing/failed consumers
++never fall through to normal agents. The owner receives untrusted data before
++normal pairing and is responsible for its domain-specific sender authorization.
++"""
++from __future__ import annotations
++
++import asyncio
++import hashlib
++import copy
++import json
++import logging
++import os
++import shutil
++import uuid
++from pathlib import Path
++
++CONTRACT_VERSION = 1
++logger = logging.getLogger(__name__)
++_consumers = {}
++
++
++def register_consumer(ctx, receive, tick):
++    from hermes_constants import get_hermes_home
++    home = str(get_hermes_home().resolve())
++    key = (home, ctx.plugin_id)
++    entry = (receive, tick)
++    _consumers[key] = entry
++
++    def remove():
++        if _consumers.get(key) is entry:
++            del _consumers[key]
++    ctx.on_unload(remove)
++
++
++def bindings(home):
++    path = Path(home) / 'exclusive-ingress.json'
++    if not path.exists():
++        return []
++    data = json.loads(path.read_text())
++    if not isinstance(data, list):
++        raise ValueError('exclusive-ingress.json must be a list')
++    for row in data:
++        if not isinstance(row, dict) or not all(isinstance(row.get(k), str) and row[k] for k in ('platform', 'consumer')):
++            raise ValueError('Invalid exclusive ingress binding')
++        if 'chat' in row and not isinstance(row['chat'], str):
++            raise ValueError('Binding chat must be a string')
++    return data
++
++
++def match(rows, platform, chat):
++    owners = {r['consumer'] for r in rows if r['platform'] == platform and r.get('chat', chat) == chat}
++    if len(owners) > 1:
++        raise ValueError('Ambiguous exclusive ingress ownership')
++    return next(iter(owners), None)
++
++
++class Host:
++    def __init__(self, runner, home):
++        self.runner, self.home = runner, Path(home)
++
++    def adapter(self, platform):
++        from gateway.config import Platform
++        from hermes_cli.profiles import get_active_profile_name
++        return self.runner._authorization_adapter(Platform(platform), get_active_profile_name())
++
++    async def create_thread(self, platform, chat, title):
++        adapter = self.adapter(platform)
++        if platform != 'telegram' or adapter is None or not getattr(adapter, '_bot', None):
++            raise RuntimeError('Forum thread creation unavailable')
++        topic = await adapter._bot.create_forum_topic(chat_id=int(chat), name=title[:128])
++        return str(topic.message_thread_id)
++
++
++def snapshot(event):
++    source = event.source
++    return {
++        'platform': source.platform.value, 'chat': str(source.chat_id),
++        'thread': str(source.thread_id) if source.thread_id is not None else None,
++        'user': str(source.user_id or ''), 'chat_type': source.chat_type,
++        'message_id': str(event.message_id or ''), 'text': event.text or '',
++        'reply_to': str(event.reply_to_message_id) if event.reply_to_message_id else None,
++        'internal': bool(event.internal), 'source': source.to_dict(),
++        'media': [{'path': str(path), 'type': event.media_types[i] if i < len(event.media_types) else 'document'}
++                  for i, path in enumerate(event.media_urls)],
++        'metadata': {**dict(event.metadata or {}), 'wabotia_mentioned': bool(isinstance(event.raw_message, dict) and set(event.raw_message.get('mentionedIds', [])) & set(event.raw_message.get('botIds', [])))},
++    }
++
++
++def spool(home, owner, payload):
++    if not payload['message_id']:
++        raise ValueError('Exclusive ingress requires a stable message ID')
++    key = hashlib.sha256(json.dumps([owner, payload['platform'], payload['chat'], payload['thread'],
++                                    payload['message_id']]).encode()).hexdigest()
++    directory = Path(home) / 'exclusive-inbox'
++    directory.mkdir(exist_ok=True, mode=0o700)
++    path = directory / (key + '.json')
++    if path.exists():
++        return path
++    payload = dict(payload)
++    media = []
++    for index, item in enumerate(payload['media']):
++        source = Path(item['path'])
++        if not source.is_file() or source.is_symlink() or source.stat().st_size > 104_857_600:
++            payload['text'] += '\n[Attachment unavailable: requires human review]'
++            continue
++        destination = directory / (key + '-' + str(index) + source.suffix[:12])
++        shutil.copyfile(source, destination)
++        destination.chmod(0o600)
++        media.append({**item, 'path': str(destination)})
++    payload['media'] = media
++    temporary = directory / ('.' + uuid.uuid4().hex)
++    try:
++        with temporary.open('x') as handle:
++            temporary.chmod(0o600)
++            json.dump({'consumer': owner, 'payload': payload}, handle)
++            handle.flush()
++            os.fsync(handle.fileno())
++        os.replace(temporary, path)
++    finally:
++        temporary.unlink(missing_ok=True)
++    return path
++
++
++async def deliver_spool(path, host):
++    envelope = json.loads(path.read_text())
++    consumer = _consumers.get((str(host.home.resolve()), envelope['consumer']))
++    if consumer and await asyncio.wait_for(consumer[0](copy.deepcopy(envelope['payload']), host), timeout=150) is True:
++        path.unlink(missing_ok=True)
++        for media in envelope['payload'].get('media', []):
++            file = Path(media['path'])
++            if file.parent == path.parent and file.name.startswith(path.stem + '-'):
++                file.unlink(missing_ok=True)
++
++
++async def dispatch(runner, event):
++    """True means reserved/consumed, including failures. Never unreserve on error."""
++    from gateway.run import _profile_runtime_scope
++    home = runner._authorization_home_for_source(event.source)
++    if home is None:
++        if getattr(runner.config, 'multiplex_profiles', False):
++            logger.error('Exclusive ingress cannot resolve transport profile; denying inbound')
++            return True
++        from hermes_constants import get_routing_process_hermes_home
++        home = get_routing_process_hermes_home()
++    try:
++        rows = bindings(home)
++        owner = match(rows, event.source.platform.value, str(event.source.chat_id))
++    except Exception:
++        logger.error('Exclusive ingress configuration invalid; denying inbound in profile %s', home, exc_info=True)
++        return True
++    if not owner:
++        return False
++    # Synthetic events must not reopen normal agent loops on an exclusively owned channel.
++    if event.internal:
++        return True
++    try:
++        path = spool(home, owner, snapshot(event))
++        with _profile_runtime_scope(home):
++            from hermes_cli.plugins import discover_plugins
++            discover_plugins()
++            consumer = _consumers.get((str(Path(home).resolve()), owner))
++            if consumer is None:
++                logger.error('Exclusive ingress consumer unavailable: %s in %s', owner, home)
++                return True
++            await deliver_spool(path, Host(runner, home))
++    except Exception:
++        logger.error('Exclusive ingress consumer failed: %s', owner, exc_info=True)
++    return True
++
++
++async def service_loop(runner):
++    """Wake consumers after restart even before the first customer sends a message."""
++    from gateway.run import _profile_runtime_scope
++    from hermes_constants import get_routing_process_hermes_home
++    while runner._running:
++        homes = {Path(get_routing_process_hermes_home())}
++        for name in (getattr(runner, '_profile_adapters', {}) or {}):
++            home = runner._routed_profile_home(name)
++            if isinstance(home, Path):
++                homes.add(home)
++        for home in homes:
++            try:
++                owners = {r['consumer'] for r in bindings(home)}
++                if not owners:
++                    continue
++                with _profile_runtime_scope(home):
++                    from hermes_cli.plugins import discover_plugins
++                    discover_plugins()
++                    host = Host(runner, home)
++                    paths = (home / 'exclusive-inbox').glob('*.json')
++                    for path in sorted(paths, key=lambda p: (p.stat().st_mtime_ns, p.name))[:100]:
++                        await deliver_spool(path, host)
++                    for owner in owners:
++                        entry = _consumers.get((str(home.resolve()), owner))
++                        if entry:
++                            await asyncio.wait_for(entry[1](host), timeout=5)
++            except Exception:
++                logger.error('Exclusive ingress service unavailable in %s', home, exc_info=True)
++        await asyncio.sleep(2)
++
++
++def start_services(runner):
++    task = asyncio.create_task(service_loop(runner), name='exclusive-ingress')
++    runner._background_tasks.add(task)
++    task.add_done_callback(runner._background_tasks.discard)

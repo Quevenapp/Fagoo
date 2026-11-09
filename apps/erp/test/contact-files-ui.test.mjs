@@ -84,7 +84,7 @@ test('Foto: preview of the current foto checked by SHA-256, Enviar foto only wit
     view.input(`contact-photo-${contact}`).props.onChange({ target: { files: [new File([png], 'foto.png', { type: 'image/png' })] } });
     await new Promise(resolve => setTimeout(resolve, 50)); await view.flush(); await new Promise(resolve => setTimeout(resolve, 50)); await view.flush();
     assert.ok(s.calls.some(call => call.method === 'POST' && call.body?.purpose === 'photo' && call.body.mime_type === 'image/png'));
-    // The ERP CSP allows img-src 'self' data: only: the preview is a data: URL of the checked bytes, never a blob: URL.
+    // Contact files still use checked bytes. External HTTPS media is reserved for administrator-configured campaigns.
     assert.ok(view.nodes().some(n => n.type === 'img' && n.props.alt === 'Foto do contato' && n.props.src === `data:image/png;base64,${Buffer.from(png).toString('base64')}`));
     await view.click('Remover foto'); await view.flush(); await new Promise(resolve => setTimeout(resolve, 50)); await view.flush();
     assert.ok(s.calls.some(call => call.path.endsWith(`${id(5)}/exclusao`) && call.body.command_id));
@@ -112,10 +112,11 @@ test('a definitive refusal of Excluir selecionados or Remover foto ends the pend
   } finally { view.unmount(); }
 });
 
-test('the ERP Content-Security-Policy keeps images to self and data: (the foto preview is a data: URL)', async () => {
+test('image policy permits checked previews and HTTPS campaigns while blocking insecure media', async () => {
   const { readFile } = await import('node:fs/promises');
   const headers = await readFile(new URL('../public/_headers', import.meta.url), 'utf8');
   const img = /img-src ([^;]+);/.exec(headers)?.[1] ?? '';
   assert.ok(img.includes('data:'));
-  assert.ok(!img.includes('blob:'), 'a blob: preview would be blocked, so ContactPhoto must keep using data:');
+  assert.deepEqual(img.trim().split(/\s+/).sort(), ["'self'",'blob:','data:','https:'].sort());
+  assert.equal(img.includes('http:'),false);
 });

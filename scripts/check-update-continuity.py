@@ -14,6 +14,9 @@ def main():
         ('private connection configuration', [sys.executable, '-m', 'unittest', 'discover', '-s', 'infra', '-p', 'test_integration_config.py']),
         ('application publication', [sys.executable, '-m', 'unittest', 'discover', '-s', 'infra', '-p', 'test_deploy_application.py']),
         ('update and recovery', [sys.executable, '-m', 'unittest', 'discover', '-s', 'infra', '-p', 'test_system_updates.py']),
+        ('communication resources and backup recovery', [sys.executable, '-m', 'unittest', 'discover', '-s', 'infra', '-p', 'test_communication*.py']),
+        ('consumer push provider continuity', [sys.executable, '-m', 'unittest', 'discover', '-s', 'infra', '-p', 'test_queue_push_config.py']),
+        ('reviewed legacy consolidation', ['node', '--test', 'tools/consolidation/consolidation.test.mjs']),
         ('database defaults and API connection', ['node', '--test', 'infra/test-standalone-defaults.mjs',
             'workers/erp-api/test/integration-continuity.test.mjs', 'workers/erp-api/test/sync-delivery-safety.test.mjs']),
     ]

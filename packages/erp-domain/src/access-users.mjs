@@ -2,7 +2,7 @@
 export const USERS_BASE='/v1/usuarios';
 export const USERS_MAX_BYTES=262144;
 export const USERS_BODY_BYTES=8192;
-export const ACCESS_ROLES=Object.freeze(['admin','consulta','vendas','financeiro','estoque','fiscal']);
+export const ACCESS_ROLES=Object.freeze(['admin','consulta','vendas','financeiro','estoque','fiscal','operacao']);
 export const USER_STATUSES=Object.freeze(['ativo','inativo','sem_acesso']);
 export const USER_FILTERS=Object.freeze(['todos',...USER_STATUSES]);
 // 229: Origin filter "Tipo de usuário" (Todos | Normal | Contador).

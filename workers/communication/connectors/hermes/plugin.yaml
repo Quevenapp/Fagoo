@@ -1,0 +1,6 @@
+name: wabotia_transport
+version: 0.1.0
+description: Transporte exclusivo WhatsApp para Wabotia; sem painel ou execução de bots.
+author: Quevenapp
+provides_tools: []
+provides_hooks: []

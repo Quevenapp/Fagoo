@@ -7,12 +7,14 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
 import tarfile
 import urllib.request
 
 from release_protocol import atomic_json, digest_file
 from update_agent import Updater
 from update_pipeline import Pipeline
+from communication_runtime import read_state, state_path, private_write, verify_backup
 
 
 def validate_recovery(root, backup_id):
@@ -30,6 +32,9 @@ def validate_recovery(root, backup_id):
         for name in ('database.dump','storage.tar','runtime.env','previous-runtime-images.json'):
             if digest_file(backup / name) != value.get('sha256',{}).get(name):
                 raise ValueError('RECOVERY_BACKUP_DIGEST_MISMATCH')
+        if 'communication-installation.json' in value.get('sha256', {}):
+            if digest_file(backup/'communication-installation.json') != value['sha256']['communication-installation.json']:
+                raise ValueError('RECOVERY_BACKUP_DIGEST_MISMATCH')
         with tarfile.open(backup/'storage.tar','r:') as archive:
             for item in archive:
                 if item.name.startswith('/') or '..' in Path(item.name).parts or not (item.isfile() or item.isdir()):
@@ -37,9 +42,10 @@ def validate_recovery(root, backup_id):
     return backup,value
 
 
-def restore_cloudflare(pipeline, versions):
+def restore_cloudflare(pipeline, versions, communication=None):
+    engine = communication.get('worker') if isinstance(communication, dict) and communication.get('account_id') == pipeline.credentials['account_id'] else None
     for name, entries in versions.items():
-        if not re.fullmatch(r'fagoo-(?:api|web)-[a-f0-9]{12}',name) or not isinstance(entries,list):
+        if (not re.fullmatch(r'fagoo-(?:api|web)-[a-f0-9]{12}',name) and not (name == engine and re.fullmatch('[a-z0-9][a-z0-9-]{2,62}',name))) or not isinstance(entries,list):
             raise ValueError('INVALID_CLOUDFLARE_RECOVERY')
         cleaned=[]
         for entry in entries:
@@ -55,6 +61,45 @@ def restore_cloudflare(pipeline, versions):
         with no_redirect_opener().open(request,timeout=30) as response:
             result=json.loads(response.read(65537))
         if result.get('success') is not True:raise ValueError('CLOUDFLARE_RECOVERY_FAILED')
+
+
+def communication_recovery(pipeline, backup, recovery):
+    """An older updater omitted the engine; the candidate's checkpoint fills that gap."""
+    communication = json.loads((backup / 'communication-installation.json').read_text()) if 'communication-installation.json' in recovery.get('sha256', {}) else None
+    versions = dict(recovery['cloudflare'])
+    marker = pipeline.env_file.parent / 'communication-maintenance.json'
+    held = json.loads(marker.read_text(encoding='utf-8')) if marker.exists() else None
+    if held and held.get('kind') == 'legacy-adoption':
+        previous = held.get('previous_state', {})
+        current = read_state(state_path(pipeline.env_file), pipeline.values, pipeline.credentials['account_id'])
+        if (not current or held.get('account_id') != pipeline.credentials['account_id'] or
+                any(previous.get(key) != current.get(key) for key in ('worker', 'database_id', 'bucket', 'master_key', 'origin', 'account_id')) or
+                held.get('worker') != current['worker'] or held.get('database_id') != current['database_id'] or
+                previous.get('deployed') is not False or not held.get('backup_complete') or
+                verify_backup(held['backup']) != held.get('backup_manifest_sha256')):
+            raise ValueError('COMMUNICATION_ADOPTION_RECOVERY_INVALID')
+        if communication and communication != previous:
+            raise ValueError('COMMUNICATION_ADOPTION_RECOVERY_INVALID')
+        communication = previous
+        old = held.get('previous_versions')
+        if current['worker'] in versions and versions[current['worker']] != old:
+            raise ValueError('COMMUNICATION_ADOPTION_VERSION_CHANGED')
+        versions[current['worker']] = old
+    return communication, versions, held
+
+
+def finish_communication_recovery(pipeline, backup, communication, held):
+    if communication:
+        private_write(state_path(pipeline.env_file), communication)
+    marker = pipeline.env_file.parent / 'communication-maintenance.json'
+    if held and held.get('kind') == 'legacy-adoption':
+        # The old operator stopped its writer explicitly. Do not restart it or
+        # clear the retained D1 pause as a side effect of rolling back Fagoo.
+        private_write(backup / 'communication-adoption-recovery.json', held)
+        marker.unlink()
+    elif marker.exists():
+        pipeline.run([sys.executable, Path(__file__).with_name('backup-communication.py'), '--env-file', pipeline.env_file,
+                      '--credentials-file', pipeline.credentials_path, '--resume-after-update'])
 
 
 def main():
@@ -79,6 +124,7 @@ def main():
     atomic_json(pipeline.maintenance,{'recovery':args.backup_id})
     pipeline.log=(backup/'recovery.log').open('a',encoding='utf-8')
     try:
+        communication, previous_versions, held = communication_recovery(pipeline, backup, recovery)
         pipeline.compose(source,'stop','--timeout','30','auth','rest','storage')
         if recovery.get('runtime_changed'):
             shutil.copyfile(backup/'runtime.env', pipeline.env_file)
@@ -101,13 +147,15 @@ def main():
             with (backup/'storage.tar').open('rb') as data:
                 subprocess.run([str(x) for x in [*command,'run','-T','--rm','--no-deps','--entrypoint','tar','storage','-xf','-','-C','/var/lib/storage']],stdin=data,stdout=subprocess.DEVNULL,stderr=pipeline.log,check=True,timeout=1800)
             pipeline.run([*command,'up','-d','--wait','--wait-timeout','300'])
-            restore_cloudflare(pipeline,recovery['cloudflare'])
+            # Reverting a Worker version never restores D1/R2 over messages received during maintenance.
+            restore_cloudflare(pipeline,previous_versions,communication)
         else:
             pipeline.compose(source,'up','-d','--wait','--wait-timeout','300')
         previous=recovery['previous']
         pipeline.check_public_version({'source_commit':previous['revision'],'version':previous['version']})
         pipeline.maintenance.unlink()
         pipeline.check_health()
+        finish_communication_recovery(pipeline, backup, communication, held)
         atomic_json(root/'private/updates/installed.json',previous)
         service.save(state='failed',phase='idle',error='UPDATE_RECOVERED',recovery_required=False)
         lock=root/'private/update-fagoo.lock'

@@ -35,7 +35,7 @@ class IntegrationConfigurationTests(unittest.TestCase):
         second = DEPLOY.configurations(dict(values), 'a' * 32, 'b' * 32)
         self.assertEqual(first, second)
         api, web = first
-        self.assertEqual(api['triggers']['crons'], ['*/2 * * * *'])
+        self.assertEqual(api['triggers']['crons'], ['*/2 * * * *', '* * * * *'])
         self.assertEqual(api['vars']['ORIGIN_WRITE_ENABLED'], 'true')
         self.assertEqual(api['vars']['PUBLIC_BASE_URL'], values['FAGOO_API_ORIGIN'])
         for secret in integration_settings(values)['secrets'].values():
