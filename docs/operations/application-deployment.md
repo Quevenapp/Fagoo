@@ -27,6 +27,8 @@ Obtenha o Account ID e o Zone ID no painel Cloudflare. O token precisa acessar s
 
 O Cloudflare mostra o valor completo uma única vez. Pause a gravação antes de gerar ou revelar o segredo e salve-o no seu gerenciador de senhas, junto da identificação da conta, domínio e validade, antes de clicar em **Veja todos os tokens de API** (ou **Done**, em outras versões do painel). A cópia privada na VPS permite as próximas atualizações pelo painel. Se perder um token ainda válido, use **Profile → API Tokens → Actions → View summary** para conferir o escopo e a validade; volte com **Back**, escolha **Actions → Roll** e pause a gravação antes de confirmar. **Roll invalida o valor antigo e mantém as permissões, os recursos e a expiração**. Se expirou, crie um novo token com as permissões e os escopos acima. Veja o [passo a passo para perda ou expiração](installation.md#se-perder-o-token-ou-ele-expirar). Esse token é diferente da credencial do Cloudflare Tunnel.
 
+Quando o token estiver restrito ao IPv4 de uma VPS que também possui IPv6, a credencial privada pode incluir `"ip_family": "ipv4"`. O pipeline da v1.0.0 aplica essa opção somente às suas chamadas Cloudflare e aos processos Node da instalação, preservando TLS, validação de hostname e recusa de redirecionamentos. Renovação, backup e recuperação mantêm a opção. Sem esse campo, o comportamento anterior permanece. Instale o pipeline que suporta a opção antes de ativá-la; o atualizador da v0.3.1 não aplica essa preferência. Não altere a rede global do servidor para corrigir a condição de um token.
+
 ## Ensaio sem publicação
 
 Substitua os identificadores abaixo pelos valores do painel:

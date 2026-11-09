@@ -7,6 +7,7 @@ from pathlib import Path
 
 from release_protocol import atomic_json
 from update_config import cloudflare_credentials, read_values
+from cloudflare_transport import options
 
 
 def main():
@@ -28,8 +29,9 @@ def main():
     spec.loader.exec_module(publish)
     configs = publish.configurations(read_values(root / 'private/install/.env'), account, zone)
     token = publish.read_token()
-    publish.check_domains(configs, account, zone, token)
-    atomic_json(destination, {'account_id': account, 'zone_id': zone, 'token': token})
+    transport_options = options(saved.get('ip_family'))
+    publish.check_domains(configs, account, zone, token, **transport_options)
+    atomic_json(destination, {'account_id': account, 'zone_id': zone, 'token': token, **transport_options})
     print('Cloudflare publication credential validated and saved privately. No application was published.')
 
 

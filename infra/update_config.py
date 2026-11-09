@@ -28,6 +28,8 @@ def cloudflare_credentials(path, account=None, zone=None):
         raise ValueError('CLOUDFLARE_CREDENTIALS_INVALID')
     if (account and value['account_id'] != account) or (zone and value['zone_id'] != zone):
         raise ValueError('CLOUDFLARE_CREDENTIAL_SCOPE_MISMATCH')
+    if 'ip_family' in value and value['ip_family'] != 'ipv4':
+        raise ValueError('CLOUDFLARE_IP_FAMILY_INVALID')
     return value
 
 

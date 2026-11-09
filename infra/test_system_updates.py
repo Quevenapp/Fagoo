@@ -186,10 +186,13 @@ class UpdateTests(unittest.TestCase):
 
     def test_backup_precedes_mutations_and_success_follows_public_verification(self):
         service=self.checked();pipeline,calls=self.pipeline_fixture(service);job=str(uuid.uuid4())
+        pipeline.credentials['ip_family'] = 'ipv4'
         pipeline.execute(self.manifest,job)
         backup=json.loads((pipeline.backup/'recovery.json').read_text())
         self.assertTrue(backup['backup_complete']);self.assertTrue(backup['runtime_changed'])
         self.assertEqual(digest_file(pipeline.backup/'database.dump'),backup['sha256']['database.dump'])
+        self.assertEqual(json.loads((pipeline.backup/'cloudflare-credentials.json').read_text()), pipeline.credentials)
+        self.assertEqual(digest_file(pipeline.backup/'cloudflare-credentials.json'), backup['sha256']['cloudflare-credentials.json'])
         dump=next(i for i,c in enumerate(calls) if 'pg_dump' in c)
         mutation=next(i for i,c in enumerate(calls) if 'up -d --wait --wait-timeout 300' in c)
         self.assertLess(dump,mutation)

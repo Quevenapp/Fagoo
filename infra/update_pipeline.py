@@ -13,6 +13,7 @@ from release_protocol import atomic_json, extract_release, digest_file
 from update_config import read_values, cloudflare_credentials
 from update_lock import UpdateLock
 from installation_scope import installation_scope
+from cloudflare_transport import options, node_environment
 
 
 class Pipeline:
@@ -36,7 +37,7 @@ class Pipeline:
         blocked = re.compile(r'TOKEN|PASSWORD|SECRET|CREDENTIAL|PRIVATE_KEY|^VITE_|^SUPABASE_|^CLOUDFLARE_|^CF_|^FAGOO_|^ORIGIN_|^INTEGRATION_|^PG|^WRANGLER_|^WORKERS_CI_', re.I)
         env = {key: value for key, value in os.environ.items() if not blocked.search(key)}
         env.update(CI='true', NO_COLOR='1', WRANGLER_SEND_METRICS='false', NODE_OPTIONS='--max-old-space-size=1536')
-        return env
+        return node_environment(env, **options(self.credentials.get('ip_family')))
 
     def run(self, argv, *, cwd=None, output=None, timeout=1800):
         result = subprocess.run([str(arg) for arg in argv], cwd=cwd or self.source, env=self.environment(),
@@ -83,7 +84,8 @@ class Pipeline:
         spec.loader.exec_module(module)
         communication = module.communication_runtime['read_state'](module.communication_runtime['state_path'](self.env_file), self.values, self.credentials['account_id']) if hasattr(module, 'communication_runtime') else None
         api, web = module.configurations(self.values, self.credentials['account_id'], self.credentials['zone_id'], communication) if communication else module.configurations(self.values, self.credentials['account_id'], self.credentials['zone_id'])
-        module.check_domains((api, web), self.credentials['account_id'], self.credentials['zone_id'], self.credentials['token'])
+        transport_options = options(self.credentials.get('ip_family'))
+        module.check_domains((api, web), self.credentials['account_id'], self.credentials['zone_id'], self.credentials['token'], **transport_options)
         result = {}
         components = [api, web]
         if communication:
@@ -93,7 +95,7 @@ class Pipeline:
             if communication.get('deployed') or adopting:
                 components.append({'name': communication['worker']})
         for config in components:
-            value = module.cloudflare_get(f"/accounts/{self.credentials['account_id']}/workers/scripts/{config['name']}/deployments", self.credentials['token'])['result']
+            value = module.cloudflare_get(f"/accounts/{self.credentials['account_id']}/workers/scripts/{config['name']}/deployments", self.credentials['token'], **transport_options)['result']
             deployments = value.get('deployments', []) if isinstance(value, dict) else value
             if isinstance(deployments, list):
                 deployments = sorted(deployments, key=lambda item: item.get('created_on', ''), reverse=True)
@@ -127,6 +129,8 @@ class Pipeline:
                 atomic_json(self.backup / 'recovery.json', {'job': job, 'previous': self.previous, 'target': manifest,
                                                            'cloudflare': previous_cloudflare, 'backup_complete': False, 'runtime_changed': False})
                 shutil.copy2(self.env_file, self.backup / 'runtime.env')
+                # Keep the installation's optional IP policy together with its private token.
+                atomic_json(self.backup / 'cloudflare-credentials.json', self.credentials)
                 communication_file = self.env_file.parent / 'communication.json'
                 if communication_file.exists():
                     shutil.copy2(communication_file, self.backup / 'communication-installation.json')
@@ -145,7 +149,7 @@ class Pipeline:
                     raise ValueError('UPDATE_BACKUP_INCOMPLETE')
                 recovery = json.loads((self.backup / 'recovery.json').read_text())
                 recovery['backup_complete'] = True
-                recovery['sha256'] = {name: digest_file(self.backup / name) for name in ('database.dump', 'storage.tar', 'runtime.env', 'previous-runtime-images.json')}
+                recovery['sha256'] = {name: digest_file(self.backup / name) for name in ('database.dump', 'storage.tar', 'runtime.env', 'previous-runtime-images.json', 'cloudflare-credentials.json')}
                 if (self.backup / 'communication-installation.json').exists():
                     recovery['sha256']['communication-installation.json'] = digest_file(self.backup / 'communication-installation.json')
                     recovery['communication_data_policy'] = 'preserve-live-inbox; restore only to reviewed new resources'

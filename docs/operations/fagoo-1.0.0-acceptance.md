@@ -17,6 +17,16 @@ Base: v0.3.1, repositório `Quevenapp/Fagoo`, branch `codex/fagoo-1.0.0`. A vers
 | Aplicativo | Builds Android e iOS, testes de regras do painel, recibos, sessão e transporte. Evidências físicas são registradas separadamente; compilação não prova impressão ou push. |
 | ERP existente | Suíte completa: 2.655 testes aprovados, quatro pulados, nenhuma falha. Build de produção com configuração pública sintética e verificação dos 258 arquivos distribuídos aprovados. |
 
+## Homologação do servidor
+
+Em 9 de novembro de 2026, o runtime separado `fagoo-homolog` foi instalado com as 355 migrações e credenciais próprias. A conta Cloudflare é a do Fagoo, com as origens definidas no [guia de instalação isolada](isolated-installation.md). O domínio de produção `demo.fagoo.com.br` permanece na v0.3.1.
+
+- Auth real por HTTPS: 13 verificações aprovadas, incluindo login, renovação, revogação de refresh no logout, TOTP inválido recusado e TOTP válido com sessão AAL2 reconhecida pelo ERP. Foram usadas somente contas sintéticas, sem envio de e-mail. O cliente HTTP identifica-se como Fagoo; nenhuma regra de segurança da zona foi alterada.
+- CORS real no gateway: três testes aprovados, cobrindo respostas normais, erros e preflight. Uma origem não autorizada não recebe o cabeçalho de autorização CORS.
+- Instalação do conector por arquivo privado: 19 testes aprovados no Linux real, incluindo conta/UUID, exclusividade, permissões e recusa de links simbólicos em origem e destino.
+
+Os roteiros de [Auth/CRM](../../tools/qa/homologation-auth-crm.md) e [filas](../../tools/qa/homologation-queues.md) registram relatórios privados e persistem comandos antes do envio. Auth HTTPS não comprova, por si só, CRM, concorrência da API, transições visuais do aplicativo ou efeitos físicos; cada fase precisa de seu próprio resultado.
+
 ## Operação e recuperação
 
 A atualização mantém a recepção durável dos webhooks e pausa os processadores e mutações humanas. A recuperação restaura versões e configuração e conserva a caixa de entrada ao vivo. Um backup D1/R2 é restaurado em recursos novos; nunca por sobrescrita do banco que recebeu webhooks depois do checkpoint. A adoção de uma instalação antiga mantém o nome do Worker, namespace de Durable Objects, D1, R2, rotas e chave de criptografia originais.

@@ -43,6 +43,8 @@ Senhas, segredo TOTP e sessões ficam em
 nunca envie o arquivo de credenciais para Git, logs ou o chat. O stdout contém
 nomes de verificações e caminhos, sem respostas Auth. Redirecionamentos HTTP
 são recusados, inclusive para não encaminhar Authorization a outro host.
+O cliente se identifica como `Fagoo-Homologation-QA/1.0`; não simula navegador,
+não resolve desafios e não altera regras de segurança da Cloudflare.
 
 Após resposta incerta, retome o mesmo run: contas são recuperadas pelo marcador
 QA e comandos mantêm o mesmo UUID/payload. Não troque o run para tentar novamente

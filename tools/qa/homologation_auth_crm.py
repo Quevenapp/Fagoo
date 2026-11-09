@@ -88,7 +88,7 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 def http(origin, path, method='GET', payload=None, token=None, key=None, allowed=(200,), web=False):
     require(origin in (LOCAL, *ORIGINS.values()), 'QA_HTTP_ORIGIN_DENIED')
     require(path.startswith('/') and not path.startswith('//'), 'QA_HTTP_PATH_DENIED')
-    headers = {'Accept': 'application/json'}
+    headers = {'Accept': 'application/json', 'User-Agent': 'Fagoo-Homologation-QA/1.0'}
     if key:
         headers['apikey'] = key
     if token:
@@ -150,6 +150,7 @@ class Run:
             self.report = json.loads(self.report_file.read_text())
         self.auth_origin = LOCAL if transport == 'loopback' else ORIGINS['FAGOO_BACKEND_ORIGIN']
         self.transport = transport
+        self.report['http_client'] = 'Fagoo-Homologation-QA/1.0'
 
     def save(self):
         save_private(self.state_file, self.state)

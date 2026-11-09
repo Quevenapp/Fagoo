@@ -4,9 +4,13 @@ import json
 import os
 from pathlib import Path
 import re
+import runpy
+from functools import partial
 import secrets
 import urllib.parse
 import urllib.request
+
+transport = runpy.run_path(str(Path(__file__).with_name('cloudflare_transport.py')))
 
 
 def names(values):
@@ -147,13 +151,13 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
         raise ValueError('COMMUNICATION_CLOUDFLARE_REDIRECT_REFUSED')
 
 
-def cloudflare(method, path, token, body=None):
+def cloudflare(method, path, token, body=None, *, ip_family=None):
     if not path.startswith('/accounts/') or '..' in path:
         raise ValueError('COMMUNICATION_CLOUDFLARE_PATH_INVALID')
     request = urllib.request.Request('https://api.cloudflare.com/client/v4' + path, method=method,
         data=None if body is None else json.dumps(body).encode(),
         headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'Accept': 'application/json'})
-    with urllib.request.build_opener(NoRedirect()).open(request, timeout=60) as response:
+    with transport['opener'](ip_family, NoRedirect()).open(request, timeout=60) as response:
         raw = response.read(4 * 1024 * 1024 + 1)
     if len(raw) > 4 * 1024 * 1024:
         raise ValueError('COMMUNICATION_CLOUDFLARE_RESPONSE_TOO_LARGE')
@@ -163,8 +167,9 @@ def cloudflare(method, path, token, body=None):
     return result.get('result')
 
 
-def provision(env_file, values, account, token, call=cloudflare):
+def provision(env_file, values, account, token, call=cloudflare, *, ip_family=None):
     """Create resources only for a new installation; resumed calls preserve its private master key."""
+    call = partial(call, **transport['options'](ip_family))
     path = state_path(env_file)
     state = read_state(path, values, account)
     if state is not None:

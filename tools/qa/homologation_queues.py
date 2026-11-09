@@ -27,7 +27,8 @@ DEVICE_CAPABILITIES = ['panel.read', 'ticket.issue', 'print.execute']
 def api_http(path, method='GET', payload=None, token=None, device=False, allowed=(200,)):
     require(path.startswith(('/v1/queues/', '/v1/fagoo/', '/v1/communication/', '/v1/system/'))
             and not any(c in path for c in ('\r', '\n', '#')), 'QA_QUEUE_PATH_DENIED')
-    headers = {'Accept': 'application/json', 'Origin': authqa.ORIGINS['FAGOO_WEB_ORIGIN']}
+    headers = {'Accept': 'application/json', 'Origin': authqa.ORIGINS['FAGOO_WEB_ORIGIN'],
+               'User-Agent': 'Fagoo-Homologation-QA/1.0'}
     if token:
         headers['Authorization'] = ('FagooDevice ' if device else 'Bearer ') + token
     data = None if payload is None else json.dumps(payload).encode('utf-8')

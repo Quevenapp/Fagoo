@@ -3,7 +3,7 @@ import importlib.util
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 spec = importlib.util.spec_from_file_location('homologation_auth_crm', Path(__file__).with_name('homologation_auth_crm.py'))
 qa = importlib.util.module_from_spec(spec)
@@ -32,6 +32,17 @@ class QaSafetyTests(unittest.TestCase):
     def test_redirect_never_forwards_credentials(self):
         with self.assertRaisesRegex(qa.QaError, 'QA_HTTP_REDIRECT_DENIED'):
             qa.NoRedirect().redirect_request(None, None, None, None, None, None)
+
+    def test_http_identifies_real_qa_client(self):
+        response = MagicMock(code=200)
+        response.read.return_value = b'{"ok":true}'
+        opener = MagicMock()
+        opener.open.return_value = response
+        with patch.object(qa.urllib.request, 'build_opener', return_value=opener):
+            self.assertEqual(qa.http(qa.ORIGINS['FAGOO_BACKEND_ORIGIN'], '/auth/v1/health'), (200, {'ok': True}))
+        request = opener.open.call_args.args[0]
+        self.assertEqual(request.get_header('User-agent'), 'Fagoo-Homologation-QA/1.0')
+        self.assertNotIn('Mozilla', request.get_header('User-agent'))
 
     def test_rfc6238_totp_six_digit_vectors(self):
         secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ'

@@ -8,7 +8,12 @@ for Worker Custom Domains; a Tunnel's DNS record is a separate operation.
 """
 import json
 import re
+import runpy
+from pathlib import Path
+from functools import partial
 import urllib.request
+
+transport = runpy.run_path(str(Path(__file__).with_name('cloudflare_transport.py')))
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -16,13 +21,13 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
         raise ValueError('CLOUDFLARE_REDIRECT_REFUSED')
 
 
-def cloudflare(method, path, token, body=None):
+def cloudflare(method, path, token, body=None, *, ip_family=None):
     if method not in ('GET', 'POST', 'PUT') or not re.fullmatch(r'/(?:accounts|zones)/[a-f0-9]{32}(?:/[A-Za-z0-9_./?=&-]+)?', path) or '..' in path:
         raise ValueError('CUSTOM_DOMAIN_REQUEST_INVALID')
     request = urllib.request.Request('https://api.cloudflare.com/client/v4' + path, method=method,
         data=None if body is None else json.dumps(body).encode(),
         headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'Accept': 'application/json'})
-    with urllib.request.build_opener(NoRedirect()).open(request, timeout=30) as response:
+    with transport['opener'](ip_family, NoRedirect()).open(request, timeout=30) as response:
         raw = response.read(3 * 1024 * 1024 + 1)
         if not 200 <= response.status < 300 or len(raw) > 3 * 1024 * 1024:
             raise ValueError('CUSTOM_DOMAIN_RESPONSE_INVALID')
@@ -91,13 +96,14 @@ def _preview(account_id, worker, origins, zone_id, token, call):
         raise ValueError('CUSTOM_DOMAIN_CHANGESET_INVALID')
 
 
-def preflight_domains(configs, account_id, zone_id, token, call=cloudflare, preview=False):
+def preflight_domains(configs, account_id, zone_id, token, call=cloudflare, preview=False, *, ip_family=None):
     """Read zone/ownership without DNS permission, before the first upload.
 
     Cloudflare requires an existing Worker for changeset previews. Pass preview
     only after upload; bind_domains always requires that preview before writing.
     No preview failure is ignored. Neither form writes domains or DNS records.
     """
+    call = partial(call, **transport['options'](ip_family))
     requests = _requests(configs, account_id, zone_id)
     zone = call('GET', '/zones/' + zone_id, token).get('result')
     if not isinstance(zone, dict) or zone.get('account', {}).get('id') != account_id or not isinstance(zone.get('name'), str) or not zone['name'] or zone.get('status', 'active') != 'active':
@@ -121,12 +127,13 @@ def preflight_domains(configs, account_id, zone_id, token, call=cloudflare, prev
     return plans
 
 
-def bind_domains(configs, account_id, zone_id, token, call=cloudflare):
+def bind_domains(configs, account_id, zone_id, token, call=cloudflare, *, ip_family=None):
     """Recheck after upload; refuse collisions atomically at the records endpoint.
 
     An unchanged domain already owned by the same Worker needs no domain write.
     Never retry with an override on errors, including races after the preview.
     """
+    call = partial(call, **transport['options'](ip_family))
     plans = preflight_domains(configs, account_id, zone_id, token, call, preview=True)
     for plan in plans:
         if plan['additions']:

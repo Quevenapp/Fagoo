@@ -27,6 +27,7 @@ integration_settings = runpy.run_path(str(Path(__file__).with_name('integration_
 communication_runtime = runpy.run_path(str(Path(__file__).with_name('communication_runtime.py')))
 queue_push_settings = runpy.run_path(str(Path(__file__).with_name('queue_push_config.py')))['queue_push_settings']
 cloudflare_domains = runpy.run_path(str(Path(__file__).with_name('cloudflare_domains.py')))
+cloudflare_transport = runpy.run_path(str(Path(__file__).with_name('cloudflare_transport.py')))
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -145,10 +146,10 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
         raise ValueError('CLOUDFLARE_REDIRECT_REFUSED')
 
 
-def cloudflare_get(path, token):
+def cloudflare_get(path, token, *, ip_family=None):
     request = urllib.request.Request('https://api.cloudflare.com/client/v4' + path,
                                      headers={'Authorization': 'Bearer ' + token, 'Accept': 'application/json'})
-    opener = urllib.request.build_opener(NoRedirect())
+    opener = cloudflare_transport['opener'](ip_family, NoRedirect())
     with opener.open(request, timeout=30) as response:
         raw = response.read(3 * 1024 * 1024 + 1)
         if response.status != 200 or len(raw) > 3 * 1024 * 1024:
@@ -181,21 +182,21 @@ def domain_groups(configs, default_zone):
     return groups
 
 
-def check_domains(configs, account_id, zone_id, token, get=cloudflare_get):
+def check_domains(configs, account_id, zone_id, token, get=cloudflare_get, *, ip_family=None):
     # Zone and ownership GETs work without DNS-read permission. DNS collision
     # checks use the official changeset after upload, before any domain write.
     def read(method, path, private_token, body=None):
         if method != 'GET' or body is not None:
             raise ValueError('CUSTOM_DOMAIN_PREFLIGHT_NOT_READ_ONLY')
-        return get(path, private_token)
+        return get(path, private_token, **cloudflare_transport['options'](ip_family))
     for zone, selected in domain_groups(configs, zone_id).items():
         cloudflare_domains['preflight_domains'](selected, account_id, zone, token, call=read)
 
 
-def bind_domains(configs, account_id, zone_id, token, call=None):
+def bind_domains(configs, account_id, zone_id, token, call=None, *, ip_family=None):
     for zone, selected in domain_groups(configs, zone_id).items():
         cloudflare_domains['bind_domains'](selected, account_id, zone, token,
-            **({'call': call} if call else {}))
+            **({'call': call} if call else {}), **cloudflare_transport['options'](ip_family))
 
 
 def inspect_build(directory, secrets):
@@ -348,30 +349,32 @@ def main():
                 write_private(prepared_path, {'inputs': prepared_identity(values, api, web), 'build': build_fingerprint(ROOT / 'apps/erp/dist'),
                     'communication_build': build_fingerprint(ROOT / 'workers/communication/dist') if communication_enabled else None})
             if args.deploy:
-                token = cloudflare_credentials(args.credentials_file, args.account_id, args.zone_id)['token'] if args.credentials_file else read_token()
+                credentials = cloudflare_credentials(args.credentials_file, args.account_id, args.zone_id) if args.credentials_file else {'account_id': args.account_id, 'zone_id': args.zone_id, 'token': read_token()}
+                token = credentials['token']
+                transport_options = cloudflare_transport['options'](credentials.get('ip_family'))
                 private_values.append(token)
                 # The coordinated backup also needs credentials during an interactive installation.
                 # Persist through the existing private credential path before invoking it.
                 if not args.credentials_file:
-                    write_private(directory / 'credentials.json', {'account_id': args.account_id, 'zone_id': args.zone_id, 'token': token})
-                check_domains((api, web), args.account_id, args.zone_id, token)
+                    write_private(directory / 'credentials.json', credentials)
+                check_domains((api, web), args.account_id, args.zone_id, token, **transport_options)
                 descriptor, temporary = tempfile.mkstemp(prefix='api-secrets-', suffix='.json', dir=directory)
                 secrets_path = Path(temporary)
                 with os.fdopen(descriptor, 'w', encoding='utf-8') as output:
                     json.dump({'SUPABASE_SERVICE_ROLE_KEY': values['SERVICE_ROLE_KEY'], **integration['secrets'], **queue_push['secrets'],
                                **({'FAGOO_UPDATE_AGENT_TOKEN': values['FAGOO_UPDATE_AGENT_TOKEN']} if values.get('FAGOO_UPDATE_AGENT_TOKEN') else {})}, output)
-                deploy_env = {**env, 'CLOUDFLARE_API_TOKEN': token, 'CLOUDFLARE_ACCOUNT_ID': args.account_id}
+                deploy_env = cloudflare_transport['node_environment']({**env, 'CLOUDFLARE_API_TOKEN': token, 'CLOUDFLARE_ACCOUNT_ID': args.account_id}, **transport_options)
                 if communication_enabled:
                     if args.prepared and prepared.get('communication_build') != build_fingerprint(ROOT / 'workers/communication/dist'):
                         raise ValueError('PREPARED_COMMUNICATION_BUILD_CHANGED')
-                    communication_state = communication_runtime['provision'](args.env_file, values, args.account_id, token)
+                    communication_state = communication_runtime['provision'](args.env_file, values, args.account_id, token, **transport_options)
                     adopting = communication_runtime['adopting'](communication_state, values)
                     if adopting:
                         communication_runtime['verify_activation'](communication_state)
                     private_values.append(communication_state['master_key'])
                     communication_config = communication_runtime['configuration'](ROOT, values, args.account_id, communication_state)
                     communication_path = directory / 'communication.json'
-                    check_domains((communication_config,), args.account_id, args.zone_id, token)
+                    check_domains((communication_config,), args.account_id, args.zone_id, token, **transport_options)
                     write_private(communication_path, upload_configuration(communication_config))
                     descriptor, temporary = tempfile.mkstemp(prefix='communication-secrets-', suffix='.json', dir=directory)
                     communication_secrets_path = Path(temporary)
@@ -401,22 +404,22 @@ def main():
                         write_private(bootstrap_path, bootstrap)
                         run([node, str(wrangler), 'deploy', '--config', str(bootstrap_path), '--secrets-file', str(communication_secrets_path)], 'COMMUNICATION_BOOTSTRAP', deploy_env, log, private_values)
                 run([node, str(wrangler), 'deploy', '--config', str(api_path), '--secrets-file', str(secrets_path)], 'API_DEPLOY', deploy_env, log, private_values)
-                bind_domains((api,), args.account_id, args.zone_id, token)
+                bind_domains((api,), args.account_id, args.zone_id, token, **transport_options)
                 if communication_enabled:
                     run([node, str(wrangler), 'deploy', '--config', str(communication_path), '--secrets-file', str(communication_secrets_path)], 'COMMUNICATION_DEPLOY', deploy_env, log, private_values)
-                    bind_domains((communication_config,), args.account_id, args.zone_id, token)
+                    bind_domains((communication_config,), args.account_id, args.zone_id, token, **transport_options)
                     communication_state['deployed'] = True
                     communication_runtime['private_write'](communication_runtime['state_path'](args.env_file), communication_state)
-                check_domains((web,), args.account_id, args.zone_id, token)
+                check_domains((web,), args.account_id, args.zone_id, token, **transport_options)
                 run([node, str(wrangler), 'deploy', '--config', str(web_path)], 'WEB_DEPLOY', deploy_env, log, private_values)
-                bind_domains((web,), args.account_id, args.zone_id, token)
+                bind_domains((web,), args.account_id, args.zone_id, token, **transport_options)
                 verify_publication(values, source_identity(ROOT))
                 if communication_enabled and not args.keep_communication_paused and (Path(args.env_file).resolve().parent / 'communication-maintenance.json').exists():
                     run([sys.executable, str(ROOT / 'infra/backup-communication.py'), '--env-file', str(args.env_file),
                          '--credentials-file', str(args.credentials_file or directory / 'credentials.json'), '--resume-after-update'],
                         'COMMUNICATION_RESUME', deploy_env, log, private_values)
                 if not args.credentials_file:
-                    write_private(directory / 'credentials.json', {'account_id': args.account_id, 'zone_id': args.zone_id, 'token': token})
+                    write_private(directory / 'credentials.json', credentials)
         print(('Application published.' if args.deploy else 'Dry run passed; nothing was published.') + ' Fiscal runtime and SMTP are separate setup steps.')
         print('Web: ' + values['FAGOO_WEB_ORIGIN'])
         print('API: ' + values['FAGOO_API_ORIGIN'])

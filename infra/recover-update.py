@@ -17,6 +17,7 @@ from update_pipeline import Pipeline
 from communication_runtime import read_state, state_path, private_write, verify_backup
 from installation_scope import installation_scope
 from update_config import read_values
+from cloudflare_transport import options
 
 
 def validate_recovery(root, backup_id):
@@ -36,6 +37,9 @@ def validate_recovery(root, backup_id):
                 raise ValueError('RECOVERY_BACKUP_DIGEST_MISMATCH')
         if 'communication-installation.json' in value.get('sha256', {}):
             if digest_file(backup/'communication-installation.json') != value['sha256']['communication-installation.json']:
+                raise ValueError('RECOVERY_BACKUP_DIGEST_MISMATCH')
+        if 'cloudflare-credentials.json' in value.get('sha256', {}):
+            if digest_file(backup/'cloudflare-credentials.json') != value['sha256']['cloudflare-credentials.json']:
                 raise ValueError('RECOVERY_BACKUP_DIGEST_MISMATCH')
         with tarfile.open(backup/'storage.tar','r:') as archive:
             for item in archive:
@@ -60,7 +64,7 @@ def restore_cloudflare(pipeline, versions, communication=None):
         request=urllib.request.Request(url,method='POST',data=json.dumps({'strategy':'percentage','versions':cleaned}).encode(),
             headers={'Authorization':'Bearer '+pipeline.credentials['token'],'Content-Type':'application/json','Accept':'application/json'})
         from deploy_application_recovery import no_redirect_opener
-        with no_redirect_opener().open(request,timeout=30) as response:
+        with no_redirect_opener(**options(pipeline.credentials.get('ip_family'))).open(request,timeout=30) as response:
             result=json.loads(response.read(65537))
         if result.get('success') is not True:raise ValueError('CLOUDFLARE_RECOVERY_FAILED')
 
