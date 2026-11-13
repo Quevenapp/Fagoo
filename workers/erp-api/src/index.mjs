@@ -65,6 +65,7 @@ import originConnector from '../../origin-sync/src/index.mjs';
 import {catalogMirrorRoute,catalogMirrorMethods,parseCatalogMirrorRoute,executeCatalogMirrorRoute,CatalogMirrorError} from './catalog-mirror.mjs';
 import {systemUpdateRoute,handleSystemUpdate} from './system-updates.mjs';
 import {AGENT_TOKEN,isAgentToken,agentTokenHash,agentResolution} from './agent-auth.mjs';
+import {MCP_PATH,handleMcp} from './mcp.mjs';
 export const ENTITIES = Object.freeze(['contacts', 'products', 'sales_orders', 'purchase_orders', 'sales_proposals', 'receivables', 'payables', 'nfe', 'nfce']);
 const ROLES = ['admin', 'consulta', 'vendas', 'financeiro', 'estoque', 'fiscal'];
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -255,11 +256,15 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
   // token of an agent (202611130001). Only the verified UUID goes on, and the per-request gate (access windows, second factor)
   // follows either way. An agent token never reaches Auth, is refused from a browser (Origin) and on routes that pass
   // agents:false, and is always gated: it has no session, so the gate refuses it wherever a second factor is required.
+  // /mcp authenticates the agent once and then calls the API on itself: `verified` holds the Request objects that branch
+  // creates (nothing received from outside can be a key), so the tool call does not resolve the same token twice.
+  const verified = new WeakMap();
   async function authenticate(request, env, settings, token, { force = false, agents = true, signal, deadline } = {}) {
     if (isAgentToken(token)) {
       if (env.ERP_AGENT_ACCESS_ENABLED !== 'true' || !AGENT_TOKEN.test(token)) throw new ApiError(401, 'ERP_UNAUTHENTICATED');
       if (!agents) throw new ApiError(403, 'ERP_FORBIDDEN');
       if (request.headers.get('Origin') !== null) throw new ApiError(403, 'ERP_ORIGIN_NOT_ALLOWED');
+      if (verified.has(request)) return verified.get(request);
       const resolved = agentResolution(await upstream(`${settings.baseUrl}/rest/v1/rpc/erp_access_agent_resolve`, { method: 'POST',
         headers: { apikey: settings.key, Authorization: `Bearer ${settings.key}`, 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({ p_token_hash: await agentTokenHash(token) }), signal }, 'agent', deadline));
@@ -294,6 +299,27 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
           return originConnector.fetch(new Request(url, request), env);
         }
         return originConnector.fetch(request, env);
+      }
+      // MCP for agents (src/mcp.mjs): absent while agent access is off, closed to browsers and to session tokens. The agent is
+      // authenticated at every message; a tool is a call this handler answers itself (a GET or, for the few writes that module
+      // lists, a POST/PATCH with a JSON body), with the agent already verified above.
+      if (url.pathname === MCP_PATH) {
+        if (env.ERP_AGENT_ACCESS_ENABLED !== 'true') throw new ApiError(404, 'ERP_NOT_FOUND');
+        if (request.headers.get('Origin') !== null) throw new ApiError(403, 'ERP_ORIGIN_NOT_ALLOWED');
+        if (request.method !== 'POST') { headers.set('Allow', 'POST'); throw new ApiError(405, 'ERP_METHOD_NOT_ALLOWED'); }
+        const token = /^Bearer ([^\s]+)$/i.exec(request.headers.get('Authorization') || '')?.[1];
+        try {
+          if (!token || !isAgentToken(token)) throw new ApiError(401, 'ERP_UNAUTHENTICATED');
+          const agent = await authenticate(request, env, settings, token);
+          const answer = await handleMcp(request, { call: (path, { method = 'GET', body } = {}) => {
+            if (!['GET', 'POST', 'PATCH'].includes(method) || (method === 'GET') !== (body === undefined)) throw new ApiError(500, 'ERP_INTERNAL_ERROR');
+            const inner = new Request(new URL(path, url.origin), { method, headers: { Authorization: `Bearer ${token}`, ...(body === undefined ? {} : { 'Content-Type': 'application/json' }) },
+              ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
+            verified.set(inner, agent);
+            return handle(inner, env, ctx);
+          } });
+          return respond(answer.status, answer.body);
+        } catch (error) { if (error instanceof ApiError && error.status === 401) headers.set('WWW-Authenticate', 'Bearer'); throw error; }
       }
       if(systemUpdateRoute(url.pathname)||wabotiaRoute(url.pathname))return (wabotiaRoute(url.pathname)?handleWabotia:handleSystemUpdate)({request,env,settings,fetchImpl,authenticate:async token=>{
         const user=await authenticate(request,env,settings,token,{force:true,agents:false});
