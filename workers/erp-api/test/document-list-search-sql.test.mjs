@@ -21,7 +21,9 @@ const search = conditions => JSON.stringify(conditions);
 
 test('privileges and signature: the new erp_document_list replaces the one of 268; the helpers stay closed', async () => {
   assert.equal(await f.scalar('select to_regprocedure($1) is null v', [`public.erp_document_list(${SIG})`]), true);
-  const sig = `public.erp_document_list(${SIG},text[],jsonb)`;
+  // 202610220007 appends p_origin to the signature of 289 (p_lots, p_custom), which is gone too.
+  assert.equal(await f.scalar('select to_regprocedure($1) is null v', [`public.erp_document_list(${SIG},text[],jsonb)`]), true);
+  const sig = `public.erp_document_list(${SIG},text[],jsonb,text)`;
   for (const role of ['anon', 'authenticated']) assert.equal(await f.scalar("select has_function_privilege($1,$2,'EXECUTE') v", [role, sig]), false);
   assert.equal(await f.scalar("select has_function_privilege('service_role',$1,'EXECUTE') v", [sig]), true);
   for (const fn of ['erp_documents.list_conditions(text,jsonb)', 'erp_documents.list_condition_value(erp_documents.document,text)', 'erp_documents.list_condition(text,text,text,text)', 'erp_documents.list_conditions_match(erp_documents.document,jsonb)'])

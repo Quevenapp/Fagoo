@@ -15,14 +15,15 @@ const part = (extra = {}) => f.line({ product_id: f.product.id, description: 'Pr
 const labour = (extra = {}) => f.line({ product_id: service.id, description: 'Mão de obra sintética', code: 'SRV-268', unit: 'H', quantity: '1.5', unit_price: '80', group: 'service', quote: true, done: false, ...extra });
 const os = (extra = {}) => f.data('service_orders', { items: [part(), labour()], equipment: 'Notebook sintético', ...extra });
 const create = (data, user = f.users.admin) => f.call('/v1/documentos/service_orders', 'POST', { command_id: randomUUID(), data }, user);
+// What a read adds to the saved body is dropped; since 202610220007 that includes origin, authority and readonly.
 const editable = doc => { const { id, kind, number, status, version, effect_flags, contact_snapshot, source_proposal_id, created_at, updated_at, totals, situation, seller_name, category_name, carrier_name,
-  price_list_name, payment_account_name, payment_method_names, payment_account_names, ...data } = doc; return { ...data, items: data.items.map(({ position, gross, discount, total, product_snapshot, ...item }) => item),
+  price_list_name, payment_account_name, payment_method_names, payment_account_names, origin, authority, readonly, ...data } = doc; return { ...data, items: data.items.map(({ position, gross, discount, total, product_snapshot, ...item }) => item),
   installments: data.installments.map(({ position, ...row }) => row) }; };
 
 test('privileges and signature: erp_document_list has p_service_id (the 238 signature is gone); the replaced internal helpers stay closed', async () => {
   const lists = (await f.db.query("select p.oid::regprocedure::text sig,p.prosecdef,p.proconfig from pg_proc p where p.proname='erp_document_list' and p.pronamespace='public'::regnamespace")).rows;
-  // 202610200289 appends p_lots and p_custom after p_service_id.
-  assert.equal(lists.length, 1); assert.match(lists[0].sig, /,uuid,uuid,uuid(,text\[\],jsonb)?\)$/);
+  // 202610200289 appends p_lots and p_custom after p_service_id, and 202610220007 p_origin after them.
+  assert.equal(lists.length, 1); assert.match(lists[0].sig, /,uuid,uuid,uuid(,text\[\],jsonb(,text)?)?\)$/);
   assert.deepEqual([lists[0].prosecdef, lists[0].proconfig], [true, ['search_path=pg_catalog']]);
   for (const role of ['anon', 'authenticated']) assert.equal(await f.scalar("select has_function_privilege($1,$2,'EXECUTE') v", [role, lists[0].sig]), false);
   assert.equal(await f.scalar("select has_function_privilege('service_role',$1,'EXECUTE') v", [lists[0].sig]), true);
