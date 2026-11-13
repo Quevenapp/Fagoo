@@ -8,8 +8,9 @@ import { documentsEFixture } from './helpers/documents-e-fixture.mjs';
 let f;
 before(async () => { f = await documentsEFixture(); });
 after(async () => f?.close());
+// What a read adds to the saved body is dropped; since 202610220007 that includes origin, authority and readonly.
 const editable = doc => { const { id, kind, number, status, version, effect_flags, contact_snapshot, source_proposal_id, created_at, updated_at, totals, situation, seller_name, category_name, carrier_name,
-  price_list_name, payment_account_name, payment_method_names, payment_account_names, proposal_version, ...data } = doc; return { ...data, items: data.items.map(({ position, gross, discount, total, product_snapshot, ...item }) => ({ ...item, id: null })),
+  price_list_name, payment_account_name, payment_method_names, payment_account_names, proposal_version, origin, authority, readonly, ...data } = doc; return { ...data, items: data.items.map(({ position, gross, discount, total, product_snapshot, ...item }) => ({ ...item, id: null })),
   installments: data.installments.map(({ position, ...row }) => row) }; };
 const read = async id => (await f.call(`/v1/documentos/sales_proposals/${id}`)).value.document;
 const version = (doc, data = editable(doc), command = randomUUID(), user = f.users.admin) => f.call(`/v1/documentos/sales_proposals/${doc.id}/nova-versao`, 'POST', { command_id: command, expected_version: doc.version, data }, user);

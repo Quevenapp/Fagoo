@@ -211,9 +211,10 @@ test('a committed finish with failed independent readback never reports success'
   assert.ok(result.every(x=>x.event!=='result'));
 });
 
-test('workerd keeps SSE alive without waitUntil and a TCP reset aborts verification',async()=>{
+// The real module in workerd. /stats tells what the runtime saw: finishes dispatched, storage reads cancelled, requests aborted.
+async function workerd(f){
   const {Miniflare,Log,LogLevel}=await import('miniflare');
-  const f=fixture(),source=await readFile(new URL('../src/backup-import.mjs',import.meta.url),'utf8');
+  const source=await readFile(new URL('../src/backup-import.mjs',import.meta.url),'utf8');
   const script=source+`
     const testManifest=${JSON.stringify(f.manifest)},testUser=${JSON.stringify(userId)};
     let testFinished=0,testCancelled=0,testIncomingAborted=0;
@@ -244,13 +245,27 @@ test('workerd keeps SSE alive without waitUntil and a TCP reset aborts verificat
     }};
   `;
   const mf=new Miniflare({workers:[{config:{name:'backup-import-runtime-test',compatibilityDate:'2026-10-15',compatibilityFlags:['enable_request_signal'],manifest:{mainModule:'index.mjs',modules:{'index.mjs':{type:'esm',contents:script}}}},dev:{unsafeDirectSockets:[{host:'127.0.0.1',port:0}]}}],host:'127.0.0.1',port:0,cf:false,telemetry:{enabled:false},log:new Log(LogLevel.NONE)});
+  try{await mf.ready;}catch(error){await mf.dispose();throw error;}
+  const origin=(await mf.unsafeGetDirectURL('backup-import-runtime-test')).origin;
+  return {mf,endpoint:origin+'/v1/backup-import/finish',headers:{'X-Backup-Manifest':hash(f.env.BACKUP_IMPORT_PLAN)},stats:async()=>(await fetch(origin+'/stats')).json()};
+}
+
+test('workerd keeps SSE alive without waitUntil',async()=>{
+  const {mf,endpoint,headers,stats}=await workerd(fixture());
   try{
-    await mf.ready;const origin=(await mf.unsafeGetDirectURL('backup-import-runtime-test')).origin,endpoint=origin+'/v1/backup-import/finish';
-    const headers={'X-Backup-Manifest':hash(f.env.BACKUP_IMPORT_PLAN)};
     const first=await fetch(endpoint,{method:'POST',headers});
     const reader=first.body.getReader();const firstChunk=await reader.read();assert.match(new TextDecoder().decode(firstChunk.value),/event: progress/);
     let text='';while(true){const next=await reader.read();if(next.done)break;text+=new TextDecoder().decode(next.value);}
-    assert.match(text,/event: result/);assert.equal((await (await fetch(origin+'/stats')).json()).finished,1);
+    assert.match(text,/event: result/);assert.equal((await stats()).finished,1);
+  }finally{await mf.dispose();}
+});
+
+// workerd on Windows does not observe an abortive close while the response is idle: Request.signal fires only after the next
+// write, when the finish has already been dispatched (measured with workerd 1.20261102.1, with a storage read of 2 s too).
+// The API runs on Linux, and this case runs there: the reset has to be observed during the read, before any finish.
+test('a TCP reset observed by workerd aborts verification before the finish',{skip:process.platform==='win32'&&'workerd on Windows observes the reset only at its next write; run on Linux'},async()=>{
+  const {mf,endpoint,headers,stats}=await workerd(fixture());
+  try{
     const {request:httpRequest}=await import('node:http');
     await new Promise((resolve,reject)=>{
       let received=false;
@@ -263,7 +278,7 @@ test('workerd keeps SSE alive without waitUntil and a TCP reset aborts verificat
       outgoing.on('error',error=>{if(!received)reject(error);});outgoing.end();
     });
     await new Promise(resolve=>setTimeout(resolve,400));
-    const stats=await (await fetch(origin+'/stats')).json();assert.equal(stats.finished,1,JSON.stringify(stats));assert.ok(stats.cancelled>0);assert.ok(stats.incomingAborted>0);
+    const seen=await stats();assert.equal(seen.finished,0,JSON.stringify(seen));assert.ok(seen.cancelled>0);assert.ok(seen.incomingAborted>0);
   }finally{await mf.dispose();}
 });
 

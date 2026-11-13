@@ -41,6 +41,8 @@ Os nomes das variáveis de teste acima são identificadores técnicos usados pel
 
 Os validadores fiscais oficiais rodam no Linux, como no runtime fiscal. No Windows, `npm run test:erp` marca como ignorados os casos da interface que leem XML assinado por esses validadores; execute a suíte no Linux, por exemplo no WSL, para cobri-los.
 
+Na suíte da API (`workers/erp-api/test`), o caso de `backup-import.test.mjs` que derruba a conexão TCP durante a verificação também é ignorado no Windows: ali o workerd só percebe a queda na escrita seguinte, depois de a conclusão já ter sido enviada. A API roda em Linux, e o caso precisa ser executado nele.
+
 O build do frontend exige configuração pública válida da instalação. A compilação usada nesta verificação empregou domínios fictícios e não serve como build de produção configurado para um cliente.
 
 ## Aceite de instalação e atualização
