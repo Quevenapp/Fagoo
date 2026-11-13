@@ -4,7 +4,7 @@ Administradores atualizam a instalação em **Preferências → Sistema → Atua
 
 ## Antes de atualizar
 
-Conclua o [manual de instalação](installation.md), incluindo o serviço `fagoo-updater.service` e a publicação da interface/API. A publicação inicial salva a credencial Cloudflare em `private/install/cloudflare/credentials.json`, com acesso exclusivo de root. Ela permite publicar as próximas versões na conta do próprio cliente. O token do túnel é uma credencial diferente.
+Conclua a [instalação rápida](quick-install.md) ou o [manual de instalação](installation.md), incluindo o serviço `fagoo-updater.service` e a publicação da interface/API. A publicação inicial salva a credencial Cloudflare em `private/install/cloudflare/credentials.json`, com acesso exclusivo de root. Ela permite publicar as próximas versões na conta do próprio cliente. O token do túnel é uma credencial diferente.
 
 O servidor precisa de acesso ao GitHub, aos registros de pacotes/imagens e à API Cloudflare, Node.js 24, Docker Compose e espaço para a nova aplicação e backups. A verificação de espaço reserva duas vezes o tamanho do banco e dos arquivos, mais 2 GiB. Mantenha também uma cópia de segurança fora da VPS. O atualizador não instala atualizações do Ubuntu ou de outros aplicativos do servidor.
 

@@ -112,10 +112,11 @@ def command(args, timeout=15, check=True):
     return result
 
 
-def preflight():
+def preflight(require_terminal=True, gateway_port=8081):
     if os.name != 'posix' or os.geteuid() != 0 or not Path('/run/systemd/system').is_dir():
         raise ValueError('ROOT_SYSTEMD_LINUX_REQUIRED')
-    if not sys.stdin.isatty():
+    # The installation assistant receives the token from the Cloudflare API, not from a prompt.
+    if require_terminal and not sys.stdin.isatty():
         raise ValueError('PRIVATE_TERMINAL_REQUIRED')
     if TOKEN_DIR.exists() or TOKEN_DIR.is_symlink() or UNIT_PATH.exists() or UNIT_PATH.is_symlink():
         raise ValueError('TUNNEL_CONFIGURATION_EXISTS')
@@ -132,10 +133,21 @@ def preflight():
             probe.bind(('127.0.0.1', METRICS_PORT))
         except OSError:
             raise ValueError('TUNNEL_METRICS_PORT_BUSY') from None
-    with urllib.request.urlopen('http://127.0.0.1:8081/healthz', timeout=5) as response:
+    with urllib.request.urlopen(f'http://127.0.0.1:{int(gateway_port)}/healthz', timeout=5) as response:
         if response.status != 200:
             raise ValueError('FAGOO_LOCAL_GATEWAY_NOT_READY')
     return binary
+
+
+def start_connector(token, binary):
+    """Store the validated token privately, then start and check the connector service."""
+    create_configuration(token, binary)
+    command(['systemctl', 'daemon-reload'])
+    command(['systemctl', 'enable', '--now', SERVICE], timeout=100)
+    command(['systemctl', 'is-active', '--quiet', SERVICE])
+    with urllib.request.urlopen(f'http://127.0.0.1:{METRICS_PORT}/ready', timeout=5) as response:
+        if response.status != 200:
+            raise ValueError('TUNNEL_NOT_READY')
 
 
 def main():
@@ -148,15 +160,9 @@ def main():
         warnings.simplefilter('error', getpass.GetPassWarning)
         pasted = getpass.getpass('Paste the tunnel token or the copied cloudflared command (hidden): ')
         token, _ = extract_token(pasted, expected_id)
-        create_configuration(token, binary)
-        del pasted, token
-        command(['systemctl', 'daemon-reload'])
         print('Starting the tunnel connector. This can take up to 90 seconds.', flush=True)
-        command(['systemctl', 'enable', '--now', SERVICE], timeout=100)
-        command(['systemctl', 'is-active', '--quiet', SERVICE])
-        with urllib.request.urlopen(f'http://127.0.0.1:{METRICS_PORT}/ready', timeout=5) as response:
-            if response.status != 200:
-                raise ValueError('TUNNEL_NOT_READY')
+        start_connector(token, binary)
+        del pasted, token
         print('Tunnel connected. Confirm Healthy in the dashboard and save its public hostname route.')
     except (ValueError, OSError, urllib.error.URLError, subprocess.TimeoutExpired, getpass.GetPassWarning) as error:
         code = str(error) if isinstance(error, ValueError) and re.fullmatch(r'[A-Z_]+', str(error)) else 'TUNNEL_SETUP_FAILED'

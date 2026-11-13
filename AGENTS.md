@@ -11,4 +11,4 @@ Para corrigir o sistema, enviar alterações ao GitHub ou disponibilizar uma ver
 - Quando existir, `.local/maintenance/release-operator.md` contém somente os caminhos locais do operador para assinatura e artefatos. Esse arquivo é privado e deve permanecer ignorado pelo Git; nunca imprima o conteúdo da chave de assinatura.
 - Disponibilizar uma release e instalar essa release em uma VPS são ações distintas. Atualize a instalação quando isso fizer parte do pedido ou já estiver autorizado. Não reinstale o ambiente para aplicar uma correção comum.
 
-Para instalação, acompanhamento e recuperação, consulte [Atualizações do FAGOO](docs/operations/updates.md).
+Para instalação, acompanhamento e recuperação, consulte [Atualizações do FAGOO](docs/operations/updates.md). A instalação nova segue a [instalação rápida](docs/operations/quick-install.md): `scripts/install.sh` é baixado de `main` e instala a release **Latest**, portanto mudanças no assistente só chegam a quem instala depois de uma release que as contenha.

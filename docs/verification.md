@@ -100,4 +100,19 @@ Verificações de código executadas para esta entrega:
 - TypeScript, build da interface e empacotamento/publicação dos Workers aprovados. O helper inspecionou 336 arquivos públicos sem encontrar os segredos da instalação.
 - Assinatura do pacote e extração verificadas novamente na preparação de cada release. GitHub Actions permaneceu desabilitado.
 
-Esses resultados validam o atualizador e sua recuperação no cenário descrito. Não constituem teste de carga, homologação fiscal/bancária ou ensaio de todas as combinações de integrações. A VPS de demonstração já havia sido instalada; esta rodada acrescentou e validou o atualizador sem formatá-la. O instalador inicial e o guia continuam exigindo Ubuntu 24.04 e uma pasta/volumes novos.
+## Assistente de instalação: verificação de 13/11/2026
+
+O assistente (`scripts/install.sh` e `infra/install-assistant.py`) ainda não foi executado de ponta a ponta. As verificações abaixo cobrem a lógica e a sintaxe; não houve instalação com Docker, `sudo` ou conta Cloudflare real.
+
+| Verificação | Evidência e resultado |
+| --- | --- |
+| Testes unitários do assistente | 36 aprovados em Windows (Python 3.13) e em Ubuntu 24.04 (Python 3.12): endereços derivados do domínio, descoberta de conta e zona, criação e reaproveitamento do túnel, rota, DNS sem substituição de registros, explicações dos códigos, retomada de etapas |
+| API da Cloudflare | Respostas simuladas conforme a documentação pública consultada nesta data; nenhuma chamada real |
+| Shell | Sintaxe de `install.sh`, `install-runtime.sh` e `install-deployment-tools.sh` aprovada com `bash -n` em Ubuntu 24.04 |
+| Recusas sem `sudo` | `install.sh`, `install-runtime.sh` e o assistente pararam com a orientação em português, sem criar arquivos |
+| Versão mais recente | A consulta usada pelo instalador e pelo manual devolveu a tag da release **Latest** |
+| Continuidade de atualização | `scripts/check-update-continuity.py` aprovado, agora incluindo os testes do assistente e do conector do túnel |
+
+Falta registrar a execução completa em uma VPS Ubuntu 24.04 nova, incluindo o link de criação de token com permissões preenchidas, a criação do túnel pela API, a publicação e a retomada após uma falha provocada.
+
+Os resultados da seção anterior validam o atualizador e sua recuperação no cenário descrito. Não constituem teste de carga, homologação fiscal/bancária ou ensaio de todas as combinações de integrações. A VPS de demonstração já havia sido instalada; esta rodada acrescentou e validou o atualizador sem formatá-la. O instalador inicial e o guia continuam exigindo Ubuntu 24.04 e uma pasta/volumes novos.

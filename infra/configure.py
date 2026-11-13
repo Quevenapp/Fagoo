@@ -20,6 +20,17 @@ def origin(value):
     return value
 
 
+def derived_origins(domain):
+    """Default web, services and API origins for one Cloudflare zone, in that order."""
+    domain = domain.strip().lower() if isinstance(domain, str) else ''
+    for prefix in ('https://', 'http://', 'www.'):
+        if domain.startswith(prefix):
+            domain = domain[len(prefix):]
+    domain = domain.rstrip('/').rstrip('.')
+    origin('https://' + domain)
+    return tuple(origin('https://' + prefix + '.' + domain) for prefix in ('fagoo', 'fagoo-services', 'fagoo-api'))
+
+
 def token(secret, role):
     encode = lambda value: base64.urlsafe_b64encode(value).rstrip(b'=')
     issued = int(time.time())
@@ -64,13 +75,26 @@ def configure(destination, web_origin, backend_origin, api_origin, local_port=80
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', default='private/install/.env')
-    parser.add_argument('--web-origin', required=True)
-    parser.add_argument('--backend-origin', required=True)
-    parser.add_argument('--api-origin', required=True)
+    parser.add_argument('--domain', help='Cloudflare zone; derives fagoo, fagoo-services and fagoo-api under it.')
+    parser.add_argument('--web-origin')
+    parser.add_argument('--backend-origin')
+    parser.add_argument('--api-origin')
     parser.add_argument('--local-port', type=int, default=8081)
+    parser.add_argument('--check', action='store_true', help='Validate the addresses and print them; create nothing.')
     args = parser.parse_args()
+    explicit = [args.web_origin, args.backend_origin, args.api_origin]
     try:
-        configure(args.output, args.web_origin, args.backend_origin, args.api_origin, args.local_port)
+        if args.domain and not any(explicit):
+            explicit = derived_origins(args.domain)
+        elif args.domain or not all(explicit):
+            raise ValueError('ORIGINS_REQUIRE_DOMAIN_OR_THREE_ORIGINS')
+        if len({origin(value) for value in explicit}) != 3:
+            raise ValueError('THREE_DISTINCT_ORIGINS_REQUIRED')
+        if not args.check:
+            configure(args.output, *explicit, args.local_port)
     except (ValueError, OSError):
-        raise SystemExit('CONFIGURATION_NOT_CREATED: verify origins, permissions and whether the destination already exists.')
-    print('Private runtime configuration and public frontend.env created. No credentials were printed.')
+        raise SystemExit('CONFIGURATION_NOT_CREATED: verify the domain or origins, permissions and whether the destination already exists.')
+    if not args.check:
+        print('Private runtime configuration and public frontend.env created. No credentials were printed.')
+    for label, value in zip(('Web', 'Services', 'API'), explicit):
+        print(label + ': ' + value)

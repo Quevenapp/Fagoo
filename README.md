@@ -8,7 +8,14 @@ O FAGOO utiliza PostgreSQL, serviço de autenticação, API de dados, armazename
 
 A instalação inicial deve criar uma base sem dados comerciais. A empresa e o administrador são cadastrados durante a configuração inicial. Catálogos oficiais e configurações técnicas necessários ao funcionamento fazem parte do sistema; clientes, fornecedores, produtos, documentos, movimentos e saldos de uma empresa não acompanham a distribuição.
 
-A distribuição inclui instalador para Ubuntu 24.04, publicação da interface/API na Cloudflare e atualização pelo painel administrativo. Use uma [release pública](https://github.com/Quevenapp/Fagoo/releases) e siga o [manual de instalação](docs/operations/installation.md). O [estado do projeto](docs/status.md) descreve o escopo e as validações operacionais ainda necessárias.
+A distribuição inclui instalador para Ubuntu 24.04, publicação da interface/API na Cloudflare e atualização pelo painel administrativo. Com um servidor Ubuntu 24.04, um domínio na Cloudflare e um token, a [instalação rápida](docs/operations/quick-install.md) usa um comando:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Quevenapp/Fagoo/main/scripts/install.sh -o instalar-fagoo.sh
+sudo bash instalar-fagoo.sh
+```
+
+O assistente baixa a [release estável](https://github.com/Quevenapp/Fagoo/releases) mais recente, pergunta o domínio, o token e os dados do administrador, e continua de onde parou se o comando for repetido. O [manual passo a passo](docs/operations/installation.md) descreve as mesmas etapas uma a uma. O [estado do projeto](docs/status.md) descreve o escopo e as validações operacionais ainda necessárias.
 
 ## Desenvolvimento
 

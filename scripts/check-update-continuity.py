@@ -12,6 +12,8 @@ def main():
     suites = [
         ('runtime configuration and distributed schema', [sys.executable, '-m', 'unittest', 'discover', '-s', 'infra', '-p', 'test_runtime.py']),
         ('private connection configuration', [sys.executable, '-m', 'unittest', 'discover', '-s', 'infra', '-p', 'test_integration_config.py']),
+        ('guided installation and tunnel', [sys.executable, '-m', 'unittest', 'discover', '-s', 'infra', '-p', 'test_install_assistant.py']),
+        ('tunnel connector', [sys.executable, '-m', 'unittest', 'discover', '-s', 'infra', '-p', 'test_connect_tunnel.py']),
         ('application publication', [sys.executable, '-m', 'unittest', 'discover', '-s', 'infra', '-p', 'test_deploy_application.py']),
         ('update and recovery', [sys.executable, '-m', 'unittest', 'discover', '-s', 'infra', '-p', 'test_system_updates.py']),
         ('database defaults and API connection', ['node', '--test', 'infra/test-standalone-defaults.mjs',

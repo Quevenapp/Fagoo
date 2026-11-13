@@ -4,7 +4,7 @@ O comando `infra/deploy-application.py` compila e publica a interface web do FAG
 
 ## Preparação
 
-Conclua o núcleo descrito no [manual de instalação](installation.md). Publique o gateway local por uma origem HTTPS, por exemplo usando um Cloudflare Tunnel até `http://localhost:8081` na VPS. A origem de serviços deve responder por HTTPS com certificado válido antes de testar login. As portas PostgreSQL e dos serviços internos continuam privadas.
+O assistente da [instalação rápida](quick-install.md) executa este comando na etapa de publicação, com a credencial que salvou; este documento descreve o comando para uso direto. Conclua o núcleo descrito no [manual de instalação](installation.md). Publique o gateway local por uma origem HTTPS, por exemplo usando um Cloudflare Tunnel até `http://localhost:8081` na VPS. A origem de serviços deve responder por HTTPS com certificado válido antes de testar login. As portas PostgreSQL e dos serviços internos continuam privadas.
 
 As três origens têm funções diferentes:
 
