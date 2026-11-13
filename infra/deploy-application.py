@@ -93,6 +93,10 @@ def configurations(values, account_id, zone_id):
     integration = integration_settings(values)
     if history_enabled not in ('true', 'false'):
         raise ValueError('ORIGIN_HISTORY_CONFIGURATION_INVALID')
+    # External agents call the API with their own tokens only when this installation asks for it.
+    agent_access = values.get('FAGOO_AGENT_ACCESS_ENABLED', 'false')
+    if agent_access not in ('true', 'false'):
+        raise ValueError('AGENT_ACCESS_CONFIGURATION_INVALID')
     suffix = hashlib.sha256(values['FAGOO_WEB_ORIGIN'].encode()).hexdigest()[:12]
     common = {'account_id': account_id, 'compatibility_date': '2026-10-15',
               'workers_dev': False, 'preview_urls': False, 'observability': {'enabled': False}}
@@ -104,7 +108,7 @@ def configurations(values, account_id, zone_id):
            'vars': {'BACKUP_IMPORT_ENABLED': 'false', 'SUPABASE_DEPLOYMENT': 'self-hosted',
                     'SUPABASE_URL': values['FAGOO_BACKEND_ORIGIN'], 'ALLOWED_ORIGINS': values['FAGOO_WEB_ORIGIN'],
                     'ERP_SCHEDULED_TASKS_ENABLED': 'false', 'ORIGIN_ENABLED': 'false', 'ORIGIN_TWO_WAY_ENABLED': 'false',
-                    'ORIGIN_HISTORY_ENABLED': history_enabled,
+                    'ORIGIN_HISTORY_ENABLED': history_enabled, 'ERP_AGENT_ACCESS_ENABLED': agent_access,
                     'FAGOO_VERSION': source_identity(ROOT)['version'],
                     'FAGOO_REVISION': source_identity(ROOT)['revision'] or 'source'}}
     api['vars'].update(integration['vars'])

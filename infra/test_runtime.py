@@ -65,7 +65,7 @@ class SchemaTests(unittest.TestCase):
 
     def test_every_distributed_migration_can_join_an_atomic_ledger_transaction(self):
         paths = sorted((ROOT / 'supabase/migrations').glob('*.sql'))
-        self.assertEqual(len(paths), 346)
+        self.assertEqual(len(paths), 347)
         self.assertEqual(len({migration(path)[0] for path in paths}), len(paths))
         sql = program(ROOT / 'supabase/migrations')
         self.assertEqual(sql.count('insert into fagoo_system.schema_migration(version,sha256)'), len(paths))

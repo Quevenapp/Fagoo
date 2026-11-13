@@ -18,6 +18,7 @@
     "ALLOWED_ORIGINS": "",
     "SUPABASE_DEPLOYMENT": "self-hosted",
     "ERP_SCHEDULED_TASKS_ENABLED": "false",
+    "ERP_AGENT_ACCESS_ENABLED": "false",
     "ORIGIN_ENABLED": "false",
     "ORIGIN_HISTORY_ENABLED": "false",
     "ORIGIN_TWO_WAY_ENABLED": "false"
