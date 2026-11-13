@@ -78,6 +78,18 @@ print('CANDIDATE_IMPORT_OK')
             with self.subTest(invalid=invalid), self.assertRaisesRegex(ValueError, 'ORIGIN_HISTORY_CONFIGURATION_INVALID'):
                 DEPLOY.configurations({**values, 'ORIGIN_HISTORY_ENABLED': invalid}, self.account, self.zone)
 
+    def test_agent_access_is_off_until_the_installation_enables_it(self):
+        self.assertEqual(self.api['vars']['ERP_AGENT_ACCESS_ENABLED'], 'false')
+        with self.path.open('a') as config:
+            config.write('FAGOO_AGENT_ACCESS_ENABLED=true\n')
+        values = DEPLOY.configuration(self.path)
+        api, _web = DEPLOY.configurations(values, self.account, self.zone)
+        self.assertEqual(api['vars']['ERP_AGENT_ACCESS_ENABLED'], 'true')
+        self.assertNotIn('FAGOO_AGENT_ACCESS_ENABLED', json.dumps(DEPLOY.public_environment(values)))
+        for invalid in ('TRUE', '1', '', True):
+            with self.subTest(invalid=invalid), self.assertRaisesRegex(ValueError, 'AGENT_ACCESS_CONFIGURATION_INVALID'):
+                DEPLOY.configurations({**values, 'FAGOO_AGENT_ACCESS_ENABLED': invalid}, self.account, self.zone)
+
     def test_swapped_public_and_privileged_keys_are_rejected(self):
         text = self.path.read_text()
         self.path.write_text(text.replace('ANON_KEY=' + self.values['ANON_KEY'], 'ANON_KEY=' + self.values['SERVICE_ROLE_KEY']))

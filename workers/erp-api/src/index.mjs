@@ -64,6 +64,7 @@ import {originSyncRoute,originSyncMethods,originSyncStatus,runOriginTwoWay,Origi
 import originConnector from '../../origin-sync/src/index.mjs';
 import {catalogMirrorRoute,catalogMirrorMethods,parseCatalogMirrorRoute,executeCatalogMirrorRoute,CatalogMirrorError} from './catalog-mirror.mjs';
 import {systemUpdateRoute,handleSystemUpdate} from './system-updates.mjs';
+import {AGENT_TOKEN,isAgentToken,agentTokenHash,agentResolution} from './agent-auth.mjs';
 export const ENTITIES = Object.freeze(['contacts', 'products', 'sales_orders', 'purchase_orders', 'sales_proposals', 'receivables', 'payables', 'nfe', 'nfce']);
 const ROLES = ['admin', 'consulta', 'vendas', 'financeiro', 'estoque', 'fiscal'];
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -250,6 +251,33 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
     if (!gate.open) throw new ApiError(403, 'ERP_ACCESS_OUTSIDE_SCHEDULE');
     if (!gate.mfa) throw new ApiError(403, 'ERP_MFA_REQUIRED');
   }
+  // Who is calling, decided in one place: a session token Auth has just validated or, when the installation enables it, the
+  // token of an agent (202611130001). Only the verified UUID goes on, and the per-request gate (access windows, second factor)
+  // follows either way. An agent token never reaches Auth, is refused from a browser (Origin) and on routes that pass
+  // agents:false, and is always gated: it has no session, so the gate refuses it wherever a second factor is required.
+  async function authenticate(request, env, settings, token, { force = false, agents = true, signal, deadline } = {}) {
+    if (isAgentToken(token)) {
+      if (env.ERP_AGENT_ACCESS_ENABLED !== 'true' || !AGENT_TOKEN.test(token)) throw new ApiError(401, 'ERP_UNAUTHENTICATED');
+      if (!agents) throw new ApiError(403, 'ERP_FORBIDDEN');
+      if (request.headers.get('Origin') !== null) throw new ApiError(403, 'ERP_ORIGIN_NOT_ALLOWED');
+      const resolved = agentResolution(await upstream(`${settings.baseUrl}/rest/v1/rpc/erp_access_agent_resolve`, { method: 'POST',
+        headers: { apikey: settings.key, Authorization: `Bearer ${settings.key}`, 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ p_token_hash: await agentTokenHash(token) }), signal }, 'agent', deadline));
+      if (!resolved) throw new ApiError(502, 'ERP_UPSTREAM_INVALID_RESPONSE');
+      if (resolved.status === 'unknown') throw new ApiError(401, 'ERP_UNAUTHENTICATED');
+      if (resolved.status === 'denied') throw new ApiError(403, 'ERP_AGENT_ACCESS_DENIED');
+      // The flag only tells /v1/me that this caller is already gated; nothing is written to Auth for an agent.
+      const agent = { id: resolved.userId, agent: true, app_metadata: { brufap_access_gate: true } };
+      await accessGate(agent, settings, token, true);
+      return agent;
+    }
+    const user = await upstream(`${settings.baseUrl}/auth/v1/user`, { method: 'GET',
+      headers: { apikey: settings.key, Authorization: `Bearer ${token}`, Accept: 'application/json' }, signal }, 'auth', deadline);
+    if (!user || typeof user.id !== 'string' || !UUID.test(user.id)) throw new ApiError(401, 'ERP_UNAUTHENTICATED');
+    if (user.is_anonymous === true) throw new ApiError(403, 'ERP_FORBIDDEN');
+    await accessGate(user, settings, token, force);
+    return user;
+  }
   return async function handle(request, env, ctx) {
     const requestId = crypto.randomUUID();
     const headers = new Headers({ 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store',
@@ -268,10 +296,7 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
         return originConnector.fetch(request, env);
       }
       if(systemUpdateRoute(url.pathname)||wabotiaRoute(url.pathname))return (wabotiaRoute(url.pathname)?handleWabotia:handleSystemUpdate)({request,env,settings,fetchImpl,authenticate:async token=>{
-        const user=await upstream(`${settings.baseUrl}/auth/v1/user`,{method:'GET',headers:{apikey:settings.key,Authorization:`Bearer ${token}`,Accept:'application/json'}},'auth');
-        if(!user||typeof user.id!=='string'||!UUID.test(user.id))throw new ApiError(401,'ERP_UNAUTHENTICATED');
-        if(user.is_anonymous===true)throw new ApiError(403,'ERP_FORBIDDEN');
-        await accessGate(user,settings,token,true);
+        const user=await authenticate(request,env,settings,token,{force:true,agents:false});
         const access=await upstream(`${settings.baseUrl}/rest/v1/rpc/erp_access_me`,{method:'POST',headers:{apikey:settings.key,Authorization:`Bearer ${settings.key}`,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({p_user_id:user.id})},'access');
         if(access?.user_id!==user.id||access?.role!=='admin')throw new ApiError(403,'ERP_FORBIDDEN');
         return user.id.toLowerCase();
@@ -342,10 +367,7 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
         if(!methods.includes(request.method)){headers.set('Allow',[...methods,'OPTIONS'].join(', '));throw new ApiError(405,'ERP_METHOD_NOT_ALLOWED');}
         const token=/^Bearer ([^\s]+)$/i.exec(request.headers.get('Authorization')||'')?.[1];
         if(!token||token.length>8192)throw new ApiError(401,'ERP_UNAUTHENTICATED');
-        const user=await upstream(`${settings.baseUrl}/auth/v1/user`,{method:'GET',headers:{apikey:settings.key,Authorization:`Bearer ${token}`,Accept:'application/json'}},'auth');
-        if(!user||typeof user.id!=='string'||!UUID.test(user.id))throw new ApiError(401,'ERP_UNAUTHENTICATED');
-        if(user.is_anonymous===true)throw new ApiError(403,'ERP_FORBIDDEN');
-        await accessGate(user,settings,token);
+        const user=await authenticate(request,env,settings,token);
         try{
           const parsed=await parseFiscalInvoicesRoute(request,fiscalInvoices);
           return respond(200,await executeFiscalInvoicesRoute(parsed,{userId:user.id,rpc:(name,args)=>upstream(`${settings.baseUrl}/rest/v1/rpc/${name}`,{
@@ -370,10 +392,7 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
         if(url.search)throw new ApiError(400,'ERP_INVALID_QUERY');
         const token=/^Bearer ([^\s]+)$/i.exec(request.headers.get('Authorization')||'')?.[1];
         if(!token||token.length>8192)throw new ApiError(401,'ERP_UNAUTHENTICATED');
-        const user=await upstream(`${settings.baseUrl}/auth/v1/user`,{method:'GET',headers:{apikey:settings.key,Authorization:`Bearer ${token}`,Accept:'application/json'}},'auth');
-        if(!user||typeof user.id!=='string'||!UUID.test(user.id))throw new ApiError(401,'ERP_UNAUTHENTICATED');
-        if(user.is_anonymous===true)throw new ApiError(403,'ERP_FORBIDDEN');
-        await accessGate(user,settings,token);
+        const user=await authenticate(request,env,settings,token);
         const call=(name,args)=>upstream(`${settings.baseUrl}/rest/v1/rpc/${name}`,{method:'POST',headers:{apikey:settings.key,Authorization:`Bearer ${settings.key}`,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(args)},'platform');
         try{
           const result=originSyncStatus(await call(request.method==='POST'?'erp_sync_request':'erp_sync_status',{p_user_id:user.id}));
@@ -401,10 +420,7 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
         if(!methods.includes(request.method)){headers.set('Allow',[...methods,'OPTIONS'].join(', '));throw new ApiError(405,'ERP_METHOD_NOT_ALLOWED');}
         const token=/^Bearer ([^\s]+)$/i.exec(request.headers.get('Authorization')||'')?.[1];
         if(!token||token.length>8192)throw new ApiError(401,'ERP_UNAUTHENTICATED');
-        const user=await upstream(`${settings.baseUrl}/auth/v1/user`,{method:'GET',headers:{apikey:settings.key,Authorization:`Bearer ${token}`,Accept:'application/json'}},'auth');
-        if(!user||typeof user.id!=='string'||!UUID.test(user.id))throw new ApiError(401,'ERP_UNAUTHENTICATED');
-        if(user.is_anonymous===true)throw new ApiError(403,'ERP_FORBIDDEN');
-        await accessGate(user,settings,token);
+        const user=await authenticate(request,env,settings,token,{agents:false});
         const service={apikey:settings.key,Authorization:`Bearer ${settings.key}`,'Content-Type':'application/json',Accept:'application/json'};
         try{
           const parsed=await parseSecurityRoute(request);
@@ -430,10 +446,7 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
         if(!methods.includes(request.method)){headers.set('Allow',[...methods,'OPTIONS'].join(', '));throw new ApiError(405,'ERP_METHOD_NOT_ALLOWED');}
         const token=/^Bearer ([^\s]+)$/i.exec(request.headers.get('Authorization')||'')?.[1];
         if(!token||token.length>8192)throw new ApiError(401,'ERP_UNAUTHENTICATED');
-        const user=await upstream(`${settings.baseUrl}/auth/v1/user`,{method:'GET',headers:{apikey:settings.key,Authorization:`Bearer ${token}`,Accept:'application/json'}},'auth');
-        if(!user||typeof user.id!=='string'||!UUID.test(user.id))throw new ApiError(401,'ERP_UNAUTHENTICATED');
-        if(user.is_anonymous===true)throw new ApiError(403,'ERP_FORBIDDEN');
-        await accessGate(user,settings,token);
+        const user=await authenticate(request,env,settings,token);
         const service={apikey:settings.key,Authorization:`Bearer ${settings.key}`,'Content-Type':'application/json',Accept:'application/json'};
         const rpc=(name,args)=>upstream(`${settings.baseUrl}/rest/v1/rpc/${name}`,{method:'POST',headers:service,body:JSON.stringify(args)},'platform');
         const exportStorage=createExportStorage({baseUrl:settings.baseUrl,key:settings.key,fetchImpl});
@@ -460,10 +473,7 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
         if(!methods.includes(request.method)){headers.set('Allow',[...methods,'OPTIONS'].join(', '));throw new ApiError(405,'ERP_METHOD_NOT_ALLOWED');}
         const token=/^Bearer ([^\s]+)$/i.exec(request.headers.get('Authorization')||'')?.[1];
         if(!token||token.length>8192)throw new ApiError(401,'ERP_UNAUTHENTICATED');
-        const user=await upstream(`${settings.baseUrl}/auth/v1/user`,{method:'GET',headers:{apikey:settings.key,Authorization:`Bearer ${token}`,Accept:'application/json'}},'auth');
-        if(!user||typeof user.id!=='string'||!UUID.test(user.id))throw new ApiError(401,'ERP_UNAUTHENTICATED');
-        if(user.is_anonymous===true)throw new ApiError(403,'ERP_FORBIDDEN');
-        await accessGate(user,settings,token);
+        const user=await authenticate(request,env,settings,token);
         try{
           const parsed=await parseCatalogMirrorRoute(request);
           return respond(200,await executeCatalogMirrorRoute(parsed,{userId:user.id.toLowerCase(),rpc:(name,args)=>upstream(`${settings.baseUrl}/rest/v1/rpc/${name}`,{
@@ -484,11 +494,8 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
         if(!methods.includes(request.method)){headers.set('Allow',[...methods,'OPTIONS'].join(', '));throw new ApiError(405,'ERP_METHOD_NOT_ALLOWED');}
         const token=/^Bearer ([^\s]+)$/i.exec(request.headers.get('Authorization')||'')?.[1];
         if(!token||token.length>8192)throw new ApiError(401,'ERP_UNAUTHENTICATED');
-        const user=await upstream(`${settings.baseUrl}/auth/v1/user`,{method:'GET',headers:{apikey:settings.key,Authorization:`Bearer ${token}`,Accept:'application/json'}},'auth');
-        if(!user||typeof user.id!=='string'||!UUID.test(user.id))throw new ApiError(401,'ERP_UNAUTHENTICATED');
-        if(user.is_anonymous===true)throw new ApiError(403,'ERP_FORBIDDEN');
         // Leva H: the PDV goes through the same per-request gate (access windows and second factor) as every other route.
-        await accessGate(user,settings,token);
+        const user=await authenticate(request,env,settings,token);
         try{
           const parsed=await parsePosRoute(request,pos);
           return respond(200,await executePosRoute(parsed,{userId:user.id.toLowerCase(),rpc:(name,args)=>upstream(`${settings.baseUrl}/rest/v1/rpc/${name}`,{
@@ -522,12 +529,9 @@ export function createHandler({ fetchImpl = globalThis.fetch, timeoutMs = 8000, 
       const token = /^Bearer ([^\s]+)$/i.exec(authorization)?.[1];
       if (!token || token.length > 8192) throw new ApiError(401, 'ERP_UNAUTHENTICATED');
       if((preferences||backupImport||purchaseReceipts||stockObservations||warehouseImport||stockOpening||itauLegacy||salesHistory||fiscalDraftStatus||salesReadiness||purchaseReadiness||stockReservations||cnabOperationalV2||boletoPreview||itauNetCredit||originProposalImportV2||originProposalImport||financeTransfers||fiscalCompletion||serviceEvents) && request.signal.aborted)throw new ApiError(400,'ERP_REQUEST_ABORTED');
-      const user = await upstream(`${settings.baseUrl}/auth/v1/user`, {
-        method: 'GET', headers: { apikey: settings.key, Authorization: `Bearer ${token}`, Accept: 'application/json' }, signal:preferences||backupImport||purchaseReceipts||stockObservations||warehouseImport||stockOpening||itauLegacy||salesHistory||fiscalDraftStatus||salesReadiness||purchaseReadiness||stockReservations||cnabOperationalV2||boletoPreview||itauNetCredit||originProposalImportV2||originProposalImport||financeTransfers||fiscalCompletion||serviceEvents ? request.signal : undefined,
-      }, 'auth',backupAuthDeadline??purchaseReceiptsDeadline??stockObservationsDeadline??warehouseDeadline??stockOpeningDeadline??itauLegacyDeadline??preferencesDeadline);
-      if (!user || typeof user.id !== 'string' || !UUID.test(user.id)) throw new ApiError(401, 'ERP_UNAUTHENTICATED');
-      if (user.is_anonymous === true) throw new ApiError(403, 'ERP_FORBIDDEN');
-      await accessGate(user, settings, token);
+      const user = await authenticate(request, env, settings, token, { agents: !backupImport,
+        signal:preferences||backupImport||purchaseReceipts||stockObservations||warehouseImport||stockOpening||itauLegacy||salesHistory||fiscalDraftStatus||salesReadiness||purchaseReadiness||stockReservations||cnabOperationalV2||boletoPreview||itauNetCredit||originProposalImportV2||originProposalImport||financeTransfers||fiscalCompletion||serviceEvents ? request.signal : undefined,
+        deadline: backupAuthDeadline??purchaseReceiptsDeadline??stockObservationsDeadline??warehouseDeadline??stockOpeningDeadline??itauLegacyDeadline??preferencesDeadline });
       if (backupImport) {
         const result=await executeBackupImport(request,parseBackupImportRoute(url),backupPlan,{
           userId:user.id,

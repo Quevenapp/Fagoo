@@ -29,6 +29,8 @@ As permissões de cada área são consultadas por sua rota base e revalidadas no
 
 Cada chamada exige `Authorization: Bearer <access_token do serviço de autenticação>`. O Worker verifica o token por `GET /auth/v1/user` no projeto configurado. Só o UUID retornado por essa verificação é enviado às RPCs internas. Papéis de `user_metadata`, UUIDs informados pelo cliente e usuários anônimos não autorizam acesso.
 
+Quando a instalação habilita `ERP_AGENT_ACCESS_ENABLED`, o mesmo cabeçalho aceita o token de um agente (`fagoo_agt_…`). O Worker envia apenas o SHA-256 do token a `erp_access_agent_resolve`, que devolve o UUID do membro técnico; o token nunca é enviado ao serviço de autenticação nem aceito com `Origin`. As duas formas passam pelo mesmo ponto (`authenticate` em `src/index.mjs`) e pelo mesmo portão de horários e segundo fator. Limites e operação em [acesso de agentes externos](../../docs/operations/agent-access.md).
+
 A migração `202610160004_erp_access.sql` cria a associação privada `erp_access.membership`, inicialmente vazia. Um usuário válido do Auth sem associação ativa recebe `403`. O primeiro administrador precisa ter seu UUID real verificado e receber uma associação explícita por um administrador do banco. Não existe promoção automática do primeiro cadastro nem endpoint de autoinscrição. Atualizações administrativas devem atualizar também `updated_at`.
 
 | Papel | Entidades permitidas |
