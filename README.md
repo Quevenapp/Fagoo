@@ -49,6 +49,6 @@ Para mantenedores e agentes que precisam enviar correções ao repositório e di
 
 ## Integrações e operação
 
-A API é o ponto de integração com agentes externos e outros sistemas. As permissões, validações de negócio, registros de auditoria e controles de repetição de operações permanecem no ERP. Um agente usa um token próprio, desligado por padrão e sem acesso às operações que exigem segundo fator. Consulte [acesso de agentes externos](docs/operations/agent-access.md).
+A API é o ponto de integração com agentes externos e outros sistemas. As permissões, validações de negócio, registros de auditoria e controles de repetição de operações permanecem no ERP. Um agente usa um token próprio, desligado por padrão e sem acesso às operações que exigem segundo fator. Assistentes que trabalham com ferramentas podem usar o servidor MCP da própria API (`/mcp`), com consultas e um conjunto pequeno de gravações comuns. Consulte [acesso de agentes externos](docs/operations/agent-access.md).
 
 Os módulos fiscais e bancários conservam suas condições de disponibilidade e homologação. A habilitação de operações depende da configuração da empresa e da validação exigida por cada serviço. O dimensionamento da VPS precisa considerar a carga do ERP e os demais serviços executados no mesmo servidor.
