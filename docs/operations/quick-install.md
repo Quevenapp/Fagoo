@@ -8,7 +8,7 @@ Para fazer cada etapa à mão, entender o que o instalador executa ou usar um to
 
 - **Um servidor (VPS) com Ubuntu 24.04**, novo, e os dados de acesso que a hospedagem envia: endereço IP, usuário e senha ou chave. A instalação de referência usou 1 vCPU, 4 GB de RAM e processador x86-64 (amd64).
 - **Um domínio seu**, como `empresa.com.br`.
-- **Uma conta na Cloudflare**. O plano gratuito atende.
+- **Uma conta na Cloudflare.** A instalação de referência usou o plano pago do Workers; avalie os limites do plano para o seu uso.
 - **Um gerenciador de senhas** para guardar o token da Cloudflare e a senha do administrador.
 
 O instalador cria três endereços dentro do domínio. Não crie nada à mão:
